@@ -1,0 +1,90 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[Danish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+
+\begin{document}
+\section*{IDE Funktioner}
+For at bruge de givet robot funktioner skal der skrives Robot. hvorefter en liste af de mulige funktioner vil blive vist 
+\\
+
+\subsection*{Init Functions}
+
+\textbf{Navn:}
+\\bool InitRobot()
+\\
+\textbf{Beskrivelse:}
+\\Denne function initializer robotten, samt gør det muligt at bruge de resterende Robot funktioner
+\\Denne function skal altid kaldes som
+det færste i et nyt program
+\\
+\\
+\textbf{Navn:}
+\\bool ResetRobot()
+\\
+\textbf{Beskrivelse:}
+\\Denne function vil flytte robotten tilbage til start position
+
+\subsection*{Move Functions}
+\textbf{Navn:}
+\\bool MoveByAxis(Int32 x, Int32 y, Int32 z, Int32 p, Int32 r)
+\\Bevæger robotten linear, relativ til den nuværende position
+\textbf{Beskrivelse:}
+\\
+\\
+\textbf{Navn:}
+\\bool MoveByCoordinates(Int32 x, Int32 y, Int32 z, Int32 p, Int32 r)
+\\
+\textbf{Beskrivelse:}
+\\Bevæger robotten linear ud fra de givet koordinater
+\subsection*{Functions}
+\textbf{Navn:}
+\\void OpenClaw()
+\\Bevæger robotten
+\textbf{Beskrivelse:}
+\\Åbner Robot kloen helt
+\\
+\\
+\textbf{Navn:}
+\\void CloseClaw()
+\\
+\textbf{Beskrivelse:}
+\\Lukker Robot kloen helt
+\\
+\\
+\textbf{Navn:}
+\\bool SetClawValue(short millimeter)
+\\
+\textbf{Beskrivelse:}
+\\Sætter kloen til den givet værdi i millimeter
+\\
+\\
+\textbf{Navn:}
+\\int GetClawValue()
+\\
+\textbf{Beskrivelse:}
+\\Returnerer værdien af kloen i millimeter   
+\\
+\\
+\textbf{Navn:}
+\\double GetWeigth()
+\\
+\textbf{Beskrivelse:}
+\\Returnere værdien fra vægten, i gram
+
+\subsection*{Other functions}
+Disse funktioner bliver kaldt på anden må de end de øvrige
+\\Se relevante beskriverlser for mere info
+\\
+\\
+\textbf{navn:}
+\\MessageBox.Show(string)
+\\
+\textbf{Beskrivelse:}
+\\Viser en MessageBox med en givet string
+\textit{\\eksempel: msg.MessageBox("Test")}
+\\
+\end{document}

@@ -1,0 +1,72 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[ansinew]{inputenc} 			% Windows
+%\usepackage[latin1]{inputenc} 			% Linux og Mac
+
+\input{Global_preamble}	% Alle indstillinger for dokumentet
+
+%***************************************************
+% Det afsnit du arbejder på skal skrives her
+% Inkludér flere afsnit med komma
+% Udkommenter alt du ikke skal bruge med '%'
+%
+\includeonly{
+	Andre_afsnit/Forside,
+	Indledning/FormAl,
+	Generel_Beskrivelse/Systembeskrivelse,
+	Generel_Beskrivelse/Systemets_funktioner,
+	Use_Cases/Funktionelle_krav, %Her i ligger Use_Case1
+	Use_Cases/Use_Case1_1,
+	Use_Cases/Use_Case1_2,
+	Use_Cases/Use_Case2,
+	Use_Cases/Use_Case3,
+	Use_Cases/Use_Case4,
+	Use_Cases/Use_Case5,
+	Eksterne_grEnseflader/Ekstern,
+	Andre_afsnit/Kvalitetsfaktorer,
+	Andre_afsnit/Designkrav,
+	Andre_afsnit/Ovrigekrav,
+	Andre_afsnit/Delleveringer,
+}
+%***************************************************
+
+\begin{document}
+
+%---------------------------------------------------
+%Herunder skal alle kapitlerne stå.
+%
+%Hvis der tilføjes et afsnit, skal det også inkluderes 
+%under afsnittet ovenover - adskildt med et komma.
+%Tilføj dit afsnit herunder og udkommenter over over.
+%---------------------------------------------------
+
+\include{Andre_afsnit/Forside}
+
+%1. INDLEDNING
+\include{Indledning/FormAl}
+
+%2. Generel Beskrivelse
+\include{Generel_Beskrivelse/Systembeskrivelse}
+
+\include{Generel_Beskrivelse/Systemets_funktioner}
+
+\include{Generel_Beskrivelse/Systemets_begrEnsninger}
+
+%3. Use Cases
+\include{Use_Cases/Funktionelle_krav}
+\include{Use_Cases/Use_Case1_1}
+\include{Use_Cases/Use_Case1_2}
+\include{Use_Cases/Use_Case2}
+\include{Use_Cases/Use_Case3}
+\include{Use_Cases/Use_Case4}
+\include{Use_Cases/Use_Case5}
+
+%4. EKSTERNE GRÆNSEFLADER	
+\include{Eksterne_grEnseflader/Ekstern}
+
+%5. Andre afsnit
+\include{Andre_afsnit/Kvalitetsfaktorer}
+\include{Andre_afsnit/Designkrav}
+\include{Andre_afsnit/Ovrigekrav}
+\include{Andre_afsnit/Delleveringer}
+
+\end{document}

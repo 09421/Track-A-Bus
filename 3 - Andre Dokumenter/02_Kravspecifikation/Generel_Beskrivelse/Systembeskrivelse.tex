@@ -1,0 +1,55 @@
+\section{General beskrivelse}
+
+\subsection{Systembeskrivelse}
+%Systemet er sammensat af seks dele, som er beskrevet nedenfor. Information omkring delene er fundet i dokumentet: \textit{Scorbot-ER 4u, Users Manual -- 100343-b ER\_4u}
+\begin{itemize}
+
+\item Robot \\
+Robotten har fem omdrejningsakser, så den kan manøvrere rundt i systemets omgivelser. Hver del har sin egen motor til at roterer denne del. Ydermere har robotten en klo, der kan gribe fat i elementer og samtidig måle dem. Figuren nedenfor giver et overblik over robotten.\\
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{Andet/Robotoversigt.jpg}
+\caption{Robotoversigt}
+\end{figure}
+
+\item Transportbånd \\ 
+Transportbåndets opgave er at transportere objekter bestående af klodser fra en feeder(se billede Figur 2: Systemoversigt) til en position, hvor robotarmen kan få fat på klodsen. Dertil er påmonteret en sensor, som stopper båndes, når klodsen er i den rette position.\\
+
+\item Vægt \\
+Der er udleveret en vægtcelle, hvorudfra der skal konstrueres en fungerende vægt. Vægten bruges til at veje klodserne, så materialetypen kan bestemmes. \\
+
+\item STK500-kit \\
+STK500-kittet bliver benyttet til AD-konvertering af spændingssignalet der kommer fra vægten\\
+
+\item USB-Controller og PC \\
+For at bruge robotten, skal der gøres brug af en USB-Controlleren, som forbinder disse vha. et 60-pins interface. USB-Controller er koblet til PC'en via et USB-kabel. \\  
+
+\item Database \\
+Databasen indeholder data om systemets elementer og logfiler. Det skal være muligt at tilgå databasen og ændre i bestemte elementer.
+
+
+\end{itemize}
+
+Nedenfor er vist en domænemodel, som giver et overblik over systemet.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.7]{Domainmodel_Billede.jpg}
+\caption{Domænemodel}
+\end{figure} 
+
+\newpage
+
+\subsubsection{Systemoversigt}
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.5]{Andet/systemoversigt.jpg} 
+\caption{Systemoversigt}
+\end{figure}
+Ovenstående figur giver et overblik over systemet, hvor enhederne ses i sammenhæng. De forskellige enheder er beskrevet kort i ovenstående afsnit, \emph{2.1 Systembeskrivelse}
+
+
+%\input{Generel_Beskrivelse/Kontekst_diagram}
+
+%\input{Generel_Beskrivelse/AktOr_beskrivelse}

@@ -1,0 +1,222 @@
+\subsection{Use Case 3: Rediger materialetype}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er, at tilføje, ændre eller fjerne en materialetype.
+\\
+\\
+\textbf{Initiering:}
+\\
+Use Casen initieres, når programmøren tilkendegiver overfor systemet, at han vil redigere materialetyper.
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+	\begin{itemize}
+	\item Programmør.
+	\end{itemize}
+Sekundære aktører:
+	\begin{itemize}
+	\item Databasen.
+	\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Densiteten skal være større end 0 $\dfrac{g}{cm^{3}}$ og mindre end 23 $\dfrac{g}{cm^{3}}$.
+\end{itemize}
+\textbf{Referencer:}
+\\
+Ingen.
+\\\\
+\textbf{Startbetingelser:}
+\\
+Programmøren skal være logget ind som 'programmør' for at have rettigheder til at redigere materialetyper. Ligeledes skal der være forbindelse til databasen.
+\\\\
+\textbf{Slutresultat ved succes:}
+\\
+Hvis det ønskes at oprette en ny materialetype, er denne blevet oprettet og gemt.
+\\
+Hvis det ønskes at fjerne en materialetype, er denne blevet fjernet.
+\\
+Hvis det ønskes at redigere i en materialetype, er ændringerne blevet gemt.
+\\\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Hvis det ønskes at oprette en ny materialetype, er ikke blevet oprettet eller gemt.
+\\
+Hvis det ønskes at fjerne en materialetype, er denne ikke blevet fjernet.
+\\
+Hvis det ønskes at redigere i en materialetype, er ændringerne ikke blevet gemt.
+\\\\
+\textbf{Normalforløb 1 - Tilføj ny materialetype:}
+	\begin{enumerate}
+	\item Programmøren tilkendegiver overfor systemet, at denne ønsker at tilføje en ny materialetype.
+	\item Systemet gør det muligt at indtaste data:
+		
+		\begin{itemize}
+		\item Navn
+		\item Densitet
+
+		\end{itemize}
+	\item Programmøren indtaster data.	
+	\item Programmøren tilkendegiver overfor systemet, at denne ønsker at gemme de indtastede data.
+	\item Systemet gemmer de indtastede data.
+	
+	\end{enumerate}
+\textbf{Undtagelser 1 - Tilføj ny materialetype:}
+\begin{enumerate}[\text{Undtagelse *} a:]
+	\item Der mistes forbindelse til databasen.
+		\begin{enumerate}[1.]
+		\item Gennem en visuel alarm bliver programmøren informeret om, at forbindelsen til databasen er blevet afbrudt.
+		\item Programmøren bliver spurgt, om han vil vente på, at forbindelsen bliver genetableret. 
+		
+		\begin{enumerate}
+		\item Programmøren tilkendegiver overfor systemet, at dette ønskes.
+			\begin{enumerate}
+			\item Systemet forsøger at genetablere forbindelsen til databasen.
+			\item Hvis forbindelsen ikke kan genoprettes, præsenteres programmøren for punkt 2.
+			\end{enumerate}
+		
+		\item Programmøren tilkendegiver overfor systemet, at dette ikke ønskes.
+			\begin{enumerate}
+			\item Programmet lukker ned.
+			\end{enumerate}
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+
+	
+	
+	\begin{enumerate}[\text{ Undtagelse 2} a:] 
+	\item Densiteten er ikke gyldig.
+
+		\begin{enumerate}
+		\item Systemet giver besked om, at der er indtastet en ugyldig værdi.
+		\item Programmøren indtaster en ny værdi.
+		\end{enumerate}
+	
+	\end{enumerate}
+		
+	\begin{enumerate}[\text{Undtagelse 3} a:] 
+	\item Alle data er ikke udfyldt.
+		
+		\begin{enumerate}
+		\item Systemet giver besked om, at ikke alle datafelter er udfyldt.
+		\item Programmøren udfylder de datafelter der ikke er udfyldt.
+		\end{enumerate}
+	
+	\end{enumerate}
+	
+	
+	\begin{enumerate}[\text{Undtagelse 3-4} a:] 
+	\item Programmøren annullerer tilføjelsen af en ny materialetype.
+		
+		\begin{enumerate}
+		\item Den nye materialetype gemmes ikke.
+		\end{enumerate}
+	
+	\end{enumerate}	
+\textbf{Normalforløb 2 - Fjern materialetype:}
+	\begin{enumerate}
+	\item Programmøren tilkendegiver overfor systemet, at denne ønsker at fjerne en materialetype.
+	\item Systemet lister alle mulige materialetyper i systemet.
+	\item Programmøren tilkendegiver overfor systemet, hvilken type denne ønsker at fjerne.
+	\item Systemet spørger om bekræftelse på, at den markerede type ønskes slettet.
+	\item Programmøren bekræfter sit valgt.
+	\item Systemet fjerner materialetypen.
+	\end{enumerate}
+\textbf{Undtagelser 2 - Fjern materialetype:}					
+\begin{enumerate}[\text{Undtagelse *} a:]
+	\item Der mistes forbindelse til databasen.
+		\begin{enumerate}[1.]
+		\item Gennem en visuel alarm bliver programmøren informeret om, at forbindelsen til databasen er blevet afbrudt.
+		\item Programmøren bliver spurgt, om han vil vente på, at forbindelsen bliver genetableret. 
+		
+		\begin{enumerate}
+		\item Programmøren tilkendegiver overfor systemet, at dette ønskes.
+			\begin{enumerate}
+			\item Systemet forsøger at genetablere forbindelsen til databasen.
+			\item Hvis forbindelsen ikke kan genoprettes, præsenteres programmøren for punkt 2.
+			\end{enumerate}
+		
+		\item Programmøren tilkendegiver overfor systemet, at dette ikke ønskes.
+			\begin{enumerate}
+			\item Programmet lukker ned.
+			\end{enumerate}
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}				
+			
+		\begin{enumerate}[\text{Undtagelse 3} a:] 
+		\item Programmøren tilkendegiver vælger en af standardmaterialerne.\footnote{Materialetyper tilhørende de fem klodser, der er i systemet}
+			
+			\begin{enumerate}
+			\item Programmøren modtager en besked om, at materialetypen ikke kan slettes. 
+			\end{enumerate}
+		
+		\end{enumerate}			
+					
+					
+		\begin{enumerate}[\text{Undtagelse 5} a:] 
+		\item Programmøren tilkendegiver overfor systemet, at det ikke var denne materialetype, der skulle slettes,
+			
+			\begin{enumerate}
+			\item Systemet ændrer intet og viser listen igen.
+			\end{enumerate}
+		
+		\end{enumerate}
+\textbf{Normalforløb 3 - Ændre data for materialetype:}
+	\begin{enumerate}
+	\item Programmøren tilkendegiver overfor systemet, at han vil ændre data for en given materialetype.
+	\item Systemet lister alle mulige materialetyper i systemet.
+	\item Programmøren vælger en materialetype på listen.
+	\item Systemet gør det muligt at ændre data for den givne materialetype.
+	\item Programmøren indtaster data, han ønsker ændret.
+	\item Systemet gemmer de indtastede data.
+	\end{enumerate}
+\textbf{Undtagelser 3 - Ændre data for materialetype:}
+\begin{enumerate}[\text{Undtagelse *} a:]
+	\item Der mistes forbindelse til databasen.
+		\begin{enumerate}[1.]
+		\item Gennem en visuel alarm bliver programmøren informeret om, at forbindelsen til databasen er blevet afbrudt.
+		\item Programmøren bliver spurgt, om han vil vente på, at forbindelsen bliver genetableret. 
+		
+		\begin{enumerate}
+		\item Programmøren tilkendegiver overfor systemet, at dette ønskes.
+			\begin{enumerate}
+			\item Systemet forsøger at genetablere forbindelsen til databasen.
+			\item Hvis forbindelsen ikke kan genoprettes, præsenteres programmøren for punkt 2.
+			\end{enumerate}
+		
+		\item Programmøren tilkendegiver overfor systemet, at dette ikke ønskes.
+			\begin{enumerate}
+			\item Programmet lukker ned.
+			\end{enumerate}
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+
+	\begin{enumerate}[\text{Undtagelse 5} a:] 
+	\item Programmøren indtaster ugyldig data.
+		
+		\begin{enumerate}
+		\item Systemet giver besked om, at der er indtastet en ugyldig værdi.
+		\item Programmøren bliver bedt om at indtaste en ny værdi.
+		\end{enumerate}
+	
+	\end{enumerate}
+	
+	\begin{enumerate}[\text{Undtagelse 5} b:] 
+	\item Programmøren annullerer redigeringen i det eksisterende materiale.
+		
+		\begin{enumerate}
+		\item De nye data for materialetypen gemmes ikke.
+		\end{enumerate}
+	
+	\end{enumerate}
+	
+
+	

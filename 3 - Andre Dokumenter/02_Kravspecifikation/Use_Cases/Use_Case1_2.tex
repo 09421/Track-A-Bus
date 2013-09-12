@@ -1,0 +1,93 @@
+\subsection{Use Case 1.2: Bestem materialetype (Include)}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er at bestemme klodsens materialetype vha. densiteten, som beregnes ud fra de målte sider samt vægten.
+\\
+\\
+\textbf{Initiering:}
+\\
+Use Casen initieres gennem \textit{Use Case 1: Sorter Klods.}
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+	\begin{itemize}
+	\item \textit{Use Case 1: Sorter klods.}
+	\end{itemize}
+Sekundære aktører:
+	\begin{itemize}
+	\item Database.
+	\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\
+\\
+\textbf{Ikke funktionelle krav:}
+	\begin{itemize}
+	\item Klodsens densitet gemmes i databasen i med enheden $\dfrac{g}{cm^{3}}$.
+	\item Klodsens målte værdi gemmes i databasen i cm.
+	\item Klodsens masse gemmes i databasen i gram. 
+\end{itemize}
+\textbf{Referencer:}
+\\
+Denne Use Case er udvidelse af \textit{Use Case 1: Sorter klods. }
+\\
+\\
+\textbf{Startbetingelser:}
+\\
+Startbetingelserne gør sig gældende i at \textit{Use Case 1: Sorter klods} skal være igangsat. Det forudsættes også at \textit{Include Use Case 1.1 Mål og vej klods} er eksekveret forinden.
+\\
+\\
+\textbf{Slutresultat ved succes:}
+\\
+Klodsens materialetype er bestemt og gemt.
+\\
+\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Klodsens materialetype blev ikke bestemt eller gemt.
+\\
+\\
+\textbf{Normalforløb:}\footnote{Efter hvert punkt skabes der et loggingindlæg til databasen, der specificerer hvad der er sket.}
+\begin{enumerate}
+\item Klodsens rumfang udregnes.
+\item Ud fra klodsens rumfang og masse udregnes densiteten.
+\item Den udregnede densitet sammenlignes med liste af eksisterende materialetyper på databasen, og deraf bestemmes klodsens type.
+\item Klodsens data persisteres på databasen.
+\end{enumerate}
+
+
+\begin{enumerate}[\text{Undtagelse 3} a:]
+	\item Der mistes forbindelse til databasen.
+		\begin{enumerate}[1.]
+		\item Gennem en visuel alarm bliver operatøren informeret om, at forbindelsen til databasen er blevet afbrudt.
+		\item Operatøren bliver spurgt, om han vil vente på, at forbindelsen bliver genetableret. 
+		
+		\begin{enumerate}
+		\item Operatøren tilkendegiver overfor systemet, at dette ønskes.
+			\begin{enumerate}
+			\item Systemet forsøger at genetablere forbindelsen til databasen.
+			\item Hvis forbindelsen ikke kan genoprettes, præsenteres operatøren for punkt 2.
+			\end{enumerate}		
+	
+		\item Operatøren tilkendegiver overfor systemet, at dette ikke ønskes.
+			\begin{enumerate}
+			\item Programmet lukker ned.
+			\end{enumerate}
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+{\begin{enumerate}[\text{Undtagelse 3} b:]
+	\item Densitet kan ikke pares med en materialetype på databasen
+		\begin{enumerate}[1.]
+		\item Operatøren modtager en besked om, at materialetypen ikke kunne findes på databasen.
+		\item Robotarmen placere klodsen til højre for sensoren, så den kasseres, næste gang sorteringen startes.
+	\end{enumerate}
+\end{enumerate}}
+
+
+
+
+	

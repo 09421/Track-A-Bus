@@ -1,0 +1,69 @@
+\subsection{Use Case 5: Test program}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er at teste er et færdigt program eller en programsekvens via en simulering af robotten.
+Det giver programmøren mulighed for at teste sit program uden brug af robotten.
+\\
+\\
+\textbf{Initiering:}
+\\
+Programmøren starter tilkendegiver overfor systemet, at han vil starte en simulering.
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+\begin{itemize}
+\item Programmøren.
+\end{itemize}
+Sekundære aktører:
+\begin{itemize}
+\item Ingen.
+\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\
+\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Simuleringsbeskeder udskrives med et tidspunkt for begivenheden sammen med informationer om selve handlingen.
+\end{itemize}
+\textbf{Referencer:}
+\\
+Ingen.
+\\\\
+\textbf{Startbetingelser:}
+\\
+Det forudsættes, at brugeren er logget ind som programmør.
+\\
+\\
+\textbf{Slutresultat ved succes:}
+\\
+Programmøren får fuldendt en testsimulering af programmet.
+\\
+\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Programmøren får ikke fuldendt en testsimulering af programmet
+\\
+\\
+\textbf{Normalforløb:}
+\begin{enumerate}
+\item Programmøren tilkendegiver over for systemet at vedkommende ønsker en simulering.
+\item Systemet indlæser tilgængelige programmer.
+\item Programmøren vælger en af programmerne.
+\item Programmøren starter simuleringen af programmet.
+\item Alle systemets informationer fra programmet gemmes i en simuleringslogfil.
+\item Simulationen afsluttes.
+\end{enumerate}
+
+\textbf{Undtagelser:}
+\begin{enumerate}[\text{Undtagelse *} a:] 
+\item Programmøren trykker på stop.
+	\begin{enumerate}[1.]
+	\item Simuleringen stoppes.
+	\end{enumerate}
+\end{enumerate}
+
+

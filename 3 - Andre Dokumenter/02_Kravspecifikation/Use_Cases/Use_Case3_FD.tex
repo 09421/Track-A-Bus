@@ -1,0 +1,84 @@
+\subsection{Use Case 3: Test program}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er at teste er et færdigt program eller en programsekvens via en simulering af robotten.
+Det giver programmøren mulighed for at teste sit program uden brug af robotten.
+\\
+\\
+\textbf{Initiering:}
+\\
+Programmøren starter tilkendegiver overfor systemet, at han vil starte en simulering.
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+\begin{itemize}
+\item Programmøren.
+\end{itemize}
+Sekundære aktører:
+\begin{itemize}
+\item Database.
+\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\
+\\
+\textbf{Frekvens:}
+\\
+Ikke defineret.
+\\
+\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Loggen udskrives med dato/tid [YYYY.MM.DD-hh.mm.ss] Ex: "[2012.04.15-06.28.42]"
+\end{itemize}
+\textbf{Referencer:}
+\\
+Ingen.
+\\\\
+\textbf{Startbetingelser:}
+\\
+Det forudsættes at programmet er i en tilstand, hvor den ikke er optaget af andre processer.
+\\
+\\
+\textbf{Slutresultat ved succes:}
+\\
+Programmøren får fuldendt en testsimulering af programmet.
+\\
+\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Programmøren får ikke fuldendt en testsimulering af programmet
+\\
+\\
+\textbf{Normalforløb:}
+\begin{enumerate}
+\item Programmøren tilkendegiver over for systemet at vedkommende ønsker en simulering.
+\item Systemet indlæser tilgængelige programmer fra databasen.
+\item Programmøren vælger en af programmerne.
+\item Programmøren starter simuleringen af programmet.
+\item Alle systemets informationer fra programmet vises i loggen.
+\item Simulationen afsluttes.
+\end{enumerate}
+\textbf{Undtagelser:}
+\begin{enumerate}[\text{Undtagelse *} a:] 
+\item Programmøren trykker på stop.
+	\begin{enumerate}[1.]
+	\item Systemet stoppes.
+	\end{enumerate}
+\end{enumerate}
+\begin{enumerate}[\text{Undtagelse 2} a:]
+	\item Der mistes forbindelse til databasen.
+		\begin{enumerate}[1.]
+		\item Gennem en visuel alarm bliver operatøren informeret om, at forbindelsen til databasen er blevet 	     afbrudt
+		\item Systemet prøver at genetablere forbindelse til databasen indtil det lykkedes.
+		\item Operatøren bliver informeret om, at forbindelsen til databasen er blevet genoprettet.
+	\end{enumerate}
+\item Der er ingen tilgængelige programmer i databasen.
+	\begin{enumerate}[1.]
+	\item Programmøren får en fejlmeddelelse der informerer herom.
+	\item Systemet returnerer til hovedmenuen.
+	\end{enumerate}
+\end{enumerate}
