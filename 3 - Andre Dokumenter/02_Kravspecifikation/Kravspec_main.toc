@@ -14,16 +14,17 @@
 \contentsline {subsubsection}{\numberline {2.5.2}Gruppedefinerede udviklingsv\IeC {\ae }rkt\IeC {\o }jer}{10}{subsubsection.2.5.2}
 \contentsline {subsection}{\numberline {2.6}Foruds\IeC {\ae }tninger}{11}{subsection.2.6}
 \contentsline {section}{\numberline {3}Funktionelle krav - Use Cases}{12}{section.3}
-\contentsline {subsection}{\numberline {3.1}Use Case 1: Sorter klods}{12}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Use Case 1.1: M\r al og vej klods (Include)}{15}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Use Case 1.2: Bestem materialetype (Include)}{17}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Use Case 2: Programmer robot}{19}{subsection.3.4}
-\contentsline {subsection}{\numberline {3.5}Use Case 3: Rediger materialetype}{23}{subsection.3.5}
-\contentsline {subsection}{\numberline {3.6}Use Case 4: Tilg\r a log}{28}{subsection.3.6}
-\contentsline {subsection}{\numberline {3.7}Use Case 5: Test program}{31}{subsection.3.7}
-\contentsline {section}{\numberline {4}Eksterne gr\IeC {\ae }nseflader}{33}{section.4}
-\contentsline {subsection}{\numberline {4.1}Brugergr\IeC {\ae }nseflade}{33}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Hardware gr\IeC {\ae }nseflader}{34}{subsection.4.2}
-\contentsline {section}{\numberline {5}Kvalitetsfaktorer}{35}{section.5}
-\contentsline {section}{\numberline {6}Designkrav}{36}{section.6}
-\contentsline {section}{\numberline {7}\IeC {\O }vrige krav}{37}{section.7}
+\contentsline {subsection}{\numberline {3.1}Use Case 1: Sorter klods}{13}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Use Case 1.1: M\r al og vej klods (Include)}{16}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Use Case 1.2: Bestem materialetype (Include)}{18}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Use Case 2: Programmer robot}{20}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Use Case 3: Rediger materialetype}{24}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}Use Case 4: Tilg\r a log}{29}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.7}Use Case 5: Test program}{32}{subsection.3.7}
+\contentsline {section}{\numberline {4}Eksterne gr\IeC {\ae }nseflader}{34}{section.4}
+\contentsline {subsection}{\numberline {4.1}Brugergr\IeC {\ae }nseflade}{34}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Hardware gr\IeC {\ae }nseflader}{35}{subsection.4.2}
+\contentsline {section}{\numberline {5}Kvalitetsfaktorer}{36}{section.5}
+\contentsline {section}{\numberline {6}Designkrav}{37}{section.6}
+\contentsline {section}{\numberline {7}\IeC {\O }vrige krav}{38}{section.7}
+\contentsline {section}{\numberline {8}Delleveringer}{39}{section.8}

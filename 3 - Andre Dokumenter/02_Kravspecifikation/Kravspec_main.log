@@ -558,10 +558,8 @@ No file Generel_Beskrivelse/Systemets_begrEnsninger.aux.
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Funktionelle_krav.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case1_1.aux")
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case1_2.aux")
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case2.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case3.aux")
@@ -569,6 +567,10 @@ ion\Use_Cases/Use_Case3.aux")
 ion\Use_Cases/Use_Case4.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case5.aux")
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case6.aux")
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case7.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Eksterne_grEnseflader/Ekstern.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
@@ -899,49 +901,42 @@ Underfull \hbox (badness 10000) in paragraph at lines 2--15
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 25--32
+Underfull \hbox (badness 10000) in paragraph at lines 18--25
+
+ []
+
+ [13
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--46
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--46
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--46
 
  []
 
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
 <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 35.
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 48.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [12
+ [14]
 
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 43--61
 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--61
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--61
-
- []
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 2: on input line 62.
 
 
 LaTeX Warning: The counter will not be printed.
-             The label is: \text {Undtagelse *}\space b: on input line 78.
-
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
-<use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 81.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [13]
-
-LaTeX Warning: The counter will not be printed.
-             The label is: \text {Undtagelse *}\space c: on input line 85.
-
-
-LaTeX Warning: The counter will not be printed.
-             The label is: \text {Undtagelse *}\space d: on input line 92.
+             The label is: \text {Undtagelse}\space 3: on input line 70.
 
 ))
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
@@ -950,7 +945,7 @@ Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 55.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
  [14]
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case1_1.tex"
+ion\Use_Cases/Use_Case2.tex"
 Underfull \hbox (badness 10000) in paragraph at lines 2--15
 
  []
@@ -961,159 +956,65 @@ Underfull \hbox (badness 10000) in paragraph at lines 2--15
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 25--31
+Underfull \hbox (badness 10000) in paragraph at lines 18--24
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--57
+Underfull \hbox (badness 10000) in paragraph at lines 40--51
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 35--57
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--57
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--57
+Underfull \hbox (badness 10000) in paragraph at lines 40--51
 
  []
 
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
 <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 57.
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 51.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
  [15
 
 
-])
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 56.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
-
-[16]
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case1_2.tex"
-Underfull \hbox (badness 10000) in paragraph at lines 2--15
+]
+Underfull \hbox (badness 10000) in paragraph at lines 66--68
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2--15
+Underfull \hbox (badness 10000) in paragraph at lines 66--68
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 22--28
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--55
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--55
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--55
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--55
+Underfull \hbox (badness 10000) in paragraph at lines 66--68
 
  []
 
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
 <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 55.
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 73.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [17
-
-
-]
+ [16
 
 LaTeX Warning: The counter will not be printed.
-             The label is: \text {Undtagelse 3}\space b: on input line 82.
+             The label is: \text {Undtagelse}\space 2: on input line 77.
+
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 3: on input line 84.
+
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 4: on input line 91.
 
 )
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
  <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 57.
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 56.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [18]
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case2.tex"
-Underfull \hbox (badness 10000) in paragraph at lines 2--12
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2--12
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 19--24
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--43
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--43
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--43
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 27--43
-
- []
-
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
-<use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 43.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [19
-
-
-]
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 80.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
-
-[20]
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 128.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [21])
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
-
-<use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 58.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [22]
+[16]
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case3.tex"
 Underfull \hbox (badness 10000) in paragraph at lines 2--15
@@ -1126,98 +1027,32 @@ Underfull \hbox (badness 10000) in paragraph at lines 2--15
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 22--27
+Underfull \hbox (badness 10000) in paragraph at lines 18--24
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--56
+Underfull \hbox (badness 10000) in paragraph at lines 27--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--56
+Underfull \hbox (badness 10000) in paragraph at lines 27--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--56
+Underfull \hbox (badness 10000) in paragraph at lines 27--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--56
-
- []
-
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
-<use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 56.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [23
-
-
-]
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 86.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
-
-[24]
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 141.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [25]
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
-
-<use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 185.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [26]
-
-LaTeX Warning: The counter will not be printed.
-             The label is: \text {Undtagelse 5}\space b: on input line 212.
-
-)
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 59.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [27]
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case4.tex"
-Underfull \hbox (badness 10000) in paragraph at lines 2--15
+Underfull \hbox (badness 10000) in paragraph at lines 27--49
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2--15
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 23--28
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--49
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--49
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--49
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--49
+Underfull \hbox (badness 10000) in paragraph at lines 27--49
 
  []
 
@@ -1225,71 +1060,253 @@ File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
 <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 49.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [28
+ [17
 
 
 ]
-File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
- <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 86.
-(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
 
-[29])
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 2: on input line 62.
+
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 3: on input line 68.
+
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 4: on input line 75.
+
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse}\space 5: on input line 82.
+
+)
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
  <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 60.
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 57.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [30]
+ [18]
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case5.tex"
-Underfull \hbox (badness 10000) in paragraph at lines 2--16
+ion\Use_Cases/Use_Case4.tex"
+Underfull \hbox (badness 10000) in paragraph at lines 2--12
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2--16
+Underfull \hbox (badness 10000) in paragraph at lines 2--12
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 23--29
+Underfull \hbox (badness 10000) in paragraph at lines 15--20
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 32--53
+Underfull \hbox (badness 10000) in paragraph at lines 23--40
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 32--53
+Underfull \hbox (badness 10000) in paragraph at lines 23--40
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 32--53
+Underfull \hbox (badness 10000) in paragraph at lines 23--40
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 32--53
+Underfull \hbox (badness 10000) in paragraph at lines 23--40
 
  []
 
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
 <use au-ingenioerhoejskolen_da.jpg>
-Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 53.
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 40.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [31
+ [19
 
 
-])
+]
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 1} on input line 56.
+[21]
+ [22])
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+ <use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 58.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [23]
+("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case5.tex"
+Underfull \hbox (badness 10000) in paragraph at lines 2--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--23
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--40
+
+ []
+
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+<use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 42.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [24
+
+
+]
+
+[25]
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 1} on input line 58.
+ [26]
+
+ [27]
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 2} on input line 66.
+
+)
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+ <use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 59.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [28]
+("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case6.tex"
+Underfull \hbox (badness 10000) in paragraph at lines 2--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--23
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--40
+
+ []
+
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+<use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 43.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [29
+
+
+]
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 1} on input line 53.
+
+[30])
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+ <use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 60.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [31]
+("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case7.tex"
+Underfull \hbox (badness 10000) in paragraph at lines 2--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--15
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 18--24
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--46
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--46
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--46
+
+ []
+
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+<use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 46.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [26
+
+
+]
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 1} on input line 67.
+
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+<use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 72.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [32
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 2} on input line 75.
+
+
+LaTeX Warning: The counter will not be printed.
+             The label is: \text {Undtagelse 3} on input line 87.
+
+)
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
  <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 61.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
-
-[32]
+[33]
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Eksterne_grEnseflader/Ekstern.tex"
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
@@ -1298,31 +1315,32 @@ Underfull \hbox (badness 10000) in paragraph at lines 2--3
 
  []
 
+<Eksterne_grEnseflader/GUI/LoginScreen.JPG, id=558, 350.81062pt x 136.25906pt>
+File: Eksterne_grEnseflader/GUI/MainScreen.png Graphic file (type png)
 
-<Eksterne_grEnseflader/GUI/LoginScreen.JPG, id=542, 350.81062pt x 136.25906pt>
-File: Eksterne_grEnseflader/GUI/LoginScreen.JPG Graphic file (type jpg)
+<use Eksterne_grEnseflader/GUI/MainScreen.png>
+Package pdftex.def Info: Eksterne_grEnseflader/GUI/MainScreen.png used on input
+ line 6.
+(pdftex.def)             Requested size: 154.17326pt x 256.95544pt.
 
-<use Eksterne_grEnseflader/GUI/LoginScreen.JPG>
-Package pdftex.def Info: Eksterne_grEnseflader/GUI/LoginScreen.JPG used on inpu
-t line 6.
-(pdftex.def)             Requested size: 350.80975pt x 136.25871pt.
+<Eksterne_grEnseflader/GUI/StartStopWindowSomAdmin.JPG, id=559, 357.58594pt x 2
+File: Eksterne_grEnseflader/GUI/RouteList.png Graphic file (type png)
 
-<Eksterne_grEnseflader/GUI/StartStopWindowSomAdmin.JPG, id=543, 357.58594pt x 2
-82.30469pt>
-File: Eksterne_grEnseflader/GUI/StartStopWindowSomAdmin.JPG Graphic file (type 
-jpg)
- <use Eksterne_grEnseflader/GUI/StartStopWindowSomAdmin.JPG>
-Package pdftex.def Info: Eksterne_grEnseflader/GUI/StartStopWindowSomAdmin.JPG 
-used on input line 12.
-(pdftex.def)             Requested size: 357.58505pt x 282.30399pt.
+<use Eksterne_grEnseflader/GUI/RouteList.png>
+Package pdftex.def Info: Eksterne_grEnseflader/GUI/RouteList.png used on input 
+line 12.
+(pdftex.def)             Requested size: 154.17326pt x 256.95544pt.
 
-<Eksterne_grEnseflader/GUI/ProgrammingWindow.JPG, id=544, 357.58594pt x 268.754
-06pt>
-File: Eksterne_grEnseflader/GUI/ProgrammingWindow.JPG Graphic file (type jpg)
- <use Eksterne_grEnseflader/GUI/ProgrammingWindow.JPG>
-Package pdftex.def Info: Eksterne_grEnseflader/GUI/ProgrammingWindow.JPG used o
-n input line 18.
-(pdftex.def)             Requested size: 357.58505pt x 268.7534pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<Eksterne_grEnseflader/GUI/ProgrammingWindow.JPG, id=560, 357.58594pt x 268.754
+File: Eksterne_grEnseflader/GUI/Map.png Graphic file (type png)
+
+<use Eksterne_grEnseflader/GUI/Map.png>
+Package pdftex.def Info: Eksterne_grEnseflader/GUI/Map.png used on input line 1
+8.
+(pdftex.def)             Requested size: 154.17326pt x 256.95544pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -1335,20 +1353,23 @@ File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
 <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 1.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [33
+ [34
 
 
  <C:/Users/Chris/Desktop/Bachelorprojekt/3 - Andre Dokumenter/02_Kravspecifikat
-ion/Eksterne_grEnseflader/GUI/LoginScreen.JPG> <C:/Users/Chris/Desktop/Bachelor
-projekt/3 - Andre Dokumenter/02_Kravspecifikation/Eksterne_grEnseflader/GUI/Sta
-rtStopWindowSomAdmin.JPG>]))
+ion/Eksterne_grEnseflader/GUI/LoginScreen.JPG> <C:/Users/lasse/Desktop/Skole/Tr
 File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
-
-<use au-ingenioerhoejskolen_da.jpg>
+ <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 64.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [34 <C:/Users/Chris/Desktop/Bachelorprojekt/3 - Andre Dokumenter/02_Kravspecif
-ikation/Eksterne_grEnseflader/GUI/ProgrammingWindow.JPG>]
+ackABus/3 - Andre Dokumenter/02_Kravspecifikation/Eksterne_grEnseflader/GUI/Sta
+ikation/Eksterne_grEnseflader/GUI/RouteList.png>]
+File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
+ <use au-ingenioerhoejskolen_da.jpg>
+Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 64.
+(pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
+ [35 <C:/Users/lasse/Desktop/Skole/TrackABus/3 - Andre Dokumenter/02_Kravspecif
+ikation/Eksterne_grEnseflader/GUI/Map.png>]
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Andre_afsnit/Kvalitetsfaktorer.tex"
 Underfull \hbox (badness 10000) in paragraph at lines 2--5
@@ -1360,7 +1381,7 @@ File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
  <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 67.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [35
+ [36
 
 
 ]
@@ -1370,7 +1391,7 @@ File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
  <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 68.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [36
+ [37
 
 
 ]
@@ -1380,11 +1401,12 @@ File: au-ingenioerhoejskolen_da.jpg Graphic file (type jpg)
  <use au-ingenioerhoejskolen_da.jpg>
 Package pdftex.def Info: au-ingenioerhoejskolen_da.jpg used on input line 69.
 (pdftex.def)             Requested size: 174.85014pt x 32.92241pt.
- [37
+ [38
 
 
 ]
 
+[39
 AED: lastpage setting LastPage
 
 Package caption Warning: Unused \captionsetup[lstlisting] on input line 107.
@@ -1408,10 +1430,8 @@ No file Generel_Beskrivelse/Systemets_begrEnsninger.aux.
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Funktionelle_krav.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case1_1.aux")
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
-ion\Use_Cases/Use_Case1_2.aux")
-("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case2.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case3.aux")
@@ -1419,6 +1439,10 @@ ion\Use_Cases/Use_Case3.aux")
 ion\Use_Cases/Use_Case4.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Use_Cases/Use_Case5.aux")
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case6.aux")
+("C:\Users\lasse\Desktop\Skole\TrackABus\3 - Andre Dokumenter\02_Kravspecifikat
+ion\Use_Cases/Use_Case7.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
 ion\Eksterne_grEnseflader/Ekstern.aux")
 ("C:\Users\Chris\Desktop\Bachelorprojekt\3 - Andre Dokumenter\02_Kravspecifikat
@@ -1430,17 +1454,17 @@ ion\Andre_afsnit/Ovrigekrav.aux"))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 70.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 70.
 Package rerunfilecheck Info: File `Kravspec_main.out' has not changed.
-(rerunfilecheck)             Checksum: CB841562B668B0707A55F39C4D90B859;1997.
+(rerunfilecheck)             Checksum: C5D81B5677E612404875806D5CFCCB1D;2122.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 70.
  ) 
 Here is how much of TeX's memory you used:
- 10765 strings out of 493921
- 169237 string characters out of 3144876
- 249421 words of memory out of 3000000
- 13458 multiletter control sequences out of 15000+200000
+ 10791 strings out of 493921
+ 170610 string characters out of 3144876
+ 249787 words of memory out of 3000000
+ 13468 multiletter control sequences out of 15000+200000
  22863 words of font info for 58 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 38i,18n,43p,620b,730s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,18n,43p,619b,730s stack positions out of 5000i,500n,10000p,200000b,50000s
  <C:\Users\Chris\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\
 ecrm1000.pk> <C:\Users\Chris\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\
 ec\dpi600\ecrm0700.pk> <C:\Users\Chris\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour
@@ -1457,13 +1481,10 @@ r\jknappen\ec\dpi600\ecrm1440.pk> <C:\Users\Chris\AppData\Local\MiKTeX\2.9\font
 s\pk\ljfour\jknappen\ec\dpi600\ecti1440.pk> <C:\Users\Chris\AppData\Local\MiKTe
 X\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx2488.pk> <C:\Users\Chris\AppData\L
 ocal\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\eccc1728.pk> <C:\Users\Chris
-\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\eccc2074.pk><C:/Pr
-ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Prog
-ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Kravspec_main.pdf (38 pages, 583656 bytes).
+\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\eccc2074.pk>
+Output written on Kravspec_main.pdf (40 pages, 739210 bytes).
 PDF statistics:
- 1094 PDF objects out of 1200 (max. 8388607)
- 264 named destinations out of 1000 (max. 500000)
+ 1120 PDF objects out of 1200 (max. 8388607)
+ 270 named destinations out of 1000 (max. 500000)
  260 words of extra memory for PDF output out of 10000 (max. 10000000)
 

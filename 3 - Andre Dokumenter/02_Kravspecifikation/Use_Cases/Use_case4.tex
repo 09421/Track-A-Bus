@@ -1,130 +1,63 @@
-\subsection{Use Case 4: Tilgå log}
+\subsection{Use Case 4: Tilføj/Fjern busrute til liste af favoritter}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er at tilgå en logfil og få denne vist.
-\\
-\\
-\textbf{Initiering:}
-\\
-Use Casen initieres ved at operatøren/programmøren\footnote{Da det både er programmøren og operatøren der kan anvende Use Casen betegnes de samlet som bruger.} tilkendegiver overfor systemet, at han vil tilgå logfiler. 
-\\
-\\
+Målet med denne Use Case er at tilføje eller fjerne en busrute fra listen af favoriserede busruter.
+\\\\
+\textbf{Initiering:}\\
+Brugeren tilkendegiver overfor systemet, der den valgte rute ønskes favoriseret / ikke længere favoriseret.
+\\\\
 \textbf{Aktører og interessenter:}
 \\
 Primære aktører:
 	\begin{itemize}
-	\item Operatør.
-	\item Programmør.
-	\end{itemize}
-Sekundære aktører:
-	\begin{itemize}
-	\item Databasen.
+	\item Bruger.
 	\end{itemize}
 \textbf{Antal samtidige forekomster:}
 \\
 En samtidig forekomst.
 \\\\
 \textbf{Ikke funktionelle krav:}
-\begin{itemize}
-\item Loggen udskrives med tid [hh.mm.ss] eks. [15:02:42].
-\end{itemize}
-\textbf{Referencer:}
-\\
-Ingen.
+	\begin{itemize}
+	\item Kommer senere.
+	\end{itemize}
+\textbf{Referencer:}\\
+SBS\_Ide-funktioner.pdf.\footnote{Dokumentet beskriver de funktioner programmøren kan bruge til at programmere robotten}
 \\\\
 \textbf{Startbetingelser:}
 \\
-Der skal være forbindelse til databasen, så logfiler kan hentes.
+Normalforløbet for Use Case 1 skal være fuldendt.
 \\\\
 \textbf{Slutresultat ved succes:}
 \\
-Logfiler er blevet hentet og gemt.
+Den valgte busrute vil være blevet tilføjet til, eller fjernet fra, listen af favoriserede busruter.
 \\\\
 \textbf{Slutresultat ved undtagelser:}
 \\
-Logfiler er ikke blevet hentet eller gemt.
+Ingen busrute er tilføjet eller fjernet og brugeren er blevet præsenteret for en fejlmeddelelse, der informerer om, hvad der gik galt .
+Hvis systemet går i dvale eller processen stoppes, vil den valgte rute stadig tilføjes til eller fjernes fra listen af favoriserede ruter. 
 \\\\
-\textbf{Normalforløb}
+\textbf{Normalforløb 1 - Tilføjelse:}
+	
 	\begin{enumerate}
-	\item Brugeren tilkendegiver overfor systemet, at denne ønsker at hente en logfil.
-	\item Systemet lister alle tilgængelige logfiler.
-	\item Brugeren tilkendegiver overfor systemet, hvilken logfil der skal vises.
-	\item Systemet viser data for den givne logfil.
-	\item Brugeren vælger at gemme logfilen.
-	\item Systemet åbner et vindue, hvor brugeren kan vælge, hvor logfilen skal gemmes.
-	\item Brugeren tilkendegiver overfor systemet, hvor logfilen skal gemmes, samt med hvilket navn den skal gemmes med.
-	\item Systemet gemmer logfilen på computeren.
+	\item Den valgte busrute, og dennes stoppesteder indlæses.
+	\item Den valgte busrute, og dennes stoppesteder persisteres.
+	\item Der markeres på listen af busruter, at den valgte rute nu er favoriseret.
+	\item Listen over favoriserede busruter på hovedskærmen opdateres.
+	\end{enumerate}
+	\textbf{Normalforløb 1 - Fjernelse:}
+	
+	\begin{enumerate}
+	\item Den valgte busrute, og dennes stoppesteder persisteres ikke længere.
+	\item Der markeres på listen af busruter, at den valgte rute nu ikke længere er favoriseret.
+	\item Listen over favoriserede busruter på hovedskærmen opdateres.
 	\end{enumerate}
 \textbf{Undtagelser}
-\begin{enumerate}[\text{Undtagelse *} a:]
-	\item Der mistes forbindelse til databasen.
-		\begin{enumerate}[1.]
-		\item Gennem en visuel alarm bliver brugeren informeret om, at forbindelsen til databasen er blevet afbrudt.
-		\item Brugeren bliver spurgt, om han vil vente på, at forbindelsen bliver genetableret. 
-		
-		\begin{enumerate}
-		\item Brugeren tilkendegiver overfor systemet, at dette ønskes.
-			\begin{enumerate}
-			\item Systemet forsøger at genetablere forbindelsen til databasen.
-			\item Hvis forbindelsen ikke kan genoprettes, præsenteres brugeren for punkt 2.
-			\end{enumerate}
-		
-		\item Brugeren tilkendegiver overfor systemet, at dette ikke ønskes.
-			\begin{enumerate}
-			\item Programmet lukker ned.
-			\end{enumerate}
-		\end{enumerate}
-	\end{enumerate}
-\end{enumerate}
 
+	\begin{enumerate}[\text{Undtagelse 1}]
 
-	\begin{enumerate}[\text{Undtagelse 2} a:]
-	\item Der er ikke nogle logfiler i listen.
-	
-		\begin{enumerate}
-		\item Systemet viser ingen data fra logfilerne.
+	\item Brugeren annullerer eller sættes i dvale, under tilføjelse eller fjernelse af favorisering.
+		
+		\begin{enumerate}[A]
+		\item Normalforløbet gøres færdig i baggrunden.
 		\end{enumerate}
 	\end{enumerate}
-
-	\begin{enumerate}[\text{Undtagelse 5} a:]
-		\item Brugeren vil ikke gemme logfilen, men blot have den vist.
-		
-		\begin{enumerate}
-		\item Brugeren tilkendegiver ikke overfor systemet, at han vil gemme logfilen.
-		\end{enumerate}
-	\end{enumerate}
-	
-	
-	\begin{enumerate}[\text{Undtagelse 6} a:]
-	\item Brugeren tilkendegiver overfor systemet, at han ikke ønsker at gemme filen alligevel.
-		
-		\begin{enumerate}
-		\item Systemet lukker vinduet til, at gemme placering for filen.
-		\end{enumerate}
-	\end{enumerate}
-		
-	\begin{enumerate}[\text{Undtagelse 7} a:]
-	\item Filnavnet er allerede optaget.
-		
-		\begin{enumerate}
-		\item Systemet spørger brugeren om denne ønsker at overskrive den eksisterende fil.
-			
-			\begin{enumerate}
-			\item Brugeren tilkendegiver overfor systemet at dette ønskes.
-				
-				\begin{enumerate}
-				\item Filen overskrives med den nye.
-				\end{enumerate}
-			
-				\item Brugeren tilkendegiver overfor systemet, at dette ikke ønskes.
-				
-				\begin{enumerate}
-				\item Brugeren får lov til at indtaste et nyt navn på filen.
-				\end{enumerate}
-			
-			\end{enumerate}
-		
-		\end{enumerate}
-	
-	\end{enumerate}
-	

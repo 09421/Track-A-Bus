@@ -1,26 +1,19 @@
-\subsection{Use Case 1: Sorter klods}
+\subsection{Use Case 1: Vis liste af Busruter}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er at sortere en klods efter materiale, der bestemmes vha. densiteten. Densiteten findes ved at måle klodsens tre sider samt at finde vægten. 
+Målet med denne Use Case er at få vist en liste af alle persisterede busruter. 
 \\
 \\
 \textbf{Initiering:}
 \\
-Operatøren tilkendegiver overfor systemet, at han vil starte Use Casen. Use Casen stopper igen, når han tilkendegiver at den skal stoppes eller at der ikke er plads til flere klodser af den givne matrialetype. 
+Brugeren tilkendegiver over for systemet, at han ønsker at få vist en liste af alle persisterede busruter. 
 \\
 \\
 \textbf{Aktører og interessenter:}
 \\
 Primære aktører:
 \begin{itemize}
-\item Operatør.\footnote{Programmøren kan også tilgå Use Casen, men når det er tilfældet, opfattes han som operatør.}
-\end{itemize}
-Sekundære aktører:
-\begin{itemize}
-\item Vægt.
-\item Transportbåndssensor.
-\item Robotarm.
-\item Database.
+\item Bruger.
 \end{itemize}
 \textbf{Antal samtidige forekomster:}
 \\
@@ -29,78 +22,55 @@ En samtidig forekomst.
 \\
 \textbf{Ikke funktionelle krav:}
 \begin{enumerate}
-\item Det må maksimum tage tre minutter at sortere en klods.
-\item Klodsen skal placeres med en maksimum afvigelse på 2 centimeter fra det ønskede punkt.
-\item Der skal minimum være 4 cm, imellem klodserne på transportbåndet.
+\item Mere kommer senere
 \end{enumerate}
-\textbf{Referencer:}
-\\
-I denne Use Case anvendes følgende include Use Cases:
-\begin{itemize}
-\item \textit{Use Case 1.1: Mål og vej klods.}
-\item \textit{Use Case 1.2: Bestem materialetype.}
-\end{itemize}
 \textbf{Startbetingelser:}
 \\
-Robotarmen skal være i startposition samt, desuden må den ikke have fat i en klods.
+Programmet er startet op, og brugeren står ved startskærmen.
 \\
 \\
 \textbf{Slutresultat ved succes:}
 \\
-Klodsen er placeret i det rum, hvori klodsens materialetype tilhører. 
+Brugeren får vist en liste over alle persisterede busruter. 
 \\
 \\
 \textbf{Slutresultat ved undtagelser:}
 \\
 Klodsen er ikke blevet lagt i et rum, hvori materialetypen ikke tilhører.
 \\
-Operatøren har modtaget en fejlmeddelelse, der informerer om at sorteringen ikke er fuldført.
+Brugeren bliver præsenteret for en fejlmeddelelse, der informerer om, at det ikke var muligt at tilgå persisteret data. Desuden får brugeren en kort beskrivelse af, hvad der gik galt.
+Hvis systemet går i dvale, vil listen blive indlæst færdig i baggrunden. 
 \\
 \\
-\textbf{Normalforløb:}\footnote{Efter hvert punkt skabes der et loggingindlæg til databasen, der specificerer hvad der er sket.}
+\textbf{Normalforløb:}
 
 \begin{enumerate}
-\item Transportbåndet startes.
-\item En klods registreres. Transportbåndet stoppes.
-\item Klodsen måles: \textit{Include 1.1 Mål og vej klods.}
-\item Klodsens densitet udregnes: \textit{Include 1.2 Bestem materialetype.}
-\item Klodsen flyttes over i kassen, i det respektive rum for materialetypen.
-\item Robotarmen går tilbage til startposition, ved transportbåndet.
+\item Brugeren tilkendegiver over for systemet, at han ønsker at blive vist listen af busruter.
+\item Systemet tilgår persisteret data, og henter listen af busruter.
+\item Systemet præsenterer brugeren overfor listen af busruter.
 \end{enumerate}
-\textbf{Undtagelser:}\footnote{Stjernen indikerer, at undtagelsen gør sig gældende for alle normalforløb (også include Use Cases).}
-\begin{enumerate}[\text{Undtagelse *} a:] 
-\item Der trykkes på den fysiske nødstop-knap.
-	\begin{enumerate}[1.]
-	\item Sorteringsmekanismen stoppes.
+\textbf{Undtagelser:}
+\begin{enumerate}[\text{Undtagelse} 1:] 
+\item Persisteret data kan ikke tilgås.
+
+	\begin{enumerate}[A]
+	\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at indlæse listen af busruter.
+	\item Systemet returnerer til startskærmen.
 	\end{enumerate}
 \end{enumerate}
 
-\begin{enumerate}[\text{Undtagelse *} b:] 
-\item Operatøren vælger at stoppe systemet igennem brugergrænsefladen. 
-	\begin{enumerate}[1.]
-	\item Sorteringsmekanismen stoppes.
+\begin{enumerate}[\text{Undtagelse} 2:] 
+\item Brugeren annullerer indlæsningen. 
+	\begin{enumerate}[A]
+	\item Systemet annullerer indlæsningen af data.
+	\item Systemet returnerer til startskærmen.
 	\end{enumerate}
 \end{enumerate}
 
-\begin{enumerate}[\text{Undtagelse *} c:] 
-\item Operatøren vælger at pause systemet igennem brugergrænsefladen. 
-	\begin{enumerate}[1.]
-	\item Sorteringsmekanismen stoppes midlertidigt, indtil systemet igen startes igennem brugergrænsefladen.
+\begin{enumerate}[\text{Undtagelse} 3:] 
+\item Systemet går i dvale, under indlæsningen. 
+	\begin{enumerate}[A]
+	\item Systemet indlæser listen af busruter færdig i baggrunden.
+	\item Hvis brugeren tilgår systemet igen og listen er hentet færdig, vil brugeren blive præsenteret for listen. Hvis listen endnu ikke er blevet indlæst, vil dette ske i forgrunden.
 	\end{enumerate}
 \end{enumerate}
-	
-\begin{enumerate}[\text{Undtagelse *} d:]
-	\item Der mistes forbindelse til databasen.
-		\begin{enumerate}[1.]
-		\item Systemet sørger for at gemme data/loggingindlæg og skrive dem til databasen, når forbindelsen er blevet genoprettet.
-	\end{enumerate}
-\end{enumerate}
-
-\begin{enumerate}[\text{Undtagelse 5} a:]
-	\item Der er ikke plads til klodsen i boksen for den til klodsen tilhørende materialetype.
-		\begin{enumerate}[1.]
-		\item Operatøren modtager en besked om, at der ikke er mere plads i kassen.
-		\item Robotarmen placere klodsen til højre for sensoren, så den kasseres, næste gang sorteringen startes.
-	\end{enumerate}
-\end{enumerate}
-
