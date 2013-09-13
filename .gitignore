@@ -4,6 +4,4 @@ $ cat .gitignore
 *.out
 *.synctex.gz
 *.toc
-
-
 Kravspec_main.pdf
