@@ -1,0 +1,98 @@
+\subsection{Use Case 7: Tilføj/Fjern/Ændre busruteplan}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er, at kunne tilføje, fjerne eller ændre en busruteplan. Med tilføjelse menes der, at en hel ny ruteplan bliver persisteret. Med fjernelse menes der, at en allerede persisteret rute bliver fjernet. Med ændring menes der, at der ændres i en allerede persisteret ruteplan.
+\\
+\\
+\textbf{Initiering:}
+\\
+Administratoren tilkendegiver over for systemet at han ønsker at lave ændringer i ruteplanen for en bus. Herefter bliver han stillet overfor valget, om han ønsker at tilføje en ny ruteplan, fjerne en allerede eksisterende ruteplan, eller ændre den eksisterende ruteplan.
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+\begin{itemize}
+\item Administrator.
+\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\
+\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Kommer Senere
+\end{itemize}
+\textbf{Startbetingelser:}
+\\
+Man skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
+\\
+\\
+\textbf{Slutresultat ved succes:}
+\\
+En ny busrute vil være tilføjet til listen over ruter og persisteret.\\
+En allerede persisteret busrute vil blive fjernet fra persisteringen og slettet.\\
+En allerede persisteret busrute vil blive ændret, og ændringerne på ruten vil blive persisteret.
+\\
+\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Den valgte busrute vil ikke blive opdateret. Hvis administratoren har lavet ændringer og trykker annuller eller lukker systemet, vil en meddelelse blive vist. Denne meddelelse spørger om der ønskes at gemmes før lukning.
+\\
+\\
+\textbf{Normalforløb A: Tilføjelse af busrute}
+	\begin{enumerate}
+	\item Administrator tilkendegiver overfor systemet, at der ønskes at tilføjes en busrute.
+	\item Et værktøj bliver præsenteret, hvor et tomt kort kan ses. Her kan der tilføjes en ny rute, med veje og busstoppesteder.
+	\item Administratoren skaber en rute.
+	\item Der tilkendegives overfor systemet, at ruten skal gemmes.
+	\item Den tilføjede rute persisteres.
+	\end{enumerate}
+	\textbf{Normalforløb B: Fjernelse af busrute}
+	\begin{enumerate}
+	\item Administrator tilkendegiver overfor systemet, at der ønskes at fjerne en allerede persisteret rute.
+	\item Det tilkendegives overfor systemet, at fjernelsen af ruten skal gemmes.
+	\item Den valgte rute fjernes fra persisteringen.
+	\end{enumerate}
+	\textbf{Normalforløb C: Ændring af busrute}
+	\begin{enumerate}
+	\item Administrator tilkendegiver over for systemet, at der ønskers at ændre en given busrute.
+	\item Et værktøj bliver præsenteret, med den valgte rute indtegnet. Her kan der tilføjes eller fjernes veje og busstoppesteder.
+	\item Administratoren ændrer ruten.
+	\item Der tilkendegives over for systemet, at ændringer skal gemmes.
+	\item Den ændrede rute persisteres.
+	\end{enumerate}
+\textbf{Undtagelser}
+	\begin{enumerate}[\text{Undtagelse 1}]
+
+	\item Administratoren annullerer ændringsprocessen, før tilføjelser, fjernelser eller ændringer er foretaget.
+		
+		\begin{enumerate}[A]
+		\item Der returneres til administrations-hovedskærmen.
+		\end{enumerate}
+	\end{enumerate}
+		\begin{enumerate}[\text{Undtagelse 2}]
+
+	\item Administratoren annullerer ændringsprocessen, efter tilføjelser, fjernelser eller ændringer er foretaget.
+		
+		\begin{enumerate}[A]
+		\item Administratoren bliver præsenteret for en meddelelse , hvori der bliver spurgt, om der vil gemmes eller ej.
+		\begin{enumerate}[1]
+		\item Hvis der ikke ønskes at gemmes, returneres der til administrations-hovedskærmen.
+		\item Hvis der ønskes at gemmes, bliver ændringerne persisteret. Herefter returneres der til administrations-hovedskærmen.
+		\end{enumerate}
+		\end{enumerate}
+	\end{enumerate}
+		\begin{enumerate}[\text{Undtagelse 3}]
+
+	\item Det er ikke muligt at persistere data.
+		
+		\begin{enumerate}[A]
+		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere ændret data.
+		\item Der returneres til det sted administratoren arbejdede, hvor de ændringer han har foretaget, stadig er tilstede.
+		\end{enumerate}
+	\end{enumerate}
+	
+
+

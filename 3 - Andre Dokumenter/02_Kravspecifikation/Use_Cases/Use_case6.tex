@@ -1,0 +1,61 @@
+\subsection{Use Case 6: Tilføj/fjern bus på/fra rute}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er at tilføje eller fjerne en bus på eller fra en valgt busrute.
+\\
+\\
+\textbf{Initiering:}
+\\
+Administratoren tilkendegiver over for systemet, at en bus ønskes tilføjes til- eller fjernes fra, en valgt busrute. 
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+	\begin{itemize}
+	\item Administrator.
+	\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Kommer senere
+\end{itemize}
+\textbf{Startbetingelser:}
+\\
+Man skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
+\\\\
+\textbf{Slutresultat ved succes:}
+\\
+Administratoren har tilføjet en bus til- eller fjernet en bus fra, en valgt busrute. Ændringerne vil være blevet persisteret.
+\\\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, hvad der gik galt.
+\\\\
+\textbf{Normalforløb A: Bus bliver tilføjet til rute}
+	\begin{enumerate}
+	\item Administratoren vælger en busrute fra listen af busruter.
+	\item Administratoren vælger en bus fra listen af tilgængelige busser.
+	\item Administratoren tilkendegiver over for systemet, at der ønskes at tilføje den valgte bus, til den valgte busrute.
+	\item Systemet persisterer ændringerne.
+	\end{enumerate}
+	\textbf{Normalforløb B: Bus bliver fjernet fra rute}
+	\begin{enumerate}
+	\item Administratoren vælger en busrute fra listen af busruter.
+	\item Administratoren vælger en bus fra listen af tilgængelige busser.
+	\item Administratoren tilkendegiver over for systemet, at der ønskes at fjerne den valgte bus, fra den valgte busrute.
+	\item Systemet persisterer ændringerne.
+	\end{enumerate}
+\textbf{Undtagelser}
+	\begin{enumerate}[\text{Undtagelse 1}]
+
+	\item Det er ikke muligt at persistere ændringerne.
+		
+		\begin{enumerate}[A]
+		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere ændret information.
+		\end{enumerate}
+	\end{enumerate}
+	
