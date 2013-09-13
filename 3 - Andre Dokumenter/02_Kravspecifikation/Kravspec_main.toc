@@ -11,20 +11,19 @@
 \contentsline {subsection}{\numberline {2.4}Brugerprofil}{10}{subsection.2.4}
 \contentsline {subsection}{\numberline {2.5}Krav til udviklingsforl\IeC {\o }bet}{10}{subsection.2.5}
 \contentsline {subsubsection}{\numberline {2.5.1}Obligatoriske udviklingsv\IeC {\ae }rkt\IeC {\o }jer}{10}{subsubsection.2.5.1}
-\contentsline {subsubsection}{\numberline {2.5.2}Gruppedefinerede udviklingsv\IeC {\ae }rkt\IeC {\o }jer}{10}{subsubsection.2.5.2}
+\contentsline {subsubsection}{\numberline {2.5.2}Gruppedefinerede udviklingsv\IeC {\ae }rkt\IeC {\o }jer}{11}{subsubsection.2.5.2}
 \contentsline {subsection}{\numberline {2.6}Foruds\IeC {\ae }tninger}{11}{subsection.2.6}
 \contentsline {section}{\numberline {3}Funktionelle krav - Use Cases}{12}{section.3}
-\contentsline {subsection}{\numberline {3.1}Use Case 1: Sorter klods}{13}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Use Case 1.1: M\r al og vej klods (Include)}{16}{subsection.3.2}
-\contentsline {subsection}{\numberline {3.3}Use Case 1.2: Bestem materialetype (Include)}{18}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Use Case 2: Programmer robot}{20}{subsection.3.4}
-\contentsline {subsection}{\numberline {3.5}Use Case 3: Rediger materialetype}{24}{subsection.3.5}
-\contentsline {subsection}{\numberline {3.6}Use Case 4: Tilg\r a log}{29}{subsection.3.6}
-\contentsline {subsection}{\numberline {3.7}Use Case 5: Test program}{32}{subsection.3.7}
-\contentsline {section}{\numberline {4}Eksterne gr\IeC {\ae }nseflader}{34}{section.4}
-\contentsline {subsection}{\numberline {4.1}Brugergr\IeC {\ae }nseflade}{34}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Hardware gr\IeC {\ae }nseflader}{35}{subsection.4.2}
-\contentsline {section}{\numberline {5}Kvalitetsfaktorer}{36}{section.5}
-\contentsline {section}{\numberline {6}Designkrav}{37}{section.6}
-\contentsline {section}{\numberline {7}\IeC {\O }vrige krav}{38}{section.7}
-\contentsline {section}{\numberline {8}Delleveringer}{39}{section.8}
+\contentsline {subsection}{\numberline {3.1}Use Case 1: Vis liste af Busruter}{12}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Use Case 2: F\r a placering af alle busser og stoppesteder p\r a valgt rute}{14}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Use Case 3: F\r a placering af enkelt bus.}{17}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Use Case 4: Tilf\IeC {\o }j/Fjern busrute til liste af favoritter}{19}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Use Case 5: Tilf\IeC {\o }j/fjern/\IeC {\ae }ndre information om bus}{21}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}Use Case 6: Tilf\IeC {\o }j/fjern bus p\r a/fra rute}{23}{subsection.3.6}
+\contentsline {subsection}{\numberline {3.7}Use Case 7: Tilf\IeC {\o }j/Fjern/\IeC {\AE }ndre busruteplan}{25}{subsection.3.7}
+\contentsline {section}{\numberline {4}Eksterne gr\IeC {\ae }nseflader}{28}{section.4}
+\contentsline {subsection}{\numberline {4.1}Brugergr\IeC {\ae }nseflade}{28}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Hardware gr\IeC {\ae }nseflader}{29}{subsection.4.2}
+\contentsline {section}{\numberline {5}Kvalitetsfaktorer}{31}{section.5}
+\contentsline {section}{\numberline {6}Designkrav}{32}{section.6}
+\contentsline {section}{\numberline {7}\IeC {\O }vrige krav}{33}{section.7}
