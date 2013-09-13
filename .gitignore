@@ -2,5 +2,5 @@ $ cat .gitignore
 *.aux
 *.log
 *.out
-*.synctex.z
+*.synctex.gz
 *.toc
