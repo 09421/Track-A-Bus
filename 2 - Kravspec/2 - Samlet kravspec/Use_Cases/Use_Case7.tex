@@ -1,12 +1,12 @@
-\subsection{Use Case 7: Tilføj/Fjern/Ændre busruteplan}
+\subsection{Use Case 7: Rediger busruteplan}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er, at kunne tilføje, fjerne eller ændre en busruteplan. Med tilføjelse menes der, at en hel ny ruteplan bliver persisteret. Med fjernelse menes der, at en allerede persisteret rute bliver fjernet. Med ændring menes der, at der ændres i en allerede persisteret ruteplan.
+Målet med denne Use Case er, at kunne rediger en busruteplan.
 \\
 \\
 \textbf{Initiering:}
 \\
-Administratoren tilkendegiver over for systemet at han ønsker at lave ændringer i ruteplanen for en bus. Herefter bliver han stillet overfor valget, om han ønsker at tilføje en ny ruteplan, fjerne en allerede eksisterende ruteplan, eller ændre den eksisterende ruteplan.
+Administratoren tilkendegiver over for systemet at han ønsker at lave ændringer i ruteplanen for en bus.
 \\
 \\
 \textbf{Aktører og interessenter:}
@@ -22,46 +22,44 @@ En samtidig forekomst.
 \\
 \textbf{Ikke funktionelle krav:}
 \begin{itemize}
-\item Kommer Senere
+\item TBD.
 \end{itemize}
 \textbf{Startbetingelser:}
 \\
-Man skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
+Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
 \\
 \\
 \textbf{Slutresultat ved succes:}
 \\
-En ny busrute vil være tilføjet til listen over ruter og persisteret.\\
-En allerede persisteret busrute vil blive fjernet fra persisteringen og slettet.\\
-En allerede persisteret busrute vil blive ændret, og ændringerne på ruten vil blive persisteret.
+Ændringer vil er blevet persisteret.
 \\
 \\
 \textbf{Slutresultat ved undtagelser:}
 \\
-Den valgte busrute vil ikke blive opdateret. Hvis administratoren har lavet ændringer og trykker annuller eller lukker systemet, vil en meddelelse blive vist. Denne meddelelse spørger om der ønskes at gemmes før lukning.
+Ændringer er ikke blevet persisteret.
 \\
 \\
 \textbf{Normalforløb A: Tilføjelse af busrute}
 	\begin{enumerate}
 	\item Administrator tilkendegiver overfor systemet, at der ønskes at tilføjes en busrute.
-	\item Et værktøj bliver præsenteret, hvor et tomt kort kan ses. Her kan der tilføjes en ny rute, med veje og busstoppesteder.
-	\item Administratoren skaber en rute.
-	\item Der tilkendegives overfor systemet, at ruten skal gemmes.
+	\item Systemet præsenter administratoren for et værktøj, hvor et tomt kort kan ses. Her her er det muligt at tilføje en ny rute, med veje og busstoppesteder.
+	\item Administratoren tilføjer en rute.
+	\item Administratoren tilkendegiver overfor systemet, at ruten skal gemmes.
 	\item Den tilføjede rute persisteres.
 	\end{enumerate}
 	\textbf{Normalforløb B: Fjernelse af busrute}
 	\begin{enumerate}
 	\item Administrator tilkendegiver overfor systemet, at der ønskes at fjerne en allerede persisteret rute.
-	\item Det tilkendegives overfor systemet, at fjernelsen af ruten skal gemmes.
-	\item Den valgte rute fjernes fra persisteringen.
+	\item Administratoren tilkendegiver overfor systemet, at fjernelsen af ruten skal gemmes.
+	\item Systemet fjerner den valgte rute persisteringen.
 	\end{enumerate}
 	\textbf{Normalforløb C: Ændring af busrute}
 	\begin{enumerate}
 	\item Administrator tilkendegiver over for systemet, at der ønskers at ændre en given busrute.
 	\item Et værktøj bliver præsenteret, med den valgte rute indtegnet. Her kan der tilføjes eller fjernes veje og busstoppesteder.
 	\item Administratoren ændrer ruten.
-	\item Der tilkendegives over for systemet, at ændringer skal gemmes.
-	\item Den ændrede rute persisteres.
+	\item Administratoren tilkendegiver over for systemet, at ændringer skal gemmes.
+	\item Systemet persister den ændrede rute.
 	\end{enumerate}
 \textbf{Undtagelser}
 	\begin{enumerate}[\text{Undtagelse 1}]

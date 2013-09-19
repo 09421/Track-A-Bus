@@ -1,12 +1,12 @@
-\subsection{Use Case 5: Tilføj/fjern/ændre information om bus}
+\subsection{Use Case 5: Rediger information om bus}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er at kunne tilføje,  fjerne eller ændre information om en bus i systemet.
+Målet med denne Use Case er at kunne rediger information om en bus i systemet.
 \\
 \\
 \textbf{Initiering:}
 \\
-Administratoren tilkendegiver over for systemet at han ønsker at tilføje, fjerne eller ændre informationen om en bus.
+Administratoren tilkendegiver over for systemet at han ønsker at rediger informationen om en bus.
 \\
 \\
 \textbf{Aktører og interessenter:}
@@ -21,15 +21,15 @@ En samtidig forekomst.
 \\\\
 \textbf{Ikke funktionelle krav:}
 \begin{itemize}
-\item Kommer senere
+\item TBD
 \end{itemize}
 \textbf{Startbetingelser:}
 \\
-Man skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
+Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
 \\\\
 \textbf{Slutresultat ved succes:}
 \\
-Administratoren har tilføjet, fjernet eller ændret informationen om en bus i systemet. Dette er blevet persisteret.
+Administratoren har redigeret informationen om en bus i systemet.
 \\\\
 \textbf{Slutresultat ved undtagelser:}
 \\
@@ -56,17 +56,14 @@ Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, 
 	\end{enumerate}
 \textbf{Undtagelser}
 	\begin{enumerate}[\text{Undtagelse 1}]
-
-	\item Det er ikke muligt at persistere information.
-		
-		\begin{enumerate}[A]
+	\item Det er ikke muligt at persistere information.		
+		\begin{enumerate}[1.]
 		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere ændret information.
 		\end{enumerate}
 	\end{enumerate}
 		\begin{enumerate}[\text{Undtagelse 2}]
-
 	\item Det er ikke muligt at få adgang til persisteret information.
-		\begin{enumerate}[A]
+		\begin{enumerate}[2.]
 		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at indlæse persisteret information.
 		\end{enumerate}
 	\end{enumerate}

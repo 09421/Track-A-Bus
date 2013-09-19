@@ -1,12 +1,12 @@
-\subsection{Use Case 6: Tilføj/fjern bus på/fra rute}
+\subsection{Use Case 6: Rediger bus på rute}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er at tilføje eller fjerne en bus på eller fra en valgt busrute.
+Målet med denne Use Case er at rediger en bus på en valgt busrute.
 \\
 \\
 \textbf{Initiering:}
 \\
-Administratoren tilkendegiver over for systemet, at en bus ønskes tilføjes til- eller fjernes fra, en valgt busrute. 
+Administratoren tilkendegiver over for systemet, at en bus ønskes redigeres, på en valgt busrute. 
 \\
 \\
 \textbf{Aktører og interessenter:}
@@ -21,7 +21,7 @@ En samtidig forekomst.
 \\\\
 \textbf{Ikke funktionelle krav:}
 \begin{itemize}
-\item Kommer senere
+\item TBD
 \end{itemize}
 \textbf{Startbetingelser:}
 \\
@@ -29,7 +29,7 @@ Man skal have administrator rettigheder, for at kunne tilgå denne del af systeme
 \\\\
 \textbf{Slutresultat ved succes:}
 \\
-Administratoren har tilføjet en bus til- eller fjernet en bus fra, en valgt busrute. Ændringerne vil være blevet persisteret.
+en valgt busrute er blevet redigeret på en rute.
 \\\\
 \textbf{Slutresultat ved undtagelser:}
 \\
@@ -54,7 +54,7 @@ Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, 
 
 	\item Det er ikke muligt at persistere ændringerne.
 		
-		\begin{enumerate}[A]
+		\begin{enumerate}[1.]
 		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere ændret information.
 		\end{enumerate}
 	\end{enumerate}
