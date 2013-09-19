@@ -1,10 +1,10 @@
-\subsection{Use Case 4: Tilføj/Fjern busrute til liste af favoritter}
+\subsection{Use Case 4: Tilføj/Fjern busrute favoritter}
 \textbf{Mål:}
 \\
 Målet med denne Use Case er at tilføje eller fjerne en busrute fra listen af favoriserede busruter.
 \\\\
 \textbf{Initiering:}\\
-Brugeren tilkendegiver overfor systemet, der den valgte rute ønskes favoriseret / ikke længere favoriseret.
+Brugeren tilkendegiver overfor systemet, at den valgte rute ønskes favoriseret / ikke længere favoriseret.
 \\\\
 \textbf{Aktører og interessenter:}
 \\
@@ -18,7 +18,7 @@ En samtidig forekomst.
 \\\\
 \textbf{Ikke funktionelle krav:}
 	\begin{itemize}
-	\item Kommer senere.
+	\item TBD
 	\end{itemize}
 \textbf{Startbetingelser:}
 \\
@@ -26,35 +26,34 @@ Normalforløbet for Use Case 1 skal være fuldendt.
 \\\\
 \textbf{Slutresultat ved succes:}
 \\
-Den valgte busrute vil være blevet tilføjet til, eller fjernet fra, listen af favoriserede busruter.
+Listen af favoriserede busruter vil være blevet opdateret.
 \\\\
 \textbf{Slutresultat ved undtagelser:}
 \\
-Ingen busrute er tilføjet eller fjernet og brugeren er blevet præsenteret for en fejlmeddelelse, der informerer om, hvad der gik galt .
-Hvis systemet går i dvale eller processen stoppes, vil den valgte rute stadig tilføjes til eller fjernes fra listen af favoriserede ruter. 
+Listen af favoriserede busruter vil være blevet opdateret.
 \\\\
 \textbf{Normalforløb 1 - Tilføjelse:}
 	
 	\begin{enumerate}
-	\item Den valgte busrute, og dennes stoppesteder indlæses.
-	\item Den valgte busrute, og dennes stoppesteder persisteres.
-	\item Der markeres på listen af busruter, at den valgte rute nu er favoriseret.
-	\item Listen over favoriserede busruter på hovedskærmen opdateres.
+	\item Systemet indlæser den valgte busrute, og dennes stoppesteder fra distribueret persisterede data.
+	\item Systemet persisterer den valgte busrute, og dennes stoppesteder lokalt.
+	\item Systemet markere på listen af busruter, at den valgte rute nu er favoriseret.
+	\item Systemet opdaterer listen over favoriserede busruter på hovedskærmen .
 	\end{enumerate}
 	\textbf{Normalforløb 1 - Fjernelse:}
 	
 	\begin{enumerate}
-	\item Den valgte busrute, og dennes stoppesteder persisteres ikke længere.
-	\item Der markeres på listen af busruter, at den valgte rute nu ikke længere er favoriseret.
+	\item Systemet persisterer ikke længer den valgte busrute, og dennes stoppesteder lokalt.
+	\item Systemet markerer på listen af busruter, at den valgte rute nu ikke længere er favoriseret.
 	\item Listen over favoriserede busruter på hovedskærmen opdateres.
 	\end{enumerate}
 \textbf{Undtagelser}
 
 	\begin{enumerate}[\text{Undtagelse 1}]
 
-	\item Brugeren annullerer eller sættes i dvale, under tilføjelse eller fjernelse af favorisering.
+	\item Brugeren annullerer processen eller sætter den i dvale , under tilføjelse eller fjernelse af favorisering.
 		
-		\begin{enumerate}[A]
+		\begin{enumerate}[1.]
 		\item Normalforløbet gøres færdig i baggrunden.
 		\end{enumerate}
 	\end{enumerate}
