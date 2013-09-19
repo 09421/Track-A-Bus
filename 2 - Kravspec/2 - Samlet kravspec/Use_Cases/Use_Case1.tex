@@ -1,12 +1,12 @@
 \subsection{Use Case 1: Vis liste af Busruter}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er at få vist en liste af alle persisterede busruter. 
+Målet med denne Use Case er at få vist alle distribuerede persisterede busruter. 
 \\
 \\
 \textbf{Initiering:}
 \\
-Brugeren tilkendegiver over for systemet, at han ønsker at få vist en liste af alle persisterede busruter. 
+Brugeren tilkendegiver over for systemet, at han ønsker at få vist alle distribuerede persisterede busruter. 
 \\
 \\
 \textbf{Aktører og interessenter:}
@@ -22,31 +22,27 @@ En samtidig forekomst.
 \\
 \textbf{Ikke funktionelle krav:}
 \begin{enumerate}
-\item Mere kommer senere
+\item TPD.
 \end{enumerate}
 \textbf{Startbetingelser:}
 \\
-Programmet er startet op, og brugeren står ved startskærmen.
+Programmet er startet op, og brugeren står ved startskærmen.(Se figur \ref{fig:MainScreen})
 \\
 \\
 \textbf{Slutresultat ved succes:}
 \\
-Brugeren får vist en liste over alle persisterede busruter. 
+Brugeren får vist en liste over alle distribuerede persisterede busruter.(Se figur \ref{fig:RouteListScreen})
 \\
 \\
 \textbf{Slutresultat ved undtagelser:}
 \\
-Klodsen er ikke blevet lagt i et rum, hvori materialetypen ikke tilhører.
-\\
-Brugeren bliver præsenteret for en fejlmeddelelse, der informerer om, at det ikke var muligt at tilgå persisteret data. Desuden får brugeren en kort beskrivelse af, hvad der gik galt.
-Hvis systemet går i dvale, vil listen blive indlæst færdig i baggrunden. 
+Brugeren får vist startskærmen.
 \\
 \\
 \textbf{Normalforløb:}
 
 \begin{enumerate}
-\item Brugeren tilkendegiver over for systemet, at han ønsker at blive vist listen af busruter.
-\item Systemet tilgår persisteret data, og henter listen af busruter.
+\item Systemet tilgår distribueret persisteret data, og henter busruterne.
 \item Systemet præsenterer brugeren overfor listen af busruter.
 \end{enumerate}
 \textbf{Undtagelser:}
@@ -54,7 +50,7 @@ Hvis systemet går i dvale, vil listen blive indlæst færdig i baggrunden.
 \item Persisteret data kan ikke tilgås.
 
 	\begin{enumerate}[A]
-	\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at indlæse listen af busruter.
+	\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at indlæse busruterne.
 	\item Systemet returnerer til startskærmen.
 	\end{enumerate}
 \end{enumerate}
@@ -70,7 +66,6 @@ Hvis systemet går i dvale, vil listen blive indlæst færdig i baggrunden.
 \begin{enumerate}[\text{Undtagelse} 3:] 
 \item Systemet går i dvale, under indlæsningen. 
 	\begin{enumerate}[A]
-	\item Systemet indlæser listen af busruter færdig i baggrunden.
-	\item Hvis brugeren tilgår systemet igen og listen er hentet færdig, vil brugeren blive præsenteret for listen. Hvis listen endnu ikke er blevet indlæst, vil dette ske i forgrunden.
+	\item Systemet indlæser busruterne færdig i baggrunden.
 	\end{enumerate}
 \end{enumerate}
