@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+test
+=======
+æliahsflæhwqoiæhyrfewqæoi
+>>>>>>> ff58806106e7cd1cd78c58d54d0614ee4a64b224
+
+
+asdawdad test

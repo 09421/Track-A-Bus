@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+
+    
+       <ProgressBar
+            android:id="@+id/PBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    <ListView 
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#000000"
+        android:clickable="true"
+        android:layout_gravity="center"
+        android:textAlignment="center"/>
+    
+    
+  <!-- <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+   	<ToggleButton
+	    android:id="@+id/FavoriteToggle"
+	    android:background="@drawable/btn_toggle_bg"
+	    style="@style/OurThemeName"
+	    android:checked="true"	    
+	    android:layout_width="30dp"
+	    android:layout_height="30dp"
+	    android:layout_gravity="right"
+	    android:gravity="right"
+	    android:focusable="false"/>
+   	
+   	<TextView
+        android:id="@+id/tv_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="5dp" />
+   	    
+   </RelativeLayout> -->
+    
+
+</LinearLayout>
