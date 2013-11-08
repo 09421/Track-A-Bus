@@ -1,0 +1,110 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Data model}
+
+En kritisk del af dette system er data storage og data retrieval. Dette er blevet implementeret i form af to relationelle databaser; en distribueret og en lokal.\\
+Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \hyperref{"www.unoeuro.com"}
+Den distribuerede database er lavet som en MySQL databas
+
+%Til dette projekt er der blevet gjort brug af en relationel database til brug af persistent data lagring. 
+%Selve databasen er lavet med MS SQL Server og oprettet på webhotel10.iha.dk. Diagrammer kan findes i fuld størrelse under Diagrammer/Database Diagrammer
+
+\subsubsection{Design af database}
+
+Hoved komponenten i datalagringen i dette projekt består i, at gemme data om en klods, og linke den til en position i en boks samt en densitet/materiale. Hertil består persisteringen også af brugernavne og loggingindlæg. På figur \ref{fig:DBUML} ses et UML OO diagram over databasen 
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over databasen}
+\label{fig:DBUML}
+\end{figure}
+
+\noindent
+
+Som man kan se, har et indlæg i BrickTable (Hvor klodsernes beskrivelse ligger) en foreign key til BoxPositionTable (Hvor klodserne ligger) samt DensityMaterialTable(Hvor klodsernes densitet er beskrevet). UserTable(Hvor information om brugere af systemet ligger) og LoggingTable(Hvor alle system events gemmes) havde en relation i de første sprints, hvor LoggingTable havde en foreign key til UserTable, men dette blev kasseret da vi indså, at man i så fald ikke kunne fjerne en bruger fra systemet uden at slette alle brugerens logging indlæg. På figur \ref{fig:DBER} ses et ER diagram over databasen
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/ER_Diagram.png}
+\caption{ER Diagram over databasen}
+\label{fig:DBER}
+\end{figure}
+
+
+Vi har udelukkende en-til-mange forhold i systemet, da flere klodser kan ligge i en kasse, men en klods kan ikke ligge i flere kasser. En Klods har desuden kun 1 densitet, men flere klodser kan godt have samme densitet.\\
+Databasen er på anden normalform da vi ikke har nogen composite keys. Der eksisterer dog transitive afhængigheder så den ikke er på tredje normalform. I BrickTable er Volume transitivt afhængig af Height, Length og Width. Det er dog blevet valgt, at databasen kun skal være på anden normalform, og databasen overholder derfor kravende.
+
+\subsubsection{Triggers og stored procedures}
+Til implementeringen blev der lavet flere triggers og en funktion.\\\\
+
+\textbf{Triggers:}\\
+Flere tabeller er blevet lavet ved hjælp af en identity column som primary key. Dette skaber visse problemer i tabellen, navnligt når man prøver at slette en række fra databasen. En delete statement vil lave et hul i primary key kolonnen som ikke er synderligt kønt, og det er ikke muligt at lave en update statement på kolonnen, da det ikke kan gøres på identity kolonne. Der må insertes hvis man midlertidigt slår identity insert til, så ved hjælp af en on delete trigger blev det gjort muligt at lave en update on delete trigger. På kodeudsnit \ref{lst:SqlTriggerCode} set et kodeudsnit for en update on delete trigger på LoggingTable
+
+\begin{lstlisting}[caption=SQL trigger for update af en identity kolonne, label={lst:SqlTriggerCode}]
+Create trigger [dbo].[LoggingTrigger]
+ON [dbo].[LoggingTable]
+FOR Delete	
+as
+
+Declare @DeletedID bigint
+Declare @TempTable Table (ID bigint, msg varchar(500), lvl nchar(50), ltime nchar(50), ldate nchar(50), luser nchar(50))
+Declare @Reseed int
+Set @DeletedID = (Select MIN(PK_LogID) From deleted)
+
+Insert into @TempTable select * from LoggingTable where PK_LogID > @DeletedID
+update @TempTable set ID = ID - 1
+delete from LoggingTable where PK_LogID > @DeletedID
+
+SET IDENTITY_INSERT LoggingTable ON
+insert into LoggingTable (PK_LogID,LogMessage,LogLevel,LogTime,LogDate,LogUserName) select * from @TempTable
+
+SET IDENTITY_INSERT LoggingTable OFF
+set @Reseed = (Select MAX(PK_LogID) from LoggingTable)
+if @Reseed >= 0
+	dbcc checkident(LoggingTable, reseed, @Reseed)
+else 
+	dbcc checkident(LoggingTable, reseed, 0)
+GO
+\end{lstlisting}
+
+\noindent
+Det første der sker efter erklæringen af variable er at DeletedID bliver sat til den mindste PKLogID af deleted. Deleted er en tabel der indeholder det slettede data. Herefter bliver alle rækker der har et større PKLogID end DeleteID, dvs alle rækker efter de slettede, sat ind i en midlertidig tabel. Så inkrementeres PKLogID i den midlertidige tabel med en, hvorefter alle rækker med større indlæg end de slettede, slettes fra tabellen. Så enables indsætning på en identity kolonne og den midlertidige tabel indsættes i LoggingTable. Identity reseedes til sidst til den største værdi af PKLogID i tabellen. Hvis tabellen er tom reseedes der til nul. Med dette er der blevet opnået en update statement på en identity kolonne. Dette sker ved samtlige tabeller der har en identity kolonne. \\
+Triggeren for BrickTable har dog et par tilføjelser. Når man sletter en klods så er det ikke nok bare at slette klodsen og opdatere primary key'en. Den række i BoxPositionTable som BrickTable refererer til skal også slettes og opdateres. Dette gøres ved at gemme foreign keyen over til BoxPositionTable fra det slettede, indsætte et dummy indlæg i BoxPositionTable og derefter slette den række som den slettede BrickTable række refererede til. Herefter slettes den række der har en primary key der stemmer overens med den slettede foreign key fra BrickTable, hvilket vil køre BoxPositionTable update on delete trigger. BrickTables update on delete fortsætter, og til sidst trækkes der en fra BoxPositionTables foreign key i BrickTable og dummy rækken i BoxPositionTable slettes. \\\\
+
+\noindent
+\textbf{Functions:} \\
+Den måde databasentilgangen er lavet på gør, at generel tilgang kan laves med funktioner på C\# siden, men der er et enkelt sted hvor det er nødvendigt at bruge en lang join funktion. Denne funktion er specifik for denne join, dvs. tabeller og kolonner er hardcodet ind i join funktionen på sql-siden. På kodeudsnit \ref{lst:SqlFunctionCode} ses koden bag funktionen. Den skal bruges fordi data om klodsen (ie. Densitet og placering i boksen) gemmes i andre tabeller end klodstabellen. 
+
+\begin{lstlisting}[caption=SQL funktion for inner join for brick data, label={lst:SqlFunctionCode}]
+create function [dbo].[GetTotalBrickData]()
+returns @ReturnTable table
+(
+BoxColumn bigint, ColumnPosition bigint, Length float,
+Height float, Width float, BrickVolume float,
+BrickMass float, Material nchar(50), Density float
+)
+as
+begin
+insert @ReturnTable
+SELECT
+BoxPositionTable.BoxCollumn, BoxPositionTable.ColumnPosition, 
+BrickTable.Length, BrickTable.Height, BrickTable.Width,
+BrickTable.BrickVolume, BrickTable.BrickMass,
+DensityMaterialsTable.Material, DensityMaterialsTable.Density
+
+FROM BoxPositionTable
+INNER JOIN BrickTable ON 
+BoxPositionTable.PK_BoxPositionID = BrickTable.FK_BoxPositionID 
+INNER JOIN DensityMaterialsTable ON 
+BrickTable.FK_DensityID = DensityMaterialsTable.PK_DensityID    
+                
+Return                     
+end            
+GO
+
+\end{lstlisting}
+Denne funktion skal bruges ved visning af data om en klods på systemets GUI. Der skal altså bruges data fra flere tabeller end en, og frem for at lave flere select statements i træk, blev det valgt at lave en specifik funktion til at håndtere denne datahentning.
+
+\end{document}

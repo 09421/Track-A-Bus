@@ -1,0 +1,213 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\newpage
+
+\subsubsection{Komponent 7: GUI/MVVM}
+Denne komponent er en implementering af Præsentationspakken beskrevet i afsnit 5. Komponenten består af 3 dele: Viewet, ViewModellen og tildels Modellen. Den er baseret på MVVM, beskrevet under afsnit 10.2.
+Den grundlæggende struktur er som følger:
+\begin{figure}[H]
+\includegraphics[scale=0.6]{Billeder/MVVMArkitektur.png} 
+\caption{Opbygningen af MVVM. Både view, viewmodel og model afspejles direkte i koden}
+\end{figure}
+\textbf{View}
+Selve view fremgår i koden som XAML-dokumenterne der beskriver de forskellige vinduers udseende. Altså definerer view kun vinduers grafiske repræsentation, og ikke den bagvedliggende logik. View'et er bundet med binding via propperties og commands til viewmodellen.
+Nedenstående eksempel viser hvordan en del af viewet er lavet, de to billeder viser en del af GUI'en alt efter man er logget ind som "programmer" eller "operator". Det ses at der står henholdsvis 'Admin Permissions:' 'Granted' eller 'Not Granted'. Ligeledes er det heller ikke muligt at trykke på knappen 'Edit Conveyor belt position'.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 1, trim = 0mm 0mm 75mm 85mm, clip]{Billeder/Brugergrenseflade/MenuWindow_Programmer.png}
+\caption{MenuWindow udsnit fra programmer rettigheder}
+\label{fig:MenuWindow_ProgrammerUDSNIT}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale = 1, trim = 0mm 0mm 75mm 85mm, clip]{Billeder/Brugergrenseflade/MenuWindow_Operator.png}
+\caption{MenuWindow udsnit fra operator rettigheder}
+\label{fig:MenuWindow_OperatorUDSNIT}
+\end{figure}
+
+Kodeudsnit \ref{lst:ViewAdminPermissions} viser hvordan koden for 'Admin Permissions' er lavet i view'ets XAML kode. Her er TextBlock'ens text opkoblet 'bindet' til en TextBlockken 'AdminPermissionsItem' i viewmodellen.
+
+\begin{lstlisting}[caption=ViewAdminPermissions, label={lst:ViewAdminPermissions}]
+	<TextBlock 	Text="Admin Permissions:  " />
+	<TextBlock 	Text="{Binding Path=AdminPermissionsItem.Text}" 
+				Foreground="{Binding Path=AdminPermissionsItem.Foreground}"/>
+\end{lstlisting}
+
+Kodeudsnit \ref{lst:ViewConveyerBelt} viser hvordan decideret metoder bliver kaldt oppe fra præsentationslagets view og ned af i viewmodellen, her er viewet bundet til en Command i viewmodellen.
+
+\begin{lstlisting}[caption=ViewConveyerBelt, label={lst:ViewConveyerBelt}]
+	<Button 
+		Command="{Binding Path=ConveyerBelt}" 
+		Content="Edit Conveyor belt position" >
+		<Button.ToolTip>
+			<TextBlock Text="Here the user is able to change the position of the elements in the system" />
+		</Button.ToolTip>
+	</Button>
+\end{lstlisting}   
+
+\textbf{Viewmodel}
+Viewmodellens opgave er at omforme modellen så den passer til viewet. Ambitionen er at man umiddelbart kan skifte viewet udelukkende ved at fortage ændringer i viewmodellen. Implementerinsmæssigt er der lavet en viewmodel for hvert vindue, denne indeholder en række properties og relaycommands, som kalder ned i modellen. Viewmodellerne bliver oprettet og nedlagt som der skiftes view. Alle controls fra View bindes til viewmodellen. Dog indeholder viewmodellen ingen reel data, men fungerer kun som en slags adapter, der returnere public properties fra modellen. Implementeringen af INotifyPropertyChanged/RaisePropertyChanged og Relaycommands er hentet fra galasoft MVVM-light toolkittet.\\
+
+Kodeudsnit \ref{lst:ViewModelConstructoren} viser kort hvordan der kaldes videre ned i modellen. Her sættes Acess variablen, som senere bliver set på om hvorvidt man har rettighederne til diverse ekstra funktioner. Kodeudsnit \ref{lst:ViewModelAdminRights} viser hvordan TextBlocken fra før bliver sat alt efter om brugeren har rettigheder, ligeledes bestemmes det om brugeren kan trykke på ConyeverBelt knappen eller ej.
+
+\begin{lstlisting}[caption=ViewModelConstructoren, label={lst:ViewModelConstructoren}]
+public MenuViewModel() // Constructoren
+{
+	model = new MenuModel();
+	Acess = model.Privileges(); // Model funktionen kalder ned i databasen.
+	AdminRights();
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=ViewModelAdminRights, label={lst:ViewModelAdminRights}]
+private void AdminRights()
+{
+	if (Acess == "A") // Admin/Programmer Permissions
+	{
+		ConyeverBeltButtonIsEnabled = true;
+		AdminPermissionsItem.Text = "Granted";
+		AdminPermissionsItem.Foreground = Brushes.Green;
+	}
+	else if (Acess == "U") // User/Operator Permissions
+	{
+		ConyeverBeltButtonIsEnabled = false;
+		AdminPermissionsItem.Text = "Not Granted";
+		AdminPermissionsItem.Foreground = Brushes.Red;
+	}
+}
+\end{lstlisting}
+
+Her, \ref{lst:ViewModelAdminPermissionsItem}, er selve propertien viewet binder til i viewmodellen, når denne ændres kaldes som sagt en RaisePropertyChanged der får viewet til at opdatere ændringerne.
+
+\begin{lstlisting}[caption=ViewModelAdminPermissionsItem, label={lst:ViewModelAdminPermissionsItem}]
+private TextBlock _AdminPermissionsItem;
+public TextBlock AdminPermissionsItem 
+{
+	get { return _AdminPermissionsItem; }
+	set
+	{
+		_AdminPermissionsItem = value;
+		RaisePropertyChanged("AdminPermissionsItem");
+	}
+}
+\end{lstlisting}
+
+Nedenstående kodeudsnit \ref{lst:ViewModelICommandConyeverBelt} er den Command som view knappen 'ConyeverBelt' er bundet til. Det er kun muligt at trykke på denne knap hvis man har administratorrettigheder. Dette ses i funktionen ConyeverBeltCanExecute() der tjekker på om ConyeverBeltButtonIsEnabled er sand, denne variable sættes jo som vist i det foregående kodeudsnit \ref{lst:ViewModelAdminRights}
+
+\begin{lstlisting}[caption=ViewModelICommandConyeverBelt, label={lst:ViewModelICommandConyeverBelt}]
+void ConyeverBeltExecute()
+{
+	Messenger.Default.Send(new NotificationMessage("ConveyorBeltWindow"));
+}
+       
+bool ConyeverBeltCanExecute()
+{
+	if (ConyeverBeltButtonIsEnabled)
+		return true;
+	return false; // Else
+}
+
+public ICommand ConveyerBelt
+{
+	get{return new RelayCommand(ConyeverBeltExecute,ConyeverBeltCanExecute);}
+}
+\end{lstlisting}
+
+For at få åbnet det nye vindue 'ConveyorBeltWindow' når der trykkes på knappen 'Edit Conveyor belt position' er det nødvendigt, at sende en besked op til View-lagets code-behind. Det sker i funktionen ConyeverBeltExecute(), ses i kodeudsnit \ref{lst:ViewModelICommandConyeverBelt}. Det er det såkaldte Mediator mønster. Udsnittet \ref{lst:ViewNotification} viser Code-behind fra menuvinduet, hvor NotificationMessage modtages, hvorpå der det nye vindue åbnes, samt det gamle vindue lukkes.
+
+\begin{lstlisting}[caption=ViewNotification, label={lst:ViewNotification}]
+Messenger.Default.Register<NotificationMessage>(this, ConveyorBeltPositionNotficationMessageReceived);
+private void ConveyorBeltPositionNotficationMessageReceived(NotificationMessage msg)
+{
+	if(msg.Notification == "ConveyorBeltWindow")
+	{
+		var conveyorbeltwindow = new ConveyerBeltWindow();
+		conveyorbeltwindow.Show(); // Åbner conveyorbeltwindow
+		Close(); // Lukker menuVinduet
+		Messenger.Default.Unregister(this); // Sletter beskeden.
+	}
+}
+\end{lstlisting}
+
+        
+\textbf{Model}
+Modellen er den egentlige dataklasse. Der er lavet en modelklasse for hvert view. På den måde er data grupperet efter hvilket vindue de skal vises i. Dog er der data der skal optræde i hvert view, og derfor er der lavet en overliggende modelklasse, placeret i App-klassen, som alle viewmodeller kan tilgå. Dette sikrer, at redundant data undgåes. Der er en væsentlig forskel fra illustrationen og til vores implementering. Modellen indeholder nemlig også alt GUI-nær logik. Det betyder at commands i viewmodellen kalder gennem modellen til Business Layer. Altså har viewmodellen ikke direkte fat Business Layer (Dette gælder med henblik på figuren. i forhold til hele systemet kan modellen betragtes som en del af Business layer).
+
+Model-laget for Menu-vinduet er ikke synderligt stort. Det kalder blot ned i forretningslogikken i den store hoved 'Model' klasse der binder alle de forskellige komponenter der hører til projektet. Her ses et kodeudsnit af Menumodellen, \ref{lst:MenuModel}, der tjekker på om en property er 'Admin' eller 'User' ned i hoved model-klassen.
+
+\begin{lstlisting}[caption=MenuModel, label={lst:MenuModel}]
+public class MenuModel
+{
+	Model model = (Application.Current as GUI.App).model;
+
+	public string Privileges()
+	{
+		if (model.isAdminRightsGranted == "A")
+			return "A";
+		if (model.isAdminRightsGranted == "U")
+			return "U";
+		return null;
+	}
+}
+\end{lstlisting}
+
+Hoved Model-klassens property sættes i Login skærmens model-klasse.
+Så for en ordens skyld er koden for login her, \ref{lst:Login}:
+
+\begin{lstlisting}[caption=Login, label={lst:Login}]
+public bool Login()
+{
+	if (UserName != null || Password != null)
+	{
+		if (UserName.Length >= 1 && Password.Length >= 1)
+		{
+			bool isTrue = VertifyPassword(UserName, Password);
+			if (isTrue) // At man har rettigheder
+			{ // Her bestemmes så HVILKE rettigheder man har.
+				m_model.isAdminRightsGranted = VertifyAdminRights(UserName);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=VertifyPassword, label={lst:VertifyPassword}]
+public bool VertifyPassword(string userName, string password)
+{
+	// Password hentes fra DB ved at slå op under brugernavnet
+	Message getPassMsg = new Message(Operations.Select, Tables.User, UserColumns.PK_UserName.ToString(), userName, UserColumns.Password.ToString()); //message oprettes
+	MsgQueue.SingletonMsgQueue.EnQueuer(getPassMsg); // Message indsættes i køen
+	m_model.observer.WaitSem(); // Der ventes
+
+	if (m_model.observer.RetrievedItemsList.Count == 0)
+		return false;
+	if (password == m_model.observer.RetrievedItemsList.First())
+		return true;
+	return false;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=VertifyAdminRights, label={lst:VertifyAdminRights}]
+public string VertifyAdminRights(string userName)
+{
+	// Password hentes fra DB ved at slå op under brugernavnet
+	var getPassMsg = new Message(Operations.Select, Tables.User, UserColumns.PK_UserName.ToString(), userName, UserColumns.User_Privileges.ToString()); //message oprettes
+	MsgQueue.SingletonMsgQueue.EnQueuer(getPassMsg); // Message indsættes i køen
+            
+	m_model.observer.WaitSem(); // Der ventes
+
+	if ("A" == m_model.observer.RetrievedItemsList.First())
+		return "A";
+	if ("U" == m_model.observer.RetrievedItemsList.First())
+		return "U";
+	else
+		return null;
+}
+\end{lstlisting}
+
+
+\end{document}

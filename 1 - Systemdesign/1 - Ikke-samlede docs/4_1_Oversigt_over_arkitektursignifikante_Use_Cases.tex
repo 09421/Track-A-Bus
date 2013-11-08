@@ -1,0 +1,45 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Oversigt over arkitektursignifikante Use Cases}
+I dette afsnit er de enkelte Use Cases præsenteret. Use casene beskriver udelukkende mobil applikationen samt det online adminstrations værktøj. Den distribuerede database, den lokale database, samt simuleringsværktøjet anses som interresanter for systemet, men indgår ikke som aktører. De beskrives senere i \textit{afsnit 9.2 Implementering af persistens}
+\\
+Use Casene i systemet er som følgende:
+\begin{itemize}
+	\item Use Case 1: Vis Busruter
+	
+	\item Use Case 2: Vis Placering af alle busser og stoppesteder på 		valgt rute
+
+	\item Use Case 3: Vis placering af enkelt bus
+	
+	\item Use Case 4: Rediger busrute i liste af favoriter
+	
+	\item Use Case 5: Rediger information om bus
+	
+	\item Use Case 6: Rediger bus på rute
+	
+	\item Use Case 7: Rediger busruteplan
+\end{itemize}
+
+Use case diagram kan findes i bilag under Diagrammer/Use Case Diagram
+
+
+\begin{figure}[H]%[htbp]
+\centering
+\includegraphics[scale = 0.5]{Diagrammer/Use_Case_Diagram.jpg}
+\caption{Use Case diagram}
+\label{fig:UseCaseDia}
+\end{figure}
+
+Som det fremstår af Use Case diagrammet, figur \ref{fig:UseCaseDia}, er der udelukkende to aktører; brugeren og administratoren. Selvom samtlige Use Cases kommunikerer med den distribuerede databasen, er det blevet vedtaget, at databasen blot er en interresant og ikke en sekundær aktør.
+\\
+Use Case 1 til 4 er relateret til mobil applikationen og er derfor initieret af brugeren. Ligeledes er Use case 5 til 7 relateret til server-side operationer og således initieret administratoren. Brugeren kan kun tilgå databasen i læsnings-øjemed, mens administratoren både kan skrive og læse. Brugerne kan dog, hvis han ønsker, gemme dele af læst data lokalt. Use Cases for brugeren er derfor mere visuelle, end de er redigerende, hvor Use cases for administratoren er meget mere redigerende. Der er intet overlap mellem administratoren og brugern, således at den grafiske brugergrænseflade for administratoren skal udelukkende bruges af administratoren. \\\\ 
+Brugeren skal kun tilgå mobil applikationen. Brugeren og administratorens Use Cases er derfor tæt koblet til deres respektive grafiske brugergrænseflade, da alle Use Cases initieres igennem disse. Eksempler på dette kan ses i \textit{afsnit 3.4 Grænseflader til person aktører}
+
+
+%Som det fremgår af Use Case diagrammet, figur 13,  er der to primære aktører, operatøren og programmøren, mens forskellige hardware (vægt, robotarm og Transportbåndssensor) og softwareenheder (database) indgår som sekundære aktører.
+%\\
+%Ligeledes kan det ses, at systemet har fem Use Cases. \textit{Use Case 1: Sorter Klods} er initialiseret af operatøren, mens \textit{Use Case 2: Programmer robot, Use Case 3: Rediger materialetype} og \textit{Use Case 5: Test Program} er initialiseret af programmøren. Det skal nævnes at et af normalforløbene i\textit{ Use Case 2: Programmer robot} også kan initialiseres af operatøren. \textit{Use Case 4: Tilgå log} kan både initialiseres af operatøren og af programmøren, da de begge kan have behov for at se, hvad sker i systemet. Include Use Casene til \textit{Use Case 1: Sorter klods} initieres gennem \textit{Use Case 1: Sorter klods}, da de blot er en hjælp til at få en klods sorteret.
+%\\\\
+%Alle Use Casene har en tæt relation til brugergrænsefladen, og de fleste bliver initieret gennem denne, så hvis det ønskes at se eksempler på dette, henvises til \textit{afsnit 3.4 Grænseflader til eksterne softwareaktører}, hvor selve brugergrænsefladen præsenteres og beskrives.
+\end{document}

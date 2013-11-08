@@ -1,0 +1,25 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 1.1: Mål og vej klods realisering}
+
+Mål og vej klods Use Casen er realiseret på sådan en måde, at systemet kalder ned i Data access layer som muliggør kommunikation til robot dll'en. Her benytter den funktionen GetJaw(), hvorpå den får robotarmens klo aktuelle millimeter afstand. Denne funktion udføres tre gange for at få samtlige sider på klodsen. 
+Klodsen placeres ydermere på vægten, hvor systemet henter klodsens vægt via Data access layer. Denne gang er det GetWeight() funktionen der kaldes. Her opnås den nuværende vægt. GetWeight() fungere ved at sende et kald ned til microcontrolleren der får denne til at konvenerer den pågældende spænding fra strain-gauge-vægten til en ADC-værdi, der returneres op til systemet. ADC-værdien omregnes via lineær regression til en vægt målt i gram.
+\\
+Interaktionsdiagram over "Mål og vej klods":
+\begin{figure}[H]
+	\centering
+	
+	\includegraphics[scale=0.75, trim = 30mm 0mm 0mm 10mm, clip]{./Diagrammer/SSD/5_3_2_Use_Case_1_1_Maal_og_vej_klods_realisering_1.jpg}
+	\caption{Simpelt sekvensdiagram af Mål og vej klods}
+	\label{fig:5_3_2_Use_Case_1_1_Maal_og_vej_klods_realisering_1}
+\end{figure}
+
+Specificeret interaktionsdiagram af vægten:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.50, trim = 25mm 0mm 0mm 10mm, clip]{./Diagrammer/SSD/5_3_2_Use_Case_1_1_Maal_og_vej_klods_realisering_2_Weight.jpg}
+	\caption{Detaljeret sekvensdiagram af vægten}
+	\label{fig:5_3_2_Use_Case_1_1_Maal_og_vej_klods_realisering_2_Weight}
+\end{figure}
+\end{document}

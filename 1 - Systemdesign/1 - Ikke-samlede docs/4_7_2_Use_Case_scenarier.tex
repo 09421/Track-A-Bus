@@ -1,0 +1,12 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case scenarier}
+Før denne Use Case kan startes skal \textit{Use Case 1: Vis busruter} være gennemført. Fra listen over alle busruter, tilkendegiver brugeren overfor systemet at han ønsker at favorisere et busrute, eller fjerne en busrute fra favoriter.
+Ved favorisering af busrute, henter systemet den valgte busrute, samt stoppestederne for valgte busrute fra databasen, dernæst persisterer systemet dette på en sqlite database på telefonen. Busruten bliver markeret som favorit på listen over busruter. Brugeren vil nu kunne vælge den favoriseret busrute på startskærmen, i stedet for fra listen over alle busruter. 
+ved fjernelse fra favorisering vil systemet slette ruten, samt dens busstoppesteder fra sqlite databasen, fjerne markeringen fra listen over busruter, samt det ikke længere vil være muligt at vælge ruten fra startskærmen.
+
+\subsubsection{Use Case Undtagelser}
+Da busruten samt busstoppestederne hentes fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen.
+
+\end{document}

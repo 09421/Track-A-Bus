@@ -1,0 +1,12 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case scenarier} 
+Før denne Use Case kan startes, skal \textit{Use Case 2: Vis placering af alle busser og stoppesteder på valgte rute} være gennemført. Brugeren vælger en af busstoppestederne der er indtegnet på kortet. Systemet fjerner nu alle busser, undtaget den bus der er tættest på det valgte busstoppested, fra kortet. Systemet udregner nu hvor lang tid det vil tage for bussen at komme frem til det valgte busstoppested, samt henter information om det valgte busstoppested fra databasen. Herefter bliver brugeren præsenteret for ankomstiden, samt information om valgt busstoppested.
+
+
+\subsubsection{Use Case Undtagelser} 
+Da gps-koordinaterne, information om busstoppestedet samt udregningen for ankomsttiden til valgt busstoppested bliver hentet fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen. Hvis gps-koordinaterne ikke kan hentes, vil bussens position blot ikke længere opdateres. I det tilfælde at den nærmeste bus er for tæt på det valgte busstoppested, vil systemet også vise den bus der er næst-tættest på busstoppestedet, samt tid til den ankommer.
+
+
+\end{document}

@@ -1,0 +1,132 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Data model}
+En kritisk del af dette system er data storage og data retrieval. Dette er blevet implementeret i form af to relationelle databaser; en distribueret og en lokal.\\
+Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \url{www.unoeuro.com}, ved navn \url{www.trackabus.com}. Herunde er databasen oprettet som en MySQL database på serveren \url{http://mysql23.unoeuro.com}\\
+Den lokale database eksisterer, fordi brugeren skal kunne gemme busruter lokalt på sin telefon. Dette er blevet implementeret i form af en SQLite database. \\
+Diagrammer kan findes i fuld størrelse under Diagrammer/Database Diagrammer
+
+\subsubsection{Design af MySQL database}
+
+Den distribuerede database gemmer alt information vedrørende busserne og deres ruter. Opbygningen af databasen kan ses som tre komponenter der interagerer; Busser, Busruter og GPS data for busserne. På figur \ref{fig:MySQLUML} vises der et UML OO diagram over MySQL databasen.
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den distribuerede MySQL database}
+\label{fig:MySQLUML}
+\end{figure}
+
+\noindent
+
+Hver bus har et ID, som er unikt for hver bus. I denne sammenhæng er det ligegyldigt hvilket nummer bussen har. Busruten består i en liste af længde- og breddegrade, som bliver sorteret i punkter, hvor startpunktet er den ene endestation på ruten, og slutpunktet er den anden endestation. Hver bus i systemet bliver parret med en busrute. I hver bus sidder der en GPS som sender positions data til databasen. Dette data bliver givet et timestamp og kobles til IDet på en bus. \\\\
+Alt positionsdata til beskrivelse af busruter bliver beskrevet i tabellen BusRoutePoints. Busruten får et nummer og et autogeneret ID i tabellen BusRoute. Dette ID bruges som foreign key i tabellen BusRoutePoints. Dette skaber et 1-til-mange relationship mellem disse to tabeller. \\
+Tabellen Busses består af det unikke id som bussen har, og en foreign key til en BusRoute. Flere busser kan godt sidde på samme rute, og derfor har Busses og BusRoute et 1-til-mange relationship. \\
+Tabellen GPSPosition indeholder positionsdata for busserne når de opdaterer deres position. Ved hver tilføjelse af ny positionsdata får denne data et timestamp fra tabellens insert trigger. Når bussen sender en ny position til databasen, sender den også den også bussens ID med, som er en foreign key til Busses tabellen. Busses og GPSposition har derfor et 1-til-mange relationship.\\
+På figur \ref{fig:MySQLER} kan man se et ER diagram der beskriver forholdet mellem tabellerne.
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/ER_Diagram.png}
+\caption{ER Diagram over den distribuerede MySql database}
+\label{fig:MySQLER}
+\end{figure}
+
+(TODO: BESRKIV NORMAL FORM!)
+%Databasen er på anden normalform da vi ikke har nogen composite keys. Der eksisterer dog transitive afhængigheder så den ikke er på tredje normalform. I BrickTable er Volume transitivt afhængig af Height, Length og Width. Det er dog blevet valgt, at databasen kun skal være på anden normalform, og databasen overholder derfor kravende.
+
+\subsubsection{Design af SQLiteDatabase database}
+Mobil applikationen har en favoritiserings funktion der bruges til at persistere brugervalgte ruter lokalt. Dette er gjort så brugeren hurtigt kan indlæse de ruter som bruges mest. På figur \ref{fig:LiteUML} kan man se et UML diagram over den lokale SQLite databasen
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den lokale SQLite database}
+\label{fig:LiteUML}
+\end{figure}
+
+Denne database består kun af to tabeller; SavedBusRoute og SavedBusRoutePoints. SavedBusRoute består af et autogeneret ID og nummeret på ruten. SavedBusRoutePoints består af liste af længde- og breddegrader som ruten består. Det første punkt er rutens ene endestation og det sidste punkt er rutens anden endestation. Desuden har denne tabel også en foreign key til SavedBusRoute, så der skabes et 1-til-mange relationship mellem SavedBusRoute og SavedBusRoutePoints på figur \ref{fig:LiteER} kan man se hvordan tabellerne i den lokale SQLite database er forbundende 
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den lokale SQLite database}
+\label{fig:LiteER}
+\end{figure}
+
+\subsubsection{Triggers og stored procedures}
+Der er ingen triggers, stored procedures eller funktioner i den lokale SQLite database, men på den distribuerede MySQL database, bruges der en del til at lave server side operationer. Dette er en stærkt designvalg, da meget af dataen skal hentes ned på mobiltelefoner. Disse mobiltelefoner har ikke nødvendigvis en særlig hurtig processor og det er derfor blevet valgt at lave så mange operationer som muligt, server side, så applikationen blot skal kalde procedurer, der henter og udregner på data, og herefter blot returner det endelige resultat. Desuden skulle datatrafikken også holdes til et minimum, da applikationen ofte vil køres på mobilnetværk, hvor brugeren ofte har en meget begrænset mængde data.\\\\
+
+\noindent
+\textbf{Triggers:}\\
+Der er kun blevet lavet én trigger, og den bruges til at sætte 
+
+\begin{lstlisting}[caption=SQL trigger for update af en identity kolonne, label={lst:SqlTriggerCode}]
+Create trigger [dbo].[LoggingTrigger]
+ON [dbo].[LoggingTable]
+FOR Delete	
+as
+
+Declare @DeletedID bigint
+Declare @TempTable Table (ID bigint, msg varchar(500), lvl nchar(50), ltime nchar(50), ldate nchar(50), luser nchar(50))
+Declare @Reseed int
+Set @DeletedID = (Select MIN(PK_LogID) From deleted)
+
+Insert into @TempTable select * from LoggingTable where PK_LogID > @DeletedID
+update @TempTable set ID = ID - 1
+delete from LoggingTable where PK_LogID > @DeletedID
+
+SET IDENTITY_INSERT LoggingTable ON
+insert into LoggingTable (PK_LogID,LogMessage,LogLevel,LogTime,LogDate,LogUserName) select * from @TempTable
+
+SET IDENTITY_INSERT LoggingTable OFF
+set @Reseed = (Select MAX(PK_LogID) from LoggingTable)
+if @Reseed >= 0
+	dbcc checkident(LoggingTable, reseed, @Reseed)
+else 
+	dbcc checkident(LoggingTable, reseed, 0)
+GO
+\end{lstlisting}
+
+\noindent
+Det første der sker efter erklæringen af variable er at DeletedID bliver sat til den mindste PKLogID af deleted. Deleted er en tabel der indeholder det slettede data. Herefter bliver alle rækker der har et større PKLogID end DeleteID, dvs alle rækker efter de slettede, sat ind i en midlertidig tabel. Så inkrementeres PKLogID i den midlertidige tabel med en, hvorefter alle rækker med større indlæg end de slettede, slettes fra tabellen. Så enables indsætning på en identity kolonne og den midlertidige tabel indsættes i LoggingTable. Identity reseedes til sidst til den største værdi af PKLogID i tabellen. Hvis tabellen er tom reseedes der til nul. Med dette er der blevet opnået en update statement på en identity kolonne. Dette sker ved samtlige tabeller der har en identity kolonne. \\
+Triggeren for BrickTable har dog et par tilføjelser. Når man sletter en klods så er det ikke nok bare at slette klodsen og opdatere primary key'en. Den række i BoxPositionTable som BrickTable refererer til skal også slettes og opdateres. Dette gøres ved at gemme foreign keyen over til BoxPositionTable fra det slettede, indsætte et dummy indlæg i BoxPositionTable og derefter slette den række som den slettede BrickTable række refererede til. Herefter slettes den række der har en primary key der stemmer overens med den slettede foreign key fra BrickTable, hvilket vil køre BoxPositionTable update on delete trigger. BrickTables update on delete fortsætter, og til sidst trækkes der en fra BoxPositionTables foreign key i BrickTable og dummy rækken i BoxPositionTable slettes. \\\\
+
+\noindent
+\textbf{Functions:} \\
+Den måde databasentilgangen er lavet på gør, at generel tilgang kan laves med funktioner på C\# siden, men der er et enkelt sted hvor det er nødvendigt at bruge en lang join funktion. Denne funktion er specifik for denne join, dvs. tabeller og kolonner er hardcodet ind i join funktionen på sql-siden. På kodeudsnit \ref{lst:SqlFunctionCode} ses koden bag funktionen. Den skal bruges fordi data om klodsen (ie. Densitet og placering i boksen) gemmes i andre tabeller end klodstabellen. 
+
+\begin{lstlisting}[caption=SQL funktion for inner join for brick data, label={lst:SqlFunctionCode}]
+create function [dbo].[GetTotalBrickData]()
+returns @ReturnTable table
+(
+BoxColumn bigint, ColumnPosition bigint, Length float,
+Height float, Width float, BrickVolume float,
+BrickMass float, Material nchar(50), Density float
+)
+as
+begin
+insert @ReturnTable
+SELECT
+BoxPositionTable.BoxCollumn, BoxPositionTable.ColumnPosition, 
+BrickTable.Length, BrickTable.Height, BrickTable.Width,
+BrickTable.BrickVolume, BrickTable.BrickMass,
+DensityMaterialsTable.Material, DensityMaterialsTable.Density
+
+FROM BoxPositionTable
+INNER JOIN BrickTable ON 
+BoxPositionTable.PK_BoxPositionID = BrickTable.FK_BoxPositionID 
+INNER JOIN DensityMaterialsTable ON 
+BrickTable.FK_DensityID = DensityMaterialsTable.PK_DensityID    
+                
+Return                     
+end            
+GO
+
+\end{lstlisting}
+Denne funktion skal bruges ved visning af data om en klods på systemets GUI. Der skal altså bruges data fra flere tabeller end en, og frem for at lave flere select statements i træk, blev det valgt at lave en specifik funktion til at håndtere denne datahentning.
+
+\end{document}

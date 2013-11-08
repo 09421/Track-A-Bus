@@ -1,0 +1,15 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Exception og fejlhåndtering}
+
+\subsubsection{Exception i database tilgangen}
+Fejlhåndtering er meget kritisk i databasetilgangen, da det er plausibelt at tilgangen til internet, og dermed tilgangen til databasen, kan forsvinde i løbet af systemets forløb. Når en besked til databasen skal håndteres sker dette i en try block. Hvis internet er forsvindet vil database tilgangen kaste SqlException. Denne vil blive grebet af en catch blok, som vil lave en besked om at forbindelsen er tabt. Dette sker dog kun hvis det er første gang denne exception bliver kastet, siden forbindelsen er gået tabt. Når forbindelsen reetableres ligges der en besked i køen om at forbindelsen er reetableret. Hvis tråden er gået ind i sin kritiske sektion, det vil sige når der ligger en besked i køen, som vil hente noget fra databasen, så kræves det at der er forbindelse til databasen. Dvs. hvis der kastes en SqlException vil brugeren have mulighed for at forsøge at skabe forbindelse igen, eller lukke programmet ned. Hvis brugeren vælger at lukke programmet ned vil samtlige beskeder til databasen gå tabt. Det antages at brugeren selv kan genoprette forbindelsen til internettet, eller ved hvad der skal gøres i et sådan tilfælde.
+
+\subsubsection{Exception i serial communication}
+Weight kommunikerer med systemet over en seriel forbindelse. Denne forbindelse kan være meget ustabil og det har derfor været nødsaget at håndtere forbindelsen i en try blok. Hvis en exception kastes vil denne gribes og de funktioner der returnerer en bool vil returnere false og den funktion der returnerer en string vil returnere false i en string. Så længe bare en af bool-funktionerne returnerer false vil hele kommunikationen starte forfra. Hvis string-funktionen returnerer false sættes result til 1 og det returneres til vægten. 
+
+\subsubsection{Exception i Robot funktionerne}
+I robot funktionerne sker der en hel del exception handling. RobotProgramFunctions klassen er bygget op af tilgange til mange forskellige eksterne hardware dele. Hvis nogen af dem returnere false vil det altid resultere i,. at klodsen smides ud, og robotten returnerer til startposition. Dette kan f.eks. ske hvis vægten returnerer false. 
+
+\end{document}

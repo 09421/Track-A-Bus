@@ -1,0 +1,35 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+På figur \ref{fig:Collaboration diagram for process } ses hvordan system tråden skaber MsgQueue tråden, og hvad den skabte tråd laver i overordnede træk.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1]{Billeder/Sekvensdiagrammer_ProcesTaskView/System_MsgQueue.jpg}
+\caption{Sekvensdiagram over - System og MsgQueue}
+\label{fig:Collaboration diagram for process }
+\end{figure}
+
+Denne tråd bliver skabt når systemet startes op, i klassen model. Det er en baggrundstråd som kører konstant ved siden af system tråden og bliver nedlagt når systemet lukkes ned. Trådens opgaver består i at håndtere og vedligeholde database tilgangen, så systemet ikke har behov for at stoppe op hver gang der skal ske en database tilgang. Tråden samler beskeder fra hele systemet og håndterer dem parallelt med system tråden. Den håndterer også synkronisering, sådan at hovedtråden stille venter, hvis der er behov for den skal vente. Dette sker når der er behov for at hente fra databasen, hvilket gør at tråden starter sin kritiske sektion, som skal håndteres hvis systemet skal fortsætte. Dette \textit{skal} håndteres da det er nødvendigt for systemet at bruge dataen hentet fra databasen. Der kan læses mere om dette i afsnit 6.3 Kommunikation og synkroniseringen.\\\\
+
+På figur \ref{fig:System_HomingAndBrickSort} ses overordnet på, hvordan system tråden skaber de 3 tråde Homing, CheckForHoming og Bricksort samt hvad de skabte tråde laver.  
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Billeder/Sekvensdiagrammer_ProcesTaskView/System_HomingAndBrickSortAndCheckForHoming.jpg}
+\caption{Sekvensdiagram over System og Homing,CheckForHoming,BrickSort}
+\label{fig:System_HomingAndBrickSort}
+\end{figure}
+
+System tråden med brugergrænsefladen er aktiv og igennem dens kørsel kan det ske, at der trykkes på en knap der signalere at robotten skal home. Når dette sker, bliver der set på om 'home' variablen er false, hvilket betyder at den ikke har været homet. Derefter opretter systemet tråden 'Homing' som går ind og kalder en funktion der hedder SetupRobot() som gør robotten klar, dvs. robotten bliver initialiseret, samt homet. Home variablen sættes derefter til true for at signalere at robotten nu er homet.\\ Systemet opretter herefter tråden 'CheckForHoming' som i grove træk har en while løkke der undersøger home variablen. I diagrammet kan det ses at der bliver oprettet en bool hvori status på home variablen er. Når programmet starter er den sat til false og det vil den også være i starten når 'CheckForHoming' kører. Når 'Homing' tråden er færdig ændres home variablen og 'CheckForHoming' tråden sender derefter en RaisePropertyChanged som sender en besked at en property er blevet ændret og skal opdatere sig derefter. I dette tilfælde er det en tekstboks som skifter farve samt tekst. \\
+Systemet ser derefter på om variabelen IsOnlineOk, samt Home har værdien true. IsOnlineOK er en variabel der holder styr på om robotten er online. Når begge værdier er true opretter systemet 'BrickSort' tråden som skal styre sorteringsalgoritmen. RunProgram() bliver herefter kaldt og den tjekker på om den skal kører standard sorteringsprogrammet eller om den skal køre et brugerdefineret program. \\\\
+
+På figur \ref{fig:System_ResetRobot} ses overordnet hvordan system tråden skaber ResetRobot tråden og hvordan de kommunikerer. 
+
+\begin{figure}[H]
+\caption{Sekvensdiagram over System og ResetRobot}
+\centering
+\includegraphics[scale=0.5]{Billeder/Sekvensdiagrammer_ProcesTaskView/System_ResetRobot.jpg}
+\label{fig:System_ResetRobot}
+\end{figure}
+
+System tråden med brugergrænsefladen er aktiv og der bliver set på, hvilken værdi variablen BrickSortIsAlive har. Når den ændrer værdi til true betyder det at 'BrickSort' tråden er igangsat. Dette betyder at 'ResetRobot' tråden bliver lavet, da der så er mulig for at stoppe robotten igennem brugergrænsefladen. Når robotten bliver sat til at stoppe bliver 'BrickSort' tråden afbrudt og funktionen ResetRobot() bliver kaldt, som går ind og returnerer robotten til sin start position. \\\\
+
+\end{document}

@@ -1,0 +1,13 @@
+\documentclass[main]{subfiles}
+\begin{document}
+\subsubsection{Use Case scenarier}
+Efter at klodsens sider og vægt er blevet fundet i \textit{Include Use Case 1.1: Mål og vej klods}, kan rumfanget nu udregnes, og dernæst kan densiteten findes. Denne densitet sammenlignes med de på databasen gemte materialetyper. Dette skulle gerne resulterer i, at klodsens materialetype er fundet, og således kan de defineres hvor den skal placeres. Klodsens data gemmes så på databasen.
+\\
+Når klodsens mål, vægt og densitet på databasen, gemmes målene i gram, vægten i centimeter og densiteten i $\dfrac{g}{cm^{3}}$.
+
+\subsubsection{Use Case undtagelser}
+Hvis der mistes forbindelse til databasen, mens den aktuelle klods' materialetype sammenlignes med materialetyper på databasen, modtager operatøren en besked der fortæller at forbindelsen er blevet afbrudt. Her får han så mulighed for at vente på at forbindelsen bliver genoprettet, eller lukke hele programmet. Hvis han vælger at vente, vil systemet forsøge at genetablere forbindelsen, og hvis det ikke lykkes, vil han modtage samme besked igen. Hvis forbindelsen bliver genoprettet, kører sorteringsalgoritmen videre. 
+\\
+Det er også risiko for, at den fundne densitet ikke stemmer overens med de på databasen gemte materialer. I dette tilfælde bliver klodsen placeret til højre for sensoren på transportbåndet, og således bliver den kasseret, næste gang sorteringsalgoritmen startes.
+
+\end{document}

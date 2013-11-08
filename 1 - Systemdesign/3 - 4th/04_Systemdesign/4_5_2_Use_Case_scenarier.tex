@@ -1,0 +1,13 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case scenarier}
+De tre første normalforløb i Use Casen initialiseres ved, at programmøren angiver, at et nyt program ønskes defineret. Det eneste krav er, at der er logget ind som programmør. Er kravet overholdt sendes programmøren ind i programmeringsmenuen, hvor gemte programmer bliver listet. Her kan programmøren så enten lave et nyt program, redigere i et eksisterende program, eller slette et eksisterende program. Når programmøren vælger at oprette et ny program, fremkommer faciliteter for at kunne ændre styringen til robotten. Når programmøren er færdig med programmet, vælger han at gemme det. Hvis han vil redigere i et eksisterende program, vælger han programmet på listen, hvorefter programmet igen lister faciliteter for at ændre styringen til robotten. Når et program ønskes slettet, vælger programmøren et program på listen, og tilkendegiver overfor systemet, at programmet ønskes slettet, hvorefter det fjernes.
+\\
+Det fjerde normalforløb kræver ikke, at der er logget ind som programmør, da operatøren også kan tilgå de gemte programmer og anvende disse. Dette normalforløb initialiseres ved, at en af de to primære aktører tilkendegiver overfor systemet, at de vil anvende et program, hvorefter systemet lister tilgængelige programmer i systemet. Herefter vælges der, hvilket program der skal anvendes, og således anvendes det valgte program.
+
+\subsubsection{Use Case Undtagelser}
+Undtagelserne til de tre første normalforløb giver bl.a. programmøren en advarsel, hvis han annullerer oprettelsen af et program, uden at have gemt. I dette tilfælde modtager han en besked, om han er sikker på at han vil annullere handlingen. Hvis programmøren har glemt at navngive programmet, modtager han en besked om, programmet skal navngives. Hvis programmøren vil redigere i gamle programmer, og der ikke er nogle tilgængelige, er det blot standardprogrammet der bliver vist. Hvis dette program vælges, modtages der en besked om, at der ikke kan ændres i standardprogrammet. Hvis programmøren forsøger at slette et program, bliver han spurgt om dette ønskes, og hvis det er standardprogrammet der forsøges slettet, modtages der en besked om, at dette ikke kan lade sig gøre. 
+\\
+Hvis programmøren eller operatøren vil anvende et gammelt program, og der ikke er programmer tilgængelig, er det kun muligt at vælge standardprogrammet.
+\end{document}
