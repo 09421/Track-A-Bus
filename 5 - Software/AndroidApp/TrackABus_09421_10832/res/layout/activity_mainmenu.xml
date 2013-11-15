@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-
-    
-       <ProgressBar
+    android:orientation="vertical" 
+    android:background="#BC171D">
+   
+    <ProgressBar
             android:id="@+id/PBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:layout_gravity="center"
             android:visibility="gone"/>
-
+	
+    <TextView 
+	     android:layout_height="wrap_content"
+	     android:layout_width="fill_parent"
+	     android:layout_gravity="center"
+	     android:layout_marginTop="10dp"	     
+	     android:layout_marginLeft="20dp"
+	     android:layout_marginRight="20dp"
+	     android:text="Busroutes"
+	     style="@style/TextViewStyle"/>
+    
     <ListView 
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#000000"
-        android:clickable="true"
         android:layout_gravity="center"
-        android:textAlignment="center"/>
+        android:layout_margin="20dp"
+        style="@style/ListViewStyle"/>
     
     
   <!-- <RelativeLayout

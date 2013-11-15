@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -30,9 +31,15 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.text.format.Time;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class BusMapActivity extends Activity {
@@ -57,11 +64,10 @@ public class BusMapActivity extends Activity {
         		DrawFavoriteRoute(SelectedBus);       		
         	}
         	else{
-      	      mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
-      		  
-    	      mMapFragment.getView().setVisibility(View.GONE);
-        	
-	        	pBar = (ProgressBar)findViewById(R.id.MapPBar);    	
+      	      	mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
+      	      	mMapFragment.getView().setVisibility(View.GONE);
+	        	pBar = (ProgressBar)findViewById(R.id.MapPBar);
+	        	TopBarLayout = (LinearLayout)findViewById(R.id.RouteInfo);
 	            pBar.setVisibility(View.VISIBLE);
         		BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler());
         		BusProvider.GetBusRoute(extra.getString("SELECTED_BUS"), BUS_ROUTE_DONE);        		
@@ -76,15 +82,15 @@ public class BusMapActivity extends Activity {
     }
     
     private Fragment mMapFragment;
-    ProgressBar pBar;
+    private ProgressBar pBar;
+    private LinearLayout TopBarLayout;
 	@Override
 	protected void onStart() {
 		super.onStart();
     	Intent intent = new Intent(getApplicationContext(), TrackABusProvider.class);
     	startService(intent);
     	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
-    	
-
+ 
 	}
     
 	class msgHandler extends Handler{
@@ -93,7 +99,9 @@ public class BusMapActivity extends Activity {
 			if(msg != null){
 				switch(msg.what){
 				case BUS_ROUTE_DONE:
-			        pBar.setVisibility(View.GONE);    	
+					
+			        pBar.setVisibility(View.GONE);
+			        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
 			        mMapFragment.getView().setVisibility(View.VISIBLE);
 					SetUpMap(msg.getData().getFloatArray("Lat")[0], msg.getData().getFloatArray("Lng")[0]);
 					DrawRoute(msg.getData().getFloatArray("Lat"), msg.getData().getFloatArray("Lng"));
@@ -137,6 +145,54 @@ public class BusMapActivity extends Activity {
 	Handler handler = new Handler(Looper.getMainLooper());
 	float fLat;
 	float fLng;
+	
+	private void ShowStopInformation(String BusStop, String DescEndPoint, String AscEndpoint)
+	{
+		((TextView)this.findViewById(R.id.StopInfo)).setText(BusStop);
+		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + DescEndPoint);
+		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + AscEndpoint);
+		((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
+		((TextView)this.findViewById(R.id.AscendingBusTime)).setText("nn:nn:nn");
+		
+		((TextView)this.findViewById(R.id.StopInfo)).setVisibility(TextView.VISIBLE);
+		((View)this.findViewById(R.id.RouteStopSeperator)).setVisibility(TextView.VISIBLE);
+		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.VISIBLE);
+		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
+	}
+	
+	private void HideStopInformation()
+	{
+		((TextView)this.findViewById(R.id.StopInfo)).setVisibility(TextView.GONE);
+		((View)this.findViewById(R.id.RouteStopSeperator)).setVisibility(TextView.GONE);
+		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.GONE);
+		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.GONE);
+	}
+	
+	private void UpdateTime(String DescSeconds, String AscSeconds)
+	{
+		int DescRemainder = 0;
+		int AscRemainder = 0;
+		int intDescSeconds = Integer.parseInt(DescSeconds);
+		int intAscSeconds = Integer.parseInt(AscSeconds);
+		
+		int DescHour = (int) intDescSeconds/3600;
+		int AscHour = (int) intAscSeconds/3600;
+		DescRemainder = intDescSeconds - DescHour*3600;
+		AscRemainder = intAscSeconds - AscHour*3600;
+		
+		int DescMin = (int) DescRemainder/60;
+		int AscMin = (int) AscRemainder/60;
+		DescRemainder = DescRemainder - DescMin * 60;
+		AscRemainder = AscRemainder - AscMin * 60;
+		
+		int DescSec = DescRemainder;
+		int AscSec = AscRemainder;
+		String DescTime = String.format("%02d:%02d%02d", DescHour,DescMin,DescSec);
+		String AscTime = String.format("%02d:%02d%02d", AscHour,AscMin,AscSec);
+		((TextView)this.findViewById(R.id.DescendingBusTime)).setText(DescTime);
+		((TextView)this.findViewById(R.id.AscendingBusTime)).setText(AscTime);
+		
+	}
 	
 	private void UpdateBusLocation(float[] Lat, float[] Lng) {
 		

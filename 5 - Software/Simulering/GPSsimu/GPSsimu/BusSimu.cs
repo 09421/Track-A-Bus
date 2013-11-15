@@ -230,15 +230,12 @@ namespace GPSsimu
             else
             {
      
-                //double asinParam = Math.Sin(brngRad) * Math.Sin(angularDistance) / Math.Cos(finalLatRad);
-                //finalLonRad = ((lonRad - Math.Asin(asinParam)+Math.PI) % (2*Math.PI)) - Math.PI;
                 double atan1 = Math.Sin(brngRad)*Math.Sin(angularDistance)*Math.Cos(latRad);
                 double atan2 = Math.Cos(angularDistance)-Math.Sin(latRad) * Math.Sin(finalLatRad);
                 finalLonRad = lonRad + Math.Atan2(atan1, atan2);
             }
             double finalLatDeg = rad2deg(finalLatRad);
             double finalLonDeg = ((rad2deg(finalLonRad) + 360) % 360);
-            //double finalLonDeg = rad2deg(finalLonRad);
             return new Tuple<double, double>(finalLatDeg, finalLonDeg);
         }
 

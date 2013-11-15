@@ -35,12 +35,13 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="BusNr:" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
                 <TextBlock Text="Update speed (s):  " Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
-                <TextBlock Text="# of running busses: " Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
-                <TextBlock Text="# of busses on route: " Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"></TextBlock>
-                <TextBox Name="BusNrBox" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Padding="5,0,0,0"/>
+                <TextBlock Text="Simulation mode " Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="Bus direction" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <ComboBox Name="BusNrCombo" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Padding="5,0,0,0" SelectionChanged="BusNrCombo_SelectionChanged_1"/>
                 <TextBox Name="UpdateSpeedBox" Grid.Column="1" Grid.Row="3" VerticalContentAlignment="Center" Padding="5,0,0,0"/>
-                <TextBox Name="RunningBussesNrBox" Grid.Column="1" Grid.Row="5"  VerticalContentAlignment="Center" Padding="5,0,0,0"/>
-                <TextBox Name="BussesOnRouteNrBox" Grid.Column="1" Grid.Row="7" VerticalContentAlignment="Center" Padding="5,0,0,0"/>
+                <ComboBox Name="SimuModeCombo" Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" Padding="5,0,0,0" SelectionChanged="SimuModeCombo_SelectionChanged_1"/>
+                <ComboBox Name="BusDirectionCombo" Grid.Column="1" Grid.Row="7" VerticalContentAlignment="Center" Padding="5,0,0,0" IsEnabled="False"/>
+
             </Grid>
         </GroupBox>
         <GroupBox Header="Controls" Grid.Row="1" BorderBrush="Black" BorderThickness="1">

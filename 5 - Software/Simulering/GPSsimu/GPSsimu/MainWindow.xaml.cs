@@ -25,15 +25,13 @@ namespace GPSsimu
     public partial class MainWindow : Window
     {
         private string ConnString;
-
-
         private bool isRunning = false;
         private bool testSimu = false;
         private MySqlConnection conn;
 
         private List<string> busID;
         private List<BusSimu> busList = new List<BusSimu>();
-        private List<Tuple<string,string>> busRoute;
+        private List<Tuple<string, string>> busRoute;
         private Random r = new Random();
 
         public MainWindow()
@@ -41,51 +39,33 @@ namespace GPSsimu
             InitializeComponent();
             string connString = ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString();
             conn = new MySqlConnection(connString);
-
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
-
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+            GetBusRoutesInSystem();
+            AddSimuModes();
         }
-        
+
 
         public bool OpenConnection()
         {
-            try{
-                LogText.AppendText("Opening connection" + Environment.NewLine);
+            try
+            {
+
                 conn.Open();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                LogText.AppendText(e.ToString());
-                    return false;
+                LogText.AppendText("*ERROR* - Failure to connect to database\n");
+                return false;
             }
-            LogText.AppendText("Connection open! \n");
             return true;
         }
         public void CloseConnection()
         {
             conn.Close();
-            LogText.AppendText("Connection Closed" + Environment.NewLine);
         }
 
-        public void TestSP()
-        {
-            int test;
-            MySqlCommand sp = new MySqlCommand("CalcBusToStopTime", conn);
-            sp.CommandType = System.Data.CommandType.StoredProcedure;
-            sp.Parameters.Add(new MySqlParameter("BusStopId", 50));
-            sp.Parameters.Add(new MySqlParameter("routeNumber", 5));
-            sp.Parameters.Add(new MySqlParameter("TimeToStopSec", MySqlDbType.Int64));
-            sp.Parameters["TimeToStopSec"].Direction = System.Data.ParameterDirection.Output;
-            OpenConnection();
-
-
-                int r = sp.ExecuteNonQuery();
-                test = int.Parse(sp.Parameters["TimeToStopSec"].Value.ToString());
-                LogText.AppendText(test.ToString());
-
-        }
 
         private void StartStopButton_Click_1(object sender, RoutedEventArgs e)
         {
@@ -100,15 +80,14 @@ namespace GPSsimu
                     return;
                 }
                 Truncate();
-                getRouteFromID(bnID);
-                InsertBusses(bnID.ToString());
+                CreateBusses(bnID.ToString());
                 StartStopButton.Background = Brushes.Red;
                 StartStopButton.Content = "Stop Simulation";
                 foreach (BusSimu bs in busList)
                 {
                     bs.startSim();
                     testSimu = true;
-                }   
+                }
                 isRunning = true;
             }
             else
@@ -127,106 +106,219 @@ namespace GPSsimu
 
         private int CheckVal()
         {
-            int count = 0;
-            string bnID = "";
-            string busNr = BusNrBox.Text;
-            int uSpeed = 0;
-            int BusOnRoute = 0;
-            int RunningBusses = 0;
-            if(!int.TryParse(UpdateSpeedBox.Text,out uSpeed) && !int.TryParse(BussesOnRouteNrBox.Text, out BusOnRoute) &&
-                !int.TryParse(RunningBussesNrBox.Text,out RunningBusses))
+
+            int uSpeed;
+
+            if (!BusNrCombo.IsEnabled || BusNrCombo.SelectedItem == null)
             {
-                LogText.AppendText("*ERROR* - Please do not leave any empty boxes\n");
+                LogText.AppendText("*ERROR* - Busroute not chosen, or no busroutes in system\n");
                 return -1;
             }
-            if( uSpeed <= 0)
+
+            if (SimuModeCombo.SelectedItem == null)
+            {
+                LogText.AppendText("*ERROR* - No simulation mode chosen\n");
+                return -1;
+            }
+
+            if (!int.TryParse(UpdateSpeedBox.Text, out uSpeed))
+            {
+                LogText.AppendText("*ERROR* - Please only use whole numbers as update speed\n");
+                return -1;
+            }
+            if (uSpeed <= 0)
             {
                 LogText.AppendText("*ERROR* - Update speed cannot be lower or equal to zero\n");
-            }
-            if (BusOnRoute > RunningBusses)
-            {
-                LogText.AppendText("*ERROR* - Number of busses on route is greater than total number of busses\r\n");
                 return -1;
             }
 
-
-            using (MySqlCommand query = new MySqlCommand())
-            {
-                query.CommandText = "SELECT busNumberId FROM BusNumbers where busNumber=" + busNr + ";";
-                query.Connection = conn;
-                try
-                {
-                    MySqlDataReader reader = query.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        count++;
-                        bnID = reader["busNumberId"].ToString();
-                    }
-                    if (count != 1)
-                    {
-                        LogText.AppendText("*ERROR* - Something is wrong with the busnumber\r\n");
-                        return -1;
-                    }
-                    reader.Close();
-                }
-                catch (Exception e)
-                {
-                    LogText.AppendText("*ERROR* - Failure to communicate with database");
-                    return -1;
-                }
-            }
+            string query = "select ID from BusRoute where RouteNumber = '" + BusNrCombo.SelectedItem.ToString() + "'";
             LogText.AppendText("Configuration OK" + Environment.NewLine);
-            return int.Parse(bnID);
-        }
-        private void InsertBusses(string bnID)
-        {
-            int TotalBusses = int.Parse(RunningBussesNrBox.Text);
-            int RouteBusses = int.Parse(BussesOnRouteNrBox.Text);
-            int uSpeed = int.Parse(UpdateSpeedBox.Text);
-            string QueryText = "Insert into Busses (busId, fk_busNumberId) values ";
-            string logText = "Inserting (BusId,BusNrId): ";
-            List<string> bnIDs = getAllBusNumberId();
-            for (int i = 1; i <= TotalBusses; i++)
-            {
-
-                if (i <= RouteBusses)
-                {
-                    QueryText += "(" + i.ToString() + ", " + bnID + "),";
-                    BusSimu bs = new BusSimu(i, int.Parse(bnID), busRoute, LogText, this, r, uSpeed);
-                    busList.Add(bs);
-                }
-                else
-                {
-                    
-                    int index = r.Next(bnIDs.Count());
-                    while (bnIDs[index] == bnID)
-                    {
-                        index = r.Next(bnIDs.Count-1);
-                    }
-                    QueryText += "(" + i.ToString() + ", " + bnIDs[index] + "),";
-                    logText += "(" + i.ToString() + ", " + bnIDs[index] +"), ";
-
-                    BusSimu bs = new BusSimu(i, int.Parse(bnIDs[index]), busRoute, LogText, this, r, uSpeed);
-                    busList.Add(bs);
-                }
-            }
-            QueryText = QueryText.Remove(QueryText.Length-1, 1);
-            logText = logText.Remove(logText.Length-2,2);
-            LogText.AppendText(logText + Environment.NewLine);
             using (MySqlCommand cmd = new MySqlCommand())
             {
-                cmd.CommandText = QueryText;
                 cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
+                cmd.CommandText = query;
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                return int.Parse(reader["ID"].ToString());
+            }
+
+        }
+
+        private void CreateBusses(string bnID)
+        {
+            List<BusSimu> bs = new List<BusSimu>();
+            string singleBusQuery = "Select ID from Bus where fk_BusRoute = "+bnID + "limit 1";
+            string allBusOnRouteQuery = "Select ID from Bus where fk_BusRoute = " +bnID;
+            string AllBusQuery = "Select ID, fk_BusRoute from Bus where fk_BusRoute is not null";
+            bool desc = false;
+            switch(SimuModeCombo.SelectedIndex)
+            {
+                case 0:
+                    switch(BusDirectionCombo.SelectedIndex)
+                    {
+                        case 0:
+                            using(MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = singleBusQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                reader.Read();
+                                bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
+                                    getRouteFromID(int.Parse(bnID), false), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                setBusDirectionDB(int.Parse(reader["ID"].ToString()), false);
+                            }
+                            break;
+                        case 1:
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = singleBusQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                reader.Read();
+                                bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
+                                    getRouteFromID(int.Parse(bnID), true), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                setBusDirectionDB(int.Parse(reader["ID"].ToString()), true);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case 1:
+                    switch (BusDirectionCombo.SelectedIndex)
+                    {
+                        case 0:
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = allBusOnRouteQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                while(reader.Read())
+                                {
+                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
+                                    getRouteFromID(int.Parse(bnID), false), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), false);                                   
+                                }
+                            }
+                            break;
+                        case 1:
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = allBusOnRouteQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                while (reader.Read())
+                                {
+                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
+                                    getRouteFromID(int.Parse(bnID), true), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), true);
+                                }
+                            }
+                            break;
+                        case 2:
+
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = allBusOnRouteQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                while (reader.Read())
+                                {
+                                    if(r.Next(1,2) == 1)
+                                        desc = true;
+                                    else
+                                        desc = false;
+                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
+                                    getRouteFromID(int.Parse(bnID), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case 2:                    
+                    switch (BusDirectionCombo.SelectedIndex)
+                    {
+                        case 0:                            
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = AllBusQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                while (reader.Read())
+                                {
+                                    if (reader["fk_BusRoute"].ToString() == bnID)
+                                        desc = false;
+                                    else
+                                    {
+                                        if (r.Next(1, 2) == 1)
+                                            desc = true;
+                                        else
+                                            desc = false;   
+                                    }
+                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(reader["fk_BusRoute"].ToString()),
+                                    getRouteFromID(int.Parse(reader["fk_BusRoute"].ToString()), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
+                                }
+                            }
+                            break;
+                        case 1:
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = AllBusQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                while (reader.Read())
+                                {
+                                    if (reader["fk_BusRoute"].ToString() == bnID)
+                                        desc = true;
+                                    else
+                                    {
+                                        if (r.Next(1, 2) == 1)
+                                            desc = true;
+                                        else
+                                            desc = false;
+                                    }
+                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(reader["fk_BusRoute"].ToString()),
+                                    getRouteFromID(int.Parse(reader["fk_BusRoute"].ToString()), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
+                                }
+                            }
+                            break;
+                        case 2:
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.CommandText = AllBusQuery;
+                                cmd.Connection = conn;
+                                MySqlDataReader reader = cmd.ExecuteReader();
+                                while (reader.Read())
+                                {
+                                    if (r.Next(1, 2) == 1)
+                                        desc = true;
+                                    else
+                                        desc = false;
+                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(reader["fk_BusRoute"].ToString()),
+                                    getRouteFromID(int.Parse(reader["fk_BusRoute"].ToString()), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
         private void Truncate()
         {
-            string query1 = "Truncate Busses";
-            string query2 = "Truncate GPSPos";
-            LogText.AppendText("Removing all busses and positions\n");
+            string query1 = "Truncate GPSPosition";
+            LogText.AppendText("Removing all GPS positions\n");
 
             busList.Clear();
             using (MySqlCommand cmd = new MySqlCommand())
@@ -235,25 +327,19 @@ namespace GPSsimu
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
             }
-         
-            using (MySqlCommand cmd = new MySqlCommand())
-            {
-                cmd.CommandText = query2;
-                cmd.Connection = conn;
-                cmd.ExecuteNonQuery();
-            }
+
         }
 
         private List<string> getAllBusNumberId()
         {
             List<string> bnIDs = new List<string>();
             string query = "Select busNumberId from BusNumbers";
-            using(MySqlCommand cmd = new MySqlCommand())
+            using (MySqlCommand cmd = new MySqlCommand())
             {
                 cmd.CommandText = query;
                 cmd.Connection = conn;
                 MySqlDataReader reader = cmd.ExecuteReader();
-                while(reader.Read())
+                while (reader.Read())
                 {
                     bnIDs.Add(reader["busNumberId"].ToString());
                 }
@@ -267,13 +353,26 @@ namespace GPSsimu
             LogText.Document.Blocks.Clear();
         }
 
-        private void getRouteFromID(int bnID)
+        private List<Tuple<string, string>> getRouteFromID(int bnID, bool isDescending)
         {
-            busRoute = new List<Tuple<string, string>>();
-            string query = "SELECT bus_lat, bus_lon FROM BusRoutePoints " +
-                            "join BusNumberToRoutePoints on " +
-                            "BusNumberToRoutePoints.busRoutePointId=BusRoutePoints.id " +
-                            "where BusNumberToRoutePoints.busNumberId=" + bnID.ToString();
+            List<Tuple<string, string>> route= new List<Tuple<string, string>>();
+            string query = "";
+            if (isDescending)
+            {
+                query = "SELECT Latitude, Longitude FROM RoutePoint " +
+                               "join BusRoute_RoutePoint on " +
+                               "BusRoute_RoutePoint.fk_BusRoute=BusRoute.ID " +
+                               "where BusRoute_RoutePoint.fk_BusRoute=" + bnID.ToString() +
+                               "order by BusRoute_RoutePoint.fk_RoutePoint desc";
+            }
+            else
+            {
+                query = "SELECT Latitude, Longitude FROM RoutePoint " +
+                               "join BusRoute_RoutePoint on " +
+                               "BusRoute_RoutePoint.fk_BusRoute=BusRoute.ID " +
+                               "where BusRoute_RoutePoint.fk_BusRoute=" + bnID.ToString() +
+                               " order by BusRoute_RoutePoint.fk_RoutePoint asc";
+            }
             using (MySqlCommand cmd = new MySqlCommand())
             {
                 cmd.CommandText = query;
@@ -281,15 +380,142 @@ namespace GPSsimu
                 MySqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
-                    busRoute.Add(new Tuple<string, string>(reader["bus_lat"].ToString(), reader["bus_lon"].ToString()));
+                    route.Add(new Tuple<string, string>(reader["Latitude"].ToString(), reader["Longitude"].ToString()));
                 }
                 reader.Close();
             }
+            return route;
+        }
+
+        public void setBusDirectionDB(int bID, bool isDescending)
+        {
+            string query = "Update Bus set IsDescending = " + isDescending.ToString() +
+                           " where Bus.ID = " + bID.ToString();
+            using (MySqlCommand cmd = new MySqlCommand())
+            {
+                cmd.CommandText = query;
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public int GetBusRoutesInSystem()
+        {
+            OpenConnection();
+            string query = "Select RouteNumber from BusRoute " +
+                           "inner join Bus on Bus.fk_BusRoute=BusRoute.ID";
+            using (MySqlCommand cmd = new MySqlCommand())
+            {
+                cmd.CommandText = query;
+                cmd.Connection = conn;
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    BusNrCombo.Items.Add(reader["RouteNumber"].ToString());
+                }
+                CloseConnection();
+                if (BusNrCombo.Items.Count == 0)
+                {
+                    LogText.AppendText("*ERROR* - No BusRoutes in database");
+                    return -1;
+                }
+                return 0;
+            }
+        }
+
+        public void AddSimuModes()
+        {
+            SimuModeCombo.Items.Add("Use single bus on chosen route");
+            SimuModeCombo.Items.Add("Use all busses on chosen route");
+            SimuModeCombo.Items.Add("Use all busses in system");
+        }
+
+        public void AddDirection()
+        {
+            BusDirectionCombo.Items.Clear();
+            string bnID = "";
+            string routeEndPointAsc = "";
+            string routeEndPointDesc = "";
+            string idQuery = "Select ID from BusRoute where RouteNumber = '" + BusNrCombo.SelectedItem.ToString()+"'";
+
+            OpenConnection();
+            using (MySqlCommand cmd = new MySqlCommand())
+            {
+                cmd.CommandText = idQuery;
+                cmd.Connection = conn;
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                bnID = reader["ID"].ToString();
+                reader.Close();
+            }
+            string endPointAscQuery = "Select StopName from BusStop " +
+                "join BusRoute_BusStop on BusStop.ID = BusRoute_BusStop.fk_BusStop " +
+                "where BusRoute_BusStop.fk_BusRoute = " + bnID + " " +
+                "order by BusStop.ID asc limit 1";
+            string endPointDescQuery = "Select StopName from BusStop " +
+                            "join BusRoute_BusStop on BusStop.ID = BusRoute_BusStop.fk_BusStop " +
+                            "where BusRoute_BusStop.fk_BusRoute = " + bnID + " " +
+                            "order by BusStop.ID desc limit 1";
+
+            using (MySqlCommand cmd = new MySqlCommand())
+            {
+                cmd.CommandText = endPointDescQuery;
+                cmd.Connection = conn;
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                routeEndPointDesc = reader["StopName"].ToString();
+
+            }
+            using (MySqlCommand cmd = new MySqlCommand())
+            {
+                cmd.CommandText = endPointAscQuery;
+                cmd.Connection = conn;
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                routeEndPointAsc = reader["StopName"].ToString();
+            }
+            CloseConnection();
+            switch (SimuModeCombo.SelectedIndex)
+            {
+                case 0:
+                    BusDirectionCombo.Items.Add("Bus traveling towards " + routeEndPointDesc);
+                    BusDirectionCombo.Items.Add("Bus traveling towards " + routeEndPointAsc);
+                    break;
+                case 1:
+                    BusDirectionCombo.Items.Add("All Busses traveling towards " + routeEndPointDesc);
+                    BusDirectionCombo.Items.Add("All Busses traveling towards " + routeEndPointAsc);
+                    BusDirectionCombo.Items.Add("Randomize direction");
+                    break;
+                case 2:
+                    BusDirectionCombo.Items.Add("All busses on route traveling towards " + routeEndPointDesc);
+                    BusDirectionCombo.Items.Add("All busses on route traveling towards " + routeEndPointAsc);
+                    BusDirectionCombo.Items.Add("Randomize direction");
+                    break;
+                default:
+                    break;
+            }
+
         }
 
         private void LogText_TextChanged_1(object sender, TextChangedEventArgs e)
         {
             LogText.ScrollToEnd();
+        }
+
+        private void BusNrCombo_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            if (SimuModeCombo.SelectedItem != null && BusNrCombo.SelectedItem != null && !BusDirectionCombo.IsEnabled)
+            {
+                AddDirection();
+            }
+        }
+
+        private void SimuModeCombo_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            if (SimuModeCombo.SelectedItem != null && BusNrCombo.SelectedItem != null && !BusDirectionCombo.IsEnabled)
+            {
+                AddDirection();
+            }
         }
 
     }
