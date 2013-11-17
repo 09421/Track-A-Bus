@@ -8,6 +8,7 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import com.example.mapviewapplication.TrackABus.BusStop;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.util.Log;
@@ -43,12 +44,6 @@ public class SoapProvider {
 		  }		  
 		  return response;
 	  }
-	  public String callHello()
-	  {
-		  init("HelloWorld");
-		  res= response.toString();	  
-		  return res;
-	  }
 	  
 	  public ArrayList<String> GetBusList(){
 		  try {
@@ -63,6 +58,34 @@ public class SoapProvider {
 			  resultlist.add(e.getMessage());
 		  }		  
 		 return resultlist;
+	  }
+	  
+	  public ArrayList<BusStop> GetBusStops(String BusNumber){
+		  ArrayList<BusStop> BusStoplist = new ArrayList<BusStop>();
+		  
+		  try{
+			  SoapObject request = new SoapObject(NAMESPACE, "GetBusStops");
+			  request.addProperty("busNumber", BusNumber);
+			  SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+			  envelope.dotNet = true;
+			  envelope.setOutputSoapObject(request);
+			  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+			  androidHttpTransport.call(NAMESPACE+"GetBusStops", envelope);
+			  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
+
+			  SoapObject lat = (SoapObject)response.getProperty(0);
+			  SoapObject lng = (SoapObject)response.getProperty(1);
+			  SoapObject name = (SoapObject)response.getProperty(2);
+
+			  for(int h = 0; h<lat.getPropertyCount();h++){
+				  BusStoplist.add(new BusStop(name.getProperty(h).toString(), new LatLng(Double.parseDouble(lat.getProperty(h).toString().replace(",", ".")), Double.parseDouble(lng.getProperty(h).toString().replace(",", ".")))));
+				  }
+		  }catch(Exception e){
+			  Log.e("DEBUG!!", e.getMessage());
+			  return null;
+		  }
+
+		  return BusStoplist;
 	  }
 	  
 		public ArrayList<LatLng> GetBusRoute(String BusNumber){
@@ -85,8 +108,10 @@ public class SoapProvider {
 					  Routelist.add(new LatLng(Double.parseDouble(lat.getProperty(h).toString().replace(",", ".")), Double.parseDouble(lng.getProperty(h).toString().replace(",", "."))));
 				  }
 			  }catch(Exception e){
+				  Log.e("DEBUG!!", e.getMessage());
 				  return null;
 			  }
+
 			  return Routelist;
 		}
 		

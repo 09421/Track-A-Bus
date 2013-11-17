@@ -9,6 +9,7 @@ import com.example.mapviewapplication.DataProviders.TrackABusProvider.LocalBinde
 import com.example.mapviewapplication.DataProviders.UserPrefBusRoute;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -50,6 +51,7 @@ public class BusMapActivity extends Activity {
 	TrackABusProvider BusProvider;
 	Boolean mBound = false;
 	final static public int BUS_ROUTE_DONE = 1;
+	final static public int BUS_STOP_DONE = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,10 +69,10 @@ public class BusMapActivity extends Activity {
       	      	mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
       	      	mMapFragment.getView().setVisibility(View.GONE);
 	        	pBar = (ProgressBar)findViewById(R.id.MapPBar);
-	        	TopBarLayout = (LinearLayout)findViewById(R.id.RouteInfo);
+	        	//TopBarLayout = (LinearLayout)findViewById(R.id.RouteInfo);
 	            pBar.setVisibility(View.VISIBLE);
         		BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler());
-        		BusProvider.GetBusRoute(extra.getString("SELECTED_BUS"), BUS_ROUTE_DONE);        		
+        		BusProvider.GetBusRoute(extra.getString("SELECTED_BUS"), BUS_ROUTE_DONE);
         	}       	
         	
         	//LatLng BusLatLng = GetCurrentLatLngForBus(SelectedBus);
@@ -92,19 +94,21 @@ public class BusMapActivity extends Activity {
     	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
  
 	}
-    
+    public String[] StopNames; 
 	class msgHandler extends Handler{
 		@Override
 		public void handleMessage(Message msg) {				
 			if(msg != null){
 				switch(msg.what){
 				case BUS_ROUTE_DONE:
-					
 			        pBar.setVisibility(View.GONE);
-			        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
+			        //TopBarLayout.setVisibility(LinearLayout.VISIBLE);
 			        mMapFragment.getView().setVisibility(View.VISIBLE);
-					SetUpMap(msg.getData().getFloatArray("Lat")[0], msg.getData().getFloatArray("Lng")[0]);
-					DrawRoute(msg.getData().getFloatArray("Lat"), msg.getData().getFloatArray("Lng"));
+			        StopNames = msg.getData().getStringArray("StopName");
+					SetUpMap(msg.getData().getFloatArray("RouteLat")[0], msg.getData().getFloatArray("RouteLng")[0]);
+					DrawRoute(msg.getData().getFloatArray("RouteLat"), msg.getData().getFloatArray("RouteLng"));
+					DrawBusStops(msg.getData().getFloatArray("StopLat"), msg.getData().getFloatArray("StopLng"));
+					
 					if(isOnline())
 						UpdateBusLocation(msg.getData().getFloatArray("Lat"), msg.getData().getFloatArray("Lng"));
 					else
@@ -146,53 +150,53 @@ public class BusMapActivity extends Activity {
 	float fLat;
 	float fLng;
 	
-	private void ShowStopInformation(String BusStop, String DescEndPoint, String AscEndpoint)
-	{
-		((TextView)this.findViewById(R.id.StopInfo)).setText(BusStop);
-		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + DescEndPoint);
-		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + AscEndpoint);
-		((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
-		((TextView)this.findViewById(R.id.AscendingBusTime)).setText("nn:nn:nn");
-		
-		((TextView)this.findViewById(R.id.StopInfo)).setVisibility(TextView.VISIBLE);
-		((View)this.findViewById(R.id.RouteStopSeperator)).setVisibility(TextView.VISIBLE);
-		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.VISIBLE);
-		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
-	}
+//	private void ShowStopInformation(String BusStop, String DescEndPoint, String AscEndpoint)
+//	{
+//		((TextView)this.findViewById(R.id.StopInfo)).setText(BusStop);
+//		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + DescEndPoint);
+//		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + AscEndpoint);
+//		((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
+//		((TextView)this.findViewById(R.id.AscendingBusTime)).setText("nn:nn:nn");
+//		
+//		((TextView)this.findViewById(R.id.StopInfo)).setVisibility(TextView.VISIBLE);
+//		((View)this.findViewById(R.id.RouteStopSeperator)).setVisibility(TextView.VISIBLE);
+//		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.VISIBLE);
+//		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
+//	}
+//	
+//	private void HideStopInformation()
+//	{
+//		((TextView)this.findViewById(R.id.StopInfo)).setVisibility(TextView.GONE);
+//		((View)this.findViewById(R.id.RouteStopSeperator)).setVisibility(TextView.GONE);
+//		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.GONE);
+//		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.GONE);
+//	}
 	
-	private void HideStopInformation()
-	{
-		((TextView)this.findViewById(R.id.StopInfo)).setVisibility(TextView.GONE);
-		((View)this.findViewById(R.id.RouteStopSeperator)).setVisibility(TextView.GONE);
-		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.GONE);
-		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.GONE);
-	}
-	
-	private void UpdateTime(String DescSeconds, String AscSeconds)
-	{
-		int DescRemainder = 0;
-		int AscRemainder = 0;
-		int intDescSeconds = Integer.parseInt(DescSeconds);
-		int intAscSeconds = Integer.parseInt(AscSeconds);
-		
-		int DescHour = (int) intDescSeconds/3600;
-		int AscHour = (int) intAscSeconds/3600;
-		DescRemainder = intDescSeconds - DescHour*3600;
-		AscRemainder = intAscSeconds - AscHour*3600;
-		
-		int DescMin = (int) DescRemainder/60;
-		int AscMin = (int) AscRemainder/60;
-		DescRemainder = DescRemainder - DescMin * 60;
-		AscRemainder = AscRemainder - AscMin * 60;
-		
-		int DescSec = DescRemainder;
-		int AscSec = AscRemainder;
-		String DescTime = String.format("%02d:%02d%02d", DescHour,DescMin,DescSec);
-		String AscTime = String.format("%02d:%02d%02d", AscHour,AscMin,AscSec);
-		((TextView)this.findViewById(R.id.DescendingBusTime)).setText(DescTime);
-		((TextView)this.findViewById(R.id.AscendingBusTime)).setText(AscTime);
-		
-	}
+//	private void UpdateTime(String DescSeconds, String AscSeconds)
+//	{
+//		int DescRemainder = 0;
+//		int AscRemainder = 0;
+//		int intDescSeconds = Integer.parseInt(DescSeconds);
+//		int intAscSeconds = Integer.parseInt(AscSeconds);
+//		
+//		int DescHour = (int) intDescSeconds/3600;
+//		int AscHour = (int) intAscSeconds/3600;
+//		DescRemainder = intDescSeconds - DescHour*3600;
+//		AscRemainder = intAscSeconds - AscHour*3600;
+//		
+//		int DescMin = (int) DescRemainder/60;
+//		int AscMin = (int) AscRemainder/60;
+//		DescRemainder = DescRemainder - DescMin * 60;
+//		AscRemainder = AscRemainder - AscMin * 60;
+//		
+//		int DescSec = DescRemainder;
+//		int AscSec = AscRemainder;
+//		String DescTime = String.format("%02d:%02d%02d", DescHour,DescMin,DescSec);
+//		String AscTime = String.format("%02d:%02d%02d", AscHour,AscMin,AscSec);
+//		((TextView)this.findViewById(R.id.DescendingBusTime)).setText(DescTime);
+//		((TextView)this.findViewById(R.id.AscendingBusTime)).setText(AscTime);
+//		
+//	}
 	
 	private void UpdateBusLocation(float[] Lat, float[] Lng) {
 		
@@ -200,7 +204,7 @@ public class BusMapActivity extends Activity {
 	        public void run() {
 
 	        	final LatLng test = soapProvider.GetBusPos(SelectedBus).get(0);
-	        	Log.e("DEBUG!", String.valueOf(test.latitude));
+
 		    		Runnable setFirstMark = new Runnable(){
 	
 		    			@Override
@@ -223,11 +227,9 @@ public class BusMapActivity extends Activity {
 		
 		@Override
 		public void run() {
-			while(Running){
-				
+			while(Running){				
 					CurrentLatLng = soapProvider.GetBusPos(SelectedBus).get(0);
 					handler.post(setMark);
-
 					try {
 						Thread.sleep(1000);
 						if(!Running)
@@ -256,6 +258,23 @@ public class BusMapActivity extends Activity {
 			 pOption.add(new LatLng(Lat[i], Lng[i]));
 		 }
 		 map.addPolyline(pOption);
+	}
+	
+	private void DrawBusStops(float[] Lat, float[] Lng) {
+		
+		for(int i = 0; i<Lat.length; i++){
+			map.addMarker(new MarkerOptions()
+	        .position(new LatLng(Lat[i], Lng[i])).title(StopNames[i]));
+		}
+
+		map.setOnMarkerClickListener(new OnMarkerClickListener() {
+			
+			@Override
+			public boolean onMarkerClick(Marker marker) {
+				Log.e("DEBUG!!", "Marker click : " + String.valueOf(marker.getTitle()));
+				return false;
+			}
+		});
 	}
 	
 	private void DrawFavoriteRoute(final String selectedBus){

@@ -68,7 +68,6 @@ public class BusListMenuActivity extends ListActivity {
 	    		pBar.setVisibility(View.GONE);
 	    		Toast.makeText(getApplicationContext(), "Please check internet connection, and try Again", Toast.LENGTH_LONG).show();
 	    	}
-
 	    }
 
 		private void UpdateArrayOfBusses() {			
@@ -81,7 +80,7 @@ public class BusListMenuActivity extends ListActivity {
 		
 		ArrayList<ListBusData> AllBusses;
 		private void UpdateBusList(ArrayList<String> busList) {
-	    
+			
 			AllBusses = new ArrayList<ListBusData>();	    	
 			Cursor c = getContentResolver().query(UserPrefBusses.CONTENT_URI, null,null, null, null);
 			ArrayList<String> FavoriteBusses = new ArrayList<String>();		
@@ -113,8 +112,7 @@ public class BusListMenuActivity extends ListActivity {
 			startActivityForResult(myIntent, 0);
 		}
 		
-		class msgHandler extends Handler{
-			
+		class msgHandler extends Handler{			
 			@Override
 			public void handleMessage(Message msg) {				
 				if(msg != null){
@@ -129,7 +127,7 @@ public class BusListMenuActivity extends ListActivity {
 			}			
 		}
 		
-		private ServiceConnection  Connection = new ServiceConnection(){
+		private ServiceConnection Connection = new ServiceConnection(){
 			
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
@@ -143,18 +141,28 @@ public class BusListMenuActivity extends ListActivity {
 				mBound = false;				
 			}
 		};
-
 		
 		@Override
 		protected void onDestroy() {
 			super.onDestroy();
-
+			try{
+				if(mBound)
+					Log.e("DEBUG", "SERVICE UNBOUND");
+					unbindService(Connection);
+			}catch(Exception e){
+				Log.e("DEBUG", e.getMessage());				
+			}
 		}
 
 		@Override
 		protected void onPause() {
-			super.onPause();			
-			if(mBound)
-				unbindService(Connection);
+			super.onPause();
+//			try{
+//				if(mBound)
+//					Log.e("DEBUG", "SERVICE UNBOUND");	
+//					unbindService(Connection);
+//			}catch(Exception e){
+//				Log.e("DEBUG", e.getMessage());				
+//			}
 		}
 }
