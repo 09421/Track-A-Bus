@@ -25,7 +25,7 @@ namespace MapDrawRouteTool.Controllers
 
             Debug.WriteLine(t.Length.ToString());
 
-            for (int i = 0; i < t.Length; i = i+2)
+            for (int i = 0; i < t.Length; i = i + 2)
             {
                 var mystring =
                     "Persist Security Info=False;database=trackabus_dk_db;server=mysql23.unoeuro.com;Connect Timeout=30;user id=trackabus_dk; pwd=1083209421";
@@ -37,8 +37,8 @@ namespace MapDrawRouteTool.Controllers
                         {
                             t[i] = t[i].TrimEnd(')');
                             t[i] = t[i].TrimStart('(');
-                            t[i+1] = t[i+1].TrimEnd(')');
-                            t[i+1] = t[i+1].TrimStart('(');
+                            t[i + 1] = t[i + 1].TrimEnd(')');
+                            t[i + 1] = t[i + 1].TrimStart('(');
 
                             connection.Open();
                             Debug.WriteLine(t[i] + "   " + t[i + 1]);

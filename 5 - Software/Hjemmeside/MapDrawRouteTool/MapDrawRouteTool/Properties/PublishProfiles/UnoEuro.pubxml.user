@@ -7,6 +7,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA1kEDKjNY1U+J9fUWsHNSoQAAAAACAAAAAAAQZgAAAAEAACAAAAAKqhkZ8mqJI61KpCoXjWwzcu05axs1RPrlpaGaKBJkJgAAAAAOgAAAAAIAACAAAADnKYFFRhcykQoLjRwEjmMjm5GKw9bPu92f70ZBP9QGLyAAAAB0c5KlMy+uEsORm6iZEcn5AWuiWi9+nvh9qhXhCMWuUUAAAABzGZU4RlxOm3OrMLm3tp4u3nDLHudQ9NEdWLV/MqvrH1Bp/1N4sH2vqILLF8n2T5GLM0pEuAnLaKKLzG/IkJSa</EncryptedPassword>
+    <_PublishTargetUrl>ftp://trackabus.dk/public_html</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="AndroidToMySQLWebService.asmx">
@@ -19,7 +20,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:04:53</publishTime>
     </File>
     <File Include="bin/MapDrawRouteTool.dll">
-      <publishTime>11/05/2013 15:25:20</publishTime>
+      <publishTime>11/17/2013 20:45:55</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>09/25/2013 14:05:26</publishTime>
@@ -282,17 +283,29 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/_references.js">
       <publishTime>09/25/2013 14:05:25</publishTime>
     </File>
+    <File Include="Views/Bus/Index.cshtml">
+      <publishTime>11/17/2013 19:11:17</publishTime>
+    </File>
     <File Include="Views/Dir/Index.cshtml">
-      <publishTime>10/29/2013 12:21:31</publishTime>
+      <publishTime>11/17/2013 18:52:43</publishTime>
+    </File>
+    <File Include="Views/Home/Index.cshtml">
+      <publishTime>11/17/2013 12:23:09</publishTime>
     </File>
     <File Include="Views/Map/Index.cshtml">
       <publishTime>10/28/2013 15:00:43</publishTime>
+    </File>
+    <File Include="Views/Route/Index.aspx">
+      <publishTime>11/16/2013 13:51:55</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>09/25/2013 14:04:25</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>09/25/2013 14:21:48</publishTime>
+      <publishTime>11/17/2013 18:49:09</publishTime>
+    </File>
+    <File Include="Views/Stop/Index.cshtml">
+      <publishTime>11/14/2013 10:54:07</publishTime>
     </File>
     <File Include="Views/Web.config">
       <publishTime>09/25/2013 14:04:25</publishTime>
