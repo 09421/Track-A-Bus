@@ -461,8 +461,12 @@ begin
 
 	if rx_end - rx_start = 0 then
 		set dist = ABS(bus_pos_lon_x - rx_start);
+		set bcx = rx_start;
+		set bcy = bus_pos_lat_y;
 	elseif ry_end - ry_start = 0 then
 		set dist = ABS(bus_pos_lat_y - ry_start);
+		set bcx = bus_pos_lat_x;
+		set bcy = ry_start;
 	else
 		set rA = (ry_end - ry_start) / (rx_end - rx_start);
 		set rB = ry_start + (rA*(-rx_start));
