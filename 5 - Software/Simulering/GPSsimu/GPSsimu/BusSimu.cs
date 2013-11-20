@@ -61,16 +61,6 @@ namespace GPSsimu
         }
 
 
-        public void test()
-        {
-            int counter = 0;
-            while (counter < 150)
-            {
-                double brng = BearingDegs(LatLonRoute[counter].Item1, LatLonRoute[counter].Item2,
-                        LatLonRoute[counter+1].Item1, LatLonRoute[counter+1].Item2);
-                counter++;
-            }
-        }
 
         private delegate void invoker(string text);
         public void gpsCalc()
@@ -84,6 +74,7 @@ namespace GPSsimu
                 double travelLengthMeters = speed * (1000d / 3600d) * updateSpeed;
                 double currentLength = 0;
                 double nextLength = 0;
+                double brng;
                 string currPosMsg = "";
                 if(indexCounter == 0)
                     indexCounter = initialPosIndex + 1;
@@ -95,18 +86,26 @@ namespace GPSsimu
                     {
                         nextLength = Haversine(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
                                                    LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
+
+                        brng = BearingDegs(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
+                                            LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
+
                     }
                     else
                     {
                         nextLength = Haversine(LatLonRoute[indexCounter - 1].Item1, LatLonRoute[indexCounter - 1].Item2,
                                                 LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
+                        brng = BearingDegs(LatLonRoute[indexCounter - 1].Item1, LatLonRoute[indexCounter - 1].Item2,
+                                            LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
+
                     }
-                    
+                    Console.WriteLine("Next: {0} ; Current: {1}", nextLength, currentLength);
+
+                    //If The next line + the current calculated length of the route, is greater than the length the bus should drive
                     if (nextLength + currentLength > travelLengthMeters)
                     {
+                        //The distance into the linepiece the busshould drive.
                         double missingLength = travelLengthMeters - currentLength;
-                        double brng = BearingDegs(LatLonRoute[indexCounter - 1].Item1, LatLonRoute[indexCounter - 1].Item2,
-                                                LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
                         if (brng == 0)
                         {
                             currPosMsg = "Bus " +bID.ToString() + ", new endpoint reached, missing length: " + (indexCounter+1).ToString();
@@ -125,7 +124,8 @@ namespace GPSsimu
                                                                    brng, missingLength);
                         }
                         SetCurrentPos();
-                        break;
+
+                        break ;
                         
                     }
                     else
@@ -161,7 +161,7 @@ namespace GPSsimu
 
             using (MySqlCommand cmd = new MySqlCommand())
             {
-                string query = "Insert into GPSPos (pos_longitude, pos_latitude, UpdateTime,BusID)" +
+                string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
                                " values (" + initialPosLon + ", " + initialPosLat + ", '" +
                                DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
                 cmd.CommandText = query;
@@ -176,7 +176,7 @@ namespace GPSsimu
             parent.Dispatcher.BeginInvoke(new invoker(LogTextWrite), new object[] { currPosMsg });
             using(MySqlCommand cmd = new MySqlCommand())
             {
-                string query = "Insert into GPSPos (pos_longitude, pos_latitude, UpdateTime,BusID)" +
+                string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
                                " values (" + currentPos.Item2.ToString() + ", " + currentPos.Item1.ToString() + ", '" +
                                DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
                 cmd.CommandText = query;
@@ -223,6 +223,9 @@ namespace GPSsimu
             double finalLatRad = Math.Asin(Math.Sin(latRad) * Math.Cos(angularDistance) +
                                  Math.Cos(latRad) * Math.Sin(angularDistance) * Math.Cos(brngRad));
             double finalLonRad;
+
+//Console.WriteLine("Latitiude: {0}, Longitude: {1}, Bearing: {2}, distance: {3}", lat, lon, bearingDegs, dist_m);
+
             if (Math.Cos(finalLatRad) == 0)
             {
                 finalLonRad = lonRad;

@@ -140,18 +140,26 @@ namespace GPSsimu
                 cmd.CommandText = query;
                 MySqlDataReader reader = cmd.ExecuteReader();
                 reader.Read();
-                return int.Parse(reader["ID"].ToString());
+                int ID = int.Parse(reader["ID"].ToString());
+                reader.Close();
+                return ID;
+
             }
 
         }
 
         private void CreateBusses(string bnID)
         {
+            bool desc = false;
+            int id = 0;
             List<BusSimu> bs = new List<BusSimu>();
-            string singleBusQuery = "Select ID from Bus where fk_BusRoute = "+bnID + "limit 1";
+            List<int> IDList = new List<int>();
+            List<int> fkBusRouteList = new List<int>();
+            List<Tuple<string, string>> routeList = new List<Tuple<string, string>>();
+            string singleBusQuery = "Select ID from Bus where fk_BusRoute = "+bnID + " limit 1";
             string allBusOnRouteQuery = "Select ID from Bus where fk_BusRoute = " +bnID;
             string AllBusQuery = "Select ID, fk_BusRoute from Bus where fk_BusRoute is not null";
-            bool desc = false;
+            
             switch(SimuModeCombo.SelectedIndex)
             {
                 case 0:
@@ -164,10 +172,13 @@ namespace GPSsimu
                                 cmd.Connection = conn;
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 reader.Read();
-                                bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
-                                    getRouteFromID(int.Parse(bnID), false), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                setBusDirectionDB(int.Parse(reader["ID"].ToString()), false);
+                                id = int.Parse(reader["ID"].ToString());
+
+                                reader.Close();
                             }
+                            bs.Add(new BusSimu(id, int.Parse(bnID),
+                            getRouteFromID(int.Parse(bnID), false), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                            setBusDirectionDB(id, false);
                             break;
                         case 1:
                             using (MySqlCommand cmd = new MySqlCommand())
@@ -176,10 +187,13 @@ namespace GPSsimu
                                 cmd.Connection = conn;
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 reader.Read();
-                                bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
-                                    getRouteFromID(int.Parse(bnID), true), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                setBusDirectionDB(int.Parse(reader["ID"].ToString()), true);
+                                id = int.Parse(reader["ID"].ToString());
+
+                                reader.Close();
                             }
+                            bs.Add(new BusSimu(id, int.Parse(bnID),
+                            getRouteFromID(int.Parse(bnID), true), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                            setBusDirectionDB(id, true);
                             break;
                         default:
                             break;
@@ -196,9 +210,16 @@ namespace GPSsimu
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 while(reader.Read())
                                 {
-                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
-                                    getRouteFromID(int.Parse(bnID), false), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), false);                                   
+                                    IDList.Add(int.Parse(reader["ID"].ToString()));
+                                }
+                                reader.Close();
+
+                                for(int i = 0; i < IDList.Count; i++)
+                                {
+                                    routeList = getRouteFromID(int.Parse(bnID), false);
+                                    bs.Add(new BusSimu(IDList[i],int.Parse(bnID),
+                                           routeList, LogText, this,r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(IDList[i].ToString()), false);
                                 }
                             }
                             break;
@@ -210,9 +231,16 @@ namespace GPSsimu
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 while (reader.Read())
                                 {
-                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
-                                    getRouteFromID(int.Parse(bnID), true), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), true);
+                                    IDList.Add(int.Parse(reader["ID"].ToString()));
+                                }
+                                reader.Close();
+
+                                for (int i = 0; i < IDList.Count; i++)
+                                {
+                                    routeList = getRouteFromID(int.Parse(bnID), true);
+                                    bs.Add(new BusSimu(IDList[i], int.Parse(bnID),
+                                           routeList, LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(IDList[i].ToString()), true);
                                 }
                             }
                             break;
@@ -225,13 +253,20 @@ namespace GPSsimu
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 while (reader.Read())
                                 {
-                                    if(r.Next(1,2) == 1)
+                                    IDList.Add(int.Parse(reader["ID"].ToString()));
+                                }
+                                reader.Close();
+
+                                for (int i = 0; i < IDList.Count; i++)
+                                {
+                                    if (r.Next(1, 2) == 1)
                                         desc = true;
                                     else
                                         desc = false;
-                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(bnID),
-                                    getRouteFromID(int.Parse(bnID), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
+                                    routeList = getRouteFromID(int.Parse(bnID), desc);
+                                    bs.Add(new BusSimu(IDList[i], int.Parse(bnID),
+                                           routeList, LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(int.Parse(IDList[i].ToString()), desc);
                                 }
                             }
                             break;
@@ -250,19 +285,27 @@ namespace GPSsimu
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 while (reader.Read())
                                 {
-                                    if (reader["fk_BusRoute"].ToString() == bnID)
+                                    IDList.Add(int.Parse(reader["ID"].ToString()));
+                                    fkBusRouteList.Add(int.Parse(reader["fk_BusRoute"].ToString()));
+                                }
+                                reader.Close();
+
+                                for (int i = 0; i < IDList.Count; i++)
+                                {
+                                    if (fkBusRouteList[i].ToString() == bnID)
                                         desc = false;
                                     else
                                     {
                                         if (r.Next(1, 2) == 1)
                                             desc = true;
                                         else
-                                            desc = false;   
+                                            desc = false;
                                     }
-                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(reader["fk_BusRoute"].ToString()),
-                                    getRouteFromID(int.Parse(reader["fk_BusRoute"].ToString()), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
-                                }
+                                    routeList = getRouteFromID(fkBusRouteList[i], desc);
+                                    bs.Add(new BusSimu(IDList[i], fkBusRouteList[i], routeList,
+                                    LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(IDList[i], desc);
+                                } 
                             }
                             break;
                         case 1:
@@ -271,9 +314,17 @@ namespace GPSsimu
                                 cmd.CommandText = AllBusQuery;
                                 cmd.Connection = conn;
                                 MySqlDataReader reader = cmd.ExecuteReader();
+
                                 while (reader.Read())
                                 {
-                                    if (reader["fk_BusRoute"].ToString() == bnID)
+                                    IDList.Add(int.Parse(reader["ID"].ToString()));
+                                    fkBusRouteList.Add(int.Parse(reader["fk_BusRoute"].ToString()));
+                                }
+                                reader.Close();
+
+                                for (int i = 0; i < IDList.Count; i++)
+                                {
+                                    if (fkBusRouteList[i].ToString() == bnID)
                                         desc = true;
                                     else
                                     {
@@ -282,10 +333,11 @@ namespace GPSsimu
                                         else
                                             desc = false;
                                     }
-                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(reader["fk_BusRoute"].ToString()),
-                                    getRouteFromID(int.Parse(reader["fk_BusRoute"].ToString()), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
-                                }
+                                    routeList = getRouteFromID(fkBusRouteList[i], desc);
+                                    bs.Add(new BusSimu(IDList[i], fkBusRouteList[i], routeList,
+                                    LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(IDList[i], desc);
+                                } 
                             }
                             break;
                         case 2:
@@ -296,14 +348,23 @@ namespace GPSsimu
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 while (reader.Read())
                                 {
+                                    IDList.Add(int.Parse(reader["ID"].ToString()));
+                                    fkBusRouteList.Add(int.Parse(reader["fk_BusRoute"].ToString()));
+                                }
+                                reader.Close();
+
+                                for (int i = 0; i < IDList.Count; i++)
+                                {
                                     if (r.Next(1, 2) == 1)
                                         desc = true;
                                     else
                                         desc = false;
-                                    bs.Add(new BusSimu(int.Parse(reader["ID"].ToString()), int.Parse(reader["fk_BusRoute"].ToString()),
-                                    getRouteFromID(int.Parse(reader["fk_BusRoute"].ToString()), desc), LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
-                                    setBusDirectionDB(int.Parse(reader["ID"].ToString()), desc);
-                                }
+                                    
+                                    routeList = getRouteFromID(fkBusRouteList[i], desc);
+                                    bs.Add(new BusSimu(IDList[i], fkBusRouteList[i], routeList,
+                                    LogText, this, r, int.Parse(UpdateSpeedBox.Text)));
+                                    setBusDirectionDB(IDList[i], desc);
+                                } 
                             }
                             break;
                         default:
@@ -313,6 +374,7 @@ namespace GPSsimu
                 default:
                     break;
             }
+            busList = bs;
         }
 
         private void Truncate()
@@ -326,6 +388,7 @@ namespace GPSsimu
                 cmd.CommandText = query1;
                 cmd.Connection = conn;
                 cmd.ExecuteNonQuery();
+         
             }
 
         }
@@ -361,17 +424,19 @@ namespace GPSsimu
             {
                 query = "SELECT Latitude, Longitude FROM RoutePoint " +
                                "join BusRoute_RoutePoint on " +
-                               "BusRoute_RoutePoint.fk_BusRoute=BusRoute.ID " +
-                               "where BusRoute_RoutePoint.fk_BusRoute=" + bnID.ToString() +
-                               "order by BusRoute_RoutePoint.fk_RoutePoint desc";
+                               "BusRoute_RoutePoint.fk_RoutePoint=RoutePoint.ID " +
+                               "where BusRoute_RoutePoint.fk_BusRoute=" + bnID.ToString() + " and " +
+                               "RoutePoint.ID not in (select BusStop.fk_RoutePoint from BusStop) " +
+                               " order by BusRoute_RoutePoint.ID desc";
             }
             else
             {
                 query = "SELECT Latitude, Longitude FROM RoutePoint " +
                                "join BusRoute_RoutePoint on " +
-                               "BusRoute_RoutePoint.fk_BusRoute=BusRoute.ID " +
-                               "where BusRoute_RoutePoint.fk_BusRoute=" + bnID.ToString() +
-                               " order by BusRoute_RoutePoint.fk_RoutePoint asc";
+                               "BusRoute_RoutePoint.fk_RoutePoint=RoutePoint.ID " +
+                               "where BusRoute_RoutePoint.fk_BusRoute=" + bnID.ToString() + " and " +
+                               "RoutePoint.ID not in (select BusStop.fk_RoutePoint from BusStop) " +
+                               " order by BusRoute_RoutePoint.ID asc";
             }
             using (MySqlCommand cmd = new MySqlCommand())
             {
@@ -413,12 +478,14 @@ namespace GPSsimu
                 {
                     BusNrCombo.Items.Add(reader["RouteNumber"].ToString());
                 }
+                reader.Close();
                 CloseConnection();
                 if (BusNrCombo.Items.Count == 0)
                 {
                     LogText.AppendText("*ERROR* - No BusRoutes in database");
                     return -1;
                 }
+
                 return 0;
             }
         }
@@ -464,6 +531,7 @@ namespace GPSsimu
                 MySqlDataReader reader = cmd.ExecuteReader();
                 reader.Read();
                 routeEndPointDesc = reader["StopName"].ToString();
+                reader.Close();
 
             }
             using (MySqlCommand cmd = new MySqlCommand())
@@ -473,6 +541,7 @@ namespace GPSsimu
                 MySqlDataReader reader = cmd.ExecuteReader();
                 reader.Read();
                 routeEndPointAsc = reader["StopName"].ToString();
+                reader.Close();
             }
             CloseConnection();
             switch (SimuModeCombo.SelectedIndex)
@@ -494,6 +563,7 @@ namespace GPSsimu
                 default:
                     break;
             }
+            BusDirectionCombo.IsEnabled = true;
 
         }
 
