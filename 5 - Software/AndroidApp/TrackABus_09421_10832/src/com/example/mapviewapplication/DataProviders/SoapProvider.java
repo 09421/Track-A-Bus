@@ -101,6 +101,10 @@ public class SoapProvider {
 				  androidHttpTransport.call(NAMESPACE+"GetBusRoute", envelope);
 				  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
 	
+				  SoapObject Routes = (SoapObject) response.getProperty(0);
+				  	for(int g = 0; g<Routes.getPropertyCount(); g++)
+				  		g++;
+				  		
 				  SoapObject lat = (SoapObject)response.getProperty(0);
 				  SoapObject lng = (SoapObject)response.getProperty(1);
 	
