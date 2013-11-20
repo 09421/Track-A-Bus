@@ -102,7 +102,6 @@ public class BusMapActivity extends Activity {
 				switch(msg.what){
 				case BUS_ROUTE_DONE:
 			        pBar.setVisibility(View.GONE);
-			        //TopBarLayout.setVisibility(LinearLayout.VISIBLE);
 			        mMapFragment.getView().setVisibility(View.VISIBLE);
 			        StopNames = msg.getData().getStringArray("StopName");
 					SetUpMap(msg.getData().getFloatArray("RouteLat")[0], msg.getData().getFloatArray("RouteLng")[0]);
