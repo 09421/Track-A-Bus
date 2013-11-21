@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -104,8 +105,12 @@ public class BusMapActivity extends Activity {
 			        pBar.setVisibility(View.GONE);
 			        mMapFragment.getView().setVisibility(View.VISIBLE);
 			        StopNames = msg.getData().getStringArray("StopName");
-					SetUpMap(msg.getData().getFloatArray("RouteLat")[0], msg.getData().getFloatArray("RouteLng")[0]);
-					DrawRoute(msg.getData().getFloatArray("RouteLat"), msg.getData().getFloatArray("RouteLng"));
+					SetUpMap(msg.getData().getFloatArray("RouteLat 0")[0], msg.getData().getFloatArray("RouteLng 0")[0]);
+					Log.e("DEBUG SIZE", String.valueOf((msg.getData().size()-3)/2));
+//					for(int i = 0; i<(msg.getData().size()-3)/2;i++){
+//						DrawRoute(msg.getData().getFloatArray("RouteLat " + String.valueOf(i)), msg.getData().getFloatArray("RouteLng " + String.valueOf(i)));
+//					}					
+					DrawRoute(msg.getData().getFloatArray("RouteLat " + String.valueOf(0)), msg.getData().getFloatArray("RouteLng " + String.valueOf(0)));
 					DrawBusStops(msg.getData().getFloatArray("StopLat"), msg.getData().getFloatArray("StopLng"));
 					
 					if(isOnline())
@@ -251,11 +256,12 @@ public class BusMapActivity extends Activity {
 	
 	
 	private void DrawRoute(float[] Lat, float[] Lng) {
-
+		
 		 PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
 		 for(int i = 0; i < Lat.length; i++){
 			 pOption.add(new LatLng(Lat[i], Lng[i]));
 		 }
+
 		 map.addPolyline(pOption);
 	}
 	
@@ -263,7 +269,7 @@ public class BusMapActivity extends Activity {
 		
 		for(int i = 0; i<Lat.length; i++){
 			map.addMarker(new MarkerOptions()
-	        .position(new LatLng(Lat[i], Lng[i])).title(StopNames[i]));
+	        .position(new LatLng(Lat[i], Lng[i])).title(StopNames[i]).icon(BitmapDescriptorFactory.fromResource(R.drawable.teststop)));
 		}
 
 		map.setOnMarkerClickListener(new OnMarkerClickListener() {
