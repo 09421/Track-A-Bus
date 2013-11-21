@@ -26,8 +26,8 @@ namespace GPSsimu
     {
         private bool isRunning = false;
         private List<BusSimu> busList = new List<BusSimu>();
-        private List<BusRoute> simulatingRoute = new List<BusRoute>();
-        private List<BusRoute> allRoutes = new List<BusRoute>();
+        private List<Tuple<string, string>> simulatingRoute = new List<Tuple<string, string>>();
+        private List<Tuple<string, string>> allRoutes = new List<Tuple<string, string>>();
         private Random r = new Random();
 
         public MainWindow()
@@ -107,9 +107,9 @@ namespace GPSsimu
 
         }
 
-        private List<BusRoute> CreateAllBusRoutes()
+        private List<Tuple<string, string>> CreateAllBusRoutes()
         {
-            List<BusRoute> Routes = new List<BusRoute>();
+            List<Tuple<string, string>> Routes = new List<Tuple<string, string>>();
             string query = "select ID, RouteNumber from BusRoute";
 
             using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
@@ -121,7 +121,7 @@ namespace GPSsimu
                     MySqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        Routes.Add(new BusRoute(reader["ID"].ToString(), reader["RouteNumber"].ToString()));
+                        Routes.Add(new Tuple<string,string>(reader["ID"].ToString(), reader["RouteNumber"].ToString()));
                     }
                     reader.Close();
                     conn.Close();
@@ -130,10 +130,10 @@ namespace GPSsimu
             }
         }
 
-        private List<BusRoute> CreateSimuBusRoutes()
+        private List<Tuple<string,string>> CreateSimuBusRoutes()
         {
 
-            List<BusRoute> Routes = new List<BusRoute>();
+            List<Tuple<string, string>> Routes = new List<Tuple<string, string>>();
             string query = "select ID from BusRoute where RouteNumber = '" + BusNrCombo.SelectedItem.ToString() + "'";
    
             using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
@@ -145,7 +145,7 @@ namespace GPSsimu
                     MySqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        Routes.Add(new BusRoute(reader["ID"].ToString(), BusNrCombo.SelectedItem.ToString()));
+                        Routes.Add(new Tuple<string, string>(reader["ID"].ToString(), BusNrCombo.SelectedItem.ToString()));
                     }
                     reader.Close();
                     conn.Close();
@@ -168,10 +168,10 @@ namespace GPSsimu
             string singleBusQuery = "Select ID from Bus where ";
             string allBusOnRouteQuery = "Select ID from Bus where ";
             string AllBusQuery = "Select ID, fk_BusRoute from Bus where fk_BusRoute is not null";
-            foreach (BusRoute r in simulatingRoute)
+            foreach (Tuple<string,string> r in simulatingRoute)
             {
-                singleBusQuery += "fk_busRoute = " + r.id + " or ";
-                allBusOnRouteQuery += "fk_busRoute = " + r.id + " or ";
+                singleBusQuery += "fk_busRoute = " + r.Item1 + " or ";
+                allBusOnRouteQuery += "fk_busRoute = " + r.Item1 + " or ";
             }
 
             singleBusQuery = singleBusQuery.TrimEnd(" or ".ToCharArray()) + " limit 1";
@@ -183,7 +183,7 @@ namespace GPSsimu
                     case 0:
                         using (MySqlCommand cmd = conn.CreateCommand())
                         {
-                            conn.Close();
+                            conn.Open();
                             cmd.CommandText = singleBusQuery;
                             MySqlDataReader reader = cmd.ExecuteReader();
                             reader.Read();
@@ -233,7 +233,8 @@ namespace GPSsimu
                             case 2:
                                 for (int i = 0; i < IDList.Count; i++)
                                 {
-                                    if (r.Next(1, 2) == 1)
+                                    int test = r.Next(1, 3);
+                                    if (test == 1)
                                         desc = true;
                                     else
                                         desc = false;
@@ -270,12 +271,12 @@ namespace GPSsimu
                                         desc = false;
                                     else
                                     {
-                                        if (r.Next(1, 2) == 1)
+                                        if (r.Next(1, 3) == 1)
                                             desc = true;
                                         else
                                             desc = false;
                                     }
-                                    List<BusRoute> l = allRoutes.FindAll(R => R.number.Equals(fkBusRouteList[i].ToString()));
+                                    List<Tuple<string,string>> l = allRoutes.FindAll(R => R.Item2 == fkBusRouteList[i].ToString());
                                     bs.Add(new BusSimu(IDList[i], l, LogText, this, r, int.Parse(UpdateSpeedBox.Text), desc));
                                 }
                                 break;
@@ -286,12 +287,12 @@ namespace GPSsimu
                                         desc = true;
                                     else
                                     {
-                                        if (r.Next(1, 2) == 1)
+                                        if (r.Next(1, 3) == 1)
                                             desc = true;
                                         else
                                             desc = false;
                                     }
-                                    List<BusRoute> l = allRoutes.FindAll(R => R.number.Equals(fkBusRouteList[i].ToString()));
+                                    List<Tuple<string, string>> l = allRoutes.FindAll(R => R.Item2 == fkBusRouteList[i].ToString());
                                     bs.Add(new BusSimu(IDList[i], l, LogText, this, r, int.Parse(UpdateSpeedBox.Text), desc));
                                 }
                                 
@@ -299,11 +300,11 @@ namespace GPSsimu
                             case 2:
                                 for (int i = 0; i < IDList.Count; i++)
                                 {
-                                    if (r.Next(1, 2) == 1)
+                                    if (r.Next(1, 3) == 1)
                                         desc = true;
                                     else
                                         desc = false;
-                                    List<BusRoute> l = allRoutes.FindAll(R => R.number.Equals(fkBusRouteList[i].ToString()));
+                                    List<Tuple<string, string>> l = allRoutes.FindAll(R => R.Item2 == fkBusRouteList[i].ToString());
                                     bs.Add(new BusSimu(IDList[i], l, LogText, this, r, int.Parse(UpdateSpeedBox.Text), desc));
                                 }
                                 break;
@@ -325,11 +326,25 @@ namespace GPSsimu
             LogText.AppendText("Removing all GPS positions\n");
 
             busList.Clear();
-            using (MySqlCommand cmd = new MySqlCommand())
+            using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
             {
-                cmd.CommandText = query1;
-                cmd.ExecuteNonQuery();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    try
+                    {
+                        conn.Open();
+                        cmd.CommandText = query1;
+                        cmd.ExecuteNonQuery();
+                        conn.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        conn.Close();
+                    }
+
+                }
             }
+
 
         }
 
@@ -410,7 +425,7 @@ namespace GPSsimu
 
         public int GetBusRoutesInSystem()
         {
-            string query = "Select RouteNumber from BusRoute " +
+            string query = "Select distinct RouteNumber from BusRoute " +
                            "inner join Bus on Bus.fk_BusRoute=BusRoute.ID";
             using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
             {
@@ -535,6 +550,26 @@ namespace GPSsimu
             }
          
         }
+
+        private void MinSpeedSLider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            foreach (BusSimu b in busList)
+            {
+                b.minSpeed = (int)e.NewValue;
+            }
+            MinSpeedBlock.Text = "Minimum speed: " + ((int)e.NewValue).ToString();
+        }
+
+        private void MaxSpeedSLider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            foreach (BusSimu b in busList)
+            {
+                b.maxSpeed = (int)e.NewValue;
+            }
+            MinSpeedSLider.Maximum = ((int)e.NewValue);
+            MaxSpeedBlock.Text = "Maximum speed: " + ((int)e.NewValue).ToString();
+        }
+
 
         
     }

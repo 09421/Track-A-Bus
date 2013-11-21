@@ -14,7 +14,7 @@ namespace GPSsimu
     class BusSimu
     {
         private int bID;
-        private List<BusRoute> routes;
+        private List<BusRoute> routes = new List<BusRoute>();
         private RichTextBox logBox;
         private Window parent;
         private Random R;
@@ -23,35 +23,40 @@ namespace GPSsimu
         private BusRoute initialRoute;
         private Tuple<double, double> currentPos = new Tuple<double, double>(0, 0);
         private Thread gpsPosCalcThread;
-        private int indexCounter = 0;
+        private int indexCounter = -1;
+        public int maxSpeed = 50;
+        public int minSpeed = 30;
 
 
 
 
-        public BusSimu(int busID, List<BusRoute> Routes, RichTextBox LogBox, Window w, Random Rand, int uSpeed, bool startDecending)
+        public BusSimu(int busID, List<Tuple<string,string>> RoutesIDAndNumber, RichTextBox LogBox, Window w, Random Rand, int uSpeed, bool startDecending)
         {
 
             bID = busID;
             logBox = LogBox;
-            routes = Routes;
+            foreach (Tuple<string,string> rID in RoutesIDAndNumber)
+            {
+                routes.Add(new BusRoute(rID.Item1, rID.Item2));
+            }
             parent = w;
             R = Rand;
             updateSpeed = uSpeed;
-            
+            initialRoute = routes[Rand.Next(0, routes.Count)];
+
+
             if (startDecending)
             {
-                initialRoute = Routes[Rand.Next(0, Routes.Count - 1)];
-                if (startDecending)
-                {
-                    initialRoute.TurnAround();
-                }
+                initialRoute.TurnAround();
             }
+            
 
 
+            gpsPosCalcThread = new Thread(new ThreadStart(gpsCalc));
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)gpsPosCalcThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             gpsPosCalcThread.CurrentCulture = customCulture;
-            gpsPosCalcThread = new Thread(new ThreadStart(gpsCalc));
+
             InitializeBusDB(startDecending);
             SetInitialPos();
         }
@@ -71,15 +76,15 @@ namespace GPSsimu
             
             while (true)
             {
-                double nextSpeed =R.Next(30, 50) ;
-                double nextModifier =R.NextDouble();
-                double speed = nextSpeed * nextModifier;
+                double nextSpeed =R.Next(minSpeed, maxSpeed+1) ;
+                //double nextModifier =R.NextDouble();
+                double speed = nextSpeed; //* nextModifier;
                 double travelLengthMeters = speed * (1000d / 3600d) * updateSpeed;
                 double currentLength = 0;
                 double nextLength = 0;
                 double brng;
                 string currPosMsg = "";
-                if(indexCounter == 0)
+                if(indexCounter == -1)
                     indexCounter = initialPosIndex + 1;
                  
 
@@ -88,7 +93,7 @@ namespace GPSsimu
 
                     if(indexCounter == initialRoute.points.Count - 1)
                     {
-                        currentPos = new Tuple<double,double>(double.Parse(initialRoute.points[indexCounter].Item1),double.Parse(initialRoute.points[indexCounter].Item1)); 
+                        currentPos = new Tuple<double,double>(double.Parse(initialRoute.points[indexCounter].Item1),double.Parse(initialRoute.points[indexCounter].Item2)); 
                         UpdateBus();
                         break;
                     }
@@ -99,7 +104,7 @@ namespace GPSsimu
                                                    initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2);
 
                         brng = BearingDegs(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
-                                            initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2)
+                                            initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2);
                     }
                     else
                     {
@@ -163,7 +168,7 @@ namespace GPSsimu
         {
             int lengthOfRoute = initialRoute.points.Count;
             int fourthLength = lengthOfRoute/4;
-            initialPosIndex = R.Next(0, lengthOfRoute - fourthLength);
+            initialPosIndex = R.Next(0, lengthOfRoute - fourthLength + 1 );
             string initialPosLat = initialRoute.points[initialPosIndex].Item1;
             string initialPosLon = initialRoute.points[initialPosIndex].Item2;
             string initPosMsg = "ID " + bID + " initialPos: (" + initialPosLat + ", " + initialPosLon + "), index being " + initialPosIndex.ToString(); 
@@ -288,13 +293,33 @@ namespace GPSsimu
         {
             if (routes.Count == 1)
             {
-
                 initialRoute.TurnAround();
                 indexCounter = 0;
             }
             else
             {
+                List<BusRoute> possibleRoutes;
+                string oldRouteStop= initialRoute.stops[initialRoute.stops.Count - 1];
+                string atStop = initialRoute.stops[initialRoute.stops.Count - 1];
+                possibleRoutes = routes.FindAll(R => (R.stops[R.stops.Count - 1] == atStop) || R.stops[0] == atStop);
+
+                if (possibleRoutes.Count == 1)
+                {
+                    initialRoute.TurnAround();
+                }
+
+                else
+                {
+                    possibleRoutes.Remove(initialRoute);
+                    initialRoute = possibleRoutes[R.Next(0, possibleRoutes.Count)];
+                    if (initialRoute.stops[0] != oldRouteStop)
+                    {
+                        initialRoute.TurnAround();
+                    }
+                }
+                indexCounter = 0;
                 
+   
             }
         }
         

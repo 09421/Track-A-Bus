@@ -16,18 +16,19 @@
         <GroupBox BorderBrush="Black" BorderThickness="1" Name="BusConfig" Header="Bus Configurations">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="35"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3.5*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3.5*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3.5*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3.5*"/>
+                    <RowDefinition Height="1.0*"/>
+                    <RowDefinition Height="3.5*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="3.5*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -37,10 +38,14 @@
                 <TextBlock Text="Update speed (s):  " Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
                 <TextBlock Text="Simulation mode " Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
                 <TextBlock Text="Bus direction" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Name="MinSpeedBlock" Text="Minimum speed: 30" Grid.Row="9" VerticalAlignment="Center"  HorizontalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Name="MaxSpeedBlock" Text="Maximum speed: 50" Grid.Row="11" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
                 <ComboBox Name="BusNrCombo" Grid.Column="1" Grid.Row="1" VerticalContentAlignment="Center" Padding="5,0,0,0" SelectionChanged="BusNrCombo_SelectionChanged_1"/>
                 <TextBox Name="UpdateSpeedBox" Grid.Column="1" Grid.Row="3" VerticalContentAlignment="Center" Padding="5,0,0,0"/>
                 <ComboBox Name="SimuModeCombo" Grid.Column="1" Grid.Row="5" VerticalContentAlignment="Center" Padding="5,0,0,0" SelectionChanged="SimuModeCombo_SelectionChanged_1"/>
                 <ComboBox Name="BusDirectionCombo" Grid.Column="1" Grid.Row="7" VerticalContentAlignment="Center" Padding="5,0,0,0" IsEnabled="False"/>
+                <Slider Name="MinSpeedSLider" Grid.Column="1" Grid.Row="9" Minimum="30" Maximum="1000" Value="30" ValueChanged="MinSpeedSLider_ValueChanged" VerticalAlignment="Center" HorizontalAlignment="Stretch"></Slider>
+                <Slider Name="MaxSpeedSLider" Grid.Column="1" Grid.Row="11" Minimum="50" Maximum="1000" Value="30" ValueChanged="MaxSpeedSLider_ValueChanged" VerticalAlignment="Center" HorizontalAlignment="Stretch"></Slider>
 
             </Grid>
         </GroupBox>
