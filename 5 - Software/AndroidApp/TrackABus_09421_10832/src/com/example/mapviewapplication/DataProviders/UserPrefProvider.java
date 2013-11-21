@@ -15,21 +15,29 @@ public class UserPrefProvider extends ContentProvider {
 
 	public static final String AUTHORITY = "com.example.mapviewapplication.DataProviders.UserPrefProvider";
 	private static final UriMatcher uriMatcher;
-	public static String BUS_ROUTE_TABLE = "PrefBusRouteTable";
-	public static String BUS_NUMBER_TABLE = "PrefBusTable";
-	public static String BUS_SPECIFIC_NUMBER_ID = "BUS_ID";
+	public static String BUSROUTE_TABLE = "BusRoute";
+	public static String BUSSTOP_TABLE = "BusStop";
+	public static String ROUTEPOINT_TABLE = "RoutePoint";
+	public static String BUSROUTE_ROUTEPOINT_TABLE = "BusRoute_RoutePoint";
+	public static String BUSROUTE_BUSSTOP_TABLE = "BusRoute_BusStop";
 
-	private static final int TABLE1 = 1;
-	private static final int TABLE2 = 2;
-	private static final int TABLE3 = 3;
+	private static final int BUSROUTE_CONTEXT = 1;
+	private static final int BUSSTOP_CONTEXT = 2;
+	private static final int ROUTEPOINT_CONTEXT = 3;
+	private static final int BUSROUTE_ROUTEPOINT_CONTEXT = 4;
+	private static final int BUSROUTE_BUSSTOP_CONTEXT = 5;
 
-	private static String DATABASE_NAME = "UserPrefs";
+	private static String DATABASE_NAME = "TrackABus_UserPrefs";
 	private static int DATABASE_VERSION = 1;
 
 	static {
 		uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-		uriMatcher.addURI(AUTHORITY, BUS_NUMBER_TABLE, TABLE1);
-		uriMatcher.addURI(AUTHORITY, BUS_ROUTE_TABLE, TABLE2);
+		uriMatcher.addURI(AUTHORITY, BUSROUTE_TABLE, BUSROUTE_CONTEXT);
+		uriMatcher.addURI(AUTHORITY, BUSSTOP_TABLE, BUSSTOP_CONTEXT);
+		uriMatcher.addURI(AUTHORITY, ROUTEPOINT_TABLE, ROUTEPOINT_CONTEXT);
+		uriMatcher.addURI(AUTHORITY, BUSROUTE_ROUTEPOINT_TABLE, BUSROUTE_ROUTEPOINT_CONTEXT);
+		uriMatcher.addURI(AUTHORITY, BUSROUTE_BUSSTOP_TABLE, BUSROUTE_BUSSTOP_CONTEXT);
+		
 	}
 
 	private static class UserPrefDB extends SQLiteOpenHelper {
@@ -41,24 +49,46 @@ public class UserPrefProvider extends ContentProvider {
 		@Override
 		public void onCreate(SQLiteDatabase db) {
 
-			String busNumberTableCreateQuery = "CREATE TABLE "
-					+ BUS_NUMBER_TABLE + "(" + UserPrefBusses.UserPrefIdField
-					+ " Integer primary key AUTOINCREMENT,"
-					+ UserPrefBusses.UserPrefBusNumberfield + " varchar(4)"
+			String BusRouteTableCreateQuery = "CREATE TABLE " + BUSROUTE_TABLE + "(" 
+					+ UserPrefBusRoute.BusRouteIdField + " Integer primary key,"
+					+ UserPrefBusRoute.BusRouteNumberField + " varchar(10)," 
+					+ UserPrefBusRoute.BusRouteSubField + " integer" 
+					+ ");";
+			
+			String RoutePointTableCreateQuery = "CREATE TABLE " + ROUTEPOINT_TABLE + "(" 
+					+ UserPrefRoutePoint.RoutePointIdField + " Integer primary key,"
+					+ UserPrefRoutePoint.RoutePointLatField + " Decimal(20,15)," 
+					+ UserPrefRoutePoint.RoutePointLonField + " Decimal(20,15)" 
 					+ ");";
 
-			String busRouteTableCreateQuery = "CREATE TABLE " + BUS_ROUTE_TABLE
-					+ " (" + UserPrefBusRoute.BusRouteIdField
-					+ " integer primary key AUTOINCREMENT,"
-					+ UserPrefBusRoute.BusRouteFBusIdField + " integer,"
-					+ UserPrefBusRoute.BusRouteLatField + " float,"
-					+ UserPrefBusRoute.BusRouteLonField + " float,"
-					+ " foreign key (" + UserPrefBusRoute.BusRouteFBusIdField
-					+ ") references " + BUS_NUMBER_TABLE + "("
-					+ UserPrefBusses.UserPrefIdField + "));";
+			String BusStopTableCreateQuery = "CREATE TABLE " + BUSSTOP_TABLE + "(" 
+					+ UserPrefBusStop.BusStopIdField + " Integer primary key,"
+					+ UserPrefBusStop.BusStopNameField + " varchar(100)," 
+					+ UserPrefBusStop.BusStopForeignRoutePointField + " integer references " +
+							ROUTEPOINT_TABLE + "("+ UserPrefRoutePoint.RoutePointIdField + ") ON DELETE CASCADE "  
+					+ ");";
+			
+			String BusRouteRoutePointTableCreateQuery = "CREATE TABLE " + BUSROUTE_ROUTEPOINT_TABLE + "("
+					+ UserPrefBusRouteRoutePoint.BusRouteRoutePointIDField + " integer primary key,"
+					+ UserPrefBusRouteRoutePoint.BusRouteField + " integer references " +
+							BUSROUTE_TABLE + "("+ UserPrefBusRoute.BusRouteIdField + ") ON DELETE CASCADE "  
+					+ UserPrefBusRouteRoutePoint.RoutePointField + " integer references " +
+							ROUTEPOINT_TABLE + "("+UserPrefRoutePoint.RoutePointIdField + ") ON DELETE CASCADE "  
+					+ ");";
+			
+			String BusRouteBusStopTableCreateQuery = "CREATE TABLE " + BUSROUTE_BUSSTOP_TABLE + "("
+					+ UserPrefBusRouteBusStop.BusRouteField + " integer references " +
+							BUSROUTE_TABLE + "("+ UserPrefBusRoute.BusRouteIdField + ") ON DELETE CASCADE "  
+					+ UserPrefBusRouteBusStop.BusStopField + " integer references " +
+							BUSSTOP_TABLE + "("+UserPrefBusStop.BusStopIdField + ") ON DELETE CASCADE "  
+					+ ");";
+					
 
-			db.execSQL(busNumberTableCreateQuery);
-			db.execSQL(busRouteTableCreateQuery);
+			db.execSQL(BusRouteTableCreateQuery);
+			db.execSQL(RoutePointTableCreateQuery);
+			db.execSQL(BusStopTableCreateQuery);
+			db.execSQL(BusRouteRoutePointTableCreateQuery);
+			db.execSQL(BusRouteBusStopTableCreateQuery);
 		}
 
 		@Override
@@ -71,30 +101,49 @@ public class UserPrefProvider extends ContentProvider {
 	private UserPrefDB dbHelper;
 
 	@Override
-	public int delete(Uri uri, String BusNumber, String[] nulled) {
+	public int delete(Uri uri, String BusRouteSubRoute, String[] nulled) {
 
-
+		int deletedRows = 0;
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		String getBusIDQuery = "Select " + UserPrefBusses.UserPrefIdField
-				+ " from " + BUS_NUMBER_TABLE + " Where "
-				+ UserPrefBusses.UserPrefBusNumberfield + " = '" + BusNumber
-				+ "'";
-		Cursor c = db.rawQuery(getBusIDQuery, null);
-
-		if (c.getCount() > 0) {
-			c.moveToFirst();
-			int busID = c.getInt(0);
-			int deletedRows = 0;
-			deletedRows = db.delete(
-					BUS_ROUTE_TABLE,
-					UserPrefBusRoute.BusRouteFBusIdField + "="
-							+ String.valueOf(busID), null);
-			deletedRows += db.delete(BUS_NUMBER_TABLE,
-					UserPrefBusses.UserPrefBusNumberfield + "='" + BusNumber
-							+ "'", null);
-			return deletedRows;
+		
+		String[] BusRoute_SubRoute = BusRouteSubRoute.split(";");
+		String BusRoute = BusRoute_SubRoute[0];
+		String SubRoute = BusRoute_SubRoute[1];
+		
+		String getRouteIDQuery = "Select " + UserPrefBusRoute.BusRouteIdField + " from " + BUSROUTE_TABLE
+								+ " where " + UserPrefBusRoute.BusRouteNumberField + " = '" + BusRoute
+								+ " ' and " + UserPrefBusRoute.BusRouteSubField + " = " + SubRoute;
+		Cursor rIDcursor = db.rawQuery(getRouteIDQuery, null);
+		if(rIDcursor.getCount() == 0 ){return -1;}
+		rIDcursor.moveToFirst();
+		int rID = rIDcursor.getInt(0); 
+		String getRoutePointsIDsQuery = 
+				"Select " + UserPrefRoutePoint.RoutePointIdField + " from " + ROUTEPOINT_TABLE
+			    +" inner join " + BUSROUTE_ROUTEPOINT_CONTEXT + "on "
+			    + BUSROUTE_ROUTEPOINT_CONTEXT+"."+UserPrefBusRouteRoutePoint.RoutePointField + " = "
+			    + ROUTEPOINT_TABLE+"."+UserPrefRoutePoint.RoutePointIdField
+				+ "where " + BUSROUTE_ROUTEPOINT_CONTEXT+"."+UserPrefBusRouteRoutePoint.BusRouteField
+				+ " = " + Integer.toString(rID);
+		Cursor pIDcursor = db.rawQuery(getRoutePointsIDsQuery, null);
+		if(pIDcursor.getCount() == 0){return -1;}
+		
+		deletedRows += db.delete(
+				BUSROUTE_TABLE, 
+				UserPrefBusRoute.BusRouteIdField+"="+Integer.toString(rID),
+				null);
+		pIDcursor.moveToFirst();
+		deletedRows += db.delete(
+				ROUTEPOINT_TABLE, 
+				UserPrefRoutePoint.RoutePointIdField + "=" +Integer.toString(pIDcursor.getInt(0))
+				,null);
+		while(pIDcursor.moveToNext())
+		{
+			deletedRows += db.delete(
+					ROUTEPOINT_TABLE, 
+					UserPrefRoutePoint.RoutePointIdField + "=" +Integer.toString(pIDcursor.getInt(0))
+					,null);
 		}
-		return -1;
+		return deletedRows;
 	}
 
 	@Override

@@ -118,12 +118,7 @@ public class BusListMenuActivity extends ListActivity {
 				if(msg != null){
 					switch(msg.what){
 					case BUSSES_DONE:
-						if(msg.getData().getStringArrayList("1").size() > 0)
-							UpdateBusList(msg.getData().getStringArrayList("1"));
-						else{
-							Toast.makeText(getApplicationContext(), "No bus routes found", Toast.LENGTH_SHORT).show();
-							pBar.setVisibility(View.GONE);
-						}
+						UpdateBusList(msg.getData().getStringArrayList("1"));
 						break;
 					default:
 						super.handleMessage(msg);

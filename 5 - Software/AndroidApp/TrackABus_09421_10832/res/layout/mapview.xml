@@ -7,6 +7,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     
+<<<<<<< HEAD
     
 <!--     <LinearLayout -->
 <!--         android:id="@+id/TopInformationBar" -->
@@ -118,6 +119,9 @@
 <!--     	</TextView> -->
 <!--     </LinearLayout> -->
     
+=======
+
+>>>>>>> 2a75e8888f875020a433927ea626367eed197d45
     <ProgressBar
             android:id="@+id/MapPBar"
             style="?android:attr/progressBarStyleLarge"
@@ -129,8 +133,130 @@
     <fragment
           android:id="@+id/map"
           android:layout_width="match_parent"
-          android:layout_height="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
           android:name="com.google.android.gms.maps.MapFragment"
           />
+        <LinearLayout
+        android:id="@+id/TopInformationBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#BC171D"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/RouteInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.50"
+            android:background="#BC171D"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:gravity="center"/>
+        <View
+            android:id="@+id/RouteStopSeperator"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#ffffff"
+            android:visibility="gone"/>
+        <TextView
+          android:id="@+id/StopInfo"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.5"        
+          android:textColor="#ffffff"
+          android:textSize="20dp"
+          android:background="#BC171D"
+          android:gravity="center"
+           android:visibility="gone"/>
+    </LinearLayout>
+      <View 
+        android:id="@+id/TopInformationBarFrame"
+        android:layout_below="@id/TopInformationBar"
+        android:layout_width="match_parent"
+   		android:layout_height="1dp"
+        android:background="#FFFFFF"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/DescendingBusTimeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="#BC171D"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/DescendingBusEndStopInfo"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="0.75"
+            android:background="#BC171D"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:gravity="center">
+    	</TextView>
+        <View 
+            android:layout_width="1dp"
+   			android:layout_height="match_parent"
+    		android:background="#FFFFFF"/>
+    	<TextView
+            android:id="@+id/DescendingBusTime"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1.50"
+            android:background="#BC171D"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:gravity="center">
+    	</TextView>
+    </LinearLayout>
+    <View 
+        android:id="@+id/DescAscSeperator"
+        android:layout_above="@id/DescendingBusTimeBar"
+        android:layout_width="match_parent"
+   		android:layout_height="1dp"
+        android:background="#FFFFFF"
+        android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/AscendingBusTimeBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/DescAscSeperator"
+        android:orientation="horizontal"
+        android:background="#BC171D"
+        android:visibility="gone">
+    	<TextView
+            android:id="@+id/AscendingBusEndStopInfo"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="0.75"
+            android:background="#BC171D"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:gravity="center">
+    	</TextView>
+    	<View 
+            android:layout_width="1dp"
+   			android:layout_height="match_parent"
+    		android:background="#FFFFFF"/>
+    	<TextView
+            android:id="@+id/AscendingBusTime"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="1.50"
+            android:background="#BC171D"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:gravity="center">
+    	</TextView>
+    </LinearLayout>
+        <View 
+        android:id="@+id/DescAscFrame"
+        android:layout_above="@id/AscendingBusTimeBar"
+        android:layout_width="match_parent"
+   		android:layout_height="1dp"
+        android:background="#FFFFFF"
+        android:visibility="gone"/>
+    
 </RelativeLayout>
 
