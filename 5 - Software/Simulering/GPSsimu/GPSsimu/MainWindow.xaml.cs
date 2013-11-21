@@ -188,7 +188,6 @@ namespace GPSsimu
                                 MySqlDataReader reader = cmd.ExecuteReader();
                                 reader.Read();
                                 id = int.Parse(reader["ID"].ToString());
-
                                 reader.Close();
                             }
                             bs.Add(new BusSimu(id, int.Parse(bnID),
@@ -586,7 +585,9 @@ namespace GPSsimu
             {
                 AddDirection();
             }
+           
         }
 
+        
     }
 }
