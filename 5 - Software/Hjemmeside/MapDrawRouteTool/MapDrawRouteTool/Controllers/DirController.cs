@@ -29,19 +29,22 @@ namespace MapDrawRouteTool.Controllers
 
             var routeNumberId = InsertRouteNumber(RouteNumber);
             List<List<string>> g = new List<List<string>>();
+            List<List<string>> SubRoutesIDList = new List<List<string>>();
             List<string> pointList;
+            List<string> pointIDList;
+            
             int counter;
             if (route != null && stops != null)
             {
                 pointList = ConvertLatLng(route);
-                InsertRoutePoints(pointList);
+                pointIDList = InsertRoutePoints(pointList);
                 if (SubRoutes != null)
                 {
                     InsertSubRouteIntoBusRoute(RouteNumber, SubRoutes.Count());
                     g = ConvertSubRoute(SubRoutes);
                     for (var i = 0; i < g.Count(); i++)
                     {
-                        InsertRoutePoints(g[i]);
+                        SubRoutesIDList.Add(InsertRoutePoints(g[i]));
                     }
                     counter = SubRoutes.Count();
                 }
@@ -55,7 +58,7 @@ namespace MapDrawRouteTool.Controllers
                 {
                     if (i == 0)
                     {
-                        RouteAndStops = CalculateBusStopsForRoute(stops, pointList, RouteNumber, i);
+                        RouteAndStops = CalculateBusStopsForRoute(stops, pointIDList, RouteNumber, i);
                         BusRouteWithStops = RouteAndStops[0];
                         BusStops = RouteAndStops[1];
                         InsertBusRoute_RoutePoint(routeNumberId, BusRouteWithStops);
@@ -63,7 +66,7 @@ namespace MapDrawRouteTool.Controllers
                     }
                     else
                     {
-                        RouteAndStops = CalculateBusStopsForRoute(stops, g[i - 1], RouteNumber, i);
+                        RouteAndStops = CalculateBusStopsForRoute(stops, SubRoutesIDList[i-1], RouteNumber, i);
                         BusRouteWithStops = RouteAndStops[0];
                         BusStops = RouteAndStops[1];
                         InsertBusRoute_RoutePoint(routeNumberId+i, BusRouteWithStops);
@@ -74,7 +77,7 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        private List<List<string>> CalculateBusStopsForRoute(List<string> stops, List<string> chosenRoute, string routeNumber, int subRoute)
+        private List<List<string>> CalculateBusStopsForRoute(List<string> stops, List<string> chosenRouteID, string routeNumber, int subRoute)
         {
             int routeID;
             using(var connection = new MySqlConnection(getConnectionString()))
@@ -93,7 +96,8 @@ namespace MapDrawRouteTool.Controllers
             }
             
             List<List<string>> RouteAndStops = new List<List<string>>();
-            List<string> RouteWithStopsID = new List<string>();
+            List<string> chosenRouteLatLng = new List<string>();
+            List<string> RouteWithStopsID = new List<string>(chosenRouteID);
             List<string> StopOnRoute = new List<string>();
             int stopCounter = 0;
 
@@ -102,10 +106,10 @@ namespace MapDrawRouteTool.Controllers
                 using (var cmd = connection.CreateCommand())
                 {
 
-                    cmd.CommandText = "Select RoutePoint.ID from RoutePoint where ";
-                    for (int j = 0; j < chosenRoute.Count - 2; j = j + 2)
+                    cmd.CommandText = "Select RoutePoint.Latitude,RoutePoint.Longitude from RoutePoint where ";
+                    for (int j = 0; j < chosenRouteID.Count; j++)
                     {
-                        cmd.CommandText += string.Format("(RoutePoint.Latitude={0} and RoutePoint.Longitude={1}) or ", chosenRoute[j], chosenRoute[j + 1]);
+                        cmd.CommandText += string.Format("(RoutePoint.ID = {0}) or ",chosenRouteID[j]);
                     }
                     cmd.CommandText = cmd.CommandText.TrimEnd(" or ".ToCharArray());
                     cmd.CommandText += " Order by RoutePoint.ID asc";
@@ -113,7 +117,8 @@ namespace MapDrawRouteTool.Controllers
                     MySqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        RouteWithStopsID.Add(reader["ID"].ToString());
+                        chosenRouteLatLng.Add(reader["Latitude"].ToString());
+                        chosenRouteLatLng.Add(reader["Longitude"].ToString());
                     }
                     reader.Close();
                     connection.Close();
@@ -159,12 +164,12 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
 
-                for (int k = 0; k < chosenRoute.Count - 2; k = k + 2)
+                for (int k = 0; k < chosenRouteLatLng.Count - 2; k = k + 2)
                 {
                     if (k == 0)
                     {
-                        currDistToStartOfRoute = (decimal)Haversine(stopLat, decimal.Parse(chosenRoute[0]), stopLon, decimal.Parse(chosenRoute[1]));
-                        currDistToEndOfRoute = (decimal)Haversine(stopLat, decimal.Parse(chosenRoute[chosenRoute.Count - 2]), stopLon, decimal.Parse(chosenRoute[chosenRoute.Count - 1]));
+                        currDistToStartOfRoute = (decimal)Haversine(stopLat, decimal.Parse(chosenRouteLatLng[0]), stopLon, decimal.Parse(chosenRouteLatLng[1]));
+                        currDistToEndOfRoute = (decimal)Haversine(stopLat, decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count - 2]), stopLon, decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count - 1]));
                         if (currDistToStartOfRoute < leastDistToStartOfRoute || leastDistToStartOfRoute == -1)
                         {
                             leastStartStopID = stopID;
@@ -179,8 +184,8 @@ namespace MapDrawRouteTool.Controllers
                         }
 
                     }
-                    currentDist = CalculateBusStopToRouteDist(stopLat, stopLon, (decimal.Parse(chosenRoute[k])), decimal.Parse(chosenRoute[k + 1]),
-                          decimal.Parse(chosenRoute[k + 2]), decimal.Parse(chosenRoute[k + 3]));
+                    currentDist = CalculateBusStopToRouteDist(stopLat, stopLon, (decimal.Parse(chosenRouteLatLng[k])), decimal.Parse(chosenRouteLatLng[k + 1]),
+                          decimal.Parse(chosenRouteLatLng[k + 2]), decimal.Parse(chosenRouteLatLng[k + 3]));
                     
                     if ((currentDist < leastDist || leastDist == -1) && currentDist <= 15 && currentDist != -1)
                     {
@@ -330,7 +335,7 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        public void InsertRoutePoints(List<string> points)
+        public List<string> InsertRoutePoints(List<string> points)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -355,7 +360,37 @@ namespace MapDrawRouteTool.Controllers
                         Debug.WriteLine(e.Message);
                     }
                 }
+                List<string> idOFInserted = new List<string>();
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        int FirstID = 0;
+                        int LastID = 0;
+                        connection.Open();
+                        cmd.CommandText = "select Last_insert_ID(), ID from RoutePoint order by(RoutePoint.ID) desc limit 1";
+                        var reader = cmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            FirstID = int.Parse(reader["Last_insert_ID()"].ToString());
+                            LastID = int.Parse(reader["ID"].ToString());
+                        }
+                        connection.Close();
+                        for (int i = FirstID; i <= LastID; i++)
+                        {
+                            idOFInserted.Add(i.ToString());
+                        }
+                        
+                    }
+                    catch (Exception e)
+                    {
+                        connection.Close();
+                        Debug.WriteLine(e.Message);
+                    }
+                }
+                return idOFInserted;
             }
+            
         }
 
         public void InsertBusRoute_RoutePoint(int routeNumberID, List<string> points)

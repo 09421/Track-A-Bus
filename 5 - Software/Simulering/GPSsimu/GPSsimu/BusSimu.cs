@@ -14,58 +14,61 @@ namespace GPSsimu
     class BusSimu
     {
         private int bID;
-        private int bnID;
-        private List<Tuple<string, string>> LatLonRoute;
+        private List<BusRoute> routes;
         private RichTextBox logBox;
-        private int initialPosIndex;
-        private Tuple<double, double> currentPos = new Tuple<double, double>(0, 0);
-        private Thread gpsPosCalcThread;
         private Window parent;
         private Random R;
-        private MySqlConnection conn;
         private int updateSpeed;
-        bool isRunning = true;
+        private int initialPosIndex;
+        private BusRoute initialRoute;
+        private Tuple<double, double> currentPos = new Tuple<double, double>(0, 0);
+        private Thread gpsPosCalcThread;
+        private int indexCounter = 0;
 
 
-        public BusSimu(int busID, int busNumberID,List<Tuple<string,string>> LatLonR, RichTextBox LogBox, Window w, Random Rand, int uSpeed)
+
+
+        public BusSimu(int busID, List<BusRoute> Routes, RichTextBox LogBox, Window w, Random Rand, int uSpeed, bool startDecending)
         {
+
             bID = busID;
-            bnID = busNumberID;
             logBox = LogBox;
-            LatLonRoute = LatLonR;
+            routes = Routes;
             parent = w;
             R = Rand;
             updateSpeed = uSpeed;
+            
+            if (startDecending)
+            {
+                initialRoute = Routes[Rand.Next(0, Routes.Count - 1)];
+                if (startDecending)
+                {
+                    initialRoute.TurnAround();
+                }
+            }
 
-            conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString());
 
-
-            gpsPosCalcThread = new Thread(new ThreadStart(gpsCalc));
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)gpsPosCalcThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             gpsPosCalcThread.CurrentCulture = customCulture;
-            conn.Open();
+            gpsPosCalcThread = new Thread(new ThreadStart(gpsCalc));
+            InitializeBusDB(startDecending);
             SetInitialPos();
-            conn.Close();
         }
         public void startSim()
         {
-            conn.Open();
             gpsPosCalcThread.Start();
         }
 
         public void stopSim()
         {
             gpsPosCalcThread.Abort();
-            conn.Close();
         }
-
-
 
         private delegate void invoker(string text);
         public void gpsCalc()
         {
-            int indexCounter = 0;
+            
             while (true)
             {
                 double nextSpeed =R.Next(30, 50) ;
@@ -82,21 +85,28 @@ namespace GPSsimu
 
                 while (currentLength < travelLengthMeters)
                 {
+
+                    if(indexCounter == initialRoute.points.Count - 1)
+                    {
+                        currentPos = new Tuple<double,double>(double.Parse(initialRoute.points[indexCounter].Item1),double.Parse(initialRoute.points[indexCounter].Item1)); 
+                        UpdateBus();
+                        break;
+                    }
+
                     if (currentPos.Item1 != 0 && currentPos.Item2 != 0 && nextLength == 0)
                     {
                         nextLength = Haversine(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
-                                                   LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
+                                                   initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2);
 
                         brng = BearingDegs(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
-                                            LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
-
+                                            initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2)
                     }
                     else
                     {
-                        nextLength = Haversine(LatLonRoute[indexCounter - 1].Item1, LatLonRoute[indexCounter - 1].Item2,
-                                                LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
-                        brng = BearingDegs(LatLonRoute[indexCounter - 1].Item1, LatLonRoute[indexCounter - 1].Item2,
-                                            LatLonRoute[indexCounter].Item1, LatLonRoute[indexCounter].Item2);
+                        nextLength = Haversine(initialRoute.points[indexCounter - 1].Item1, initialRoute.points[indexCounter - 1].Item2,
+                                                initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2);
+                        brng = BearingDegs(initialRoute.points[indexCounter - 1].Item1, initialRoute.points[indexCounter - 1].Item2,
+                                            initialRoute.points[indexCounter].Item1, initialRoute.points[indexCounter].Item2);
 
                     }
                     Console.WriteLine("Next: {0} ; Current: {1}", nextLength, currentLength);
@@ -106,13 +116,13 @@ namespace GPSsimu
                     {
                         //The distance into the linepiece the busshould drive.
                         double missingLength = travelLengthMeters - currentLength;
-                        if (brng == 0)
-                        {
-                            currPosMsg = "Bus " +bID.ToString() + ", new endpoint reached, missing length: " + (indexCounter+1).ToString();
-                            parent.Dispatcher.BeginInvoke(new invoker(LogTextWrite), new object[] { currPosMsg });
-                            indexCounter++;
-                            continue;
-                        }
+                        //if (brng == 0)
+                        //{
+                        //    currPosMsg = "Bus " +bID.ToString() + ", new endpoint reached, missing length: " + (indexCounter+1).ToString();
+                        //    parent.Dispatcher.BeginInvoke(new invoker(LogTextWrite), new object[] { currPosMsg });
+                        //    indexCounter++;
+                        //    continue;
+                        //}
                         if (currentPos.Item1 != 0 && currentPos.Item2 != 0)
                         {
                             currentPos = finalGPSPosDeg(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
@@ -120,7 +130,7 @@ namespace GPSsimu
                         }
                         else
                         {
-                            currentPos = finalGPSPosDeg(LatLonRoute[indexCounter - 1].Item1, LatLonRoute[indexCounter - 1].Item2,
+                            currentPos = finalGPSPosDeg(initialRoute.points[indexCounter - 1].Item1, initialRoute.points[indexCounter - 1].Item2,
                                                                    brng, missingLength);
                         }
                         SetCurrentPos();
@@ -151,22 +161,26 @@ namespace GPSsimu
         
         private void SetInitialPos()
         {
-            int lengthOfRoute = LatLonRoute.Count;
+            int lengthOfRoute = initialRoute.points.Count;
             int fourthLength = lengthOfRoute/4;
             initialPosIndex = R.Next(0, lengthOfRoute - fourthLength);
-            string initialPosLat = LatLonRoute[initialPosIndex].Item1;
-            string initialPosLon = LatLonRoute[initialPosIndex].Item2;
+            string initialPosLat = initialRoute.points[initialPosIndex].Item1;
+            string initialPosLon = initialRoute.points[initialPosIndex].Item2;
             string initPosMsg = "ID " + bID + " initialPos: (" + initialPosLat + ", " + initialPosLon + "), index being " + initialPosIndex.ToString(); 
             parent.Dispatcher.BeginInvoke(new invoker(LogTextWrite), new object[] { initPosMsg });
 
-            using (MySqlCommand cmd = new MySqlCommand())
+            using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
             {
-                string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
-                               " values (" + initialPosLon + ", " + initialPosLat + ", '" +
-                               DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
-                cmd.CommandText = query;
-                cmd.Connection = conn; 
-                cmd.ExecuteNonQuery();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+                    string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
+                                   " values (" + initialPosLon + ", " + initialPosLat + ", '" +
+                                   DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
         }
 
@@ -174,15 +188,19 @@ namespace GPSsimu
         {
             string currPosMsg = "BUS " + bID.ToString() + " NEW GPS DATA: (" + currentPos.Item1.ToString() + ", " + currentPos.Item2.ToString() + ")";
             parent.Dispatcher.BeginInvoke(new invoker(LogTextWrite), new object[] { currPosMsg });
-            using(MySqlCommand cmd = new MySqlCommand())
+            using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
             {
-                string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
-                               " values (" + currentPos.Item2.ToString() + ", " + currentPos.Item1.ToString() + ", '" +
-                               DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
-                cmd.CommandText = query;
-                cmd.Connection = conn;
-                
-                cmd.ExecuteNonQuery();
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+                    string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
+                                   " values (" + currentPos.Item2.ToString() + ", " + currentPos.Item1.ToString() + ", '" +
+                                   DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
+                    cmd.CommandText = query;
+
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
         }
 
@@ -224,7 +242,6 @@ namespace GPSsimu
                                  Math.Cos(latRad) * Math.Sin(angularDistance) * Math.Cos(brngRad));
             double finalLonRad;
 
-//Console.WriteLine("Latitiude: {0}, Longitude: {1}, Bearing: {2}, distance: {3}", lat, lon, bearingDegs, dist_m);
 
             if (Math.Cos(finalLatRad) == 0)
             {
@@ -252,11 +269,34 @@ namespace GPSsimu
             return rad * double.Parse((180 / Math.PI).ToString());
         }
 
-        private void updateRoute()
+        private void InitializeBusDB(bool desc)
         {
-
+            string query = string.Format("Update Bus set Bus.fk_BusRoute = {0}, Bus.IsDescending = {1}", initialRoute.id, desc.ToString());
+            using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
+            {
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+                    conn.Open();
+                    cmd.CommandText = query;
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
         }
 
+        private void UpdateBus()
+        {
+            if (routes.Count == 1)
+            {
+
+                initialRoute.TurnAround();
+                indexCounter = 0;
+            }
+            else
+            {
+                
+            }
+        }
         
     }
 }
