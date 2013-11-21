@@ -12,7 +12,6 @@ import com.example.mapviewapplication.TrackABus.BusStop;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.util.Log;
-import android.util.Pair;
 
 public class SoapProvider {
 	private SoapObject response;
@@ -89,9 +88,9 @@ public class SoapProvider {
 		  return BusStoplist;
 	  }
 	  
-		public ArrayList<ArrayList<LatLng>> GetBusRoute(String BusNumber){
-
-			ArrayList<ArrayList<LatLng>> Route = new ArrayList<ArrayList<LatLng>>();
+		public ArrayList<LatLng> GetBusRoute(String BusNumber){
+				  
+			  ArrayList<LatLng> Routelist = new ArrayList<LatLng>();
 			  try{
 				  SoapObject request = new SoapObject(NAMESPACE, "GetBusRoute");
 				  request.addProperty("busNumber", BusNumber);
@@ -100,34 +99,25 @@ public class SoapProvider {
 				  envelope.setOutputSoapObject(request);
 				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 				  androidHttpTransport.call(NAMESPACE+"GetBusRoute", envelope);
-
 				  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
-
-				  
-				  
-				  
-				  for(int g = 0; g<response.getPropertyCount(); g++){
-					  ArrayList<LatLng> RoutePoints = new ArrayList<LatLng>();
-					  for(int h = 0; h<((SoapObject)((SoapObject)response.getProperty(g)).getProperty(0)).getPropertyCount(); h++){
-						  
-						  RoutePoints.add(new LatLng(
-								  Double.parseDouble(((SoapObject)((SoapObject)response.getProperty(g)).getProperty(0)).getProperty(h).toString().replace(",", ".")),
-								  Double.parseDouble(((SoapObject)((SoapObject)response.getProperty(g)).getProperty(1)).getProperty(h).toString().replace(",", "."))));
-						  
-					  }
-					  Route.add(RoutePoints);
+	
+				  SoapObject lat = (SoapObject)response.getProperty(0);
+				  SoapObject lng = (SoapObject)response.getProperty(1);
+	
+				  for(int h = 0; h<lat.getPropertyCount();h++){
+					  Routelist.add(new LatLng(Double.parseDouble(lat.getProperty(h).toString().replace(",", ".")), Double.parseDouble(lng.getProperty(h).toString().replace(",", "."))));
 				  }
 			  }catch(Exception e){
 				  Log.e("DEBUG!!", e.getMessage());
 				  return null;
 			  }
 
-			  return Route;
+			  return Routelist;
 		}
 		
 		public ArrayList<LatLng> GetBusPos(String BusNumber){
 			  
-			  ArrayList<LatLng> BusPoint = new ArrayList<LatLng>();;
+			  ArrayList<LatLng> Routelist = new ArrayList<LatLng>();
 			  try{
 				  SoapObject request = new SoapObject(NAMESPACE, "GetbusPos");
 				  request.addProperty("busNumber", BusNumber);
@@ -137,17 +127,40 @@ public class SoapProvider {
 				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 				  androidHttpTransport.call(NAMESPACE+"GetbusPos", envelope);
 				  SoapObject testresponse = (SoapObject)envelope.getResponse(); //get the response from your webservice
-				  
-				  
-				  for(int i = 0; i<testresponse.getPropertyCount(); i++){
-					  double a = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(0).toString().replace(",", "."));
-					  double b = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(1).toString().replace(",", "."));
-					  BusPoint.add(new LatLng(a, b));
-				  }
-
+	
+				  Routelist.add(new LatLng(Double.parseDouble(testresponse.getProperty(0).toString().replace(",", ".")), Double.parseDouble(testresponse.getProperty(1).toString().replace(",", "."))));
 			  }catch(Exception e){
 				  return null;
 			  }
-			  return BusPoint;
+			  return Routelist;
+		}
+		
+		public ArrayList<String> GetBusToStopTime(String stopName, String routeNumber)
+		{
+			  ArrayList<String> RouteList = new ArrayList<String>();
+			  try{
+				  SoapObject request = new SoapObject(NAMESPACE, "GetBusTime");
+				  request.addProperty("StopName", stopName);
+				  request.addProperty("RouteNumber", routeNumber);
+				  SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+				  envelope.dotNet = true;
+				  envelope.setOutputSoapObject(request);
+				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+				  androidHttpTransport.call(NAMESPACE+"GetBusTime", envelope);
+				  SoapObject testresponse = (SoapObject)envelope.getResponse(); //get the response from your webservice
+				  try
+				  {
+					RouteList.add(testresponse.getProperty(0).toString());
+					RouteList.add(testresponse.getProperty(1).toString());
+				  }
+				  catch(Exception e)
+				  {
+					return RouteList;  
+				  }
+			  }catch(Exception e){
+				  return null;
+			  }
+			  return RouteList;
+		
 		}
 }
