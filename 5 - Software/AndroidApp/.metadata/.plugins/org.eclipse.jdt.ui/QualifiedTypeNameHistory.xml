@@ -3,12 +3,13 @@
 <fullyQualifiedTypeName name="com.google.android.gms.maps.GoogleMap.OnMarkerClickListener"/>
 <fullyQualifiedTypeName name="com.example.mapviewapplication.TrackABus.BusStop"/>
 <fullyQualifiedTypeName name="com.google.android.gms.maps.model.BitmapDescriptorFactory"/>
-<fullyQualifiedTypeName name="org.ksoap2.serialization.SoapObject"/>
 <fullyQualifiedTypeName name="android.util.Pair"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="android.util.Log"/>
 <fullyQualifiedTypeName name="java.lang.String"/>
-<fullyQualifiedTypeName name="com.google.android.gms.maps.model.LatLng"/>
 <fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="android.widget.Toast"/>
+<fullyQualifiedTypeName name="org.ksoap2.serialization.SoapObject"/>
+<fullyQualifiedTypeName name="com.google.android.gms.maps.model.LatLng"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>

@@ -1,6 +1,7 @@
 package com.example.mapviewapplication;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.example.mapviewapplication.DataProviders.SoapProvider;
@@ -145,7 +146,7 @@ public class BusMapActivity extends Activity {
 
 	Thread t;
 	ArrayList<LatLng> LatLngList;
-	Marker mark;
+
 	Handler handler = new Handler(Looper.getMainLooper());
 	float fLat;
 	float fLng;
@@ -202,14 +203,16 @@ public class BusMapActivity extends Activity {
 		new Thread(new Runnable() {
 	        public void run() { 
 
-	        	final LatLng SelectedBusPos = soapProvider.GetBusPos(SelectedBus);
+	        	final ArrayList<LatLng> SelectedBusPos = soapProvider.GetBusPos(SelectedBus);
 	
 	    		Runnable setFirstMark = new Runnable(){
 	
 	    			@Override
 	    			public void run() {
+	    				marks = new ArrayList<Marker>();
 	    				if(SelectedBusPos != null)
-	    					mark = map.addMarker(new MarkerOptions().position(SelectedBusPos));
+	    					for(int i = 0; i<SelectedBusPos.size(); i++)
+	    						marks.add(map.addMarker(new MarkerOptions().position(SelectedBusPos.get(i))));
 	    				else
 	    					Toast.makeText(getApplicationContext(), "No bus found on route", Toast.LENGTH_SHORT).show();
 	    			}			
@@ -244,16 +247,23 @@ public class BusMapActivity extends Activity {
 					}				
 			}
 		}
-		LatLng CurrentLatLng;
+		ArrayList<LatLng> CurrentLatLng;
 		Runnable setMark = new Runnable(){
 
 			@Override
 			public void run() {
-				mark.remove();
-				mark = map.addMarker(new MarkerOptions().position(CurrentLatLng));
+
+				for(int j = 0; j<marks.size(); j++){
+					marks.get(j).remove();
+				}
+				marks = new ArrayList<Marker>();
+				for(int i = 0; i<CurrentLatLng.size(); i++){					
+					marks.add(map.addMarker(new MarkerOptions().position(CurrentLatLng.get(i))));
+				}			
 			}			
 		};		
 	}
+	ArrayList<Marker> marks;
 	
 	
 	private void DrawRoute(float[] Lat, float[] Lng) {
@@ -278,7 +288,7 @@ public class BusMapActivity extends Activity {
 			@Override
 			public boolean onMarkerClick(Marker marker) {
 				Log.e("DEBUG!!", "Marker click : " + String.valueOf(marker.getTitle()));
-				return false;
+				return true;
 			}
 		});
 	}

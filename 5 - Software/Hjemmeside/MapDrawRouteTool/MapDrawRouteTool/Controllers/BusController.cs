@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 
 namespace MapDrawRouteTool.Controllers
 {
@@ -25,7 +26,7 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
-                        cmd.CommandText = "SELECT RouteNumber FROM BusRoute";
+                        cmd.CommandText = "SELECT RouteNumber FROM BusRoute WHERE SubRoute = 0";
                         connection.Open();
                         var read = cmd.ExecuteReader();
 
@@ -173,7 +174,7 @@ namespace MapDrawRouteTool.Controllers
                         {
                             Busses.Add(read.GetInt32(0));
                         }
-                        read.Close(); 
+                        read.Close();
                         connection.Close();
                         return ConvertToJason(Busses);
                     }
@@ -181,6 +182,52 @@ namespace MapDrawRouteTool.Controllers
                     {
                         connection.Close();
                         return null;
+                    }
+                }
+            }
+        }
+
+        public string SaveNewBus(string BusName)
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        cmd.CommandText = String.Format("INSERT INTO Bus (ID, IsDescending, fk_BusRoute) VALUES({0}, null, null)", BusName);
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                        return "Success";
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                        connection.Close();
+                        return e.Message;
+                    }
+                }
+            }
+        }
+
+        public void Deletebus(string BusName)
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        cmd.CommandText = String.Format("DELETE FROM Bus WHERE ID = {0}", BusName);
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        connection.Close();
+                        Debug.WriteLine(e.Message);
                     }
                 }
             }

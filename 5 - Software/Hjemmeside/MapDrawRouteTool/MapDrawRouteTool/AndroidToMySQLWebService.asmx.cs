@@ -30,7 +30,7 @@ namespace MapDrawRouteTool
                     try
                     {
                         connection.Open();
-                        cmd.CommandText = "SELECT * FROM trackabus_dk_db.BusRoute;";
+                        cmd.CommandText = "SELECT * FROM trackabus_dk_db.BusRoute WHERE SubRoute = 0;";
                         MySqlDataReader dataReader = cmd.ExecuteReader();
                         while (dataReader.Read())
                         {
@@ -51,12 +51,9 @@ namespace MapDrawRouteTool
         }
 
         [WebMethod]
-        public List<List<string>> GetBusRoute(string busNumber)
+        public List<Route> GetBusRoute(string busNumber)
         {
-
-            List<string> BusRouteLat = new List<string>();
-            List<string> BusRouteLon = new List<string>();
-            List<List<string>> totalRoute = new List<List<string>>();
+            List<Route> totalRoute = new List<Route>();
 
             using (var connection = new MySqlConnection(GetConnectionString()))
             {
@@ -65,37 +62,50 @@ namespace MapDrawRouteTool
                     try
                     {
                         connection.Open();
-
-                        cmd.CommandText = String.Format("SELECT t1.Latitude, t1.Longitude " +
-                                                        "FROM RoutePoint AS t1 INNER JOIN BusRoute_RoutePoint AS t2 ON t1.ID = t2.fk_RoutePoint " +
-                                                        "INNER JOIN BusRoute AS t3 ON t2.fk_BusRoute=t3.ID " +
-                                                        "WHERE t3.RouteNumber = '{0}' AND " +
-                                                        "t1.ID NOT IN (SELECT BusStop.fk_RoutePoint FROM BusStop)", busNumber);
-
-
-
+                        cmd.CommandText = String.Format("SELECT SubRoute FROM BusRoute WHERE RouteNumber = '{0}'", busNumber);
+                        List<string> SubrouteNumbers = new List<string>();
                         MySqlDataReader dataReader = cmd.ExecuteReader();
                         while (dataReader.Read())
                         {
-                            BusRouteLat.Add(dataReader["Latitude"] + "");
-                            BusRouteLon.Add(dataReader["Longitude"] + "");
+                            SubrouteNumbers.Add(dataReader["SubRoute"].ToString());
                         }
                         dataReader.Close();
+
+
+                        foreach (var subroutenumber in SubrouteNumbers)
+                        {
+                            var route = new Route();
+
+                            cmd.CommandText = String.Format("SELECT t1.Latitude, t1.Longitude " +
+                                                           "FROM RoutePoint AS t1 " +
+                                                           "INNER JOIN BusRoute_RoutePoint AS t2 ON t1.ID = t2.fk_RoutePoint " +
+                                                           "INNER JOIN BusRoute AS t3 ON t2.fk_BusRoute = t3.ID " +
+                                                           "WHERE t3.RouteNumber = '{0}' AND t3.SubRoute = {1} AND " +
+                                                           "t1.ID NOT IN (SELECT BusStop.fk_routePoint FROM BusStop)", busNumber, subroutenumber);
+                            MySqlDataReader dataReader1 = cmd.ExecuteReader();
+
+                            while (dataReader1.Read())
+                            {
+                                route.Lat.Add(dataReader1["Latitude"] + "");
+                                route.Lng.Add(dataReader1["Longitude"] + "");
+                            }
+                            dataReader1.Close();
+                            totalRoute.Add(route);
+                        }
+
                         connection.Close();
                     }
                     catch (Exception e)
                     {
                         connection.Close();
-                        var i = new List<string>();
-                        i.Add(e.Message);
-                        totalRoute.Add(i);
+                        totalRoute = new List<Route>();
+                        var r = new Route();
+                        r.Lat.Add(e.Message);
+                        totalRoute.Add(r);
                         return totalRoute;
                     }
                 }
             }
-
-            totalRoute.Add(BusRouteLat);
-            totalRoute.Add(BusRouteLon);
             return totalRoute;
         }
 
@@ -150,11 +160,9 @@ namespace MapDrawRouteTool
         }
 
         [WebMethod]
-        public List<string> GetbusPos(string busNumber)
+        public List<Point> GetbusPos(string busNumber)
         {
-            List<string> BusRouteLat = new List<string>();
-            List<string> BusRouteLon = new List<string>();
-
+            List<Point> totalRoute = new List<Point>();
             using (var connection = new MySqlConnection(GetConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
@@ -162,33 +170,47 @@ namespace MapDrawRouteTool
                     try
                     {
                         connection.Open();
-                        cmd.CommandText = String.Format("SELECT t1.Latitude, t1.Longitude " +
-                                 "FROM GPSPosition AS t1 INNER JOIN Bus AS t2 ON t1.fk_Bus=t2.ID " +
-                                 "INNER JOIN BusRoute AS t3 on t2.fk_BusRoute = t3.ID " +
-                                 "WHERE t3.RouteNumber='{0}';", busNumber);
+                        cmd.CommandText = String.Format("SELECT Bus.ID FROM Bus " +
+                                                        "INNER JOIN BusRoute ON Bus.fk_BusRoute = BusRoute.ID " +
+                                                        "WHERE BusRoute.RouteNumber = '{0}'", busNumber);
 
                         MySqlDataReader dataReader = cmd.ExecuteReader();
+                        List<int> NumberOfBussesOnRoute = new List<int>(); ;
                         while (dataReader.Read())
                         {
-                            BusRouteLat.Add(dataReader["Latitude"] + "");
-                            BusRouteLon.Add(dataReader["Longitude"] + "");
+                            NumberOfBussesOnRoute.Add((int)dataReader["ID"]);
                         }
 
                         dataReader.Close();
+
+                        for (int i = 0; i < NumberOfBussesOnRoute.Count(); i++)
+                        {
+                            cmd.CommandText = String.Format("SELECT t1.Latitude, t1.Longitude " +
+                                                            "FROM GPSPosition AS t1 " +
+                                                            "INNER JOIN Bus AS t2 ON t1.fk_Bus=t2.ID " +
+                                                            "INNER JOIN BusRoute AS t3 on t2.fk_BusRoute = t3.ID " +
+                                                            "WHERE t3.RouteNumber='{0}' AND t1.fk_Bus = {1} ORDER BY t1.ID DESC LIMIT 1;", busNumber, NumberOfBussesOnRoute[i]);
+
+                            MySqlDataReader dataReader2 = cmd.ExecuteReader();
+                            while (dataReader2.Read())
+                            {
+                                totalRoute.Add(new Point() { Lat = dataReader2["Latitude"] + "", Lng = dataReader2["Longitude"] + "" });
+                            }
+
+                            dataReader2.Close();
+                        }
+
                         connection.Close();
                     }
                     catch (Exception e)
                     {
-                        return null;
+                        totalRoute = new List<Point>();
+                        totalRoute.Add(new Point() { Lat = e.Message });
+                        return totalRoute;
                     }
                 }
             }
-
-            List<string> totalRoute = new List<string>();
-            totalRoute.Add(BusRouteLat[BusRouteLat.Count() - 1]);
-            totalRoute.Add(BusRouteLon[BusRouteLon.Count() - 1]);
             return totalRoute;
-
         }
 
         [WebMethod]
@@ -268,4 +290,25 @@ namespace MapDrawRouteTool
             return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
         }
     }
+
+    public class Route
+    {
+        public Route()
+        {
+            Lat = new List<string>();
+            Lng = new List<string>();
+        }
+        public List<string> Lat;
+        public List<string> Lng;
+    }
+
+    public class Point
+    {
+        public Point()
+        {
+        }
+        public string Lat;
+        public string Lng;
+    }
+
 }

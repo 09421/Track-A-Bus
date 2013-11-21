@@ -101,9 +101,42 @@
         });
     }
 
-    function RemoveSelected() {
+    function RemoveSelected(busToremove) {
+        if (busToremove != null) {
+            $.ajax({
+                type: "POST",
+                url: "Bus/Deletebus",
+                traditional: true,
+                data: {
+                    BusName: busToremove
+                },
+                success: function () {
+                    alert("Delete Complete");
+                    var select = document.getElementById("busses");
+
+                    select.options.remove((document.getElementById("Busname").value))
+                }
+            });
+        }
     }
     function AddNewBus() {
+        var BusName = document.getElementById("Busname").value;
+        if (BusName != null) {
+            $.ajax({
+                type: "POST",
+                url: "Bus/SaveNewBus",
+                traditional: true,
+                data: {
+                    BusName: BusName
+                },
+                success: function () {
+                    debugger;
+                    alert("Save Complete");
+                    var select = document.getElementById("busses");
+                    select.options.add(new Option(document.getElementById("Busname").value));
+                }
+            });
+            }
     }
 
     var arrFrom = new Array();
@@ -183,18 +216,20 @@
     </div>
     <div style="float: right; width: 50%; height: 100%; text-align: left; padding-top: 10px;">
         <h3 style="color: ghostwhite;">Create/Delete bus</h3>
-        <select id="busses" multiple size="15" name="Routes" style="width: 170px">
-        </select>
-        <p style="color: ghostwhite;">
-            Bus name:
-            <input type="text" name="Busname" style="width: 100px">
-        </p>
-        <p>
-            <input type="button" value="Add" style="width: 80px" onclick="RemoveSelected();"/>
-            <input type="button" value="Remove" style="width: 80px" onclick="AddNewBus()"/>
-        </p>
+        <form name="Bus_box">
+            <select id="busses" multiple size="15" name="Routes" style="width: 170px">
+            </select>
+            <p style="color: ghostwhite;">
+                Bus name:
+            <input type="text" name="Busname" style="width: 100px" id="Busname">
+            </p>
+            <p>
+                <input type="button" value="Add" style="width: 80px" onclick="AddNewBus();" />
+                <input type="button" value="Remove" style="width: 80px" onclick="RemoveSelected(this.form.Routes);" />
+            </p>
 
 
-        <input type="button" value="Save" style="width: 80px"/>
+            <input type="button" value="Save" style="width: 80px" />
+        </form>
     </div>
 </body>

@@ -125,9 +125,9 @@ public class SoapProvider {
 			  return Route;
 		}
 		
-		public LatLng GetBusPos(String BusNumber){
+		public ArrayList<LatLng> GetBusPos(String BusNumber){
 			  
-			  LatLng BusPoint;
+			  ArrayList<LatLng> BusPoint = new ArrayList<LatLng>();;
 			  try{
 				  SoapObject request = new SoapObject(NAMESPACE, "GetbusPos");
 				  request.addProperty("busNumber", BusNumber);
@@ -137,7 +137,14 @@ public class SoapProvider {
 				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 				  androidHttpTransport.call(NAMESPACE+"GetbusPos", envelope);
 				  SoapObject testresponse = (SoapObject)envelope.getResponse(); //get the response from your webservice
-				  BusPoint = new LatLng(Double.parseDouble(testresponse.getProperty(0).toString().replace(",", ".")), Double.parseDouble(testresponse.getProperty(1).toString().replace(",", ".")));
+				  
+				  
+				  for(int i = 0; i<testresponse.getPropertyCount(); i++){
+					  double a = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(0).toString().replace(",", "."));
+					  double b = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(1).toString().replace(",", "."));
+					  BusPoint.add(new LatLng(a, b));
+				  }
+
 			  }catch(Exception e){
 				  return null;
 			  }
