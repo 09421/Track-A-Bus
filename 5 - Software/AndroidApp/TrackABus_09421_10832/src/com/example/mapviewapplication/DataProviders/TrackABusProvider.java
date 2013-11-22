@@ -90,28 +90,34 @@ public class TrackABusProvider extends Service{
 			
 			new Thread(new Runnable() {
 		        public void run() {
-		        	ArrayList<LatLng> arg0 = soapProvider.GetBusRoute(busNumber);
+		        	Bundle b = new Bundle();
+		        	ArrayList<ArrayList<LatLng>> arg0 = soapProvider.GetBusRoute(busNumber);
 		        	ArrayList<BusStop> arg1 = soapProvider.GetBusStops(busNumber);
 					
-					float[] RouteLat = new float[arg0.size()];
-					float[] RouteLng = new float[arg0.size()];
+		        	for(int j = 0; j<arg0.size(); j++){
+						float[] RouteLat = new float[arg0.get(j).size()];
+						float[] RouteLng = new float[arg0.get(j).size()];
+							for(int i = 0; i < arg0.get(j).size(); i++){
+								RouteLat[i] = (float) arg0.get(j).get(i).latitude;
+								RouteLng[i] = (float) arg0.get(j).get(i).longitude;
+						}
+							b.putFloatArray("RouteLat " + String.valueOf(j), RouteLat);
+							b.putFloatArray("RouteLng " + String.valueOf(j), RouteLng);
+		        	}
+		        	
+
 					float[] StopLat = new float[arg1.size()];
 					float[] StopLng = new float[arg1.size()];
 					String[] StopName = new String[arg1.size()];
 
-					for(int i = 0; i < arg0.size(); i++){
-						RouteLat[i] = (float) arg0.get(i).latitude;
-						RouteLng[i] = (float) arg0.get(i).longitude;
-					}
+
 					for(int i = 0; i < arg1.size(); i++){
 						StopLat[i] = (float) arg1.get(i).Position.latitude;
 						StopLng[i] = (float) arg1.get(i).Position.longitude;
 						StopName[i] = (String)arg1.get(i).Name;
 					}
 					
-					Bundle b = new Bundle();
-					b.putFloatArray("RouteLat", RouteLat);
-					b.putFloatArray("RouteLng", RouteLng);
+
 					b.putFloatArray("StopLat", StopLat);
 					b.putFloatArray("StopLng", StopLng);
 					b.putStringArray("StopName", StopName);

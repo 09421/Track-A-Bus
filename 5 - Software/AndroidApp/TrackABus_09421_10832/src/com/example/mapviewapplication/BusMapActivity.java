@@ -117,8 +117,10 @@ public class BusMapActivity extends Activity {
 			        ((View)findViewById(R.id.TopInformationBarFrame)).setVisibility(View.VISIBLE);
 			        StopNames = msg.getData().getStringArray("StopName");
 			        
-					SetUpMap(msg.getData().getFloatArray("RouteLat")[0], msg.getData().getFloatArray("RouteLng")[0]);
-					DrawRoute(msg.getData().getFloatArray("RouteLat"), msg.getData().getFloatArray("RouteLng"));
+					SetUpMap();
+					for(int i = 0; i<(msg.getData().size()-3)/2;i++){
+						DrawRoute(msg.getData().getFloatArray("RouteLat " + String.valueOf(i)), msg.getData().getFloatArray("RouteLng " + String.valueOf(i)));
+					}
 					DrawBusStops(msg.getData().getFloatArray("StopLat"), msg.getData().getFloatArray("StopLng"));
 					
 					if(isOnline())
@@ -133,9 +135,7 @@ public class BusMapActivity extends Activity {
 		}			
 	}
     
-    private LatLng GetCurrentLatLngForBus(String selectedBus) {    	
-    	return new LatLng(56.177585, 10.218315);
-	}
+
 	private static final LatLng AARHUS = new LatLng(56.162939,10.203921);
 
 	private void SetUpMap() {
@@ -229,42 +229,44 @@ public class BusMapActivity extends Activity {
 	}
 	
 	private void UpdateBusLocation() {
-		
 		new Thread(new Runnable() {
-	        public void run() {
-	        	
-	        	final LatLng test = soapProvider.GetBusPos(SelectedBus).get(0);
+	        public void run() { 
 
-		    		Runnable setFirstMark = new Runnable(){
+	        	final ArrayList<LatLng> SelectedBusPos = soapProvider.GetBusPos(SelectedBus);
 	
-		    			@Override
-		    			public void run() {
-		    				mark = map.addMarker(new MarkerOptions().position(test));
-		    				Log.e("DEBUG!", "MARKER ADDED");
-		    			}			
-		    		};
-		    		
+	    		Runnable setFirstMark = new Runnable(){
+	
+	    			@Override
+	    			public void run() {
+	    				marks = new ArrayList<Marker>();
+	    				if(SelectedBusPos != null)
+	    					for(int i = 0; i<SelectedBusPos.size(); i++)
+	    						marks.add(map.addMarker(new MarkerOptions().position(SelectedBusPos.get(i))));
+	    				else
+	    					Toast.makeText(getApplicationContext(), "No bus found on route", Toast.LENGTH_SHORT).show();
+	    			}			
+	    		};
 	    		handler.post(setFirstMark);
-
-	    		t = new Thread(new updateMarker());
-	    		t.start();
-	        	}
-	        }).start();	
+			
+			t = new Thread(new updateMarker());
+			t.start();
+			}
+	
+	    }).start();	
 	}	
 
-
+	ArrayList<Marker> marks;
 	Boolean Running = true;
 	public class updateMarker implements Runnable{
-		private String stop;
-		private String route;
-		private SoapProvider soap;
-
+		
 		@Override
 		public void run() {
 			while(Running){				
-					CurrentLatLng = soapProvider.GetBusPos(SelectedBus).get(0);
-					handler.post(setMark);
-					try {	
+					CurrentLatLng = soapProvider.GetBusPos(SelectedBus);
+					if(CurrentLatLng != null){
+						handler.post(setMark);
+					}
+					try {
 						Thread.sleep(1000);
 						if(!Running)
 							break;
@@ -273,13 +275,19 @@ public class BusMapActivity extends Activity {
 					}				
 			}
 		}
-		LatLng CurrentLatLng;
+		ArrayList<LatLng> CurrentLatLng;
 		Runnable setMark = new Runnable(){
 
 			@Override
 			public void run() {
-				mark.remove();
-				mark = map.addMarker(new MarkerOptions().position(CurrentLatLng));
+
+				for(int j = 0; j<marks.size(); j++){
+					marks.get(j).remove();
+				}
+				marks = new ArrayList<Marker>();
+				for(int i = 0; i<CurrentLatLng.size(); i++){					
+					marks.add(map.addMarker(new MarkerOptions().position(CurrentLatLng.get(i))));
+				}			
 			}			
 		};		
 	}

@@ -88,9 +88,9 @@ public class SoapProvider {
 		  return BusStoplist;
 	  }
 	  
-		public ArrayList<LatLng> GetBusRoute(String BusNumber){
-				  
-			  ArrayList<LatLng> Routelist = new ArrayList<LatLng>();
+		public ArrayList<ArrayList<LatLng>> GetBusRoute(String BusNumber){
+
+			ArrayList<ArrayList<LatLng>> Route = new ArrayList<ArrayList<LatLng>>();
 			  try{
 				  SoapObject request = new SoapObject(NAMESPACE, "GetBusRoute");
 				  request.addProperty("busNumber", BusNumber);
@@ -99,25 +99,34 @@ public class SoapProvider {
 				  envelope.setOutputSoapObject(request);
 				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 				  androidHttpTransport.call(NAMESPACE+"GetBusRoute", envelope);
+
 				  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
-	
-				  SoapObject lat = (SoapObject)response.getProperty(0);
-				  SoapObject lng = (SoapObject)response.getProperty(1);
-	
-				  for(int h = 0; h<lat.getPropertyCount();h++){
-					  Routelist.add(new LatLng(Double.parseDouble(lat.getProperty(h).toString().replace(",", ".")), Double.parseDouble(lng.getProperty(h).toString().replace(",", "."))));
+
+				  
+				  
+				  
+				  for(int g = 0; g<response.getPropertyCount(); g++){
+					  ArrayList<LatLng> RoutePoints = new ArrayList<LatLng>();
+					  for(int h = 0; h<((SoapObject)((SoapObject)response.getProperty(g)).getProperty(0)).getPropertyCount(); h++){
+						  
+						  RoutePoints.add(new LatLng(
+								  Double.parseDouble(((SoapObject)((SoapObject)response.getProperty(g)).getProperty(0)).getProperty(h).toString().replace(",", ".")),
+								  Double.parseDouble(((SoapObject)((SoapObject)response.getProperty(g)).getProperty(1)).getProperty(h).toString().replace(",", "."))));
+						  
+					  }
+					  Route.add(RoutePoints);
 				  }
 			  }catch(Exception e){
 				  Log.e("DEBUG!!", e.getMessage());
 				  return null;
 			  }
 
-			  return Routelist;
+			  return Route;
 		}
 		
 		public ArrayList<LatLng> GetBusPos(String BusNumber){
 			  
-			  ArrayList<LatLng> Routelist = new ArrayList<LatLng>();
+			  ArrayList<LatLng> BusPoint = new ArrayList<LatLng>();;
 			  try{
 				  SoapObject request = new SoapObject(NAMESPACE, "GetbusPos");
 				  request.addProperty("busNumber", BusNumber);
@@ -127,12 +136,18 @@ public class SoapProvider {
 				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 				  androidHttpTransport.call(NAMESPACE+"GetbusPos", envelope);
 				  SoapObject testresponse = (SoapObject)envelope.getResponse(); //get the response from your webservice
-	
-				  Routelist.add(new LatLng(Double.parseDouble(testresponse.getProperty(0).toString().replace(",", ".")), Double.parseDouble(testresponse.getProperty(1).toString().replace(",", "."))));
+				  
+				  
+				  for(int i = 0; i<testresponse.getPropertyCount(); i++){
+					  double a = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(0).toString().replace(",", "."));
+					  double b = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(1).toString().replace(",", "."));
+					  BusPoint.add(new LatLng(a, b));
+				  }
+
 			  }catch(Exception e){
 				  return null;
 			  }
-			  return Routelist;
+			  return BusPoint;
 		}
 		
 		public ArrayList<String> GetBusToStopTime(String stopName, String routeNumber)
