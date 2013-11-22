@@ -81,7 +81,7 @@ namespace MapDrawRouteTool.Controllers
                 }
             }
         }
-        public JsonResult GetBussesNotOnRoute(string route)
+        public JsonResult GetBussesNotOnRoute()
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
