@@ -56,15 +56,18 @@ BEGIN
 	select CalcBusAvgSpeedAsc(ClosestBusIdAsc) into ClosestBusSpeedAsc;
 	select CalcBusAvgSpeedDesc(ClosestBusIdDesc) into ClosestBusSpeedDesc;
 
+	insert into test values (RouteId, StopID, ClosestBusIdDesc, ClosestBusIdAsc, ClosestBusLatDesc, ClosestBusLonDesc,
+							ClosestBusLatAsc, ClosestBusLonAsc, ClosestEndPointIdDesc,ClosestEndPointIdAsc,
+							ClosestBusDistanceDesc, ClosestBusDistanceAsc, ClosestBusSpeedDesc,ClosestBusSpeedAsc,
+							TimeToStopSecDesc, TimeToStopSecAsc, EndStopNameAsc, EndStopNameDesc);
+
 	set TimeToStopSecAsc = ClosestBusDistanceAsc/ClosestBusSpeedAsc;
 	set TimeToStopSecDesc = ClosestBusDistanceDesc/ClosestBusSpeedDesc;
 	set busIDAsc = ClosestBusIdAsc;
 	set busIDDesc = ClosestBusIdDesc;
 
-	insert into test values (RouteId, StopID, ClosestBusIdDesc, ClosestBusIdAsc, ClosestBusLatDesc, ClosestBusLonDesc,
-							ClosestBusLatAsc, ClosestBusLonAsc, ClosestEndPointIdDesc,ClosestEndPointIdAsc,
-							ClosestBusDistanceDesc, ClosestBusDistanceAsc, ClosestBusSpeedDesc,ClosestBusSpeedAsc,
-							TimeToStopSecDesc, TimeToStopSecAsc, EndStopNameAsc, EndStopNameDesc);
+
+
 	drop temporary table possibleRoutes;
 
 END$$
