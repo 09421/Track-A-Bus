@@ -32,18 +32,11 @@
                 }
             }
         });
-    }
-    var selectedRoute;
-    function Change(value) {
-        selectedRoute = value;
+
         $.ajax({
             type: "POST",
             url: "Bus/GetBussesNotOnRoute",
             dataType: "json",
-            data: {
-                route: value,
-                contentType: "application/json; charset=utf-8"
-            },
             success: function (result) {
                 var select = document.combo_box.ToLB;
                 select.options.length = 0;
@@ -52,7 +45,11 @@
                 }
             }
         });
+    }
 
+
+    function Change(value) {
+        var selectedRoute;
         $.ajax({
             type: "POST",
             url: "Bus/GetBussesOnRoute",
@@ -69,8 +66,9 @@
                 }
             }
         });
-
     }
+
+
 
     function SaveChanges() {
         var allAdd = new Array();
@@ -133,10 +131,12 @@
                     debugger;
                     alert("Save Complete");
                     var select = document.getElementById("busses");
+                    var AvailableBus = document.combo_box.ToLB
                     select.options.add(new Option(document.getElementById("Busname").value));
+                    AvailableBus.options.add(new Option(document.getElementById("Busname").value));
                 }
             });
-            }
+        }
     }
 
     var arrFrom = new Array();
