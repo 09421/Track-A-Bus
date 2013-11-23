@@ -220,38 +220,40 @@ namespace MapDrawRouteTool
             {
                 using (var cmd = new MySqlCommand("CalcBusToStopTime", connection))
                 {
+                    int i = 0;
                     try
                     {
+                        
                         string TimeToStopSecAsc = "";
                         string TimeToStopSecDesc = "";
                         string EndStopNameAsc = "";
                         string EndStopNameDesc = "";
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
-
+                        i = 1;
                         cmd.Parameters.Add("?stopName", MySqlDbType.VarChar);
                         cmd.Parameters["?stopName"].Value = StopName;
                         cmd.Parameters["?stopName"].Direction = System.Data.ParameterDirection.Input;
-
+                        i = 2;
                         cmd.Parameters.Add("?routeNumber", MySqlDbType.VarChar);
                         cmd.Parameters["?routeNumber"].Value = RouteNumber;
                         cmd.Parameters["?routeNumber"].Direction = System.Data.ParameterDirection.Input;
-
+                        i = 3;
                         cmd.Parameters.Add(new MySqlParameter("?TimeToStopSecAsc", MySqlDbType.Int32));
                         cmd.Parameters["?TimeToStopSecAsc"].Direction = System.Data.ParameterDirection.Output;
 
                         cmd.Parameters.Add(new MySqlParameter("?TimeToStopSecDesc", MySqlDbType.Int32));
                         cmd.Parameters["?TimeToStopSecDesc"].Direction = System.Data.ParameterDirection.Output;
-
-                        cmd.Parameters.Add(new MySqlParameter("?EndStopNameAsc", MySqlDbType.VarChar));
-                        cmd.Parameters["?EndStopNameAsc"].Direction = System.Data.ParameterDirection.Output;
-
-                        cmd.Parameters.Add(new MySqlParameter("?EndStopNameDesc", MySqlDbType.VarChar));
-                        cmd.Parameters["?EndStopNameDesc"].Direction = System.Data.ParameterDirection.Output;
-
+                        i = 4;
+                        cmd.Parameters.Add(new MySqlParameter("?busIDAsc", MySqlDbType.Int32));
+                        cmd.Parameters["?busIDAsc"].Direction = System.Data.ParameterDirection.Output;
+                        i = 5;
+                        cmd.Parameters.Add(new MySqlParameter("?busIDDesc", MySqlDbType.Int32));
+                        cmd.Parameters["?busIDDesc"].Direction = System.Data.ParameterDirection.Output;
+                        i = 6;
 
                         connection.Open();
                         cmd.ExecuteNonQuery();
-
+                        i = 7;
                         if (string.IsNullOrEmpty(cmd.Parameters["?TimeToStopSecAsc"].Value.ToString()))
                         {
                             results.Add("-1");
@@ -270,13 +272,13 @@ namespace MapDrawRouteTool
                             results.Add(cmd.Parameters["?TimeToStopSecDesc"].Value.ToString());
                         }
                         connection.Close();
-
+                        i = 8;
                         return results;
                     }
                     catch (Exception e)
                     {
                         connection.Close();
-                        results.Add("ERROR! : " + e.Message);
+                        results.Add("ERROR! : " + e.Message + ", at: " + i.ToString());
                         return results;
                     }
                 }

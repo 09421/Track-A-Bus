@@ -49,6 +49,7 @@ namespace GPSsimu
             {
                 initialRoute.TurnAround();
             }
+            UpdateBusDB();
             
 
 
@@ -56,8 +57,6 @@ namespace GPSsimu
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)gpsPosCalcThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             gpsPosCalcThread.CurrentCulture = customCulture;
-
-            InitializeBusDB(startDecending);
             SetInitialPos();
         }
         public void startSim()
@@ -315,11 +314,30 @@ namespace GPSsimu
                     if (initialRoute.stops[0] != oldRouteStop)
                     {
                         initialRoute.TurnAround();
-                    }
+                    }   
+
                 }
-                indexCounter = 0;
-                
-   
+                indexCounter = 0;   
+               
+            }
+
+            UpdateBusDB();
+        }
+
+        private void UpdateBusDB()
+        {
+            using (MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
+            {
+                using (MySqlCommand cmd = conn.CreateCommand())
+                {
+
+                    conn.Open();
+                    cmd.CommandText = "Update Bus set fk_BusRoute = " +
+                                        initialRoute.id + ", IsDescending = " + initialRoute.isFlipped.ToString() +
+                                       " where Bus.ID = " + bID.ToString();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
             }
         }
         

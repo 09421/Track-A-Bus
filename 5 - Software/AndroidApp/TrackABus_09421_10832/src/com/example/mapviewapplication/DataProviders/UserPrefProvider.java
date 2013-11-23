@@ -101,47 +101,57 @@ public class UserPrefProvider extends ContentProvider {
 	private UserPrefDB dbHelper;
 
 	@Override
-	public int delete(Uri uri, String BusRouteSubRoute, String[] nulled) {
+	public int delete(Uri uri, String BusNumber, String[] nulled) {
 
 		int deletedRows = 0;
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
 		
-		String[] BusRoute_SubRoute = BusRouteSubRoute.split(";");
-		String BusRoute = BusRoute_SubRoute[0];
-		String SubRoute = BusRoute_SubRoute[1];
 		
-		String getRouteIDQuery = "Select " + UserPrefBusRoute.BusRouteIdField + " from " + BUSROUTE_TABLE
-								+ " where " + UserPrefBusRoute.BusRouteNumberField + " = '" + BusRoute
-								+ " ' and " + UserPrefBusRoute.BusRouteSubField + " = " + SubRoute;
-		Cursor rIDcursor = db.rawQuery(getRouteIDQuery, null);
-		if(rIDcursor.getCount() == 0 ){return -1;}
-		rIDcursor.moveToFirst();
-		int rID = rIDcursor.getInt(0); 
+		String getRouteIDQuery = String.format("Select {0} from {1} where {2} = {3}",
+				UserPrefBusRoute.BusRouteIdField, BUSROUTE_TABLE,
+				UserPrefBusRoute.BusRouteNumberField,BusNumber);
+
 		String getRoutePointsIDsQuery = 
 				"Select " + UserPrefRoutePoint.RoutePointIdField + " from " + ROUTEPOINT_TABLE
-			    +" inner join " + BUSROUTE_ROUTEPOINT_CONTEXT + "on "
-			    + BUSROUTE_ROUTEPOINT_CONTEXT+"."+UserPrefBusRouteRoutePoint.RoutePointField + " = "
-			    + ROUTEPOINT_TABLE+"."+UserPrefRoutePoint.RoutePointIdField
-				+ "where " + BUSROUTE_ROUTEPOINT_CONTEXT+"."+UserPrefBusRouteRoutePoint.BusRouteField
-				+ " = " + Integer.toString(rID);
+			    +" inner join " + BUSROUTE_ROUTEPOINT_CONTEXT + " on "
+			    + UserPrefBusRouteRoutePoint.RoutePointField + " = " + UserPrefRoutePoint.RoutePointIdField
+			    +" inner join " + BUSROUTE_CONTEXT + " on "
+			    + UserPrefBusRoute.BusRouteIdField + "=" + UserPrefBusRouteRoutePoint.BusRouteField  
+				+ " where " + UserPrefBusRoute.BusRouteNumberField + "=" + BusNumber;
+
+		Cursor rIDcursor = db.rawQuery(getRouteIDQuery, null);
 		Cursor pIDcursor = db.rawQuery(getRoutePointsIDsQuery, null);
-		if(pIDcursor.getCount() == 0){return -1;}
+		if(rIDcursor.getCount() == 0 || pIDcursor.getCount() == 0){return -1;}
 		
+		pIDcursor.moveToFirst();
+		int pID = pIDcursor.getInt(0);
+		
+		deletedRows += db.delete(
+				ROUTEPOINT_TABLE, 
+				UserPrefRoutePoint.RoutePointIdField + "=" +Integer.toString(pID)
+				,null);
+		while(pIDcursor.moveToNext())
+		{
+			pID = pIDcursor.getInt(0);
+			deletedRows += db.delete(
+					ROUTEPOINT_TABLE, 
+					UserPrefRoutePoint.RoutePointIdField + "=" +Integer.toString(pID)
+					,null);
+		}
+		
+		rIDcursor.moveToFirst();
+		int rID = rIDcursor.getInt(0);
 		deletedRows += db.delete(
 				BUSROUTE_TABLE, 
 				UserPrefBusRoute.BusRouteIdField+"="+Integer.toString(rID),
 				null);
-		pIDcursor.moveToFirst();
-		deletedRows += db.delete(
-				ROUTEPOINT_TABLE, 
-				UserPrefRoutePoint.RoutePointIdField + "=" +Integer.toString(pIDcursor.getInt(0))
-				,null);
-		while(pIDcursor.moveToNext())
+		while(rIDcursor.moveToNext())
 		{
+			rID = rIDcursor.getInt(0);
 			deletedRows += db.delete(
-					ROUTEPOINT_TABLE, 
-					UserPrefRoutePoint.RoutePointIdField + "=" +Integer.toString(pIDcursor.getInt(0))
-					,null);
+					BUSROUTE_TABLE, 
+					UserPrefBusRoute.BusRouteIdField+"="+Integer.toString(rID),
+					null);
 		}
 		return deletedRows;
 	}
@@ -153,71 +163,74 @@ public class UserPrefProvider extends ContentProvider {
 
 	@Override
 	public int bulkInsert(Uri uri, ContentValues[] values) {
+		
+		String BusRoute = uri.getLastPathSegment();
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		Cursor bCursor = db.rawQuery("select "+ UserPrefBusRoute.BusRouteIdField + " from "
+				+ BUSROUTE_TABLE + " where " + UserPrefBusRoute.BusRouteNumberField + "=" + BusRoute,null);
+		if(bCursor.getCount() == 0)
+		{
+			return -1;
+		}
+		db.close();
+		db = dbHelper.getWritableDatabase();
+		switch(uriMatcher.match(uri))
+		{	
+		case BUSROUTE_CONTEXT:
+			for (ContentValues cv : values) {
+				db.insert(BUSROUTE_TABLE, null, cv);
+			}
+			db.close();
+			return 1;
+		case ROUTEPOINT_CONTEXT:
+			db = dbHelper.getWritableDatabase();
+			for (ContentValues cv : values) {
+				db.insert(ROUTEPOINT_TABLE, null, cv);
+			}
+			db.close();
+			return 1;
+		case BUSSTOP_CONTEXT:
+			db = dbHelper.getWritableDatabase();
+			for (ContentValues cv : values) {
+				db.insert(BUSSTOP_TABLE, null, cv);
+			}
+			db.close();
+			return 1;
+		case BUSROUTE_ROUTEPOINT_CONTEXT:
 
-//		String busName = uri.getLastPathSegment();
-//		Log.e("MyLog", "BulkLastBus: " + busName);
-//		Log.e("MyLog", String.valueOf(values.length));
-//		SQLiteDatabase db = dbHelper.getReadableDatabase();
-//		Cursor existsBus = db.rawQuery("SELECT "
-//				+ UserPrefBusses.UserPrefIdField + " FROM " + BUSROUTE_TABLE
-//				+ " WHERE " + UserPrefBusses.UserPrefBusNumberfield + " = '"
-//				+ busName + "'", null);
-//		existsBus.moveToFirst();
-//
-//		if (existsBus.getCount() > 0) {
-//			int idNum = existsBus.getInt(0);
-//			db.close();
-//			db = dbHelper.getWritableDatabase();
-//			int num = 0;
-//
-//			for (ContentValues cv : values) {
-//				cv.put(UserPrefBusRoute.BusRouteFBusIdField,
-//						String.valueOf(idNum));
-//				db.insert(BUSROUTE_TABLE, null, cv);
-//				num++;
-//			}
-//			db.close();
-//			return num;
-//		} else {
-//			return 0;
-//		}
-		return 0;
+			for (ContentValues cv : values) {
+				db = dbHelper.getReadableDatabase();
+				String stopName = cv.getAsString(UserPrefBusRoute.BusRouteNumberField);
+				Cursor duplicateStop = db.rawQuery(
+						"Select " + UserPrefBusStop.BusStopNameField + " from " + BUSSTOP_TABLE
+						+ " where " + UserPrefBusRoute.BusRouteNumberField + "=" + stopName
+						, null);
+				db.close();
+				if(duplicateStop.getCount() == 0)
+				{
+					db = dbHelper.getWritableDatabase();
+					db.insert(BUSROUTE_ROUTEPOINT_TABLE, null, cv);
+					db.close();
+				}
+				
+			}
+			db.close();
+			return 1;
+		case BUSROUTE_BUSSTOP_CONTEXT:
+			db = dbHelper.getWritableDatabase();
+			for (ContentValues cv : values) {
+				db.insert(BUSROUTE_BUSSTOP_TABLE, null, cv);
+			}
+			db.close();
+			return 1;
+		default:
+			return -1;
+		}
 	}
 
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
-		Cursor existsBus;
-//
-//		switch (uriMatcher.match(uri)) {
-//		case 1:
-//			SQLiteDatabase db = dbHelper.getReadableDatabase();
-//			existsBus = db
-//					.rawQuery(
-//							"SELECT "
-//									+ UserPrefBusses.UserPrefIdField
-//									+ " FROM "
-//									+ BUS_NUMBER_TABLE
-//									+ " WHERE "
-//									+ UserPrefBusses.UserPrefBusNumberfield
-//									+ " = '"
-//									+ values.getAsString(UserPrefBusses.UserPrefBusNumberfield)
-//									+ "'", null);
-//			if (existsBus.getCount() == 0) {
-//				db.close();
-//				db = dbHelper.getWritableDatabase();
-//				long id = db.insert(BUS_NUMBER_TABLE, null, values);
-//				db.close();
-//				if (id > 0) {
-//					Uri newUr = ContentUris.withAppendedId(
-//							UserPrefBusses.CONTENT_URI, id);
-//					return newUr;
-//				} else
-//					return null;
-//			} else
-//				return null;
-//		default:
-//			return null;
-//		}
+		// ONLY USES BulkInsert;
 		return null;
 	}
 
@@ -228,44 +241,37 @@ public class UserPrefProvider extends ContentProvider {
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] projection, String selection,
+	public Cursor query(Uri uri, String[] projection, String BusNumberOrID,
 			String[] selectionArgs, String sortOrder) {
-//		SQLiteDatabase db;
-//		String query;
-//		Cursor c;
-//		switch (uriMatcher.match(uri)) {
-//		case 1:
-//			db = dbHelper.getReadableDatabase();
-//			query = "SELECT " + UserPrefBusses.UserPrefBusNumberfield
-//					+ " FROM " + BUS_NUMBER_TABLE;
-//			c = db.rawQuery(query, null);
-//			return c;
-//
-//		case 2:
-//			db = dbHelper.getReadableDatabase();
-//			query = "SELECT " + UserPrefBusses.UserPrefIdField + " From "
-//					+ BUS_NUMBER_TABLE + " WHERE "
-//					+ UserPrefBusses.UserPrefBusNumberfield + " = " + "'"
-//					+ selection + "'";
-//
-//			c = db.rawQuery(query, null);
-//			if (c.getCount() > 0) {
-//				c.moveToFirst();
-//				int busId = c.getInt(0);
-//				query = "SELECT " + UserPrefBusRoute.BusRouteLatField + ", "
-//						+ UserPrefBusRoute.BusRouteLonField + " From "
-//						+ BUSROUTE_TABLE + " WHERE "
-//						+ UserPrefBusRoute.BusRouteFBusIdField + " = "
-//						+ String.valueOf(busId);	
-//				c = db.rawQuery(query, null);
-//				return c;
-//			} else
-//				return null;
-//
-//		default:
-//			return null;
-//		}
-		return null;
+		String query;
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		switch(uriMatcher.match(uri)){
+			
+		case BUSROUTE_CONTEXT:
+			query = "Select " + UserPrefBusRoute.BusRouteIdField + " from " + BUSROUTE_TABLE
+			+ " where " + UserPrefBusRoute.BusRouteNumberField + "=" + BusNumberOrID;
+		    return db.rawQuery(query,null);
+			
+		case ROUTEPOINT_CONTEXT:
+			query = "Select " + UserPrefRoutePoint.RoutePointLatField+","+UserPrefRoutePoint.RoutePointLonField
+			+ " from " + BUSROUTE_TABLE
+			+ " inner join " + BUSROUTE_ROUTEPOINT_TABLE + " on "
+			+ UserPrefBusRouteRoutePoint.RoutePointField  + " = " + UserPrefRoutePoint.RoutePointIdField
+			+ " where " + UserPrefBusRouteRoutePoint.BusRouteField + " = " + BusNumberOrID;
+		    return db.rawQuery(query,null);		
+		case BUSSTOP_CONTEXT:
+			query = "Select " + UserPrefBusStop.BusStopNameField+","+UserPrefRoutePoint.RoutePointLatField
+			+ ", " +UserPrefRoutePoint.RoutePointLonField +  " from " + BUSSTOP_TABLE
+			+ " inner join " + ROUTEPOINT_TABLE + " on "
+			+ UserPrefRoutePoint.RoutePointIdField  + " = " + UserPrefBusStop.BusStopForeignRoutePointField
+			+ " inner join " + BUSROUTE_BUSSTOP_TABLE + " on "
+			+ UserPrefBusRouteBusStop.BusStopField + " = " + UserPrefBusStop.BusStopIdField
+			+ " where " + UserPrefBusRouteBusStop.BusRouteField + " = " + BusNumberOrID;
+			return db.rawQuery(query,null);		
+		
+		default:
+			return null;
+		}
 	}
 
 	@Override

@@ -127,7 +127,7 @@ public class buslistadapter extends BaseAdapter{
 	    cv1.put("BusNumber", BusNumber);
 	    _c.getContentResolver().insert(UserPrefBusses.CONTENT_URI, cv1);  		
 		TrackABusProvider BusProvider = new TrackABusProvider(_c, new msgHandler());
-		//BusProvider.GetBusRoute(BusNumber, BUS_ROUTE_DONE);
+		BusProvider.GetBusRoute(BusNumber, BUS_ROUTE_DONE);
 	}
 	
 	private void SetBusRoute(float[] lat, float[] lng){
