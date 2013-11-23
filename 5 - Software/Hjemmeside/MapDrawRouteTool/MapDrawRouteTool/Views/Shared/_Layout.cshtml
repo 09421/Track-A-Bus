@@ -1,16 +1,46 @@
 ﻿<!DOCTYPE html>
 <html>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+    function CheckForLoadEvent() {
+        if (window.ExecuteOnLoad != null)
+            window.ExecuteOnLoad();
+    }
+</script>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <title>TrackABus control system</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
-<body style="background-color:#820F12">
+<body onload="CheckForLoadEvent();" style="background-color: #820F12">
+
+    <header>
+        <div class="content-wrapper">
+            <div class="float-right">
+
+            <nav>
+                <ul id="menu">
+                    <li style="color: ghostwhite;">@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li style="color: ghostwhite;">@Html.ActionLink("Bus", "Index", "Bus")</li>
+                    <li style="color: ghostwhite;">@Html.ActionLink("Route", "Index", "Dir")</li>
+                    <li style="color: ghostwhite;">@Html.ActionLink("Stops", "Index", "Stop")</li>
+                </ul>
+            </nav>
+        </div>
+        </div>
+    </header>
+
     @RenderBody()
 
-    @Scripts.Render("~/bundles/jquery")
-    @RenderSection("scripts", required: false)
+    <footer>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - trackABus control system</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

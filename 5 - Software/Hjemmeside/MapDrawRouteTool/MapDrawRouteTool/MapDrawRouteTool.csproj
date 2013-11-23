@@ -233,9 +233,14 @@
     <Content Include="Views\Stop\Index.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Bus\Index.cshtml" />
+    <Content Include="Views\Stop\AddStops.cshtml" />
+    <Content Include="Views\Stop\EditStops.cshtml" />
+    <Content Include="Views\Dir\CreateRoute.cshtml" />
+    <Content Include="Views\Dir\EditRoute.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -21,6 +21,16 @@ namespace MapDrawRouteTool.Controllers
             return View();
         }
 
+        public ActionResult CreateRoute()
+        {
+            return View();
+        }
+        
+        public ActionResult EditRoute()
+        {
+            return View();
+        }
+
         public void Save(List<string> route, List<string> stops, List<string> SubRoutes, string RouteNumber)
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
