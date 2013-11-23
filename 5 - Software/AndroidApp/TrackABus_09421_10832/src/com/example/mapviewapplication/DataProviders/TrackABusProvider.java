@@ -105,7 +105,6 @@ public class TrackABusProvider extends Service{
 							b.putFloatArray("RouteLng " + String.valueOf(j), RouteLng);
 		        	}
 		        	
-
 					float[] StopLat = new float[arg1.size()];
 					float[] StopLng = new float[arg1.size()];
 					String[] StopName = new String[arg1.size()];
@@ -121,6 +120,8 @@ public class TrackABusProvider extends Service{
 					b.putFloatArray("StopLat", StopLat);
 					b.putFloatArray("StopLng", StopLng);
 					b.putStringArray("StopName", StopName);
+					
+					//CLW TODO: ROUTES, BUSROUTE_ROUTEPOINT, BUSROUTE_BUSSTOP;
 					
 					Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
 					bMsg.setData(b);

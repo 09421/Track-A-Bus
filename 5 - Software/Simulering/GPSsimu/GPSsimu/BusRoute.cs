@@ -14,6 +14,8 @@ namespace GPSsimu
         public string number;
         public List<Tuple<string,string>> points;
         public List<string> stops;
+        public bool isFlipped = false;
+       
         public BusRoute(string ID, string Number)
         {
             id = ID;
@@ -82,6 +84,7 @@ namespace GPSsimu
         {
             points.Reverse();
             stops.Reverse();
+            isFlipped = !isFlipped;
         }
     }
 }

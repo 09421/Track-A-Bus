@@ -22,8 +22,8 @@ public class MainScreenActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mainscreenactivity);
 		l = (ListView)findViewById(R.id.FavoriteList);	
-		SetFavoriteBusListAdapter(l);
-		SetBusListOnClickListener(l);
+		//SetFavoriteBusListAdapter(l);
+		//SetBusListOnClickListener(l);
 	}
 
 	private void SetFavoriteBusListAdapter(ListView l) {
@@ -75,8 +75,8 @@ public class MainScreenActivity extends Activity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		SetFavoriteBusListAdapter(l);
-		SetBusListOnClickListener(l);	
+		//SetFavoriteBusListAdapter(l);
+		//SetBusListOnClickListener(l);	
 	}
 
 	@Override

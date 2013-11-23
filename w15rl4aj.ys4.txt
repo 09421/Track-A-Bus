@@ -1,0 +1,64 @@
+﻿test
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is ahead of 'TrackABus/master' by 1 commit.
+#   (use "git push" to publish your local commits)
+#
+# Changes to be committed:
+#   (use "git reset HEAD^1 <file>..." to unstage)
+#
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/.classpath
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/AndroidManifest.xml
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/AndroidManifest.xml
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/R.txt
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusListMenuActivity$msgHandler.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusListMenuActivity.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$1.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$2$1.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$2.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$3.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$msgHandler.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$updateMarker$1.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity$updateMarker.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/BusMapActivity.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/DataProviders/SoapProvider.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/DataProviders/TrackABusProvider$LocalBinder.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/DataProviders/TrackABusProvider.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/DataProviders/UserPrefBusRoute.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/DataProviders/UserPrefProvider$UserPrefDB.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/DataProviders/UserPrefProvider.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/MainScreenActivity.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$attr.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$color.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$dimen.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$drawable.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$id.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$layout.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$menu.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$string.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$style.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R$styleable.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/R.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/buslistadapter$msgHandler.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/example/mapviewapplication/buslistadapter.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R$attr.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R$color.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R$drawable.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R$id.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R$string.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R$styleable.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/bin/classes/com/google/android/gms/R.class
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/gen/com/example/mapviewapplication/R.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/gen/com/google/android/gms/R.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/project.properties
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/res/layout/mapview.xml
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/src/com/example/mapviewapplication/BusListMenuActivity.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/src/com/example/mapviewapplication/BusMapActivity.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/src/com/example/mapviewapplication/DataProviders/SoapProvider.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/src/com/example/mapviewapplication/DataProviders/TrackABusProvider.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/src/com/example/mapviewapplication/DataProviders/UserPrefBusRoute.java
+#	modified:   5 - Software/AndroidApp/TrackABus_09421_10832/src/com/example/mapviewapplication/DataProviders/UserPrefProvider.java
+#
+
