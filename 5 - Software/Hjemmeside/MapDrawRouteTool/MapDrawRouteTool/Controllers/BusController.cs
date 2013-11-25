@@ -136,9 +136,9 @@ namespace MapDrawRouteTool.Controllers
 
                         cmd.ExecuteNonQuery();
 
-                        cmd.CommandText = "UPDATE Bus " +
-                                          "SET Bus.fk_BusRoute = null " +
-                                          "WHERE Bus.ID = ";
+                        cmd.CommandText = String.Format("UPDATE Bus " +
+                                          "SET Bus.fk_BusRoute = {0} " +
+                                          "WHERE Bus.ID = ", route);
 
                         for (var i = 0; i < bussesToRemove.Count(); i++)
                         {

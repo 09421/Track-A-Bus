@@ -19,6 +19,16 @@ namespace MapDrawRouteTool.Controllers
             return View();
         }
 
+        public ActionResult EditStops()
+        {
+            return View();
+        }
+
+        public ActionResult AddStops()
+        {
+            return View();
+        }
+
         public void Save(string c, string n)
         {
             var cords = formatCord(c);

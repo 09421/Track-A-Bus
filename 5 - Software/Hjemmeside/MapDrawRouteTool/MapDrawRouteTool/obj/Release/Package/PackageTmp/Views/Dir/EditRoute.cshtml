@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "EditRoute";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    html {
+        height: 100%;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #map-canvas {
+        height: 100%;
+    }
+</style>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+    var map;
+    var directionsDisplay;
+    var directionsDisplay1;
+    var directionsService;
+    var stepDisplay;
+    var markerArray = [];
+    var StartEndMarkers = new Array();
+    var directionsDisplayArray = new Array();
+    var rendererOptions;
+
+    function ExecuteOnLoad() {
+        debugger;
+        GetBusRoutesFromDB();
+    }
+
+    function GetBusRoutesFromDB() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetBusRoutes", "Dir")',
+            dataType: "json",
+            success: function (result) {
+
+                var selectRoutes = document.getElementById("Routes");
+                debugger;
+            }
+        });
+    }
+
+    function initialize() {
+        // Instantiate a directions service.
+        var featureOpts = [{
+            featureType: 'poi',
+            stylers: [
+                { visibility: 'off' }]
+        }
+        ];
+
+        //Creates the DirectionsService
+        directionsService = new google.maps.DirectionsService();
+
+        // Create a map and center it on Aarhus.
+        var Aarhus = new google.maps.LatLng(56.155955, 10.205011);
+        var mapOptions = {
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: Aarhus,
+            streetViewControl: false,
+            styles: featureOpts
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        // Create a renderer for directions and bind it to the map.
+        rendererOptions = {
+            map: map,
+            draggable: true,
+            markerOptions: {
+                clickable: true
+            },
+            suppressInfoWindows: true
+        };
+
+
+        directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+        directionsDisplayArray.push(directionsDisplay);
+
+
+        //Sets the mapto use the TransitLayer
+        var transitLayer = new google.maps.TransitLayer();
+        transitLayer.setMap(map);
+    }
+
+    function move(tbFrom, tbTo) {
+        arrFrom = new Array();
+        arrTo = new Array();
+        arrLU = new Array();
+        var i;
+        for (i = 0; i < tbTo.options.length; i++) {
+            arrLU[tbTo.options[i].text] = tbTo.options[i].value;
+            arrTo[i] = tbTo.options[i].text;
+        }
+        var fLength = 0;
+        var tLength = arrTo.length;
+        for (i = 0; i < tbFrom.options.length; i++) {
+            arrLU[tbFrom.options[i].text] = tbFrom.options[i].value;
+            if (tbFrom.options[i].selected && tbFrom.options[i].value != "") {
+                arrTo[tLength] = tbFrom.options[i].text;
+                tLength++;
+            }
+            else {
+                arrFrom[fLength] = tbFrom.options[i].text;
+                fLength++;
+            }
+        }
+
+        tbFrom.length = 0;
+        tbTo.length = 0;
+        var ii;
+
+        for (ii = 0; ii < arrFrom.length; ii++) {
+            var no = new Option();
+            no.value = arrLU[arrFrom[ii]];
+            no.text = arrFrom[ii];
+            tbFrom[ii] = no;
+        }
+
+        for (ii = 0; ii < arrTo.length; ii++) {
+            var no = new Option();
+            no.value = arrLU[arrTo[ii]];
+            no.text = arrTo[ii];
+            tbTo[ii] = no;
+        }
+    }
+
+    var arrFrom = new Array();
+    var arrTo = new Array();
+    var arrLU = new Array();
+    google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+
+<div>
+    <p style="margin: 10px; height: 100%; width: 100%" class="site-title">Welcome to the bus routeeditor</p>
+</div>
+
+<section style="float: right; width: 40%; height: 70%; text-align: left; border: groove; margin: 10px;">
+    <select id="Routes" multiple size="10" name="Routes" style="width: 170px">
+    </select>
+</section>
+
+<section style="float: left; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">
+    <div id="map-canvas"></div>
+</section>
+

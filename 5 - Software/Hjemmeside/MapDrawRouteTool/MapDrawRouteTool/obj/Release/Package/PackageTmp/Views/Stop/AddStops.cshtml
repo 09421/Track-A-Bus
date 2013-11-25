@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Busstop tool";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+    html {
+        height: 100%;
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #map-canvas {
+        height: 100%;
+    }
+</style>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script>
+    var map;
+    var directionsDisplay;
+    var directionsService;
+    var stepDisplay;
+    var markerArray = [];
+
+    function initialize() {
+        // Instantiate a directions service.
+
+        var featureOpts = [{
+            featureType: 'poi',
+            stylers: [
+                { visibility: 'off' }]
+        }
+        ];
+
+        //Creates the DirectionsService
+        directionsService = new google.maps.DirectionsService();
+
+        // Create a map and center it on Aarhus.
+        var Aarhus = new google.maps.LatLng(56.155955, 10.205011);
+        var mapOptions = {
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: Aarhus,
+            streetViewControl: false,
+            styles: featureOpts
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+        // Create a renderer for directions and bind it to the map.
+        var rendererOptions = {
+            map: map,
+            draggable: true
+        };
+        directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
+
+        //Sets the mapto use the TransitLayer
+        var transitLayer = new google.maps.TransitLayer();
+        transitLayer.setMap(map);
+
+
+        google.maps.event.addListener(map, 'click', function (event) {
+            var mark = new google.maps.Marker({
+                map: map,
+                draggable: false,
+                position: event.latLng,
+                title: markers.length.toString()
+            });
+
+
+            markers.push(mark);
+            google.maps.event.addListener(mark, 'click', function () {
+                markers[markers.indexOf(mark)].setMap(null);
+                markers.splice(markers.indexOf(mark), 1);
+            });
+
+            setinput();
+
+        });
+    }
+
+    function setinput() {
+        var d = document.getElementById("panel");
+        d.innerHTML += "<p><input id=\"mark" + markers.length + "\" type=\"text\"></input></p>";
+    }
+
+    function SaveStopsToDB() {
+        if (markers != null) {
+
+            for (var i = 0; i < markers.length; i++) {
+                cord.push(markers[i].getPosition().toString());
+                name.push(document.getElementById("mark" + (i + 1).toString()).value);
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "Stop/Save",
+                data: {
+                    c: JSON.stringify(cord),
+                    n: JSON.stringify(name),
+                    contentType: "application/json; charset=utf-8"
+                }
+            });
+            cord = [];
+            name = [];
+        }
+    }
+    var cord = new Array();
+    var name = new Array();
+    google.maps.event.addDomListener(window, 'load', initialize);
+    var markers = new Array();
+</script>
+
+<section id="control_panel" style="float: right; width: 30%; height: 70%; text-align: left; padding-top: 10px;">
+    <input id="clickMe" type="button" value="Save stops" onclick="SaveStopsToDB();" />
+    <div id="panel"></div>
+</section>
+<section style="float: left; width: 70%; height: 70%;">
+    <div id="map-canvas"></div>
+</section>
+
+
+
+

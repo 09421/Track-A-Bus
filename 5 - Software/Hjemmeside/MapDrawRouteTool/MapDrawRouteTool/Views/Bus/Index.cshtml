@@ -1,13 +1,13 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@model dynamic
+@{
+    ViewBag.Title = "title";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2 style="color: ghostwhite;">Select a bus route</h2>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
-    function Init() {
+    function ExecuteOnLoad() {
         $.ajax({
             type: "POST",
             url: "Bus/GetRouteNames",
@@ -46,10 +46,9 @@
             }
         });
     }
-
-
+    var selectedRoute;
     function Change(value) {
-        var selectedRoute;
+        selectedRoute = value;
         $.ajax({
             type: "POST",
             url: "Bus/GetBussesOnRoute",
@@ -67,8 +66,6 @@
             }
         });
     }
-
-
 
     function SaveChanges() {
         var allAdd = new Array();
@@ -117,6 +114,7 @@
             });
         }
     }
+
     function AddNewBus() {
         var BusName = document.getElementById("Busname").value;
         if (BusName != null) {
@@ -184,52 +182,52 @@
         }
     }
 </script>
-<body onload="Init();">
-    <div style="float: left; width: 50%; height: 100%; text-align: left; padding-top: 10px;">
-        <h3 style="color: ghostwhite;">Bus routes</h3>
-        <select id="route" multiple size="15" name="Routes" style="width: 450px" onchange="Change(this.value);">
+
+<div>
+    <p style="margin: 10px; height: 100%; width: 100%" class="site-title">Welcome to the bus editor</p>
+</div>
+
+<section style="float: left; width: 45%; height: 70%; text-align: left; border: groove; margin: 10px;">
+    <select id="route" multiple size="8" name="Routes" style="width: 450px" onchange="Change(this.value);">
+    </select>
+    <form name="combo_box">
+        <table>
+            <tr>
+                <td>
+                    <h4 style="color: ghostwhite;">Busses on route</h4>
+                    <select multiple size="10" name="FromLB" style="width: 200px">
+                    </select>
+                </td>
+                <td>
+                    <input type="button" onclick="move(this.form.FromLB, this.form.ToLB)"
+                        value="->"><br />
+                    <input type="button" onclick="move(this.form.ToLB, this.form.FromLB)"
+                        value="<-">
+                </td>
+                <td>
+                    <h4 style="color: ghostwhite;">Avaliable busses</h4>
+                    <select multiple size="10" name="ToLB" style="width: 200px">
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <input id="SaveRoute" type="button" value="Save" onclick="SaveChanges();" style="float: initial;" />
+    </form>
+</section>
+
+<section style="float: right; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">
+    <h3 style="color: ghostwhite;">Create/Delete bus</h3>
+    <form name="Bus_box">
+        <select id="busses" multiple size="10" name="Routes" style="width: 170px">
         </select>
-
-        <form name="combo_box">
-            <table>
-                <tr>
-                    <td>
-                        <h4 style="color: ghostwhite;">Busses on route</h4>
-                        <select multiple size="15" name="FromLB" style="width: 200px">
-                        </select>
-                    </td>
-                    <td align="center" valign="middle">
-                        <input type="button" onclick="move(this.form.FromLB, this.form.ToLB)"
-                            value="->"><br />
-                        <input type="button" onclick="move(this.form.ToLB, this.form.FromLB)"
-                            value="<-">
-                    </td>
-                    <td>
-                        <h4 style="color: ghostwhite;">Avaliable busses</h4>
-                        <select multiple size="15" name="ToLB" style="width: 200px">
-                        </select>
-                    </td>
-                </tr>
-            </table>
-            <input id="SaveRoute" type="button" value="Save" onclick="SaveChanges();" style="float: initial;" />
-        </form>
-    </div>
-    <div style="float: right; width: 50%; height: 100%; text-align: left; padding-top: 10px;">
-        <h3 style="color: ghostwhite;">Create/Delete bus</h3>
-        <form name="Bus_box">
-            <select id="busses" multiple size="15" name="Routes" style="width: 170px">
-            </select>
-            <p style="color: ghostwhite;">
-                Bus name:
+        <p style="color: ghostwhite;">
+            Bus name:
             <input type="text" name="Busname" style="width: 100px" id="Busname">
-            </p>
-            <p>
-                <input type="button" value="Add" style="width: 80px" onclick="AddNewBus();" />
-                <input type="button" value="Remove" style="width: 80px" onclick="RemoveSelected(this.form.Routes);" />
-            </p>
-
-
-            <input type="button" value="Save" style="width: 80px" />
-        </form>
-    </div>
-</body>
+        </p>
+        <p>
+            <input type="button" value="Add" style="width: 80px" onclick="AddNewBus();" />
+            <input type="button" value="Remove" style="width: 80px" onclick="RemoveSelected(this.form.Routes);" />
+        </p>
+        <input type="button" value="Save" style="width: 70px" />
+    </form>
+</section>
