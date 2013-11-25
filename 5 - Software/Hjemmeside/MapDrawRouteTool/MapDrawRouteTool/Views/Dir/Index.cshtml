@@ -3,4 +3,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Index</h2>
+<div>
+    <section>
+        <div class="float-left">
+            <p class="site-title">Welcome to the bus Route editor</p>
+        </div>
+    </section>
+    <section>
+        <div class="content-wrapper">
+            <nav>
+                <ul id="navigate">
+                    <li>@Html.ActionLink("Create new route", "CreateRoute", "Dir")</li>
+                    <li>@Html.ActionLink("Edit routes", "EditRoute", "Dir")</li>
+                    <li>@Html.ActionLink("Delete  routes", "DeleteRoute", "Dir")</li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</div>

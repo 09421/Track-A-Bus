@@ -2,13 +2,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2 style="color: ghostwhite;">Welcome to the trackABus control system</h2>
-<body>
-    <ul>
-        <li style="color: ghostwhite;">@Html.ActionLink("Dir", "Index", "Dir") </li>
-        <li style="color: ghostwhite;">@Html.ActionLink("Bus", "Index", "Bus") </li>
-        <li style="color: ghostwhite;">@Html.ActionLink("Stop", "Index", "Stop") </li>
-    </ul>
-
-</body>
+<div class="float-left">
+    <p class="site-title">@Html.ActionLink("Welcome to the trackABus control system", "Index", "Home")</p>
+</div>

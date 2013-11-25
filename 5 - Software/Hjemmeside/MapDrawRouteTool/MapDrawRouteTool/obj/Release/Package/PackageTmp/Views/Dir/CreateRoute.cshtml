@@ -33,8 +33,6 @@
     var directionsDisplayArray = new Array();
     var rendererOptions;
 
-
-
     function ExecuteOnLoad() {
         GetBusRoutesNamesFromDB();
     }
@@ -63,8 +61,6 @@
         map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
         // Create a renderer for directions and bind it to the map.
-
-
         rendererOptions = {
             map: map,
             draggable: true,
@@ -73,6 +69,8 @@
             },
             suppressInfoWindows: true
         };
+
+
         directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
         directionsDisplayArray.push(directionsDisplay);
 
@@ -84,13 +82,13 @@
 
         google.maps.event.addListener(directionsDisplay, 'directions_changed', function () {
             var that = this;
+
             setTimeout(function () {//we need a short delay
                 for (var k in that) {//iterate over all properties
                     if (typeof that[k].markers != 'undefined') {//find the desired property
-                        var markers = that[k].markers;
-                        waypoints = [];
+                        var markers = that[k].markers, arr = [];
                         for (var i = 0; i < markers.length; ++i) {//collect the data
-                            waypoints.push(markers[i].position);
+                            arr.push(markers[i].position);
                             markers[i].setZIndex(1);
                             StartEndMarkers.push(markers[i]);
                         };
@@ -157,9 +155,8 @@
 
     var startPoint;
     var endPoint;
-    var SubRouteWaypoints = new Array();
-    var SubRouteArray = new Array();
 
+    var SubRouteArray = new Array();
     function calcSubRoute(markers) {
         dd = new google.maps.DirectionsRenderer(rendererOptions);
         directionsDisplayArray.push(dd);
@@ -169,20 +166,6 @@
             for (var i = 0; i < directionsDisplayArray.length; i++) {
                 if (directionsDisplayArray[i] == that) {
                     SubRouteArray[i] = that;
-                    setTimeout(function () {
-                        for (var k in that) {
-                            if (typeof that[k].markers != 'undefined') {
-
-                                var subroutemark = [];
-                                var wayMarkers = that[k].markers; 
-                                for (var j = 0; j < wayMarkers.length; ++j) {
-                                    subroutemark.push(wayMarkers[j].position);
-                                };
-                                SubRouteWaypoints[i - 2] = subroutemark;
-                            }
-                        }
-                    }, 100);
-
                 }
 
             }
@@ -239,70 +222,10 @@
         return DirectionsArray;
     }
 
-    function SetRouteOnMap(route) {
-        var start = new google.maps.LatLng(route[0].Lat, route[0].Lng, false);
-        var end = new google.maps.LatLng(route[route.length - 1].Lat, route[route.length - 1].Lng, false);
-        var routeWaypoints = new Array();
-        route.pop();
-        route.shift();
-        for (var i = 0; i < route.length; i++) {
-            routeWaypoints.push({
-                location: new google.maps.LatLng(route[i].Lat, route[i].Lng, false),
-                stopover: true
-            });
-        }
-
-        request = {
-            origin: start,
-            destination: end,
-            waypoints: routeWaypoints,
-            travelMode: google.maps.TravelMode.DRIVING
-        };
-
-        directionsService.route(request, function (response, status) {
-            if (status == google.maps.DirectionsStatus.OK) {
-
-                var dd = new google.maps.DirectionsRenderer(rendererOptions);
-                if (directionsDisplayArray.length == 1) {
-                    directionsDisplayArray[0].setDirections(response);
-                    directionsDisplayArray.push(dd);
-                }
-                else {
-                    directionsDisplayArray[directionsDisplayArray.length-1].setDirections(response);
-                }
-
-                google.maps.event.addListener(dd, 'directions_changed', function () {
-                    var that = this;
-                    for (var i = 0; i < directionsDisplayArray.length; i++) {
-                        if (directionsDisplayArray[i] == that) {
-                            SubRouteArray[i] = that;
-                            setTimeout(function () {
-                                for (var k in that) {
-                                    if (typeof that[k].markers != 'undefined') {
-                                        var subroutemark = [];
-                                        var wayMarkers = that[k].markers;
-                                        for (var j = 0; j < wayMarkers.length; ++j) {
-                                            subroutemark.push(wayMarkers[j].position);
-                                        };
-                                        SubRouteWaypoints[i - 2] = subroutemark;
-                                    }
-                                }
-                            }, 100);
-
-                        }
-
-                    }
-                });
-
-
-            }
-        });
-    }
-
     function GetRoute(name) {
         $.ajax({
             type: "POST",
-            url: '@Url.Action("GetSelectedBusRoute", "Dir")',
+            url: '@Url.Action("GetSelectedBusRoutes", "Dir")',
             dataType: "json",
             traditional: true,
             data: {
@@ -310,26 +233,7 @@
                 contentType: "application/json; charset=utf-8"
             },
             success: function (result) {
-                var ID = result[0].ID;
-                var test = new Array();
-                var mapSet;
-                for(var i = 0; i<result.length; i++){
-                    if (result[i].ID == ID) {
-                        test.push(result[i]);
-                        mapSet = false;
-                    }
-                    else {
-                        SetRouteOnMap(test);
-                        ID = result[i].ID;
-                        test = [];
-                        test.push(result[i])
-                        mapSet = true;
-                    }                
-                }
-                if (mapSet == false) {
-                    SetRouteOnMap(test);
-                }
-                    
+                alert("duck");
             }
         });
     }
@@ -382,15 +286,10 @@
                     traditional: true,
                     data: {
                         route: getRoutePath(),
-                        routeWayPoints: waypoints,
                         stops: arrTo,
                         SubRoutes: SplitRoute(SubRouteArray),
-                        SubrouteWaypoint: SubRouteWaypoints,
                         RouteNumber: document.getElementById("RouteNumber").value,
                         contentType: "application/json; charset=utf-8"
-                    },
-                    Success: function () {
-                        alert("Save Done");
                     }
                 });
             }
@@ -507,8 +406,6 @@
         return allPoint;
     }
 
-
-    var waypoints = new Array();
     var MarkerArray = new Array();
     var route = null;
     var temp;
@@ -554,7 +451,7 @@
             </tr>
             <tr>
                 <td>
-                    <select size="10" name="Routes" id="SelRoutes" style="width: 150px;" onchange="GetRoute(this);">
+                    <select multiple size="10" name="Routes" id="SelRoutes" style="width: 150px;" onchange="GetRoute(this);">
                     </select>
                 </td>
             </tr>

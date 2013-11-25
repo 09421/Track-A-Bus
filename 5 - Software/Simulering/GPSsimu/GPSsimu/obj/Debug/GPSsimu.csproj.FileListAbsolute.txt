@@ -12,3 +12,6 @@ C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\o
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Debug\GPSsimu.csproj.GenerateResource.Cache
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Debug\GPSsimu.exe
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Debug\GPSsimu.pdb
+C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Simulering\GPSsimu\GPSsimu\bin\Debug\GPSsimu.exe.config
+C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Debug\GPSsimu.exe
+C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Debug\GPSsimu.pdb
