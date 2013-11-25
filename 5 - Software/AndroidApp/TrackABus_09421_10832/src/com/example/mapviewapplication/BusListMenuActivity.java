@@ -2,8 +2,8 @@ package com.example.mapviewapplication;
 
 import java.util.ArrayList;
 import com.example.mapviewapplication.DataProviders.TrackABusProvider;
-import com.example.mapviewapplication.DataProviders.UserPrefBusses;
 import com.example.mapviewapplication.DataProviders.TrackABusProvider.LocalBinder;
+import com.example.mapviewapplication.DataProviders.UserPrefBusRoute;
 import com.example.mapviewapplication.TrackABus.ListBusData;
 
 import android.app.ListActivity;
@@ -82,15 +82,15 @@ public class BusListMenuActivity extends ListActivity {
 		private void UpdateBusList(ArrayList<String> busList) {
 			
 			AllBusses = new ArrayList<ListBusData>();	    	
-			//Cursor c = getContentResolver().query(UserPrefBusses.CONTENT_URI, null,null, null, null);
+			Cursor c = getContentResolver().query(UserPrefBusRoute.CONTENT_URI, null,null, null, null);
 			ArrayList<String> FavoriteBusses = new ArrayList<String>();		
 
-//			c.moveToFirst();
-//			for(int i = 0; i < c.getCount(); i++)
-//			{
-//				FavoriteBusses.add(c.getString(0));
-//				c.moveToNext();
-//			}	    	
+			c.moveToFirst();
+			for(int i = 0; i < c.getCount(); i++)
+			{
+				FavoriteBusses.add(c.getString(0));
+				c.moveToNext();
+			}	    	
 //	    	
 	    	for(int i = 0; i < busList.size(); i++)
 	    		AllBusses.add(i, new ListBusData(FavoriteBusses.contains(busList.get(i)), busList.get(i)));   	

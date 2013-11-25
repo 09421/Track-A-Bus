@@ -4,8 +4,15 @@ import java.util.ArrayList;
 
 import com.example.mapviewapplication.DataProviders.TrackABusProvider;
 import com.example.mapviewapplication.DataProviders.UserPrefBusRoute;
-import com.example.mapviewapplication.DataProviders.UserPrefBusses;
+import com.example.mapviewapplication.DataProviders.UserPrefBusRouteBusStop;
+import com.example.mapviewapplication.DataProviders.UserPrefBusRouteRoutePoint;
+import com.example.mapviewapplication.DataProviders.UserPrefBusStop;
+import com.example.mapviewapplication.DataProviders.UserPrefRoutePoint;
+import com.example.mapviewapplication.TrackABus.BusRoute;
+import com.example.mapviewapplication.TrackABus.BusStop;
 import com.example.mapviewapplication.TrackABus.ListBusData;
+import com.google.android.gms.appstate.b;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,7 +48,9 @@ public class buslistadapter extends BaseAdapter{
 			if(msg != null){
 				switch(msg.what){
 				case BUS_ROUTE_DONE:
-					SetBusRoute(msg.getData().getFloatArray("Lat"), msg.getData().getFloatArray("Lng"));
+					ArrayList<BusRoute> BusRoutes = msg.getData().getParcelableArrayList("BusRoute");
+					ArrayList<BusStop> BusStop = msg.getData().getParcelableArrayList("BusStop");
+					SetBusRoute(BusRoutes, BusStop);
 					break;
 				default:
 					super.handleMessage(msg);
@@ -99,10 +108,11 @@ public class buslistadapter extends BaseAdapter{
           tBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
         	    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         	        if (isChecked) {
-        	        	if(_c.getContentResolver().query(UserPrefBusses.CONTENT_URI, null,null, null, null).getCount() > 5){
+        	        	int test = _c.getContentResolver().query(UserPrefBusRoute.CONTENT_URI, null,LBD.BusNumber, null, null).getCount();
+        	        	if(test > 5){
         	        		tBtn.setChecked(false);
         	        		LBD.IsFavorite = false;
-        	        		Toast t = Toast.makeText(_c, "Limit of favorite busses reached: (MAX 6)", Toast.LENGTH_SHORT);
+        	        		Toast t = Toast.makeText(_c, "Limit of favorite routes reached: (MAX 6)", Toast.LENGTH_SHORT);
         	        		TextView v = (TextView) t.getView().findViewById(android.R.id.message);
         	        		v.setTextColor(Color.RED);
         	        		t.show();
@@ -116,38 +126,94 @@ public class buslistadapter extends BaseAdapter{
         	        }
         	    }
         	});
-                       
        return v;
 	}
 
 	String SelectedBus;
 	private void SetBusAsFavorite(String BusNumber){
 		SelectedBus = BusNumber;
-	    final ContentValues cv1 = new ContentValues();         
-	    cv1.put("BusNumber", BusNumber);
-	    _c.getContentResolver().insert(UserPrefBusses.CONTENT_URI, cv1);  		
+      		
 		TrackABusProvider BusProvider = new TrackABusProvider(_c, new msgHandler());
 		BusProvider.GetBusRoute(BusNumber, BUS_ROUTE_DONE);
 	}
 	
-	private void SetBusRoute(float[] lat, float[] lng){
+	private void SetBusRoute(ArrayList<BusRoute> bRoute, ArrayList<BusStop> sRoute){
 		
-		Log.e("MyLog", "Length of lat: " + String.valueOf(lat.length));
-  		final ContentValues[] cv2 = new ContentValues[lat.length];
-  		
-  		for(int i = 0; i < lat.length; i++)
-  		{
-  			cv2[i] = new ContentValues();
-  			cv2[i].put("RouteLat", lat[i]);
-  			cv2[i].put("RouteLon", lng[i]);  		
-  		}
-  		
-    	_c.getContentResolver().bulkInsert(Uri.parse(UserPrefBusRoute.CONTENT_URI.toString() + "/"+SelectedBus), cv2);
-	}
+		ContentValues[] BusRouteCV;
+		ContentValues[] RoutePointCV;
+		ContentValues[] BusRouteRoutePointCV;
+		try
+		{
+		for(int i = 0; i < bRoute.size(); i++)
+		{
+			BusRouteCV = new ContentValues[1];
+			BusRouteCV[0] = new ContentValues();
+			BusRouteCV[0].put(UserPrefBusRoute.BusRouteIdField, bRoute.get(i).ID);
+			BusRouteCV[0].put(UserPrefBusRoute.BusRouteNumberField, bRoute.get(i).RouteNumber);
+			BusRouteCV[0].put(UserPrefBusRoute.BusRouteSubField, bRoute.get(i).SubRoute);
+			RoutePointCV = new ContentValues[bRoute.get(i).points.size()];
+			BusRouteRoutePointCV = new ContentValues[bRoute.get(i).BusRoute_RoutePointIDs.size()];
+			for(int j = 0; j < bRoute.get(i).points.size(); j++)
+			{
+				RoutePointCV[j] = new ContentValues();
+				BusRouteRoutePointCV[j] = new ContentValues();
+				RoutePointCV[j].put(UserPrefRoutePoint.RoutePointIdField, bRoute.get(i).points.get(j).ID);
+				RoutePointCV[j].put(UserPrefRoutePoint.RoutePointLatField, bRoute.get(i).points.get(j).Position.latitude);
+				RoutePointCV[j].put(UserPrefRoutePoint.RoutePointLonField, bRoute.get(i).points.get(j).Position.longitude);
 
+				BusRouteRoutePointCV[j].put(UserPrefBusRouteRoutePoint.BusRouteRoutePointIDField,
+											bRoute.get(i).BusRoute_RoutePointIDs.get(j));
+				BusRouteRoutePointCV[j].put(UserPrefBusRouteRoutePoint.BusRouteField, bRoute.get(i).ID);
+				BusRouteRoutePointCV[j].put(UserPrefBusRouteRoutePoint.RoutePointField, bRoute.get(i).points.get(j).ID);
+											
+			}
+			int checkVal = _c.getContentResolver().bulkInsert(Uri.parse(UserPrefBusRoute.CONTENT_URI.toString()+"/"+bRoute.get(i).ID), BusRouteCV);
+			if(checkVal == 0)
+			{
+				Log.e("DEBUG", "Bus exists returning");
+				return;
+			}
+			_c.getContentResolver().bulkInsert(UserPrefRoutePoint.CONTENT_URI, RoutePointCV);
+			_c.getContentResolver().bulkInsert(UserPrefBusRouteRoutePoint.CONTENT_URI, BusRouteRoutePointCV);
+		}
+  		
+		ContentValues[] BusStopPointsCV = new ContentValues[sRoute.size()];
+		ContentValues[] BusStopCV = new ContentValues[sRoute.size()];
+		ContentValues[] BusRouteBusStopCV = new ContentValues[sRoute.size()];
+		for(int i = 0; i < sRoute.size(); i++)
+		{
+			BusRouteBusStopCV[i] = new ContentValues();
+			if(_c.getContentResolver().query(Uri.parse(UserPrefBusStop.CONTENT_URI.toString() + "/"+sRoute.get(i).ID), null, null, null, null).getCount() == 0)
+			{
+				BusStopPointsCV[i] = new ContentValues();
+				BusStopCV[i] = new ContentValues();
+				BusStopPointsCV[i].put(UserPrefRoutePoint.RoutePointIdField, sRoute.get(i).Position.ID);
+				BusStopPointsCV[i].put(UserPrefRoutePoint.RoutePointLatField, sRoute.get(i).Position.Position.latitude);
+				BusStopPointsCV[i].put(UserPrefRoutePoint.RoutePointLonField, sRoute.get(i).Position.Position.longitude);
+				BusStopCV[i].put(UserPrefBusStop.BusStopIdField, sRoute.get(i).ID);
+				BusStopCV[i].put(UserPrefBusStop.BusStopNameField, sRoute.get(i).Name);
+				BusStopCV[i].put(UserPrefBusStop.BusStopForeignRoutePointField,sRoute.get(i).Position.ID);
+			}
+				BusRouteBusStopCV[i].put(UserPrefBusRouteBusStop.BusRouteBusStopIDField, sRoute.get(i).BusRoute_BusStopID);
+				BusRouteBusStopCV[i].put(UserPrefBusRouteBusStop.BusRouteField, sRoute.get(i).RouteID);
+				BusRouteBusStopCV[i].put(UserPrefBusRouteBusStop.BusStopField, sRoute.get(i).ID);
+		}
+		
+		_c.getContentResolver().bulkInsert(UserPrefRoutePoint.CONTENT_URI, BusStopPointsCV);
+		_c.getContentResolver().bulkInsert(UserPrefBusStop.CONTENT_URI, BusStopCV);
+		_c.getContentResolver().bulkInsert(UserPrefBusRouteBusStop.CONTENT_URI, BusRouteBusStopCV);
+		Log.e("DEBUG", "DONE");
+		}
+		
+		catch(Exception e)
+		{
+			Log.e("DEBUG", "SOMETHING HAPPEND HERE!");
+		}
+  		
+	}
 	
 	protected void RemoveFavorite(String busNumber) {
-		_c.getContentResolver().delete(UserPrefBusses.CONTENT_URI, busNumber, null);
+		_c.getContentResolver().delete(UserPrefBusRoute.CONTENT_URI, busNumber, null);
 		
 	}
 }

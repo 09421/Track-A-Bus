@@ -2,8 +2,9 @@
 
 drop procedure if exists CalcBusToStopTime;
 DELIMITER $$
-create procedure CalcBusToStopTime(IN stopName varchar(100), IN routeNumber varchar(10), 
-									OUT TimeToStopSecAsc int, OUT TimeToStopSecDesc int, OUT busIDAsc int, out busIDDesc int)
+create procedure CalcBusToStopTime(IN stopName varchar(100), IN routeNumber varchar(10),
+									OUT TimeToStopSecAsc int, OUT TimeToStopSecDesc int, OUT busIDAsc int, out busIDDesc int,
+									OUT EndBusStopAsc varchar(100), OUT EndBusStopDesc varchar(100))
 BEGIN
 	declare RouteId int;
 	declare StopId int;
@@ -22,42 +23,27 @@ BEGIN
 	
 	drop temporary table if exists possibleRoutes;
 	create temporary table possibleRoutes(
-		possRouteID int
+		possRouteID int,
+		possRouteStopID int
 	);
 
 	#Get possible BusRoutes from routeNumber
 	insert into possibleRoutes
-	select distinct BusRoute.ID from BusRoute
+	select distinct BusRoute.ID, BusRoute_RoutePoint.ID from BusRoute
 	join BusRoute_BusStop on BusRoute.ID = BusRoute_BusStop.fk_BusRoute
 	join BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+	join BusRoute_RoutePoint on BusStop.fk_RoutePoint = BusRoute_RoutePoint.fk_RoutePoint
 	where BusRoute.RouteNumber = routeNumber and BusStop.StopName = stopName;
 
-	#Get BusStop id from BusStop Name
-	select BusRoute_RoutePoint.ID from BusRoute_RoutePoint
-	inner join RoutePoint on BusRoute_RoutePoint.fk_RoutePoint = RoutePoint.ID
-	inner join BusStop on RoutePoint.ID = BusStop.fk_RoutePoint
-	where BusStop.StopName = stopName into StopId;
-
-
 	#Closests bus, both ways.
-	call GetClosestBusAscProc(StopId,@ClosestEndEPIdAsc, @ClosestBDIstAsc, @ClosestBIDAsc );
+	call GetClosestBusAscProc(@ClosestEndEPIdAsc, @ClosestBDIstAsc, @ClosestBIDAsc );
 	select @ClosestsEndPointIDAsc, @ClosestBDIstAsc, @ClosestBIDAsc 
 	into ClosestEndPointIdAsc,ClosestBusDistanceAsc,ClosestBusIdAsc;
 
-	Call GetClosestBusDescProc(StopId, @ClosestEndEPIdDesc, @ClosestBDIstDesc, @ClosestBIDDesc ); 
+	Call GetClosestBusDescProc(@ClosestEndEPIdDesc, @ClosestBDIstDesc, @ClosestBIDDesc ); 
 	select @ClosestEndEPIdDesc, @ClosestBDIstDesc, @ClosestBIDDesc 
 	into ClosestEndPointIdDesc,ClosestBusDistanceDesc,ClosestBusIdDesc;
-	#Get position for closestBus for both ways
-	/*select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = @ClosestBusIdAsc
-	order by GPSPosition.ID desc limit 1 into ClosestBusLatAsc, ClosestBusLonAsc;
-	select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = @ClosestBusIdDesc
-	order by GPSPosition.ID desc limit 1 into ClosestBusLatDesc, ClosestBusLonDesc;*/
 
-	#Closets endpoint and distance, both ways. 
-	/*select GetClosestEndpointAsc(ClosestBusIdAsc, RouteId) into ClosestEndPointIdAsc;
-	select CalcRouteLengthAsc(ClosestBusLonAsc, ClosestBusLatAsc, ClosestEndPointIdAsc, StopId) into ClosestBusDistanceAsc;
-	select GetClosestEndpointDesc(ClosestBusIdDesc,RouteId) into ClosestEndPointIdDesc;
-	select CalcRouteLengthDesc(ClosestBusLonDesc, ClosestBusLatDesc, ClosestEndPointIdDesc, StopId) into ClosestBusDistanceDesc;*/
 
 	select CalcBusAvgSpeedAsc(ClosestBusIdAsc) into ClosestBusSpeedAsc;
 	select CalcBusAvgSpeedDesc(ClosestBusIdDesc) into ClosestBusSpeedDesc;
@@ -69,10 +55,16 @@ BEGIN
 	set busIDAsc = ClosestBusIdAsc;
 	set busIDDesc = ClosestBusIdDesc;
 
-	insert into test values (RouteId, StopID, ClosestBusIdDesc, ClosestBusIdAsc, ClosestBusLatDesc, ClosestBusLonDesc,
-							ClosestBusLatAsc, ClosestBusLonAsc, ClosestEndPointIdDesc,ClosestEndPointIdAsc,
-							ClosestBusDistanceDesc, ClosestBusDistanceAsc, ClosestBusSpeedDesc,ClosestBusSpeedAsc,
-							TimeToStopSecDesc, TimeToStopSecAsc, busIDDesc, BusIDAsc);
+	select BusStop.StopName from BusStop 
+	inner join BusRoute_BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+	inner join Bus on BusRoute_BusStop.fk_BusRoute = Bus.fk_BusRoute
+	where Bus.ID = ClosestBusIdAsc Order by BusRoute_BusStop.ID desc limit 1 into EndBusStopAsc;
+
+	select BusStop.StopName from BusStop 
+	inner join BusRoute_BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+	inner join Bus on BusRoute_BusStop.fk_BusRoute = Bus.fk_BusRoute
+	where Bus.ID = ClosestBusIdDesc Order by BusRoute_BusStop.ID asc limit 1 into EndBusStopDesc;
+
 
 
 	drop temporary table possibleRoutes;
@@ -81,11 +73,12 @@ END$$
 
 delimiter $$
 drop procedure if exists GetClosestBusAscProc $$
-create procedure GetClosestBusAscProc(IN stopId int, OUT busClosestEndPointAsc int, Out routeLengthAsc float, OUT closestBusId int)
+create procedure GetClosestBusAscProc(OUT busClosestEndPointAsc int, Out routeLengthAsc float, OUT closestBusId int)
 begin 
 	declare NumberOfBusses int default 0;
 	declare BusCounter int default 1;
 	declare currentBusId int;
+	declare currentStopId int;
 	declare closestbID int;
 	declare closestEndPoint int;
 	declare busPos_lon decimal(20,15);
@@ -98,28 +91,31 @@ begin
 	drop temporary table if exists BussesOnRouteAsc;
 	create temporary table BussesOnRouteAsc(
 		autoId int auto_increment primary key,
-		busId int
+		busId int,
+		stopID int
 	);
 
 	#Get all busses on route that drives a from first to last stop
-	insert into BussesOnRouteAsc (busId) select distinct Bus.ID from Bus
+	insert into BussesOnRouteAsc (busId, stopID) select distinct Bus.ID, possibleRoutes.possRouteStopID from Bus
 	inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
 	where Bus.IsDescending=false;
 	
 	#Get number of busses on route.
 	select count(busId) from BussesOnRouteAsc into NumberOfBusses;	
 	
+	insert into test1 (testID) values (NumberOfBusses);
+
 	#Iterate though busses on that route, finding the closest bus.
 	while BusCounter <= NumberOfBusses do
-		select busId from BussesOnRouteAsc where autoId = BusCounter into currentBusId;
+		select busId,stopID from BussesOnRouteAsc where autoId = BusCounter into currentBusId, currentStopId;
 		#Get closests endpoint for those busses
 		select GetClosestEndpointAsc(currentBusId) into closestEndPoint; 
 		#Get latest latitude and longitude of current bus
-		if(closestEndPoint <= stopID) then
+		if(closestEndPoint <= currentStopId) then
 			select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus=currentBusId
 			order by GPSPosition.ID desc limit 1 into busPos_lat, busPos_lon; 
 			#Calculate distance from bus to stop.
-			select CalcRouteLengthAsc(busPos_lon, busPos_lat, closestEndPoint, stopId) into currentBusDist;
+			select CalcRouteLengthAsc(busPos_lon, busPos_lat, closestEndPoint, currentStopId) into currentBusDist;
 		else
 			set currentBusDist = 10000000;
 		end if;
@@ -142,11 +138,12 @@ END $$
 
 delimiter $$
 drop procedure if exists GetClosestBusDescProc $$
-create procedure GetClosestBusDescProc(IN stopId int, OUT busClosestEndPointDesc int, Out routeLengthDesc float, OUT closestBusId int)
+create procedure GetClosestBusDescProc(OUT busClosestEndPointDesc int, Out routeLengthDesc float, OUT closestBusId int)
 begin 
 	declare NumberOfBusses int default 0;
 	declare BusCounter int default 1;
 	declare currentBusId int;
+	declare currentStopId int;
 	declare closestbID int;
 	declare closestEndPoint int;
 	declare busPos_lon decimal(20,15);
@@ -158,11 +155,12 @@ begin
 	drop temporary table if exists BussesOnRouteDesc;
 	create temporary table BussesOnRouteDesc(
 		autoId int auto_increment primary key,
-		busId int
+		busId int,
+		stopId int
 	);
 
 	#Get all busses on route that drives a from last to first stop
-	insert into BussesOnRouteDesc (busId) select distinct Bus.ID from Bus
+	insert into BussesOnRouteDesc (busId,stopId) select distinct Bus.ID, possibleRoutes.possRouteStopID from Bus
 	inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
 	where Bus.IsDescending=true;
 
@@ -170,16 +168,16 @@ begin
 	select count(busId) from BussesOnRouteDesc into NumberOfBusses;	
 	#Iterate though busses on that route, finding the closest bus.
 	while BusCounter <= NumberOfBusses do
-		select busId from BussesOnRouteDesc where autoId = BusCounter into currentBusId;
+		select busId,stopId from BussesOnRouteDesc where autoId = BusCounter into currentBusId,currentStopId;
 		#Get closests endpoint for those busses
 		select GetClosestEndpointDesc(currentBusId) into closestEndPoint; 
-		if(closestEndPoint >= stopID) then
+		if(closestEndPoint >= currentStopId) then
 			
 			#Get latest latitude and longitude of current bus
 			select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus=currentBusId
 			order by GPSPosition.ID desc limit 1 into busPos_lat, busPos_lon; 
 			#Calculate distance from bus to stop.
-			select CalcRouteLengthDesc(busPos_lon, busPos_lat, closestEndPoint, stopId) into currentBusDist;
+			select CalcRouteLengthDesc(busPos_lon, busPos_lat, closestEndPoint, currentStopId) into currentBusDist;
 		else
 			set currentBusDist = 10000000;
 		end if;
@@ -198,160 +196,6 @@ begin
 	drop temporary table BussesOnRouteDesc;
 	#return bus with closests distance
 END $$
-
-delimiter $$
-drop procedure if exists UpdateRouteOnBus$$
-create procedure UpdateRouteOnBus(in busID int, in routeNumber varchar(10), in EndStop varchar(100), in StartStop varchar(100)) 
-begin
-
-	declare nextRouteID int;
-	declare counter int default 0;
-	declare MaxCounter int ;
-	declare currentID int;
-	declare currentIDStopNameFirst varchar(100);
-	declare currentIDStopNameLast varchar(100);
-	declare running bit default true;
-
-	create temporary table possibleRoutes
-	(
-		ID int
-	);
-
-	insert into possibleRoutes 
-	select BusRoute.ID from BusRoute 
-	where BusRoute.RouteNumber = routeNumber;
-	
-	select count(possibleRoutes.ID) from possibleRoutes into MaxCounter;
-	while counter < MaxCounter and running = true do
-		select possibleRoutes.ID from possibleRoute limit counter, 1 into currentID;
-
-		select BusStop.StopName from BusStop
-		join BusRoute_BusStop on BusStop.ID = BusRoute_BusStop.fk_BusStop
-		where BusRoute_BusStop.fk_BusRoute = currentID order by BusRoute_BusStop.ID asc limit 1 into currentIDStopNameFirst;
-
-		select BusStop.StopName from BusStop
-		join BusRoute_BusStop on BusStop.ID = BusRoute_BusStop.fk_BusStop
-		where BusRoute_BusStop.fk_BusRoute = currentID order by BusRoute_BusStop.ID desc limit 1 into currentIDStopNameLast;
-		if(currentIDStopNameFirst = StartStop or currentIDStopNameFirst = EndStop) and
-		  (currentIDStopNameLast = StartStop or currentIDStopNameLast = EndStop) then
-			if (currentIDStopNameFirst = StartStop and currentIdStopNameLast = endStop) then
-				update Bus set Bus.fk_BusRoute = currentID, Bus.IsDescending = true
-				where Bus.ID = busID;
-				set running = false;
-			else
-				update Bus set Bus.fk_BusRoute = currentID, Bus.IsDescending = true
-				where Bus.ID = busID;
-				set running = false;
-			end if;
-		end if;
-	end while;
-end $$
-
-
-/*delimiter $$
-drop function if exists GetClosestBusAsc $$
-create function GetClosestBusAsc(stopId int, routeID int)
-returns int
-begin
-	declare NumberOfBusses int default 0;
-	declare BusCounter int default 1;
-	declare currentBusId int;
-	declare closestsBusID int;
-	declare closestsEndPoint int;
-	declare busPos_lon decimal(20,15);
-	declare busPos_lat decimal(20,15);
-	declare currentBusDist float default 0;
-	declare leastBusDist float default 1000000000;
-
-	drop temporary table if exists BussesOnRouteAsc;
-	create temporary table BussesOnRouteAsc(
-		autoId int auto_increment primary key,
-		busId int
-	);
-
-	#Get all busses on route that drives a from first to last stop
-	insert into BussesOnRouteAsc (busId) select Bus.ID from Bus
-	where Bus.fk_BusRoute=routeId && Bus.IsDescending=false;
-
-	#Get number of busses on route.
-	select count(busId) from BussesOnRouteAsc into NumberOfBusses;	
-
-	#Iterate though busses on that route, finding the closest bus.
-	while BusCounter <= NumberOfBusses do
-		
-		select busId from BussesOnRouteAsc where autoId = BusCounter into currentBusId;
-		#Get closests endpoint for those busses
-		select GetClosestEndpointAsc(currentBusId, routeID) into closestsEndPoint; 
-		#Get latest latitude and longitude of current bus
-		select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus=currentBusId
-		order by GPSPosition.ID desc limit 1 into busPos_lat, busPos_lon; 
-		#Calculate distance from bus to stop.
-		select CalcRouteLengthAsc(busPos_lon, busPos_lat, closestsEndPoint, stopId) into currentBusDist;
-		#If the distance from the current bus to the busstop is lesser than the one before.
-		#Change closests bus.
-		if (currentBusDist < leastBusDist) then
-			set leastBusDist = currentBusDist;
-			set closestsBusID = currentBusId;
-		end if;
-		set BusCounter = BusCounter + 1;
-	end while;
-	drop temporary table BussesOnRouteAsc;
-	#return bus with closests distance
-	return closestsBusID;
-end$$
-
-delimiter $$
-drop function if exists GetClosestBusDesc $$
-create function GetClosestBusDesc(stopId int, routeID int)
-returns int
-begin
-	declare NumberOfBusses int default 0;
-	declare BusCounter int default 1;
-	declare currentBusId int;
-	declare closestsBusID int;
-	declare closestsEndPoint int;
-	declare busPos_lon decimal(20,15);
-	declare busPos_lat decimal(20,15);
-	declare currentBusDist float default 0;
-	declare leastBusDist float default 1000000000;
-
-	drop temporary table if exists BussesOnRouteDesc;
-	create temporary table BussesOnRouteDesc(
-		autoId int auto_increment primary key,
-		busId int
-	);
-
-	#Get all busses on route that drives a from first to last stop
-
-	insert into BussesOnRouteDesc (busId) select Bus.ID from Bus
-	where Bus.fk_BusRoute=routeId && Bus.IsDescending=true;
-
-	#Get number of busses on route.
-	select count(busId) from BussesOnRouteDesc into NumberOfBusses;	
-
-	#Iterate though busses on that route, finding the closest bus.
-	while BusCounter <= NumberOfBusses do
-		select busId from BussesOnRouteDesc where autoId = BusCounter into currentBusId;
-		#Get closests endpoint for those busses
-		select GetClosestEndpointDesc(currentBusId, routeID) into closestsEndPoint; 
-		#Get latest latitude and longitude of current bus
-		select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus=currentBusId
-		order by GPSPosition.ID desc limit 1 into busPos_lat, busPos_lon; 
-		#Calculate distance from bus to stop.
-		select CalcRouteLengthDesc(busPos_lon, busPos_lat, closestsEndPoint, stopId) into currentBusDist;
-		#If the distance from the current bus to the busstop is lesser than the one before.
-		#Change closests bus.
-		if (currentBusDist < leastBusDist) then
-			set leastBusDist = currentBusDist;
-			set closestsBusID = currentBusId;
-		end if;
-		set BusCounter = BusCounter + 1;
-	end while;
-	drop temporary table BussesOnRouteDesc;
-	#return bus with closests distance
-	return closestsBusID;
-end$$*/
-
 
 
 delimiter $$
@@ -394,8 +238,7 @@ begin
 	select ChosenRouteAsc.ID from ChosenRouteAsc order by id asc limit 1 into RouteCounter;
 	select count(id) from ChosenRouteAsc into TotalRouteLines;
 
-	
-	#insert into test1 values (RouteCounter);
+
 	#Itereate throught endpoints, finding the endpoint closest to the bus
 	#Only lesser than, because last point in list can only be endpoint.
 
@@ -462,14 +305,14 @@ begin
 
 	select GPSPosition.Latitude,  GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = busID
 	order by GPSPosition.ID desc limit 1 into BusLastPosLat, BusLastPosLon;
-	insert into test1 (testID) values (LastChosenID),(RouteCounter);
+
 	while RouteCounter >  LastChosenID - TotalRoutelines do
 		select bus_lon from ChosenRouteDesc where id = RouteCounter into R1x;
 		select bus_lat from ChosenRouteDesc where id = RouteCounter into R1y;
 		select bus_lon from ChosenRouteDesc where id = RouteCounter-1 into R2x;
 		select bus_lat from ChosenRouteDesc where id = RouteCounter-1 into R2y;
 		set BusDist = CalcRouteLineDist(BusLastPosLon, BusLastPosLat, R1x, R1y, R2x, R2y);
-		insert into test1(test1Float) values (-1);
+
 		if BusDist < PrevBusDist then
 			set PrevBusDist = BusDist;
 			set ClosestEndPointId = RouteCounter-1;

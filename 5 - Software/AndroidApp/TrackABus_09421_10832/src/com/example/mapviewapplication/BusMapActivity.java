@@ -7,6 +7,11 @@ import com.example.mapviewapplication.DataProviders.SoapProvider;
 import com.example.mapviewapplication.DataProviders.TrackABusProvider;
 import com.example.mapviewapplication.DataProviders.TrackABusProvider.LocalBinder;
 import com.example.mapviewapplication.DataProviders.UserPrefBusRoute;
+import com.example.mapviewapplication.DataProviders.UserPrefBusStop;
+import com.example.mapviewapplication.DataProviders.UserPrefRoutePoint;
+import com.example.mapviewapplication.TrackABus.BusRoute;
+import com.example.mapviewapplication.TrackABus.BusStop;
+import com.example.mapviewapplication.TrackABus.RoutePoint;
 import com.google.android.gms.appstate.b;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -59,13 +64,23 @@ public class BusMapActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapview);        
         Bundle extra = getIntent().getExtras();
-        soapProvider = new SoapProvider();
+        soapProvider = new SoapProvider(); 
         if(extra != null){        	
         	SelectedBus = extra.getString("SELECTED_BUS");
         	Log.e("MyLog", SelectedBus);
         	if(extra.getBoolean("isFavorite")){	
+
+	        	pBar = (ProgressBar)findViewById(R.id.MapPBar);
+	        	TopBarLayout = (LinearLayout)findViewById(R.id.TopInformationBar);
+	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
+		        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
+		        mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
+		        mMapFragment.getView().setVisibility(View.VISIBLE);
+	        	ChosenStopView = (TextView)findViewById(R.id.StopInfo);
+	        	RouteStopSep = (View)findViewById(R.id.RouteStopSeperator);
+	        	BusRouteView.setText(SelectedBus);
         		SetUpMap();
-        		DrawFavoriteRoute(SelectedBus);       		
+        		DrawFavoriteRoute(SelectedBus);
         	}
         	else{
       	      	mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
@@ -76,13 +91,8 @@ public class BusMapActivity extends Activity {
 	        	ChosenStopView = (TextView)findViewById(R.id.StopInfo);
 	        	RouteStopSep = (View)findViewById(R.id.RouteStopSeperator);
 	        	BusRouteView.setText(SelectedBus);
-	            pBar.setVisibility(View.VISIBLE);
-        		BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler());
-        		BusProvider.GetBusRoute(extra.getString("SELECTED_BUS"), BUS_ROUTE_DONE);
+
         	}       	
-        	
-        	//LatLng BusLatLng = GetCurrentLatLngForBus(SelectedBus);
-        	//SetUpMap(BusLatLng);
         }
         else{            
             SetUpMap();        	
@@ -115,13 +125,15 @@ public class BusMapActivity extends Activity {
 			        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
 			        mMapFragment.getView().setVisibility(View.VISIBLE);
 			        ((View)findViewById(R.id.TopInformationBarFrame)).setVisibility(View.VISIBLE);
-			        StopNames = msg.getData().getStringArray("StopName");
+			        
+					ArrayList<BusRoute> BusRoutes = msg.getData().getParcelableArrayList("BusRoute");
+					ArrayList<BusStop> BusStops = msg.getData().getParcelableArrayList("BusStop");
 			        
 					SetUpMap();
-					for(int i = 0; i<(msg.getData().size()-3)/2;i++){
-						DrawRoute(msg.getData().getFloatArray("RouteLat " + String.valueOf(i)), msg.getData().getFloatArray("RouteLng " + String.valueOf(i)));
+					for(int i = 0; i<BusRoutes.size();i++){
+						DrawRoute(BusRoutes.get(i).points);
 					}
-					DrawBusStops(msg.getData().getFloatArray("StopLat"), msg.getData().getFloatArray("StopLng"));
+					DrawBusStops(BusStops);
 					
 					if(isOnline())
 						UpdateBusLocation();
@@ -162,11 +174,11 @@ public class BusMapActivity extends Activity {
 	float fLat;
 	float fLng;
 	
-	private void ShowStopInformation(String BusStop, String DescEndPoint, String AscEndpoint)
+	private void InitStopInformation(String BusStop)
 	{
 		((TextView)this.findViewById(R.id.StopInfo)).setText(BusStop);
-		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + DescEndPoint);
-		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + AscEndpoint);
+		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("-------------");
+		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("-------------");
 		((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
 		((TextView)this.findViewById(R.id.AscendingBusTime)).setText("nn:nn:nn"); 
 		
@@ -176,7 +188,6 @@ public class BusMapActivity extends Activity {
 		((View)this.findViewById(R.id.DescAscFrame)).setVisibility(View.VISIBLE);
 		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.VISIBLE);
 		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
-		
 	}
 //	
 //	private void HideStopInformation()
@@ -187,7 +198,7 @@ public class BusMapActivity extends Activity {
 //		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.GONE);
 //	}
 	
-	private void UpdateTime(String DescSeconds, String AscSeconds)
+	private void UpdateTimeDesc(String DescSeconds)
 	{
 		if(Integer.parseInt(DescSeconds) != -1)
 		{
@@ -205,7 +216,9 @@ public class BusMapActivity extends Activity {
 		{
 			((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
 		}
-		
+	}
+	private void UpdateTimeAsc(String AscSeconds)
+	{
 		if(Integer.parseInt(AscSeconds) != -1)
 		{
 			int AscRemainder = 0;
@@ -293,22 +306,32 @@ public class BusMapActivity extends Activity {
 	}
 	
 	
-	private void DrawRoute(float[] Lat, float[] Lng) {
+	private void DrawRoute(ArrayList<RoutePoint> points) {
 
 		 PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
+		 for(int i = 0; i < points.size(); i++){
+			 pOption.add(points.get(i).Position);
+		 }
+		 map.addPolyline(pOption);
+	}
+	
+	private void DrawRoute(float[] Lat, float[] Lng)
+	{
+		 PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
 		 for(int i = 0; i < Lat.length; i++){
-			 pOption.add(new LatLng(Lat[i], Lng[i]));
+			 pOption.add(new LatLng(Lat[i],Lng[i]));
 		 }
 		 map.addPolyline(pOption);
 	}
 	
 	private boolean timeUpdating;
 	private Thread updateTimeThread;
-	private void DrawBusStops(float[] Lat, float[] Lng) {
+	private void DrawBusStops(final ArrayList<BusStop> stops)
+	{
 		
-		for(int i = 0; i<Lat.length; i++){
+		for(int i = 0; i<stops.size(); i++){
 			map.addMarker(new MarkerOptions()
-	        .position(new LatLng(Lat[i], Lng[i])).title(StopNames[i])
+	        .position(stops.get(i).Position.Position).title(stops.get(i).Name)
 			.icon(BitmapDescriptorFactory.fromResource(R.drawable.teststop)));
 		}
 		
@@ -316,7 +339,7 @@ public class BusMapActivity extends Activity {
 			
 			@Override
 			public boolean onMarkerClick(Marker marker) {
-			    ShowStopInformation(marker.getTitle(),StopNames[0],StopNames[StopNames.length-1]);
+			    InitStopInformation(marker.getTitle());
 				Runnable ru = new Runnable(){
 					@Override
 					public void run(){
@@ -324,14 +347,50 @@ public class BusMapActivity extends Activity {
 						class UpdateTimeRunnable implements Runnable{
 							private String ascS;
 							private String descS;
-							public UpdateTimeRunnable(String ascSec, String descSec)
+							private String aStop;
+							private String dStop;
+							public UpdateTimeRunnable(String ascSec, String descSec, String ascStop, String descStop)
 							{
 								ascS = ascSec; descS = descSec;
+								aStop = ascStop; dStop = descStop;
 							}
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								UpdateTime(descS, ascS);
+								String currentAscText = (String) ((TextView)findViewById(R.id.AscendingBusEndStopInfo)).getText();
+								String currentDescText = (String) ((TextView)findViewById(R.id.DescendingBusEndStopInfo)).getText();
+								if(currentAscText!= aStop || currentAscText != "No bus going this direction")	
+								{
+									if(aStop.contains("anyType"))
+									{
+										((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("No bus going this direction");
+										
+									}
+									else
+									{
+										((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + aStop);
+									} 
+								}
+								if(!aStop.contains("anyType"))
+								{
+									UpdateTimeAsc(ascS);
+								}
+								if(currentDescText != dStop || currentDescText != "No bus going this direction")	
+								{
+									if(dStop.contains("anyType"))
+									{
+										((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("No bus going this direction");
+									
+									}
+									else
+									{
+										((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + dStop);
+									}
+								}
+								if(!dStop.contains("anyType"))
+								{
+									UpdateTimeDesc(descS);
+								}
 							}
 							
 						}
@@ -350,11 +409,13 @@ public class BusMapActivity extends Activity {
 							{
 								String asc = busToStop.get(0);
 								String desc = busToStop.get(1);
+								String ascStop = busToStop.get(2);
+								String descStop = busToStop.get(3);
 								Log.e("busToStop", asc);
 								Log.e("busToStop", desc);
-								UpdateTimeRunnable r = new UpdateTimeRunnable( asc,desc);
+
+								UpdateTimeRunnable r = new UpdateTimeRunnable(asc,desc,ascStop,descStop);
 								handler.post(r);
-								
 							}
 							try {
 								Thread.sleep(2000);
@@ -392,27 +453,45 @@ public class BusMapActivity extends Activity {
 		Runnable r = new Runnable(){
 			@Override
 			public void run() {
-				Cursor c = getContentResolver().query(UserPrefBusRoute.CONTENT_URI,null, selectedBus, null, null);
-				c.moveToFirst();
+				final Cursor RouteCursor = getContentResolver().query(UserPrefBusRoute.CONTENT_URI,null, selectedBus, null, null);
+				RouteCursor.moveToFirst();
 				
-				final float[] Lat = new float[c.getCount()];
-				final float[] Lng = new float[c.getCount()];
-				for(int i = 0; i < c.getCount(); i++)
+				Runnable[] drawingRoute = new Runnable[RouteCursor.getCount()];
+				for(int i = 0; i < drawingRoute.length; i++)
 				{
-					Lat[i] = c.getFloat(0);
-					Lng[i] = c.getFloat(1);
-					c.moveToNext();
+					Cursor Route = getContentResolver().query(UserPrefRoutePoint.CONTENT_URI, null, RouteCursor.getString(0), null, null);
+					Cursor BusStops = getContentResolver().query(UserPrefBusStop.CONTENT_URI, null, RouteCursor.getString(0), null, null);
+					final float[] LatRoute = new float[Route.getCount()];
+					final float[] LngRoute = new float[Route.getCount()];
+					Route.moveToFirst();
+					BusStops.moveToFirst();
+					final ArrayList<BusStop> stops = new ArrayList<BusStop>();
+					for(int j = 0; j < Route.getCount(); j++)
+					{
+						LatRoute[j] = Route.getFloat(0);
+						LngRoute[j] = Route.getFloat(1);
+						Route.moveToNext();
+					}
+					for(int k = 0; k < BusStops.getCount(); k++)
+					{
+						stops.add(new BusStop(new RoutePoint(new LatLng(BusStops.getFloat(1),BusStops.getFloat(2)),null)
+										, BusStops.getString(0), null, null, null));
+						BusStops.moveToNext();
+					}
+					drawingRoute[i] = new Runnable(){
+						@Override
+						public void run() {
+
+							DrawRoute(LatRoute, LngRoute);
+							DrawBusStops(stops);
+						}
+					};
+					handler.post(drawingRoute[i]);
+					RouteCursor.moveToNext();
 				}
 				
 				UpdateBusLocation();
-				Runnable SetRoute = new Runnable(){
-
-					@Override
-					public void run() {
-						DrawRoute(Lat, Lng);
-					}			
-				};
-				handler.post(SetRoute);				
+				
 			}
 		};		
 		

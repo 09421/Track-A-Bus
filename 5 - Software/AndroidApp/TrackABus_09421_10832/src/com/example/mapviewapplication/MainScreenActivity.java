@@ -2,7 +2,8 @@ package com.example.mapviewapplication;
 
 import java.util.ArrayList;
 
-import com.example.mapviewapplication.DataProviders.UserPrefBusses;
+import com.example.mapviewapplication.DataProviders.UserPrefBusRoute;
+
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,13 +23,13 @@ public class MainScreenActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mainscreenactivity);
 		l = (ListView)findViewById(R.id.FavoriteList);	
-		//SetFavoriteBusListAdapter(l);
-		//SetBusListOnClickListener(l);
+		SetFavoriteBusListAdapter(l);
+		SetBusListOnClickListener(l);
 	}
 
 	private void SetFavoriteBusListAdapter(ListView l) {
 			
-		Cursor c = getContentResolver().query(UserPrefBusses.CONTENT_URI, null,null, null, null);
+		Cursor c = getContentResolver().query(UserPrefBusRoute.CONTENT_URI, null,null, null, null);
 		ArrayList<String> values = new ArrayList<String>();		
 
 		c.moveToFirst();
@@ -45,7 +46,6 @@ public class MainScreenActivity extends Activity{
 	
 	private void SetBusListOnClickListener(ListView l) {
 		l.setOnItemClickListener(new OnItemClickListener(){
-
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
                     long id) {
@@ -75,8 +75,8 @@ public class MainScreenActivity extends Activity{
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//SetFavoriteBusListAdapter(l);
-		//SetBusListOnClickListener(l);	
+		SetFavoriteBusListAdapter(l);
+		SetBusListOnClickListener(l);	
 	}
 
 	@Override

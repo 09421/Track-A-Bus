@@ -4,12 +4,16 @@ import android.net.Uri;
 
 public class UserPrefBusStop {
 
-	public static final String BusStopIdField = "ID";
-	public static final String BusStopNameField = "StopName";
-	public static final String BusStopForeignRoutePointField = "fk_RoutePoint";
+	public static final String BusStopIdField = "BSID";
+	public static final String BusStopNameField = "BSStopName";
+	public static final String BusStopForeignRoutePointField = "BSfk_RoutePoint";
+	
+	public static final String BusStopIdColumn = "BSID";
+	public static final String BusStopNameColumn= "BSStopName";
+	public static final String BusStopForeignRoutePointColumn = "BSfk_RoutePoint";
 
 	public static final Uri CONTENT_URI = Uri.parse("content://"
-			+ UserPrefProvider.AUTHORITY + "/BUSSTOP_TABLE");
+			+ UserPrefProvider.AUTHORITY + "/BusStop");
 	
 
 }
