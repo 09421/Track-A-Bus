@@ -35,7 +35,7 @@
 
 
 
-    function ExecuteOnLoad() {
+    function ExecuteOnLoad() {//from _layout when loaded
         GetBusRoutesNamesFromDB();
     }
 
@@ -82,6 +82,7 @@
         transitLayer.setMap(map);
 
 
+        //Gets markers and the route, when route created, or dragged
         google.maps.event.addListener(directionsDisplay, 'directions_changed', function () {
             var that = this;
             setTimeout(function () {//we need a short delay
@@ -115,14 +116,15 @@
 
         var SubRuteMarkers = new Array();
 
+        //listener for when the marker get a click event
         google.maps.event.addListener(map, 'click', function (event) {
-            if (startPoint == null && endPoint == null)
+            if (startPoint == null && endPoint == null) //No markers, set first
                 startPoint = new google.maps.Marker({
                     map: map,
                     draggable: true,
                     position: event.latLng
                 });
-            else if (startPoint != null && endPoint == null) {
+            else if (startPoint != null && endPoint == null) {//if 1 markers, set last markers
                 endPoint = new google.maps.Marker({
                     map: map,
                     draggable: true,
@@ -130,7 +132,7 @@
                 });
                 calcRoute(startPoint, endPoint);
                 ClearMarkers();
-            }
+            }//If there is a route, and first marker for a subroute, set last marker for subroute
             else if (startPoint != null && endPoint != null && (SubRuteMarkers.length % 2) == 1) {
                 SubRuteMarkers.push(new google.maps.Marker({
                     map: map,
@@ -147,9 +149,10 @@
             }
         });
 
-        GetAllStops();
+        GetAllStops();//Download list of all stops
     }
 
+    //Removes markers from the map, use the premade directions markers instead
     function ClearMarkers() {
         startPoint.setMap(null);
         endPoint.setMap(null);
@@ -206,8 +209,8 @@
 
     }
 
-    function calcRoute(start, end) {
-
+    function calcRoute(start, end) {//Get the directions from a startMarker, to the end marker
+                                    //using the google directions service API
         request = {
             origin: start.position,
             destination: end.position,
@@ -222,6 +225,7 @@
         });
     }
 
+    //Get the list of steps, used to draw the route
     function getRoutePath() {
         DirectionsArray = [];
         if (temp != null) {
@@ -238,6 +242,7 @@
 
         return DirectionsArray;
     }
+
 
     function SetRouteOnMap(route) {
         var start = new google.maps.LatLng(route[0].Lat, route[0].Lng, false);
@@ -334,6 +339,7 @@
         });
     }
 
+    //Deletes the selected route from the database, all routepoints for the route, and waypoints
     function DeleteChosenRoute() {
         var selection = document.getElementById("SelRoutes");
         $.ajax({
@@ -358,6 +364,7 @@
         });
     }
 
+    //Get the names for all the route in the database
     function GetBusRoutesNamesFromDB() {
         $.ajax({
             type: "GET",
@@ -372,6 +379,7 @@
         });
     }
 
+    //saves the route, and all its stops
     function SaveRouteAndStops() {
         if (document.getElementById("RouteNumber").value != "") {
             if (DirectionsArray != null) {
@@ -400,7 +408,7 @@
     }
 
 
-
+    //Gets a list of all the stops in the system
     function GetAllStops() {
         $.ajax({
             type: "GET",
@@ -416,6 +424,7 @@
         });
     }
 
+    //Inserts the selected markers, as stops, unto the map
     function CreateRoute() {
         $.ajax({
             type: "POST",
@@ -443,6 +452,7 @@
         });
     }
 
+    //function used to move items between the 2 lists selectors
     function move(tbFrom, tbTo) {
         arrFrom = new Array();
         arrTo = new Array();
@@ -485,6 +495,7 @@
         }
     }
 
+    //Get the steps, for all the subroutes
     function SplitRoute(routes) {
         var allPoint = new Array();
         for (var i = 0; i < routes.length; i++) {
@@ -516,7 +527,7 @@
     var arrFrom = new Array();
     var arrTo = new Array();
     var arrLU = new Array();
-    google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addDomListener(window, 'load', initialize);//is needed to show the map on the page
 </script>
 
 <div>
