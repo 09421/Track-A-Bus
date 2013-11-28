@@ -1,0 +1,54 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\subsubsection{Use Case 1.2}
+
+\textbf{Test Case: Normalforløb}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & En grønklods (5*5*5CM - 200g) skal være målt og vejet under en sorteringssekvens \\
+BESKRIVELSE: & Det testes, om det er muligt at bestemme klodsens materialetype.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1-4
+\Aktion Med lineal måles de 3 sider på klodsen. Klodsen vejes på en vægt. Massefylden udregnes $Massefylde = \dfrac{\text{vægt}}{side \cdot side \cdot side}$.
+Logvinduet åbnes.
+\Forventet Resultatet stemmer overens med de tal, som er blevet udregnet manuelt $\pm 5$ gram.
+\end{testcase}
+\\
+\textbf{Undtagelse 3a:}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Ingen \\
+BESKRIVELSE: & Systemet kan ikke oprette forbindelse til databasen.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+\Aktion Netværket deaktiveres umiddelbart inden matrialetypen sammenlignes med databasen.
+\Forventet En visuel alarm vises, hvor det kan vælges om det skal forsøges at oprette forbindelse igen, eller om processen skal anulleres.
+
+\punkt 2i
+\Aktion Der vælges 'Yes' og der ventes på at forbindelsen bliver genoprettet. Nettet aktiveres. 
+\Forventet Systemet giver laver en logbesked, der fortæller, at der er genoprettet forbindelse til databasen
+
+\punkt 2ii
+\Aktion Der vælges 'annuller' og processen skal annulleres.
+\Forventet Programmet lukker ned.
+\end{testcase}
+\\
+\textbf{Undtagelse 3b:}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Den grønne klods densitet ændres til 17 gennem ManageMaterials vinduet, og en grøn klods placeres på transportbåndet \\
+BESKRIVELSE: & Det testes at alarm modtages når materiale kan ikke pares med en materialetype.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1-2
+\Aktion Sorteringsprogrammet startes.
+\Forventet Når klodsen skal identificeres, vises en visuel loggingbesked, og klodsen bliver sat på transprotbåndet til højre for sensoren.
+\end{testcase}
+
+
+\end{document}
