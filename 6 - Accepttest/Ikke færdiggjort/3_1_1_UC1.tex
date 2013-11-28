@@ -1,0 +1,134 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 1}
+\textbf{Test Case: Normalforløb}
+\\\begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Robotten skal være sat til at køre standardprogrammet. Ligeledes skal robotten være i startposition. Der skal være placeret en grøn klods på transportbåndet (5*5*5 CM, 200g - Densitet = 1,665), desuden skal databasen for sorterede klodser være tom.
+\\
+BESKRIVELSE:	&	Der testes, at det er muligt at sortere en klods i forhold til dens densitet.  
+\\\\
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Operatøren tilkendegiver overfor systemet, at sorteringen skal starte, ved klik på startknappen.
+\Forventet Transportbåndet startes
+
+\punkt 2
+\Aktion Den grønne klods kører ind foran sensoren.
+\Forventet Transportbåndet stoppes
+
+\punkt 3
+\Aktion Klodsen måles og vejes (se acceptest for \textit{Include 1.1 Mål og vej klods})
+\Forventet Klodsens mål er bestemt til 5x5x5CM ($\pm$ 0,5 CM) og vægt er bestemt til 200g ($\pm$ 5 g) (se acceptest for \textit{Include 1.1 Mål og vej klods})
+
+\punkt 4
+\Aktion Klodsens materialetype bestemmes(se acceptest for \textit{Include 1.2 Mål og vej klods})
+\Forventet Klodsens materialetype er bestemt til grøn (se acceptest for \textit{Include 1.2 Mål og vej klods})
+\end{testcase}
+\begin{testcase}
+\punkt 5
+\Aktion -||-
+\Forventet Klodsen er placeret i rum 1, hvori grønne klodser tilhører.
+
+\punkt 6.1
+\Aktion -||-
+\Forventet Robotarmen er ført tilbage til startposition
+
+\punkt 6.2
+\Aktion Hele normal forløbet er kørt igennem.
+\Forventet Ved hver aktion skrives en log-besked til loggingvinduet, der specificerer, hvad der er set.
+\end{testcase}
+\\
+\textbf{Test Case: afvigelsesforløb * a}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Sorteringsmekanismen er igangsat. \\
+BESKRIVELSE:	&	Der testes, at det er muligt at afbryde strømmen vha. en nødknap.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på den fysiske nødstopknap
+\Forventet Sorteringsmekanismen stoppes, hvilket betyder at transportbåndet, samt robotarmen stopper i deres respektive positioner.
+\end{testcase}
+\\
+\textbf{Test Case: afvigelsesforløb * b}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Sorteringsprogrammet er igangsat. \\
+BESKRIVELSE:	&	Robotarmen stoppes gennem brugergrænsefladen.  \\
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Operatøren vælger at stoppe systemet gennem brugergrænsefladen
+\Forventet Sorteringsmekanismen stoppes, hvilket betyder at transportbåndet samt robotarmen stopper i deres respektive positioner.
+\end{testcase}
+\\
+\textbf{Test Case: afvigelsesforløb * c}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Sorteringsprogrammet er igangsat. \\
+BESKRIVELSE:	&	Det testes, at det er muligt at pause sorteringsprogrammet under en sorteringssekvens.  \\
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Operatøren vælger at pause systemet gennem brugergrænsefladen ved tryk på Pause/resume-knappen.
+\Forventet Det verificeres, at robotarmen stopper og sekvensen genoptages, når der trykkes på 'Pause/Resume'.
+\end{testcase}
+\\
+\textbf{Test Case: afvigelsesforløb * d}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Sorteringsprogrammet er igangsat og PCens netværksforbindelse afbrydes, således der ikke er forbindelsen til databasen. \\
+BESKRIVELSE:	&	Det testes, at data ikke mistes, hvis databaseforbindelsen afbrydes.  \\
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der ventes til der som minimum er oprettet en logbesked, hvorefter forbindelsen til databasen genetableres.
+\Forventet Det verificeres, at den forventede logbesked ligger på databasen ved at gå til menu-vinduet og derefter logvinduet.
+\end{testcase}
+\\
+\textbf{Test Case: afvigelsesforløb 5a}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Rummet til de grønne klodser skal være fuldt. Dette skal være registeret i databasen, og der skal være placeret en grøn klods på transprotbåndet.\\
+BESKRIVELSE:	&	Det testes, at der vises en advarsel, hvis der ikke er plads i kassen for den pågældende klods.\\
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Sortering startes og løbes igennem.
+\Forventet Det verificeres at der vises besked om at der ikke er mere plads i kassen.
+
+\punkt 2
+\Aktion -
+\Forventet Robotarmen tager fat i klodsen, og placerer den til højre for sensoren.
+\end{testcase}
+\\
+\textbf{Test Case: Ikke-funktionelle krav 1}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Systemet skal være sat til at køre standardprogrammet.  \\
+BESKRIVELSE:	&	Der testes om det tager maksimum tre minutter at sortere en klods alt efter materialetype.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Sorteringsprogrammet startes samtidig med, at et stopur startes. Når klodsen er sorteres, stoppes uret.
+\Forventet Sorteringsprogrammet tager mindre end tre minutter.
+\end{testcase}
+\\
+\textbf{Test Case: Ikke-funktionelle krav 2}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	Systemet skal være sat til at køre standardprogrammet. Databasen må ikke indeholde data for nogen sorterede klodser.  \\
+BESKRIVELSE:	&	Det testes om klodsen placeres med en maksimum afvigelse på 2 cm fra en ønskede koordinat, når den placeres i kassen indeholdende de sorterede klodser.   \\
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Når programmet har kørt til ende, måles afstanden fra kassens ende til klodsen.
+\Forventet Afstanden fra klodsen til kassens kant er mindre end 2 cm.
+\end{testcase}
+
+
+\end{document}
+

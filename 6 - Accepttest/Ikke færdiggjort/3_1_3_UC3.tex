@@ -1,0 +1,198 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 3: Rediger materialetype}
+\textbf{Test Case: Normalforløb 1 - Tilføj ny materialetype}\\
+\begin{tabular}{l p{12cm}} 
+FORBEREDELSE:	&   Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i hovedvinduet. 
+\\
+BESKRIVELSE:	&	Der testes, at det er muligt at tilføje en ny materialetype. 
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1-2
+\Aktion Programmøren trykker på knappen 'Manage Materials'. Herefter trykkes på 'Add'. 
+\Forventet Et nyt vindue kommer frem, hvor det er muligt at indtaste materialetype og densitet. 
+\punkt 3-5
+\Aktion Programmøren indtaster følgende data:
+\begin{itemize}
+\item Navn: Uran
+\item Densitet: 18,7
+\end{itemize}
+Herefter trykkes på 'Save'.
+\Forventet Det verificeres visuelt at listen indeholder den nye materialetype, og dataene svarer til de indtastede data.
+\end{testcase}
+\textbf{Afvigelsesforløb - Tilføj ny materialetype}
+\\
+\textbf{Test Case: Afvigelsesforløb *a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials'.
+\\
+BESKRIVELSE: & Der testes at brugeren bliver informeret om når der mistes forbindelse til databasen. 
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+\Aktion Programmøren slukker for netværket, trykker 'Edit' og ændre derefter materialenavn "green" til "Black"
+\Forventet En visuel alarm vises, hvor det kan vælges om det skal forsøges at oprette forbindelse igen, eller om processen skal anulleres.
+
+\punkt 2i
+\Aktion Det vælges at vente på at forbindelsen bliver genoprettet. Nettet aktiveres. Brugeren tilgår logvinduet, og verificerer at der er lavet en logbesked, der fortæller om tab og genetablering af forbindelse til databasen.
+\Forventet Det er igen muligt at indlæse materialetyper. I logfilen for den givne dato kan det ses, at forbindelsen til databasen er mistet og blevet genetableret.
+
+\punkt 2ii
+\Aktion Det vælges, at processen skal annulleres.
+\Forventet Programmet lukker ned.
+\end{testcase}
+\textbf{Test Case: Afvigelsesforløb 2a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør, og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials' og have trykket på 'Add' knappen.
+\\
+BESKRIVELSE: & Der testes at brugeren får en fejlmeddelelse, når han angiver en forkert densitet.
+\\
+\end{tabular}
+
+\begin{testcase}
+\punkt 1
+\Aktion Programmøren indtaster tallet 200 g/cm som desitet
+\Forventet Programmøren bliver gennem et informeret advarselsvindue om, at han har indtastet en ugyldig værdi og bliver bedt om at indtaste en ny værdi.
+\punkt 2
+\Aktion Programmøren indtaster tallet 16 som densitet.
+\Forventet Programmet kommer ikke med en advarsel.
+\end{testcase}
+\textbf{Afvigelsesforløb - Tilføj ny materialetype}
+\\
+\textbf{Test Case: Afvigelsesforløb 3a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials' og havde trykket på 'Add' knappen.
+\\
+BESKRIVELSE: & Der testes at brugeren får en fejlmeddelelse, hvis alle datafelterne ikke er udfyldt.
+\\
+\end{tabular}
+
+\begin{testcase}
+\punkt 1
+
+\Aktion Programmøren trykker på knappen 'Save' uden at havde udfyldt nogen af felterne.
+\Forventet Programmøren bliver gennem et advarselsvindue om informeret, at alle felter ikke er udfyldt.
+\punkt 2
+\Aktion Programmøren indtastet matrialetypen 'Diamant' og en Densitet på 7.
+
+\Forventet Programmet kommer ikke med en advarsel.
+\end{testcase}
+\textbf{Test Case: Afvigelsesforløb 3-4a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials' og have trykket på 'Add' knappen.
+\\
+BESKRIVELSE: & Der testes at data ikke bliver gemt hvis brugeren annullerer indtastningen af matrialetype.
+\\
+\end{tabular}
+
+\begin{testcase}
+\punkt 1
+
+\Aktion Programmøren indtaster "Diamant" som navn og "1,7" som densitet. Der trykkes derefter på "Back"
+
+\Forventet Det verificeres visuelt, at der ikke er blevet tilføjet et matriale med "Diamant" som navn og "1,7" som desitet.
+\end{testcase}
+\textbf{Test Case: Normalforløb 2 - Fjern materialetype}\\
+\begin{tabular}{l p{12cm}} 
+FORBEREDELSE:	&   Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i hovedvinduet. 
+\\
+BESKRIVELSE:	&	Det testes, at det er muligt at fjerne en materialetype. 
+\\ 
+\end{tabular}
+\begin{testcase}
+\punkt 1-2
+\Aktion Programmøren trykker på knappen 'Manage Materials'.  
+\Forventet Et nyt vindue kommer frem, hvor tilgængelige materialetyper bliver listet. 
+
+\punkt 3-4
+\Aktion Programmøren markerer materialetypen 'Diamant' og trykker på knappen 'Delete'.
+\Forventet Der fremkommer et advarselsvindue, som kræver bekræftelse for sletningen af den markerede type.
+
+\punkt 5-6
+\Aktion Programmøren trykker på 'Yes'.
+\Forventet Systemet fjerner materialetypen. 
+\end{testcase}
+\textbf{Afvigelsesforløb - Fjern materialetype}
+\\
+\textbf{Test Case: Afvigelsesforløb 3a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials'. 
+\\
+BESKRIVELSE: & Der testes at standardmaterialerne ikke kan slettes.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+\Aktion Programmøren vælger materialetypen 'Green' og trykker på 'Delete'
+\Forventet En visuel besked fremkommer, der fortæller at materialetypen ikke kunne slettes. Materialetypen er ikke blevet fjernet.
+\end{testcase}
+\textbf{Test Case: Afvigelsesforløb 5a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials' og have markeret et materiale.  
+\\
+BESKRIVELSE: & Der testes at brugeren kan annullere sit valg om at slette en materialetype.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+
+\Aktion Programmøren vælger materialetypen diamant og trykker "Delete" slutteligt trykkes på knappen 'Nej'
+
+\Forventet Systemet ændrer intet og viser listen igen som stadig indeholder "Diamant". 
+\end{testcase}
+\textbf{Test Case: Normalforløb 3 - Ændre data for materialetype}\\
+\begin{tabular}{l p{12cm}} 
+FORBEREDELSE:	&   Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i hovedvinduet. Ligeledes skal der være oprettet en materialetype med navnet 'Diamant'. 
+\\
+BESKRIVELSE:	&	Der testes, at det er muligt at redigere en materialetype. 
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1-4
+\Aktion Programmøren trykker på knappen 'Manage Materials' og markerer derefter materialet 'Diamant'. Herefter trykkes på 'Edit'. 
+\Forventet Et nyt vindue kommer frem, hvor det er muligt at redigere navn på materialetype og densitet for materiale. 
+\punkt 5-6
+\Aktion Programmøren indtaster en densitet på 2,4 og trykker på 'Save'.
+\Forventet Materialetypen for 'Diamant' bliver opdateret med en ny densitet.
+\end{testcase}
+\textbf{Afvigelsesforløb - Ændre data for materialetype}
+\\
+\textbf{Test Case: Afvigelsesforløb 5a}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials' og markeret linjen med materialetypen 'Diamant' og havde trykket på 'Edit' knappen.
+\\
+BESKRIVELSE: & Der testes at brugeren får en fejl meddelelse hvis der indtastes ugyldig data.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+\Aktion Programmøren indtaster 200 for Densitet og trykker på 'Save' knappen.
+\Forventet Programmøren bliver gennem et advarselsvindue informeret om, at der er indtastet en ugyldig værdi. 
+\punkt 2
+\Aktion Programmøren indtaster densiteten 2.
+\Forventet Programmet kommer ikke med en advarsel.
+\end{testcase}
+\textbf{Test Case: Afvigelsesforløb 5b}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren skal være logget ind som programmør og der skal være forbindelse til databasen. Programmøren skal være i inde i 'Manage Materials' og markeret linjen med materialetypen 'Diamant' og havde trykket på 'Edit' knappen.
+\\
+BESKRIVELSE: & Der testes at det er muligt at annullere redigering i en materialetype
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+\Aktion Programmøren indtaster navnet 'Jern' og trykker på 'Back'
+\Forventet På listen over materialetyper verificeres det, at navnet på materialetypen ikke er blevet ændret.
+\end{testcase}
+\end{document}

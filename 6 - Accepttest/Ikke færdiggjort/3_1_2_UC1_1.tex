@@ -1,0 +1,43 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 1.1}
+\textbf{Test Case: Normalforløb}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Der skal være en grøn klods (5*5*5CM - 200g) på transportbåndet under robotarmen. \\
+BESKRIVELSE:	&	Der testes, at det er muligt at måle og veje en given klods.   \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1-11
+\Aktion En sorteringssekvens startes, og køres igennem indtil klodsen er målt og vejet.
+\Forventet Det verificeres at siderne er blevet målt til 5*5*5CM ($\pm$ 0,5CM) og vægten til 200g ($\pm$ 5g). Dette verificeres gennem loggen.
+\end{testcase}
+\\
+\textbf{Test Case: Ikke-funktionelle krav 1}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Systemet skal være sat til at køre standardprogrammet. Den grønne klods' sider er målt præcist med en lineal, hvorefter den er placeret på transportbåndet. \\
+BESKRIVELSE:	&	Der testes om robotarmen måler klodsens sider med en maksimum afvigelse på $\pm$ 0.5 cm fra klodsens mål.   \\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 
+\Aktion Sorteringsprogrammet køres og ved afslutning sammenlignes logviduets data vedrørende siderne, med værdier målt med lineal.
+\Forventet Værdierne afviger mindre end $\pm$ 0.5 fra de med lineal målte værdier
+\end{testcase}
+\\
+\textbf{Test Case: Ikke-funktionelle krav 2}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Systemet skal være sat til at køre standardprogrammet. Den grønne klods' vægt er verificeret med en kalibreret vægt, hvorefter klodsen er placeret på transportbåndet. \\
+BESKRIVELSE:	&	Det testes om vægten vejer klodsens vægt med en maksimum afvigelse på $\pm$ 5 gram.   \\
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 
+\Aktion Sorteringsprogrammet køres og ved afslutning sammenlignes logviduets data vedrørende vægten med vægten fra den kalibrerede vægt.
+\Forventet Vægten har en afvigelse mindre end $\pm$ 5 gram
+\end{testcase}
+\end{document}
