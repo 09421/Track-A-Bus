@@ -1,0 +1,51 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 5: Test program}
+\textbf{Test Case: Normalforløb}\\
+\begin{tabular}{l p{12cm}} 
+FORBEREDELSE:	&	Det forudsættes at brugeren er logget ind i systemet som 'Programmør'. Der skal være et program ved navn 'Testprogram'\footnote{Testprogrammet åbner og lukker robottens gripper} tilgængeligt. Robotten skal være homed.
+\\
+BESKRIVELSE:	&	Der testes at det er muligt at køre en simulering af et brugerdefineret program. 
+ \\ 
+\end{tabular}
+	\begin{testcase}
+	\punkt 1-2
+	\Aktion Programmøren trykker på 'Run' efterfulgt at 'Simulated robot'.
+	\Forventet Systemet lister programmet 'Testprogram'.
+
+	\punkt 3-5
+	\Aktion Simuleringen af programmet startes ved tryk på 'Start program'.
+	\Forventet Informationer om programmets kørsel vises på skærmen, herunder en besked om at robotarmen er blevet flyttet.  
+
+	\punkt 6
+	\Aktion -
+	\Forventet Programmøren modtager en besked om, at simuleringen er fuldført.
+	\end{testcase}
+	\textbf{Afvigelsesforløb - Test program }
+\\
+\begin{tabular}{l p{12cm}} 
+FORBEREDELSE:	&	Brugeren skal være logget ind som programmør, og være i gang med en simulering af programmet 'Testprogram'.
+\\
+BESKRIVELSE:	&	Det testes, at det er muligt at afbryde en simulering.
+\\
+\end{tabular}
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren trykker på 'Stop'.
+\Forventet Simuleringen stoppes.
+\end{testcase}	
+\textbf{Test Case: Ikke funktionelle krav}\\
+\begin{tabular}{l p{12cm}} 
+FORBEREDELSE:	&	Det forudsættes, at brugeren er logget ind som programmør. Desuden skal der lige være kørt en simulering af 'Testprogram'.
+\\
+BESKRIVELSE:	&	Det testes, at loggen gemmes med tidspunkt og loglevel.  
+\end{tabular}
+	\begin{testcase}
+	\punkt 
+	\Aktion Programmøren går ind i 'Show log'-vinduet og vælger loggen for den aktuelle dato.
+	\Forventet Der verificeres visuelt, at loggen er udskrevet Tid-Loglevel-Besked.
+	\end{testcase}
+\end{document}
+
+

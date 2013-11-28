@@ -1,95 +1,54 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
+\subsubsection{Use Case 1.2}
 
-\subsubsection{Use Case 4: Tilgå log}
 \textbf{Test Case: Normalforløb}
 \\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Der skal være logfiler tilgængelige i databasen. Brugeren skal være i hovedvinduet. Der skal være forbindelse til databasen. 
-\\
-BESKRIVELSE:	&	Der testes, at det er muligt at tilgå, se og hente en gammel logfil. 
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & En grønklods (5*5*5CM - 200g) skal være målt og vejet under en sorteringssekvens \\
+BESKRIVELSE: & Det testes, om det er muligt at bestemme klodsens materialetype.
 \\
 \end{tabular}
 \begin{testcase}
 \punkt 1-4
-\Aktion Brugeren trykker på 'Show log'. Herefter vælger brugeren at han vil se logfiler for  dato'en "29-05-12".
-\Forventet Systemet lister alle events der er blevet logget for den valgte dato.
-
-\punkt 5-8
-\Aktion Brugeren trykker 'Save' og vælger at gemme filen på skrivebordet med navnet 'TestLog.txt'. Herefter åbnes loggen direkte i en texteditor.
-\Forventet Logfilen indeholder de samme events, som blev udskrevet på skærmen i selve robotprogrammet.
+\Aktion Med lineal måles de 3 sider på klodsen. Klodsen vejes på en vægt. Massefylden udregnes $Massefylde = \dfrac{\text{vægt}}{side \cdot side \cdot side}$.
+Logvinduet åbnes.
+\Forventet Resultatet stemmer overens med de tal, som er blevet udregnet manuelt $\pm 5$ gram.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb: * a}
 \\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Brugeren skal være inde i 'Show log' vinduet.Der skal være forbindelse til databasen 
+\textbf{Undtagelse 3a:}
 \\
-BESKRIVELSE:	&	Der testes, at systemet selv er i stand til at genetablere forbindelsen til databasen, hvis forbindelsen mistes.
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Ingen \\
+BESKRIVELSE: & Systemet kan ikke oprette forbindelse til databasen.
 \\
 \end{tabular}
 \begin{testcase}
 \punkt 1
-\Aktion Netstikket tages ud af computeren, så forbindelsen til databasen mistes og der gåes til hovedmenuen og ind i logvinduet igen.
-\Forventet Brugeren modtager en visuel alarm om, at forbindelsen til databasen er blevet afbrudt. 
+\Aktion Netværket deaktiveres umiddelbart inden matrialetypen sammenlignes med databasen.
+\Forventet En visuel alarm vises, hvor det kan vælges om det skal forsøges at oprette forbindelse igen, eller om processen skal anulleres.
 
 \punkt 2i
-\Aktion Det vælges at vente på at forbindelsen bliver genoprettet. Nettet aktiveres. Brugeren tilgår logvinduet, og verificerer at der er lavet en logbesked, der fortæller om tab og genetablering af forbindelse til databasen.
-\Forventet Det er igen muligt at indlæse logfiler. I logfilen for den givne dato kan det ses, at forbindelsen til databasen er mistet og blevet genetableret.
+\Aktion Der vælges 'Yes' og der ventes på at forbindelsen bliver genoprettet. Nettet aktiveres. 
+\Forventet Systemet giver laver en logbesked, der fortæller, at der er genoprettet forbindelse til databasen
 
 \punkt 2ii
-\Aktion Det vælges, at processen skal annulleres.
+\Aktion Der vælges 'annuller' og processen skal annulleres.
 \Forventet Programmet lukker ned.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb: 2a}
-\\\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Brugeren skal være i Hovedmenuen. Der skal være forbindelse til databasen og der skal ikke være gemt nogle logfiler.
 \\
-BESKRIVELSE:	&	Der testes, at der ikke vises data fra logfiler.
- \\\\ 
+\textbf{Undtagelse 3b:}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Den grønne klods densitet ændres til 17 gennem ManageMaterials vinduet, og en grøn klods placeres på transportbåndet \\
+BESKRIVELSE: & Det testes at alarm modtages når materiale kan ikke pares med en materialetype.
+\\
 \end{tabular}
 \begin{testcase}
-\punkt 1
-\Aktion Brugeren trykker på 'show log'.
-\Forventet Listen over datoer er tom, så det er ikke muligt at få vist logfiler fra en bestemt dato.
+\punkt 1-2
+\Aktion Sorteringsprogrammet startes.
+\Forventet Når klodsen skal identificeres, vises en visuel loggingbesked, og klodsen bliver sat på transprotbåndet til højre for sensoren.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb: 6a}
-\\
-\begin{tabular}{l p{12cm}}
 
-FORBEREDELSE:	&	Brugeren skal være i 'Show Log' vinduet. En dato skal være markeret, og der skal være trykket på 'Save', således at brugeren kan indtaste et navn.
-\\
-BESKRIVELSE:	&	Der testes, at det er muligt at annullere handlingen at gemme en logfil til harddisken. 
- \\
-\end{tabular}
-\begin{testcase}
-\punkt 1
-\Aktion Brugeren lukker vinduet, ved at trykke på krydset i øverste højre hjørne.
-\Forventet Brugeren kommer tilbage til 'Show log' vinduet.  
-\end{testcase}
-\textbf{Test Case: Afvigelsesforløb: 7a}
-\\
-\begin{tabular}{l p{12cm}}
-FORBEREDELSE:	&	Brugeren skal være i 'Show Log' vinduet. Der skal være forbindelse til databasen. Der skal være logfiler tilgængelige i databasen. En fil med navnet 'TestLog' skal være gemt på skrivebordet.
-\\
-BESKRIVELSE:	&	Der testes, at det ikke er muligt at gemme to filer med sammen navn. 
-\\ 
-\end{tabular}
-\begin{testcase}
-\punkt 1a
-\Aktion Brugeren vælger at se logfiler for en given dato. Herefter trykkes 'Save'.
-\Forventet Et nyt vindue, hvor filens navn og placering kan angives, kommer frem.
 
-\punkt 1b
-\Aktion Brugeren vælger at gemme filen på skrivebordet med navnet 'TestLog'.
-\Forventet Systemet spørger brugeren, om filen skal overskrives.
-
-\punkt 1i
-\Aktion Brugeren trykker 'Yes'. Den overskrevne logfil åbnes.
-\Forventet Logfilen indeholder nu data, tilsvarende data fra den nye logfil der blev gemt. 
-
-\punkt 1ii
-\Aktion Brugeren trykker 'No'. 'TestLog' åbnes.
-\Forventet Logfilen indeholder de gamle data, og er ikke blevet overskrevet med data fra den nye logfil. 
-\end{testcase}
 \end{document}
