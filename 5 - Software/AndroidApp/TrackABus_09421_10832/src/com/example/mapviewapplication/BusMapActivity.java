@@ -91,7 +91,8 @@ public class BusMapActivity extends Activity {
 	        	ChosenStopView = (TextView)findViewById(R.id.StopInfo);
 	        	RouteStopSep = (View)findViewById(R.id.RouteStopSeperator);
 	        	BusRouteView.setText(SelectedBus);
-
+	        	BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler()); 
+	        	BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE);
         	}       	
         }
         else{            
@@ -156,14 +157,6 @@ public class BusMapActivity extends Activity {
 		}
 		if(map != null){
 				map.moveCamera(CameraUpdateFactory.newLatLngZoom(AARHUS, 13));
-			}
-	}
-	private void SetUpMap(float f, float g) {
-		if(map == null){
-			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-		}
-		if(map != null){
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(f, g), 15));
 			}
 	}
 
@@ -234,11 +227,7 @@ public class BusMapActivity extends Activity {
 		else
 		{
 			((TextView)this.findViewById(R.id.AscendingBusTime)).setText("nn:nn:nn");
-		}
-
-
-
-		
+		}		
 	}
 	
 	private void UpdateBusLocation() {
@@ -328,18 +317,23 @@ public class BusMapActivity extends Activity {
 	private Thread updateTimeThread;
 	private void DrawBusStops(final ArrayList<BusStop> stops)
 	{
-		
-		for(int i = 0; i<stops.size(); i++){
-			map.addMarker(new MarkerOptions()
-	        .position(stops.get(i).Position.Position).title(stops.get(i).Name)
-			.icon(BitmapDescriptorFactory.fromResource(R.drawable.teststop)));
+		if(stops != null){
+			for(int i = 0; i<stops.size(); i++){
+				map.addMarker(new MarkerOptions()
+		        .position(stops.get(i).Position.Position).title(stops.get(i).Name)
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.teststop)));
+			}
+		}else{
+			Toast.makeText(getApplicationContext(), "There are no bus stops on chosen route", Toast.LENGTH_LONG).show();
 		}
+
 		
 		map.setOnMarkerClickListener(new OnMarkerClickListener() {
 			
 			@Override
 			public boolean onMarkerClick(Marker marker) {
 			    InitStopInformation(marker.getTitle());
+			    
 				Runnable ru = new Runnable(){
 					@Override
 					public void run(){
@@ -427,19 +421,21 @@ public class BusMapActivity extends Activity {
 					}
 				};
 				timeUpdating = false;
+				
 				if(updateTimeThread != null)
 				{
+					updateTimeThread.interrupt();//Breaks Thread If Sleeping
+					
 					while(updateTimeThread.isAlive())
 					{
 						try {
-							Thread.sleep(10);
+							Thread.sleep(1);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
-						
+						}						
 					}
 				}
+				
 				timeUpdating = true;
 			    updateTimeThread = new Thread(ru);
 			    updateTimeThread.start();

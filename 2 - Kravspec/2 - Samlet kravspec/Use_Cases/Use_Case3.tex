@@ -1,7 +1,7 @@
-\subsection{Use Case 3: Vis placering af enkelt bus.}
+\subsection{Use Case 3: Vis tid for nærmeste bus, til valgt stoppested.}
 \textbf{Mål:}
 \\
-Målet med denne Use Case er at få vist den bus, der er tættest på et valgt busstoppested.
+Målet med denne Use Case er at få vist tid til ankomst, for den bus der er tættest på et valgt busstoppested.
 \\
 \\
 \textbf{Initiering:}
@@ -24,7 +24,7 @@ En samtidig forekomst.
 	\begin{itemize}
 	\item TBD
 	\end{itemize}
-\textbf{Slutresultat ved succes:}
+\textbf{Startbetingelser:}
 \\
 
 Normalforløb for Use Case 2 er blevet gennemført.
@@ -32,7 +32,7 @@ Normalforløb for Use Case 2 er blevet gennemført.
 \\
 \textbf{Slutresultat ved succes:}
 \\
-Brugeren bliver præsenteret for et kort, med indtegnet busrute og nærmeste bus til valgt stoppested.
+Brugeren bliver præsenteret for et kort, med indtegnet busrute samt tid til ankomst for nærmeste bus til valgt stoppested.
 \\
 \textbf{Slutresultat ved undtagelser:}
 \\
@@ -41,29 +41,27 @@ Brugeren bliver præsenteret for et kort, med indtegnet busrute.
 \\
 \textbf{Normalforløb:}
 \begin{enumerate}
-\item Brugeren bliver præsenteret for samme kort som før, hvor kun den nærmeste bus til det valgte busstoppested, er vist.
 \item Brugeren bliver vist tiden indtil bussen ankommer til det valgte busstoppested, samt information om busstoppestedet.
 \end{enumerate}
 
-
 \begin{enumerate}[\text{Undtagelse} 1:]
-	\item Positions data for nærmeste bus kan ikke tilgås.
+	\item Positions data bus kan ikke tilgås.
 	\begin{enumerate}[A]
-		\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at tilgå positionsdata for nærmeste bus.
-		\item Brugeren vil blive vist kortet, hvor bussen ses på dens senest hentede position. Bussens position opdateres ikke længere.
+		\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at tilgå positionsdata busserne.
+		\item Brugeren vil blive vist kortet, hvor busserne ses på deres senest hentede position. Bussens position opdateres ikke længere.
 	\end{enumerate}
 \end{enumerate}		
 \begin{enumerate}[\text{Undtagelse} 2:]
 	\item Positions data for nærmeste bus kan igen tilgås.
 	\begin{enumerate}[1.]
-		\item Systemet fortsætter i normalforløbet. Bussens position holdes igen opdateret
+		\item Systemet fortsætter i normalforløbet. Bussernes position holdes igen opdateret
 		\item Systemet fjerner fejl-meddelelsen igen.
 	\end{enumerate}
 \end{enumerate}
 \begin{enumerate}[\text{Undtagelse} 3:]
 	\item Hentningen af data annulleres.
 	\begin{enumerate}[1.]
-		\item Systemet stopper med at hente bussens positions data.
+		\item Systemet stopper med at hente bussernes positions data.
 		\item Systemet returnerer til listen over busruter.
 	\end{enumerate}
 \end{enumerate}
@@ -71,17 +69,6 @@ Brugeren bliver præsenteret for et kort, med indtegnet busrute.
 	\item Systemet går i dvale, under hentning af data.
 	\begin{enumerate}[1.]
 		\item Systemet henter data færdige, og værdier opdateres.
-		\item Systemet går i dvale. Bussens position vil ikke længere holdes opdateret.
+		\item Systemet går i dvale. bussernes position vil ikke længere holdes opdateret.
 	\end{enumerate}
 \end{enumerate}
-\begin{enumerate}[\text{Undtagelse} 5:]
-	\item Ankomsttiden for nærmeste bus til valgt stoppested, er inde for et givent interval.
-	\begin{enumerate}[1.]
-		\item Systemet viser den næst-nærmeste bus på ruten, samt dennes tid til ankomst ved busstoppestedet.
-	\end{enumerate}
-\end{enumerate}
-
-
-
-
-	
