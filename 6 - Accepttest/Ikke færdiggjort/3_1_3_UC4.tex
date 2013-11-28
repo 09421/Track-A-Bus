@@ -1,54 +1,69 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
-\subsubsection{Use Case 1.2}
 
-\textbf{Test Case: Normalforløb}
+\subsubsection{Use Case 4: Rediger busrute i liste af favoriter}
+\textbf{Test Case: Normalforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & En grønklods (5*5*5CM - 200g) skal være målt og vejet under en sorteringssekvens \\
-BESKRIVELSE: & Det testes, om det er muligt at bestemme klodsens materialetype.
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
 \\
+BESKRIVELSE: & Det testes at det er muligt at tilføje ny bus til systemet.
 \end{tabular}
-\begin{testcase}
-\punkt 1-4
-\Aktion Med lineal måles de 3 sider på klodsen. Klodsen vejes på en vægt. Massefylden udregnes $Massefylde = \dfrac{\text{vægt}}{side \cdot side \cdot side}$.
-Logvinduet åbnes.
-\Forventet Resultatet stemmer overens med de tal, som er blevet udregnet manuelt $\pm 5$ gram.
-\end{testcase}
 \\
-\textbf{Undtagelse 3a:}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Ingen \\
-BESKRIVELSE: & Systemet kan ikke oprette forbindelse til databasen.
-\\
-\end{tabular}
 \begin{testcase}
 \punkt 1
-\Aktion Netværket deaktiveres umiddelbart inden matrialetypen sammenlignes med databasen.
-\Forventet En visuel alarm vises, hvor det kan vælges om det skal forsøges at oprette forbindelse igen, eller om processen skal anulleres.
-
-\punkt 2i
-\Aktion Der vælges 'Yes' og der ventes på at forbindelsen bliver genoprettet. Nettet aktiveres. 
-\Forventet Systemet giver laver en logbesked, der fortæller, at der er genoprettet forbindelse til databasen
-
-\punkt 2ii
-\Aktion Der vælges 'annuller' og processen skal annulleres.
-\Forventet Programmet lukker ned.
+\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
+\Forventet Busses bliver tilføjet til listen af busser i systemet
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\\
-\textbf{Undtagelse 3b:}
+\textbf{Test Case: Normalforløb 2}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Den grønne klods densitet ændres til 17 gennem ManageMaterials vinduet, og en grøn klods placeres på transportbåndet \\
-BESKRIVELSE: & Det testes at alarm modtages når materiale kan ikke pares med en materialetype.
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
 \\
+BESKRIVELSE: & Det testes at det er muligt at slette en bus til systemet.
 \end{tabular}
+\\
 \begin{testcase}
-\punkt 1-2
-\Aktion Sorteringsprogrammet startes.
-\Forventet Når klodsen skal identificeres, vises en visuel loggingbesked, og klodsen bliver sat på transprotbåndet til højre for sensoren.
+\punkt 1
+\Aktion Administratoren vælger en bus fra listen over busser i systemet, og trykker på 'Remove' knappen.
+\Forventet Den valgte bus bliver fjernet fra liten af busser i systemet.
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-
-
+\textbf{Test Case: Normalforløb 3}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+\\
+BESKRIVELSE: & Det testes at det er muligt at ændre information om en bus der findes i systemet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren vælger en bus fra listen over busser i systemet, ændre teksten i feltet 'Bus name:'  og trykker på 'Add' knappen.
+\Forventet navnet på bussen, i listen over alle busser, vil blive ændret til det nye navn.
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
+\end{testcase}
+\textbf{Test Case: Undtagelsesforløb 1}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden, samt der ikke er forbindelse til internet.
+\\
+BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
+\Forventet Busses bliver tilføjet til listen af busser i systemet
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
+\end{testcase}
 \end{document}
