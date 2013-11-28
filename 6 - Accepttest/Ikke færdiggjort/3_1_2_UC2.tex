@@ -2,29 +2,93 @@
 \begin{document}
 
 \subsubsection{Use Case 2}
-\textbf{Test Case: Normalforløb}
+\textbf{Test Case: Normalforløb 1}
 \\\begin{tabular}{l p{11cm}} 
 FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.
 \\
-BESKRIVELSE:	&	Der testes, at det er muligt at få vist en rute, stoppesteder på ruten, samt en bus.
+BESKRIVELSE:	&	Der testes, at det er muligt at få vist en rute, stoppesteder på ruten, samt en bus, vis position opdateres ca. hver sekund.
 \\\\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
 \Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over alle busruter.
-\Forventet Der vises et kort, med indtegnet busrute, stoppesteder samt en bus.
+\Forventet Der vises et kort, med indtegnet busrute, stoppesteder samt en bus, vis position bliver opdateret med ca. 1 sekunds interval.
+\end{testcase}
+\\
+\textbf{Test Case: Normalforløb 2}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal en busrute være favoriseret.
+\\
+BESKRIVELSE:	&	Der testes, at det er muligt at indlæse samme busrute, stoppesteder og bus som i normalforløb 1.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over favorit busruter.
+\Forventet Der vises et kort, med indtegnet busrute, stoppesteder samt en bus, vis position bliver opdateret med ca. 1 sekunds interval.
+\end{testcase}
+\\
+\textbf{Test Case: Normalforløb 3}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.
+\\
+BESKRIVELSE:	&	Der testes, at det er muligt at få vist en rute, stoppesteder på ruten, samt en bus, vis position opdateres ca. hver sekund.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over alle busruter.
+\Forventet Der vises et kort, med indtegnet busrute, stoppesteder samt en bus, vis position bliver opdateret med ca. 1 sekunds interval.
 \end{testcase}
 \\
 \textbf{Test Case: Undtagelsesforløb 1}
 \\ \begin{tabular}{l p{11cm}}
-FORBEREDELSE:	&	 \\
-BESKRIVELSE:	&	.  \\ 
+FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der ikke være forbindelse til databasen.\\
+BESKRIVELSE:	&	Der testes, at der bliver vist en fejlmeddelelse hvis der ikke kan skabes forbindelse til databasen.  \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion .
-\Forventet .
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over alle busruter.
+\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver det ikke er muligt at indlæse busruten.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 2}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	 Indlæsning af data er igangsat, samt der er gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute, i databasen\\
+BESKRIVELSE:	&	Der testes, at hvis indlæsning af data bliver annulleret, ved tryk på telefonens tilbage-knap, returneres til der til listen af busruter.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion brugeren annullere indlæsning af data.
+\Forventet Indlæsning af data stoppes, samt der retuneres til listen af busruter.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 3}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	 Indlæsning af data er igangsat, samt der er gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute, i databasen\\
+BESKRIVELSE:	&	Der testes, at hvis systemet går i dvale, ved tryk på telefonens home-knap,vil systemet indlæse data fra databasen i baggrunden.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren trykker på telefonens home-knap under indlæsning af data.
+\Forventet Systemet indlæser data færdig i baggrunden, ved genåbning af programmet, vil busrute, stoppesteder samt bussen kunne ses indtegnet på et kort.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 4}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	 kortet vises, med indtegnet busrute, stoppesteder samt en bus, vis position opdateres\\
+BESKRIVELSE:	&	Der testes, at hvis der mistes forbindelse til internetet imens systemet køre, vil der blive vist en fejlmeddelelse om at der ikke er forbindelse til internetet, samt busserns position ikke længere vil blive opdateret.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Netvæksforbindelsen deaktiveres.
+\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver at der ikke er forbindelse til internetet, samt bussernes position ikke længere bliver opdateret.
 \end{testcase}
 \end{document}
