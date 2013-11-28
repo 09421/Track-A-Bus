@@ -1,0 +1,8 @@
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\bin\Debug\TrackABus BusSimulator.exe.config
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\TrackABus BusSimulator.csprojResolveAssemblyReference.cache
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\MainWindow.baml
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\MainWindow.g.cs
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\App.g.cs
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\TrackABus BusSimulator_MarkupCompile.cache
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\TrackABus BusSimulator\TrackABus BusSimulator\obj\Debug\TrackABus BusSimulator_MarkupCompile.lref

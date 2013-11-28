@@ -3,13 +3,13 @@
 
 \subsection{Data model}
 En kritisk del af dette system er data storage og data retrieval. Dette er blevet implementeret i form af to relationelle databaser; en distribueret og en lokal.\\
-Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \url{www.unoeuro.com}, ved navn \url{www.trackabus.com}. Herunde er databasen oprettet som en MySQL database på serveren \url{http://mysql23.unoeuro.com}\\
+Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \url{www.unoeuro.com}, ved navn \url{www.trackabus.dk}. Herunde er databasen oprettet som en MySQL database på serveren \url{http://mysql23.unoeuro.com}\\
 Den lokale database eksisterer, fordi brugeren skal kunne gemme busruter lokalt på sin telefon. Dette er blevet implementeret i form af en SQLite database. \\
-Diagrammer kan findes i fuld størrelse under Diagrammer/Database Diagrammer
+Diagrammer kan findes i fuld størrelse i bilag under Diagrammer/Database Diagrammer
 
 \subsubsection{Design af MySQL database}
 
-Den distribuerede database gemmer alt information vedrørende busserne og deres ruter. Opbygningen af databasen kan ses som tre komponenter der interagerer; Busser, Busruter og GPS data for busserne. På figur \ref{fig:MySQLUML} vises der et UML OO diagram over MySQL databasen.
+Den distribuerede database gemmer alt information vedrørende busserne og deres ruter. Opbygningen af databasen kan ses som fire komponenter der interagerer; Busser, Busruter, Stoppesteder og positions data.\\ På figur \ref{fig:MySQLUML} vises der et UML OO diagram over MySQL databasen.
 
 
 \begin{figure}[hbtp]
@@ -18,14 +18,11 @@ Den distribuerede database gemmer alt information vedrørende busserne og deres r
 \caption{UML OO diagram over den distribuerede MySQL database}
 \label{fig:MySQLUML}
 \end{figure}
-
 \noindent
+De fire database komponenter beskrives herunder.\\\\
 
-Hver bus har et ID, som er unikt for hver bus. I denne sammenhæng er det ligegyldigt hvilket nummer bussen har. Busruten består i en liste af længde- og breddegrade, som bliver sorteret i punkter, hvor startpunktet er den ene endestation på ruten, og slutpunktet er den anden endestation. Hver bus i systemet bliver parret med en busrute. I hver bus sidder der en GPS som sender positions data til databasen. Dette data bliver givet et timestamp og kobles til IDet på en bus. \\\\
-Alt positionsdata til beskrivelse af busruter bliver beskrevet i tabellen BusRoutePoints. Busruten får et nummer og et autogeneret ID i tabellen BusRoute. Dette ID bruges som foreign key i tabellen BusRoutePoints. Dette skaber et 1-til-mange relationship mellem disse to tabeller. \\
-Tabellen Busses består af det unikke id som bussen har, og en foreign key til en BusRoute. Flere busser kan godt sidde på samme rute, og derfor har Busses og BusRoute et 1-til-mange relationship. \\
-Tabellen GPSPosition indeholder positionsdata for busserne når de opdaterer deres position. Ved hver tilføjelse af ny positionsdata får denne data et timestamp fra tabellens insert trigger. Når bussen sender en ny position til databasen, sender den også den også bussens ID med, som er en foreign key til Busses tabellen. Busses og GPSposition har derfor et 1-til-mange relationship.\\
-På figur \ref{fig:MySQLER} kan man se et ER diagram der beskriver forholdet mellem tabellerne.
+\textbf{Bus}\\
+Komponenten Bus består af sin egen tabel, og kan ses som den databasemæssige reprensation af en vilkårlig bus. Den har således et ID som primary key, som er det ID man ville kunne ses på bussen.
 
 
 \begin{figure}[hbtp]
