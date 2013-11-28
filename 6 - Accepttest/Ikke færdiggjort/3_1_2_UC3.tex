@@ -1,20 +1,95 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 1.1}
+\subsubsection{Use Case 3}
 \textbf{Test Case: Normalforløb 1}
 \\
 \begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. En Bus kører på ruten\\
-BESKRIVELSE:	&	Der testes, at det er muligt at måle og veje en given klods.   \\ 
+FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten fra første til sidste stoppested fra listen af stoppesteder\\
+BESKRIVELSE:	&	Der testes at systemet kan håndtere en enkelt bus, og dermed kun en kørende retning.   \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
-\punkt 1-11
-\Aktion En sorteringssekvens startes, og køres igennem indtil klodsen er målt og vejet.
-\Forventet Det verificeres at siderne er blevet målt til 5*5*5CM ($\pm$ 0,5CM) og vægten til 200g ($\pm$ 5g). Dette verificeres gennem loggen.
+\punkt 1
+\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi, men vil nå til.
+\Forventet To bokse vises i bunden af kortet. I den øverste står navnet på den endestation bussen kører i mod, samt tiden til ankomst ved det valgte stoppested. I den nederste vil der notificeres at der ikke kører en bus i den givne retning.
 \end{testcase}
 \\
+
+\textbf{Test Case: Normalforløb 2}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten fra sidste til første stoppested, fra listen af stoppesteder\\
+BESKRIVELSE:	&	Der testes at systemet kan håndtere en enkelt bus, og dermed kun en kørende retning.   \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
+\Forventet To bokse vises i bunden af kortet. I den nederste står navnet på den endestation bussen kører i mod, samt tiden til ankomst ved det valgte stoppested. I den øverste vil der notificeres at der ikke kører en bus i den givne retning.
+\end{testcase}
+\\
+
+\textbf{Test Case: Normalforløb 3}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten i en vilkårlig retning\\
+BESKRIVELSE:	&	Der testes at systemet kan håndtere at ingen busser kører mod det valgte stoppested.   \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
+\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning.
+\end{testcase}
+\\
+
+\textbf{Test Case: Normalforløb 4}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Flere Busser kører på ruten, hvor mindst to kører i forskellig retning, imod det samme stoppested.\\
+BESKRIVELSE:	&	Der testes at systemet kan håndtere at to busser kører mod det valgte stoppested.   \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
+\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning.
+\end{testcase}
+\\
+
+\textbf{Test Case: Normalforløb 4}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Den komplekse rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten i en vilkårlig retning\\
+BESKRIVELSE:	&	Der testes, at systemet kan håndtere, at først når bussen vender, køres der imod det valgte stoppe sted.  \\ 
+
+
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på et stoppested som bussen først kører imod, når den vender.
+\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning. Når bussen vender, vil den ene boks vise tiden til stoppestedet.
+\end{testcase}
+\\
+
+\textbf{Test Case: Normalforløb 5}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten i en vilkårlig retning\\
+BESKRIVELSE:	&	Der testes at systemet kan håndtere at ingen busser kører mod det valgte stoppested.   \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
+\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning.
+\end{testcase}
+\\
+
+
+
 \textbf{Test Case: Ikke-funktionelle krav 1}
 \\
 \begin{tabular}{l p{11cm}} 
