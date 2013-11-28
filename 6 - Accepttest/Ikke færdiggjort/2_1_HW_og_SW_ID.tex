@@ -3,24 +3,35 @@
 
 \subsection{Hardware og Software ID}
 
-Software der skal testes:
+Software der skal testes (Internal test objects):
 \\
 \\
 \begin{tabular}{ | l | l | l | p{6cm} |}
 \hline
 Software & Version & Release dato & Bemærkninger \\ \hline
-Silver Bullet Sort (SBS) & 4.0 & 26-06-2012 & Denne version er ikke endelig, og har på tiden ingen funktionalitet. \\ \hline
+TrackABus Smartphone app & 1.0 & 25-11-2013 & Funktionalitetesmæssigt er systemet færdigt. Ved fejl, skal disse dog stadig rettes. \\ \hline
+Administrations hjemmeside & 1.0 & 25-11-2013 & Der ses bort fra, at design af udsende ikke er færdigt. 
+\\ \hline
 \end{tabular}
 \\
 \\
-\\
-Hardware der skal testes:
+
+\noindent
+Software der bruges til tests (External test objects):
 \\
 \\
 \begin{tabular}{ | l | l | l | p{6cm} |}
 \hline
-Hardware & Version & Release dato & Bemærkninger \\ \hline
-SCORBOT-ER 4u (Inger) & 4u & N/A & Robotten bruges til at teste Silver Bullet Sort (SBS) systemet på. \\ \hline
+Software & Version & Release dato & Bemærkninger \\ \hline
+MySQL database access service & 1.0 & 25-11-2013 & Består af forbindelsen mellem applikationen og MySql databasen.  \\ \hline
+MySQL database & 1.0 & 25-11-2013 & Tidsudregning sker som en stored procedure på databasen. \\ \hline
+SQLite database & 1.0 & 25-11-2013 & Favoriserede busruter gemmes her. \\ \hline
+Bus Simulator & 1.0 & 25-11-2013 & Simulerer en til flere kørende busser.
+\\ \hline
 \end{tabular}
+\\
+\\
+Der eksisterer ingen hardware, der skal testes. Denne del er derfor udeladt.
+
 
 \end{document}
