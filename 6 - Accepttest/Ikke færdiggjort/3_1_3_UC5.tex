@@ -1,190 +1,69 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 2: Programmer robot}
-\textbf{Test Case: Normalforløb 1 - Opret nyt program}
+\subsubsection{Use Case 5: Rediger information om bus}
+\textbf{Test Case: Normalforløb 1}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'programmer'. Desuden skal programmøren være i hovedmenuen.
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
 \\
-BESKRIVELSE: & Det testes at det er muligt at lave og gemme en ny styring til robotten.
+BESKRIVELSE: & Det testes at det er muligt at tilføje ny bus til systemet.
 \end{tabular}
 \\
-\begin{testcase}
-\punkt 1-2
-\Aktion Programmøren klikker på knappen 'Manage Program'.
-\Forventet Systemet åbner et nyt vindue.
-\punkt 3-5
-\Aktion Programmøren laver en styring der kan flytte robotarmen hen over vægten, hvorefter programmet gemmes med navnet 'test'. Programmøren går tilbage til hovedmenuen. Herefter trykkes igen på 'Run', efterfulgt af 'Real Robot'.
-\Forventet Det gemte program vises i listen over tilgængelige programmer (Chosen Porgram).
-\end{testcase}
-\textbf{Afvigelsesforløb - Opret nyt program}
-\\
-\textbf{Test Case: Afvigelsesforløb 3a}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Programmøren skal være inde i 'Manage Program' vinduet og have lavet en ny styring til robotten. 
-\\
-BESKRIVELSE: & Det testes, at programmøren bliver spurgt om programmet skal gemmes, hvis han lukker vinduet uden at have gemt ændringerne til programmet.
-\\
-\end{tabular}
-
 \begin{testcase}
 \punkt 1
-\Aktion Programmøren trykker på 'Luk'-knappen i højre hjørne uden at have gemt en placering for programmet.
-\Forventet En visuel besked vises med teksten "Are you sure you want to exit without saving?" hvor knapperne 'Yes' og 'No' vises.
+\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
+\Forventet Busses bliver tilføjet til listen af busser i systemet
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb 4a}
+\textbf{Test Case: Normalforløb 2}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Programmøren skal være inde i 'Manage Program' vinduet og lavet en ny styring til robotten. Programmet skal ikke være gemt før. 
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
 \\
-BESKRIVELSE: & Det testes, at programmet ikke kan gemmes uden et navn. 
+BESKRIVELSE: & Det testes at det er muligt at slette en bus til systemet.
 \end{tabular}
-\begin{testcase}
-\punkt 1-2
-\Aktion Programmøren trykker på 'save' uden at have angivet et navn.
-\Forventet En visuel besked vises, der fortæller at navnet skal angives. 
-\end{testcase}
-\textbf{Normalforløb 2 - Rediger gammelt program}
 \\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'programmør'. Ligeledes skal der være gemt en række programmer, som skal være tilgængelige. Programmøren skal være i hovedmenuen. 
-\\
-BESKRIVELSE: & Der testes, at det er muligt at hente et gammelt program.
-\\
-\end{tabular}
-\begin{testcase}
-\punkt 1-2
-\Aktion Programmøren tilgår menuen 'Manage Program'
-\Forventet Systemet viser en liste over tilgængelige programmer.
-\punkt 3-4 
-\Aktion Programmøren vælger programet test fra listen og trykker på 'Load'.
-\Forventet Koden for det valgte program vises i 'Manage Program' vinduet.
-\punkt 5-7
-\Aktion Programmøren ændrer i programmet, skriver navnet test og trykker på 'Save' knappen, der trykkes ja til at overskrive. Herefter indlæses det samme program igen.
-\Forventet Programmet er gemt med de nye ændringer.
-\end{testcase}
-\textbf{Afvigelsesforløb - Rediger gammelt program}
-\\
-\textbf{Test Case: Afvigelsesforløb 2a}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Der skal ikke være gemt nogle brugerdefinerede programmer i systemet. Programmøren skal være i hovedmenuen.
-\\
-BESKRIVELSE: & Der testes at det ikke er muligt at hente et brugerdefineret program, hvis der ikke programmer tilgængelige.
-\\
-\end{tabular}
-
 \begin{testcase}
 \punkt 1
-\Aktion Programmøren klikker på knappen 'Manage Program'.
-\Forventet Listen med gemte programmer indeholder kun standardprogrammet.
+\Aktion Administratoren vælger en bus fra listen over busser i systemet, og trykker på 'Remove' knappen.
+\Forventet Den valgte bus bliver fjernet fra liten af busser i systemet.
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb 3a}
+\textbf{Test Case: Normalforløb 3}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Programmøren skal være inde i 'Mange Program' vinduet. 
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
 \\
-BESKRIVELSE: & Der testes at det ikke er muligt at ændre i standardprogrammet.
-\\
+BESKRIVELSE: & Det testes at det er muligt at ændre information om en bus der findes i systemet.
 \end{tabular}
+\\
 \begin{testcase}
 \punkt 1
-\Aktion Programmøren vælger standardprogrammet fra listen over gemte programmer og trykker på 'Load' knappen.
-\Forventet En visuel besked vises, der fortæller at standardprogrammet ikke kan hentes.
+\Aktion Administratoren vælger en bus fra listen over busser i systemet, ændre teksten i feltet 'Bus name:'  og trykker på 'Add' knappen.
+\Forventet navnet på bussen, i listen over alle busser, vil blive ændret til det nye navn.
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb 7a}
+\textbf{Test Case: Undtagelsesforløb 1}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Programmøren skal være i 'Manage Program' vinduet samt have skrevet en sekvens.
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden, samt der ikke er forbindelse til internet.
 \\
-BESKRIVELSE: & Der testes, at programmøren bliver advaret, hvis han forsøger at lukke programmet uden at have gemt. 
-\\
+BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
 \end{tabular}
+\\
 \begin{testcase}
 \punkt 1
-\Aktion Programmøren skriver en sekvens, hvorefter han trykker på 'luk'-knappen i højre hjørne uden at have gemt programmet.
-\Forventet programmøren får en visuel besked med teksten: "Are you sure you want to exit without saving?" med knapperne 'Yes' og 'No'. 
+\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
+\Forventet Busses bliver tilføjet til listen af busser i systemet
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
 \end{testcase}
-\textbf{Normalforløb 3 - Slet program}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som 'Programmer' Ligeledes skal der være gemt et program ved navn 'test'. programmøren skal være i hovedmenuen.
-\\
-BESKRIVELSE: & Der testes, at det er muligt at slette et brugerdefineret program 
-\\
-\end{tabular}
-\begin{testcase}
-\punkt 1-2
-\Aktion Programmøren tilgår menuen 'Manage Program'.
-\Forventet Systemet viser en liste over tilgængelige programmer.
-\punkt 3-4
-\Aktion Programmøren vælger programmet 'Test' og klikker på knappen 'Delete'
-\Forventet Programmøren får en visuel besked med teksten: "Are you sure you want to delete this program?" med knapperne 'Yes' og 'No'.
-\punkt 5-6
-\Aktion Programmøren trykker på knappen 'Yes'..
-\Forventet Programmet 'Test' kan ikke længere ses på listen over gemte programmer.
-\end{testcase}
-\textbf{Afvigelsesforløb - Slet program}
-\\
-\textbf{Test Case: Afvigelsesforløb 3a}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Programmøren skal være inde i 'Manage Program' vinduet.
-\\
-BESKRIVELSE: & Det testes, at det ikke er muligt at slette standardprogrammet.  
-\\
-\end{tabular}
-\begin{testcase}
-\punkt 1
-\Aktion Programmøren vælger standardprogrammet og trykker på 'Delete'.
-\Forventet Programmøren får en visuel besked med teksten: "Can't delete standardprogram". 
-\end{testcase}
-\textbf{Test Case: Afvigelsesforløb 5a}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som programmør. Programmøren skal være inde i 'Manage Program' vinduet og have markeret programet 'test' og trykket på delete.
-\\
-BESKRIVELSE: & Det testes at det er muligt at annullere sletningen af et program. 
-\\
-\end{tabular}
-
-\begin{testcase}
-\punkt 1
-
-\Aktion Når programmøren modtager beskeden om sletningen ønskes gennemført vælges knappen 'No'.
-\Forventet Programmet er ikke blevet fjernet fra listen over gemte programmer. 
-\end{testcase}
-\textbf{Normalforløb 4 - Anvend program}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som operatør. Brugeren skal stå i 'Run Window'. Der skal være en gemt sekvens ved navn 'test2'\footnote{Et program der åbner og lukker robottens gripper.}. Robotten skal være homet.   
-\\
-BESKRIVELSE: & Det testes, at det er muligt at køre et brugerdefineret program.
-\\
-\end{tabular}
-\begin{testcase}
-\punkt 1-4
-\Aktion Brugeren vælger programmet 'Test' fra listen 'Chosen program', hvorefter han trykker på 'Start Program' 
-\Forventet Robotten udføre sekvensen fra 'Test'.
-\end{testcase}
-\textbf{Afvigelsesforløb - Anvend program}
-\\
-\textbf{Test Case: Afvigelsesforløb 2a}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren skal være logget ind som operatør. Brugeren skal stå i 'Run Window'. Der skal ikke være nogle gemte brugerdefineret programmer.
-\\
-BESKRIVELSE: & Der testes at det ikke er muligt at starte et brugerdefineret program, hvis der er ikke er nogle gemt. 
-\\
-\end{tabular}
-
-\begin{testcase}
-\punkt 1
-
-\Aktion brugeren trykker på 'Chosen Program' for at få vist listen af gemte programmer.
-\Forventet Listen viser kun standard programmet. 
-\end{testcase}
-
 \end{document}

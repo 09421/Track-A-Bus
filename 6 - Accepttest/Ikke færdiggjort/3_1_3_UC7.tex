@@ -1,95 +1,128 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 4: Tilgå log}
-\textbf{Test Case: Normalforløb}
+\subsubsection{Use Case 5: Rediger busruteplan}
+\textbf{Test Case: Normalforløb A-1}
 \\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Der skal være logfiler tilgængelige i databasen. Brugeren skal være i hovedvinduet. Der skal være forbindelse til databasen. 
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden.
 \\
-BESKRIVELSE:	&	Der testes, at det er muligt at tilgå, se og hente en gammel logfil. 
-\\
+BESKRIVELSE: & Det testes at det er muligt at tilføje ny busrute til systemet.
 \end{tabular}
-\begin{testcase}
-\punkt 1-4
-\Aktion Brugeren trykker på 'Show log'. Herefter vælger brugeren at han vil se logfiler for  dato'en "29-05-12".
-\Forventet Systemet lister alle events der er blevet logget for den valgte dato.
-
-\punkt 5-8
-\Aktion Brugeren trykker 'Save' og vælger at gemme filen på skrivebordet med navnet 'TestLog.txt'. Herefter åbnes loggen direkte i en texteditor.
-\Forventet Logfilen indeholder de samme events, som blev udskrevet på skærmen i selve robotprogrammet.
-\end{testcase}
-\textbf{Test Case: Afvigelsesforløb: * a}
 \\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Brugeren skal være inde i 'Show log' vinduet.Der skal være forbindelse til databasen 
-\\
-BESKRIVELSE:	&	Der testes, at systemet selv er i stand til at genetablere forbindelsen til databasen, hvis forbindelsen mistes.
-\\
-\end{tabular}
 \begin{testcase}
 \punkt 1
-\Aktion Netstikket tages ud af computeren, så forbindelsen til databasen mistes og der gåes til hovedmenuen og ind i logvinduet igen.
-\Forventet Brugeren modtager en visuel alarm om, at forbindelsen til databasen er blevet afbrudt. 
-
-\punkt 2i
-\Aktion Det vælges at vente på at forbindelsen bliver genoprettet. Nettet aktiveres. Brugeren tilgår logvinduet, og verificerer at der er lavet en logbesked, der fortæller om tab og genetablering af forbindelse til databasen.
-\Forventet Det er igen muligt at indlæse logfiler. I logfilen for den givne dato kan det ses, at forbindelsen til databasen er mistet og blevet genetableret.
-
-\punkt 2ii
-\Aktion Det vælges, at processen skal annulleres.
-\Forventet Programmet lukker ned.
+\Aktion Administratoren vælger et antal stoppesteder, fra listen over alle stoppesteder i systemet, samt trykker på knappen 'Add stops'.
+\Forventet De valgte stoppesteder kan ses indtegnet på kortet.
+\punkt 2
+\Aktion Administratoren trykker på kortet, hvor han ønsker busruten skal starte, hvorefter han trykker på kortet, hvor han ønsker busruten skal ende.
+\Forventet En busrute vil blive indtegnet på kortet, med start og slut punkt der passer overens med der hvor der blev trykket på kortet.
+\punkt 3
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
+\Forventet busruten bliver persisteret på databasen.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb: 2a}
-\\\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Brugeren skal være i Hovedmenuen. Der skal være forbindelse til databasen og der skal ikke være gemt nogle logfiler.
 \\
-BESKRIVELSE:	&	Der testes, at der ikke vises data fra logfiler.
- \\\\ 
+\textbf{Test Case: Normalforløb A-2}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden.
+\\
+BESKRIVELSE: & Det testes at det er muligt at tilføje ny busrute, med waypoints, til systemet.
 \end{tabular}
+\\
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren trykker på 'show log'.
-\Forventet Listen over datoer er tom, så det er ikke muligt at få vist logfiler fra en bestemt dato.
+\Aktion Administratoren vælger et antal stoppesteder, fra listen over alle stoppesteder i systemet, samt trykker på knappen 'Add stops'.
+\Forventet De valgte stoppesteder kan ses indtegnet på kortet.
+\punkt 2
+\Aktion Administratoren trykker på kortet, hvor han ønsker busruten skal starte, hvorefter han trykker på kortet, hvor han ønsker busruten skal ende.
+\Forventet En busrute vil blive indtegnet på kortet, med start og slut punkt der passer overens med der hvor der blev trykket på kortet.
+\punkt 3
+\Aktion Administratoren tager fat i et punkt på ruten, og trækker den ud til et andet sted på kortet.
+\Forventet ruten vil blive indteget med et waypoint mellem start, og slut punkt.
+\punkt 4
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
+\Forventet busruten bliver persisteret på databasen.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb: 6a}
 \\
-\begin{tabular}{l p{12cm}}
-
-FORBEREDELSE:	&	Brugeren skal være i 'Show Log' vinduet. En dato skal være markeret, og der skal være trykket på 'Save', således at brugeren kan indtaste et navn.
+\textbf{Test Case: Normalforløb A-3}
 \\
-BESKRIVELSE:	&	Der testes, at det er muligt at annullere handlingen at gemme en logfil til harddisken. 
- \\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute.
+\\
+BESKRIVELSE: & Det testes at det er muligt at tilføje ny kompleks busrute til systemet.
 \end{tabular}
+\\
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren lukker vinduet, ved at trykke på krydset i øverste højre hjørne.
-\Forventet Brugeren kommer tilbage til 'Show log' vinduet.  
+\Aktion Administratoren trykker på det første punkt, hvorefter han trykker et nyt sted på kortet.
+\Forventet En ny rute bliver indtegnet på kortet, mellem det første punkt, samt det nye punkt, valgt på kortet.
+\punkt 4
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
+\Forventet busruten bliver persisteret på databasen.
 \end{testcase}
-\textbf{Test Case: Afvigelsesforløb: 7a}
 \\
-\begin{tabular}{l p{12cm}}
-FORBEREDELSE:	&	Brugeren skal være i 'Show Log' vinduet. Der skal være forbindelse til databasen. Der skal være logfiler tilgængelige i databasen. En fil med navnet 'TestLog' skal være gemt på skrivebordet.
+\textbf{Test Case: Normalforløb B-1}
 \\
-BESKRIVELSE:	&	Der testes, at det ikke er muligt at gemme to filer med sammen navn. 
-\\ 
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute.
+\\
+BESKRIVELSE: & Det testes at det er muligt at fjerne en busrute fra systemet.
 \end{tabular}
+\\
 \begin{testcase}
-\punkt 1a
-\Aktion Brugeren vælger at se logfiler for en given dato. Herefter trykkes 'Save'.
-\Forventet Et nyt vindue, hvor filens navn og placering kan angives, kommer frem.
-
-\punkt 1b
-\Aktion Brugeren vælger at gemme filen på skrivebordet med navnet 'TestLog'.
-\Forventet Systemet spørger brugeren, om filen skal overskrives.
-
-\punkt 1i
-\Aktion Brugeren trykker 'Yes'. Den overskrevne logfil åbnes.
-\Forventet Logfilen indeholder nu data, tilsvarende data fra den nye logfil der blev gemt. 
-
-\punkt 1ii
-\Aktion Brugeren trykker 'No'. 'TestLog' åbnes.
-\Forventet Logfilen indeholder de gamle data, og er ikke blevet overskrevet med data fra den nye logfil. 
+\punkt 1
+\Aktion Administratoren vælger en busrute fra listen over ruter i systemet, samt trykker på knappen 'Delete'.
+\Forventet Den valgte busrute bliver slettet fra systemet.
 \end{testcase}
+\\
+\textbf{Test Case: Normalforløb C-1}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute.
+\\
+BESKRIVELSE: & Det testes at det er muligt at ændre i en busrute fra systemet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren vælger en busrute fra listen over ruter i systemet.
+\Forventet Den valgte busrute bliver indteget på kortet.
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer persisteret, ved tryk på 'Save' knappen.
+\Forventet ændringer bliver persisteret på databasen.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 1}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute. Der er ingen forbindelse til internet.
+\\
+BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer persisteret, ved tryk på 'Save' knappen.
+\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
+\end{testcase}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \end{document}

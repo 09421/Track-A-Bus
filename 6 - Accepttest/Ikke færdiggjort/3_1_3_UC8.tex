@@ -1,51 +1,58 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 5: Test program}
-\textbf{Test Case: Normalforløb}\\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Det forudsættes at brugeren er logget ind i systemet som 'Programmør'. Der skal være et program ved navn 'Testprogram'\footnote{Testprogrammet åbner og lukker robottens gripper} tilgængeligt. Robotten skal være homed.
+\subsubsection{Use Case 8: Rediger stoppested}
+\textbf{Test Case: Normalforløb A}
 \\
-BESKRIVELSE:	&	Der testes at det er muligt at køre en simulering af et brugerdefineret program. 
- \\ 
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
+\\
+BESKRIVELSE: & Det testes at det er muligt at tilføje ny stoppested til systemet.
 \end{tabular}
-	\begin{testcase}
-	\punkt 1-2
-	\Aktion Programmøren trykker på 'Run' efterfulgt at 'Simulated robot'.
-	\Forventet Systemet lister programmet 'Testprogram'.
-
-	\punkt 3-5
-	\Aktion Simuleringen af programmet startes ved tryk på 'Start program'.
-	\Forventet Informationer om programmets kørsel vises på skærmen, herunder en besked om at robotarmen er blevet flyttet.  
-
-	\punkt 6
-	\Aktion -
-	\Forventet Programmøren modtager en besked om, at simuleringen er fuldført.
-	\end{testcase}
-	\textbf{Afvigelsesforløb - Test program }
 \\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Brugeren skal være logget ind som programmør, og være i gang med en simulering af programmet 'Testprogram'.
-\\
-BESKRIVELSE:	&	Det testes, at det er muligt at afbryde en simulering.
-\\
-\end{tabular}
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren trykker på 'Stop'.
-\Forventet Simuleringen stoppes.
-\end{testcase}	
-\textbf{Test Case: Ikke funktionelle krav}\\
-\begin{tabular}{l p{12cm}} 
-FORBEREDELSE:	&	Det forudsættes, at brugeren er logget ind som programmør. Desuden skal der lige være kørt en simulering af 'Testprogram'.
+\Aktion Administratoren trykker et sted på kortet, indskriver navn på stoppested i feltet 'Name of stop', samt trykker på knappen 'Save'.
+\Forventet Stoppestedet bliver persisteret i databasen.
+\end{testcase}
+\textbf{Test Case: Normalforløb B}
 \\
-BESKRIVELSE:	&	Det testes, at loggen gemmes med tidspunkt og loglevel.  
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
+\\
+BESKRIVELSE: & Det testes at det er muligt at slette et stoppested til systemet.
 \end{tabular}
-	\begin{testcase}
-	\punkt 
-	\Aktion Programmøren går ind i 'Show log'-vinduet og vælger loggen for den aktuelle dato.
-	\Forventet Der verificeres visuelt, at loggen er udskrevet Tid-Loglevel-Besked.
-	\end{testcase}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren vælger et stoppested fra listen af alle stoppesteder i systemet, samt trykker på knappen 'Delete'
+\Forventet Det valgte stoppested bliver slettet fra databasen.
+\end{testcase}
+\textbf{Test Case: Normalforløb C}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
+\\
+BESKRIVELSE: & Det testes at det er muligt at ændre et stoppested der findes i systemet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren vælger et stoppested fra listen af alle stoppesteder i systemet, ændre navn og placering, samt trykker på knappen 'Save'.
+\Forventet Ændringer af stoppested bliver persisteret på databasen.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 1}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden, samt der ikke er forbindelse til internet.
+\\
+BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren trykker et sted på kortet, indskriver navn på stoppested i feltet 'Name of stop', samt trykker på knappen 'Save'.
+\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
+\end{testcase}
 \end{document}
-
-
