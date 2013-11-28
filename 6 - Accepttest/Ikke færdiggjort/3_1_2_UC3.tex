@@ -2,7 +2,7 @@
 \begin{document}
 
 \subsubsection{Use Case 3}
-\textbf{Test Case: Normalforløb 1}
+\textbf{Test Case: Normalforløb A-1}
 \\
 \begin{tabular}{l p{11cm}} 
 FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten fra første til sidste stoppested fra listen af stoppesteder\\
@@ -13,10 +13,16 @@ BESKRIVELSE:	&	Der testes at systemet kan håndtere en enkelt bus, og dermed kun 
 \punkt 1
 \Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi, men vil nå til.
 \Forventet To bokse vises i bunden af kortet. I den øverste står navnet på den endestation bussen kører i mod, samt tiden til ankomst ved det valgte stoppested. I den nederste vil der notificeres at der ikke kører en bus i den givne retning.
+\punkt IFK2
+\Aktion -||-
+\Forventet Tid til ankomst er beskrevet som "tt:mm:ss" i øverste boks.
+\punkt IFK3
+\Aktion -||-
+\Forventet Tid til ankomst er beskrevet som "nn:nn:nn" i nederste boks
 \end{testcase}
 \\
 
-\textbf{Test Case: Normalforløb 2}
+\textbf{Test Case: Normalforløb A-2}
 \\
 \begin{tabular}{l p{11cm}} 
 FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten fra sidste til første stoppested, fra listen af stoppesteder\\
@@ -30,7 +36,7 @@ BESKRIVELSE:	&	Der testes at systemet kan håndtere en enkelt bus, og dermed kun 
 \end{testcase}
 \\
 
-\textbf{Test Case: Normalforløb 3}
+\textbf{Test Case: Normalforløb A-3}
 \\
 \begin{tabular}{l p{11cm}} 
 FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten i en vilkårlig retning\\
@@ -40,11 +46,11 @@ BESKRIVELSE:	&	Der testes at systemet kan håndtere at ingen busser kører mod det
 \begin{testcase}
 \punkt 1
 \Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
-\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning.
+\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører mod det valgt stoppested.
 \end{testcase}
 \\
 
-\textbf{Test Case: Normalforløb 4}
+\textbf{Test Case: Normalforløb A-4}
 \\
 \begin{tabular}{l p{11cm}} 
 FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Flere Busser kører på ruten, hvor mindst to kører i forskellig retning, imod det samme stoppested.\\
@@ -53,66 +59,148 @@ BESKRIVELSE:	&	Der testes at systemet kan håndtere at to busser kører mod det va
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
-\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning.
+\Aktion Der trykkes på et stoppested, som to busser bevæger sig hen imod, fra hver sin retning. Bus 1 ses som bussen der kører fra første til sidste stoppested. Bus 2 ses som bussen der kører fra sidste til første stoppested. 
+\Forventet To bokse vises i bunden af kortet. Den øverste viser navnet på den endestation Bus 1 kører imod, samt tiden til valgt stoppested for Bus 1. Den nederste viser navnet på den endestation Bus 2 kører imod, samt tiden til valgt stoppested for Bus 2.
 \end{testcase}
 \\
 
-\textbf{Test Case: Normalforløb 4}
+\textbf{Test Case: Normalforløb A-5}
 \\
 \begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	Den komplekse rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten i en vilkårlig retning\\
-BESKRIVELSE:	&	Der testes, at systemet kan håndtere, at først når bussen vender, køres der imod det valgte stoppe sted.  \\ 
-
-
+FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Flere busser kører på ruten, hvor mindst to skal køre i samme retninger\\
+BESKRIVELSE:	&	Der testes, at systemet kan håndtere, at når den nærmeste bus kører forbi stoppestedet skifter den nærmeste bus, til næste.  \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion Der trykkes på et stoppested som bussen først kører imod, når den vender.
-\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning. Når bussen vender, vil den ene boks vise tiden til stoppestedet.
+\Aktion Der trykkes på et stoppested som minimum to busser kører imod.
+\Forventet To bokse vises i bunden af kortet. Tiden for de tætteste busser i hver retning, og bussens endestation er skrevet ind.
+\punkt 2
+\Aktion Den nærmeste bus i den valgte retning, kører forbi stoppestedet.
+\Forventet Boksen for den relevante retning vil ændre sin tid.
 \end{testcase}
 \\
 
-\textbf{Test Case: Normalforløb 5}
+
+\textbf{Test Case: Normalforløb A-6}
 \\
 \begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	Den simple rute er valgt fra listen af alle ruter, og kortet er vist. Én Bus kører på ruten i en vilkårlig retning\\
-BESKRIVELSE:	&	Der testes at systemet kan håndtere at ingen busser kører mod det valgte stoppested.   \\ 
+FORBEREDELSE:	&	Den komplekse rute er valgt fra listen af alle ruter, og kortet er vist. Flere busser kører på vilkårlige dele af ruten, hvor mindst to busser kører på to forskellige ruter, men begge busser kører imod minimum et delt stoppested. \\
+BESKRIVELSE:	&	Der testes at systemet kan både skifte nærmeste bus og skifte rute for nærmeste bus   \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion Der trykkes på et stoppested, som bussen endnu ikke har kørt forbi.
-\Forventet To bokse vises i bunden af kortet. Begge bokse notificerer at ingen busser kører i denne retning.
+\Aktion Der trykkes på et stoppested, som begge busser ikke er kørt forbi endnu.
+\Forventet To bokse vises i bunden af kortet. Den ene boks vil vise den endestation, som den nærmeste bus kører imod, samt tiden indtil bussen er ved stoppestedet.
+\punkt 2
+\Aktion Den nærmeste bus kører forbi stoppestedet.
+\Forventet Den relevante boks vil skifte endestationsnavn til at passe den rute den nuværende nærmeste bus kører imod. Tiden til stoppested vil nu svare til denne bus.
 \end{testcase}
 \\
 
+\textbf{Test Case: Normalforløb A-7}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Den komplekse rute er valgt fra listen af alle ruter, og kortet er vist. Flere busser kører på vilkårlige dele af ruten, hvor mindst to busser kører på en rute, og i mellem dem kører en bus på en anden rute. \\
+BESKRIVELSE:	&	Der testes at systemet kun vælger de busser der er relevant for det valgte stoppested.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der trykkes på et stoppested som kun er gældende for den rute, som de to busser kører på. 
+\Forventet To bokse vises i bunden af kortet. Den ene boks vil vise den endestation, som den nærmeste bus kører imod, samt tiden indtil bussen er ved stoppestedet.
+\punkt 2
+\Aktion Den nærmeste bus kører forbi stoppestedet.
+\Forventet Da den anden bus i rækken ikke kører på den rute, det valgte stoppested ligger på, vil den nærmeste bus være den tredje bus i rækken.
+\end{testcase}
+\\
 
+\textbf{Test Case: Undtagelse 1}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	En rute er valgt fra listen af alle ruter, og kortet er vist. Minimum en bus kører på ruten. Et stop er valgt, så minimum en af boksene viser tiden til angivet stoppested\\
+BESKRIVELSE:	&	Der testes tab af forbindelse til database\\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der lukkes for internet tilgangen på telefonen.
+\Forventet En fejlbesked vises, hvor brugeren fortælles at internet tilgang på telefonen er forsvundet. Tiden til stoppested samt endestationsnavnet vil stadig vises, men holdes ikke længere opdateret.
+\end{testcase}
+\\
+
+\textbf{Test Case: Undtagelse 2}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	Undtagelse 1 skal være gennemført.\\
+BESKRIVELSE:	&	Der testes genetablering af forbindelse til database\\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Der tændes for internet tilgangen på telefonen.
+\Forventet  Tiden til stoppested samt endestationsnavnet vil igen holdes opdateret.
+\end{testcase}
+\\
+
+\textbf{Test Case: Undtagelse 3}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	En rute er valgt fra listen af alle ruter, og kortet er vist. Minimum en bus kører på ruten. Et stop er valgt, så minimum en af boksene viser tiden til angivet stoppested. Logging vinduet i Eclipse vil vise en besked ved ny data.\\
+BESKRIVELSE:	&	Der testes lukning af vindue.\\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion "Tilbage"-knappen på telefonen trykkes.
+\Forventet Logging vinduet i Eclipse vil ikke længere udskrive beskeden.
+\end{testcase}
+\\
+
+\textbf{Test Case: Undtagelse 4}
+\\
+\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	En rute er valgt fra listen af alle ruter, og kortet er vist. Minimum en bus kører på ruten. Et stop er valgt, så minimum en af boksene viser tiden til angivet stoppested. Logging vinduet i Eclipse vil vise en besked ved ny data.\\
+BESKRIVELSE:	&	Der testes at systemet går i dvale\\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion "Home"-knappen på telefonen trykkes.
+\Forventet Logging vinduet i Eclipse vil ikke længere udskrive beskeden.
+\punkt 2
+\Aktion Applikation startes igen.
+\Forventet Logging vinduet i Eclipse vil forsat udskrive beskeden.
+\end{testcase}
+\\
 
 \textbf{Test Case: Ikke-funktionelle krav 1}
 \\
 \begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	Systemet skal være sat til at køre standardprogrammet. Den grønne klods' sider er målt præcist med en lineal, hvorefter den er placeret på transportbåndet. \\
-BESKRIVELSE:	&	Der testes om robotarmen måler klodsens sider med en maksimum afvigelse på $\pm$ 0.5 cm fra klodsens mål.   \\ 
+FORBEREDELSE:	&	En rute er valgt fra listen af alle ruter, og kortet er vist. Minimum en bus kører på ruten.\\
+BESKRIVELSE:	&	Der testes om tiden opdateres hvert andet sekund med en max. afvigelse på 0.5 sekunder.   \\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 
-\Aktion Sorteringsprogrammet køres og ved afslutning sammenlignes logviduets data vedrørende siderne, med værdier målt med lineal.
-\Forventet Værdierne afviger mindre end $\pm$ 0.5 fra de med lineal målte værdier
+\Aktion Der trykkes på et stoppe sted, og et stopur startes. Ved hver opdatering laves der en "lap"-tid.
+\Forventet Ingen af opdateringerne tager mere end 2.5 sekunder.
 \end{testcase}
 \\
-\textbf{Test Case: Ikke-funktionelle krav 2}
+
+
+\textbf{Test Case: Ikke-funktionelle krav 4}
 \\
 \begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	Systemet skal være sat til at køre standardprogrammet. Den grønne klods' vægt er verificeret med en kalibreret vægt, hvorefter klodsen er placeret på transportbåndet. \\
-BESKRIVELSE:	&	Det testes om vægten vejer klodsens vægt med en maksimum afvigelse på $\pm$ 5 gram.   \\
+FORBEREDELSE:	&	Test ruten på en kilometer er valgt, og kortet vises. En bus på ruten holder ved første endestation. \\
+BESKRIVELSE:	&	Der testes om tiden fra bussen til valgt stoppested passer.   \\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 
-\Aktion Sorteringsprogrammet køres og ved afslutning sammenlignes logviduets data vedrørende vægten med vægten fra den kalibrerede vægt.
-\Forventet Vægten har en afvigelse mindre end $\pm$ 5 gram
+\Aktion Simulatoren startes med en fast hastighed på 100 kilometer i time.
+\Forventet Tiden til stoppested viser 36 sekunder (1 km / 100 km/t) med en afvigelse på max. 2 sekunder.
 \end{testcase}
+
 \end{document}
