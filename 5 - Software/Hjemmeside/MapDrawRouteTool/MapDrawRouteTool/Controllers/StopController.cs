@@ -55,7 +55,7 @@ namespace MapDrawRouteTool.Controllers
                                 connection.Open();
                                 MySqlDataReader read = cmd.ExecuteReader();
                                 var ID = 0;
-                                while (read.Read())
+                                  while (read.Read())
                                 {
                                     ID = read.GetInt32(0);
                                 }
