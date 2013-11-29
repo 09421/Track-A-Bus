@@ -65,9 +65,14 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="10"/>
                 </Grid.ColumnDefinitions>
-                <Button FontSize="20" FontWeight="Bold" Grid.Row="1" Grid.Column="1" Content="Start" Name="StartStopButton" Background="Green" Click="StartStopButton_Click_1"></Button>
-                <Button FontSize="20" FontWeight="Bold" Grid.Row="1" Grid.Column="3" Content="Clear Log" Name="ClearLogButton" Click="ClearLogButton_click"></Button>
+                <Button FontSize="20" FontWeight="Bold" Grid.Row="1" Grid.Column="1" Name="StartStopButton" Background="Green" Click="StartStopButton_Click_1">
+                    <TextBlock Name="ContentBlock1" TextAlignment="Center">Start randomly <LineBreak/> on route </TextBlock>
+                </Button>
+                <Button FontSize="20" FontWeight="Bold" Grid.Row="3" Grid.Column="3" Content="Clear Log" Name="ClearLogButton" Click="ClearLogButton_click"></Button>
                 <Button FontSize="20" FontWeight="Bold" Grid.Row="3" Grid.Column="1" Content="Refresh" Name="RefreshButton" Click="RefreshButton_click"></Button>
+                <Button FontSize="20" FontWeight="Bold" Grid.Row="1" Grid.Column="3" x:Name="StartStopFirstPointButton" Background="Green" Click="StartStopFirstPoint_click">
+                    <TextBlock Name="ContentBlock2" TextAlignment="Center">Start at <LineBreak/> beginning <LineBreak/>  of route</TextBlock>
+                </Button>
             </Grid>
 
         </GroupBox>

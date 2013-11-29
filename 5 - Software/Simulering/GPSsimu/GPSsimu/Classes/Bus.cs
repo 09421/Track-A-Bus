@@ -15,6 +15,7 @@ namespace TrackABusSim
 {
     class Bus
     {
+        private bool shouldRandomize;
         private int bID;
         private int updateSpeed;
         private int initialPosIndex;
@@ -31,14 +32,15 @@ namespace TrackABusSim
        
         private SimulationMath sMath = new SimulationMath();
 
-        public Bus(int busID, List<BusRoute> Routes, Random Rand, int uSpeed, bool startDecending, int startingMinSpeed, int startingMaxSpeed)
+        public Bus(int busID, List<BusRoute> Routes, Random Rand, int uSpeed, bool startDecending, int startingMinSpeed, int startingMaxSpeed, bool randomize)
         {
+            
             routes = Routes;
             bID = busID;
             R = Rand;
             updateSpeed = uSpeed;
             initialRoute = Routes[Rand.Next(0, routes.Count)];
-
+            shouldRandomize = randomize;
             if (startDecending)
             {
                 initialRoute.TurnAround();
@@ -141,18 +143,33 @@ namespace TrackABusSim
         
         private void SetInitialPos()
         {
-            int lengthOfRoute = initialRoute.points.Count;
-            int fourthLength = lengthOfRoute/4;
-            initialPosIndex = R.Next(0, lengthOfRoute - fourthLength + 1 );
-            string initialPosLat = initialRoute.points[initialPosIndex].Item1;
-            string initialPosLon = initialRoute.points[initialPosIndex].Item2;
-            
-            string query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
-                            " values (" + initialPosLon + ", " + initialPosLat + ", '" +
-                            DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
+ 
+            string initialPosLat = "";
+            string initialPosLon = "";
+            string query;
 
-           
+            if (shouldRandomize)
+            {
+                int lengthOfRoute = initialRoute.points.Count;
+                int fourthLength = lengthOfRoute / 4;
+                initialPosIndex = R.Next(0, lengthOfRoute - fourthLength + 1);
+                initialPosLat = initialRoute.points[initialPosIndex].Item1;
+                initialPosLon = initialRoute.points[initialPosIndex].Item2;
 
+                query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
+                                " values (" + initialPosLon + ", " + initialPosLat + ", '" +
+                                DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
+            }
+            else
+            {
+                initialPosIndex = 0;
+                initialPosLat = initialRoute.points[0].Item1;
+                initialPosLat = initialRoute.points[0].Item2;
+                query = "Insert into GPSPosition (Longitude, Latitude, UpdateTime,fk_Bus)" +
+                " values (" + initialPosLon + ", " + initialPosLat + ", '" +
+                DateTime.Now.ToString("HH:mm:ss") + "', " + bID.ToString() + ")";
+            }
+            DatabaseAcces.InsertOrUpdate(query);
             string initPosMsg = "ID " + bID + " initialPos: (" + initialPosLat + ", " + initialPosLon + "), index being " + initialPosIndex.ToString();
             LogTextWrite(initPosMsg);
         }

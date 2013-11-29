@@ -26,6 +26,7 @@ namespace TrackABusSim
     public partial class MainWindow : Window
     {
         private bool isRunning = false;
+        private bool shouldRandomize = false;
         private List<Bus> busList = new List<Bus>();
         private List<BusRoute> simulatingRoute = new List<BusRoute>();
         private List<BusRoute> allRoutes = new List<BusRoute>();
@@ -49,23 +50,66 @@ namespace TrackABusSim
                 {
                     return;
                 }
+                isRunning = true;
+                shouldRandomize = true;
                 Truncate();
                 simulatingRoute = CreateSimuBusRoutes();
                 allRoutes = CreateAllBusRoutes();
+                
                 CreateBusses();
                 StartStopButton.Background = Brushes.Red;
-                StartStopButton.Content = "Stop Simulation";
+                ContentBlock1.Text = "Stop\nSimulation";
+                StartStopFirstPointButton.IsEnabled = false;
                 foreach (Bus bs in busList)
                 {
                     bs.log.LogUpdate += HandleDataUpdate; 
                     bs.startSim();
                 }
-                isRunning = true;
             }
             else
             {
                 StartStopButton.Background = Brushes.Green;
-                StartStopButton.Content = "Start Simulation";
+                ContentBlock1.Text = "Start randomly\non route";
+                StartStopFirstPointButton.IsEnabled = true;
+                foreach (Bus bs in busList)
+                {
+                    bs.stopSim();
+                }
+                isRunning = false;
+            }
+        }
+
+
+        private void StartStopFirstPoint_click(object sender, RoutedEventArgs e)
+        {
+            if (!isRunning)
+            {
+                int Check = CheckVal();
+                if (Check == -1)
+                {
+                    return;
+                }
+                shouldRandomize = false;
+                isRunning = true;
+                Truncate();
+                simulatingRoute = CreateSimuBusRoutes();
+                allRoutes = CreateAllBusRoutes();
+                CreateBusses();
+                StartStopFirstPointButton.Background = Brushes.Red;
+                ContentBlock2.Text = "Stop simulation";
+                StartStopButton.IsEnabled = false;
+                foreach (Bus bs in busList)
+                {
+                    bs.log.LogUpdate += HandleDataUpdate;
+                    bs.startSim();
+                }
+                
+            }
+            else
+            {
+                StartStopFirstPointButton.Background = Brushes.Green;
+                ContentBlock2.Text = "Start at\nbeginning\nof route";
+                StartStopButton.IsEnabled = true;
                 foreach (Bus bs in busList)
                 {
                     bs.stopSim();
@@ -162,11 +206,11 @@ namespace TrackABusSim
                     switch (BusDirectionCombo.SelectedIndex)
                     {
                         case 0:
-                           
-                            bs.Add(new Bus(id, routesToPass, r, int.Parse(UpdateSpeedBox.Text), false, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+
+                            bs.Add(new Bus(id, routesToPass, r, int.Parse(UpdateSpeedBox.Text), false, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             break;
                         case 1:
-                            bs.Add(new Bus(id, routesToPass, r, int.Parse(UpdateSpeedBox.Text), true, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                            bs.Add(new Bus(id, routesToPass, r, int.Parse(UpdateSpeedBox.Text), true, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             break;
                         default:
                             break;
@@ -182,14 +226,14 @@ namespace TrackABusSim
                             for (int i = 0; i < IDList.Count; i++)
                             {
                                 routesToPass = simulatingRoute.Clone();
-                                bs.Add(new Bus(int.Parse(IDList[i]),routesToPass, r, int.Parse(UpdateSpeedBox.Text), false, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                                bs.Add(new Bus(int.Parse(IDList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), false, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             }
                             break;
                         case 1:
                             for (int i = 0; i < IDList.Count; i++)
                             {
                                 routesToPass = simulatingRoute.Clone();
-                                bs.Add(new Bus(int.Parse(IDList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), true, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                                bs.Add(new Bus(int.Parse(IDList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), true, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             }
                             break;
                         case 2:
@@ -201,7 +245,7 @@ namespace TrackABusSim
                                 else
                                     desc = false;
                                 routesToPass = simulatingRoute.Clone();
-                                bs.Add(new Bus(int.Parse(IDList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                                bs.Add(new Bus(int.Parse(IDList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             }
 
                             break;
@@ -227,7 +271,7 @@ namespace TrackABusSim
                                 }
                                 List<BusRoute> l = allRoutes.FindAll(R => R.id == IDFKList[i + 1].ToString());
                                 routesToPass = l.Clone<BusRoute>();
-                                bs.Add(new Bus(int.Parse(IDFKList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                                bs.Add(new Bus(int.Parse(IDFKList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             }
                             break;
                         case 1:
@@ -244,7 +288,7 @@ namespace TrackABusSim
                                 }
                                 List<BusRoute> l = allRoutes.FindAll(R => R.id == IDFKList[i + 1].ToString());
                                 routesToPass = l.Clone<BusRoute>();
-                                bs.Add(new Bus(int.Parse(IDFKList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                                bs.Add(new Bus(int.Parse(IDFKList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             }
 
                             break;
@@ -257,7 +301,7 @@ namespace TrackABusSim
                                     desc = false;
                                 List<BusRoute> l = allRoutes.FindAll(R => R.id == IDFKList[i + 1].ToString());
                                 routesToPass = l.Clone<BusRoute>();
-                                bs.Add(new Bus(int.Parse(IDFKList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value)));
+                                bs.Add(new Bus(int.Parse(IDFKList[i]), routesToPass, r, int.Parse(UpdateSpeedBox.Text), desc, ((int)MinSpeedSLider.Value), ((int)MaxSpeedSLider.Value), shouldRandomize));
                             }
                             break;
                         default:
@@ -407,5 +451,6 @@ namespace TrackABusSim
                 b.stopSim();
             }
         }
+
     }
 }
