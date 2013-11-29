@@ -6,10 +6,8 @@ by editing this MSBuild file. In order to learn more about this please visit htt
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAmZIWDkjTFEGnDB+Lr0XxMwAAAAACAAAAAAAQZgAAAAEAACAAAAAs0yHMCR8WlnEkXoRHRLX2xrsKWhfb8YrpgaWfvUjCDwAAAAAOgAAAAAIAACAAAACahzxi2UkFMdbIfQnF0b7CQJ3DnvIXEq4nKOHsLqbBCyAAAAC7DrlTXQseymAN/AFeERrrrN1s9gmf2GzMr8HN5sRQwkAAAABLlMdhBeFtnfy7Iwia1XCU2Ohp8/C0e/oPtdUUJMWpZlXRY17yUjwQ6540Mfjru4f4imx+/fEECTKxPMBEtyF+</EncryptedPassword>
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA1kEDKjNY1U+J9fUWsHNSoQAAAAACAAAAAAAQZgAAAAEAACAAAAA4luMPDg/ChzmFgz2bcbZ5Q6c2B1ldIhxzEH1F6Dv2IQAAAAAOgAAAAAIAACAAAAAdUOLgleQMYTEDQK08qOKPp79nFNyBFoUwt5nYpAC/yCAAAACrF/KbYOZa6hNNt76DEwHaTFMzwjqJYY242HVOm1HRRkAAAACpBjwfOzNthHLcWxx8il9fbZ1P6dDUeuou+2gIbyZWZPFYQweX9IUJpvmFTUvcyZe/iWwDBAiYIYdvwEz32Mxi</EncryptedPassword>
     <_PublishTargetUrl>ftp://trackabus.dk/public_html</_PublishTargetUrl>
-    <LastUsedBuildConfiguration>Release</LastUsedBuildConfiguration>
-    <LastUsedPlatform>Any CPU</LastUsedPlatform>
   </PropertyGroup>
   <ItemGroup>
     <File Include="AndroidToMySQLWebService.asmx">
@@ -22,7 +20,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:04:53</publishTime>
     </File>
     <File Include="bin/MapDrawRouteTool.dll">
-      <publishTime>11/22/2013 12:28:57</publishTime>
+      <publishTime>11/29/2013 10:37:33</publishTime>
     </File>
     <File Include="bin/Microsoft.Web.Infrastructure.dll">
       <publishTime>09/25/2013 14:05:26</publishTime>
@@ -31,7 +29,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:05:32</publishTime>
     </File>
     <File Include="bin/MySql.Data.dll">
-      <publishTime>06/20/2013 09:35:14</publishTime>
+      <publishTime>06/20/2013 01:35:14</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
       <publishTime>10/28/2013 15:56:29</publishTime>
@@ -235,13 +233,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:05:19</publishTime>
     </File>
     <File Include="Controllers/BusController.cs">
-      <publishTime>11/22/2013 16:28:13</publishTime>
+      <publishTime>11/23/2013 13:01:00</publishTime>
+    </File>
+    <File Include="Controllers/DirController.cs">
+      <publishTime>11/25/2013 14:36:11</publishTime>
     </File>
     <File Include="Controllers/HomeController.cs">
       <publishTime>11/17/2013 12:23:23</publishTime>
     </File>
     <File Include="Controllers/StopController.cs">
-      <publishTime>11/22/2013 10:14:51</publishTime>
+      <publishTime>11/29/2013 09:57:30</publishTime>
     </File>
     <File Include="Global.asax">
       <publishTime>09/25/2013 14:04:25</publishTime>
@@ -295,10 +296,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:05:25</publishTime>
     </File>
     <File Include="Views/Bus/Index.cshtml">
-      <publishTime>11/22/2013 21:15:22</publishTime>
+      <publishTime>11/24/2013 23:57:22</publishTime>
     </File>
     <File Include="Views/Dir/CreateRoute.cshtml">
-      <publishTime>11/23/2013 16:42:32</publishTime>
+      <publishTime>11/25/2013 14:34:14</publishTime>
     </File>
     <File Include="Views/Dir/EditRoute.cshtml">
       <publishTime>11/23/2013 13:12:29</publishTime>
@@ -309,18 +310,6 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Views/Home/Index.cshtml">
       <publishTime>11/22/2013 19:21:35</publishTime>
     </File>
-    <File Include="Views/Dir/Index.cshtml">
-      <publishTime>11/23/2013 12:42:21</publishTime>
-    </File>
-    <File Include="Views/Home/Index.cshtml">
-      <publishTime>11/22/2013 19:21:35</publishTime>
-    </File>
-    <File Include="Views/Map/Index.cshtml">
-      <publishTime>01/01/0001 00:00:00</publishTime>
-    </File>
-    <File Include="Views/Route/Index.aspx">
-      <publishTime>01/01/0001 00:00:00</publishTime>
-    </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>11/22/2013 13:57:48</publishTime>
     </File>
@@ -328,16 +317,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/22/2013 19:34:40</publishTime>
     </File>
     <File Include="Views/Stop/AddStops.cshtml">
-      <publishTime>11/22/2013 18:57:04</publishTime>
+      <publishTime>11/29/2013 09:07:04</publishTime>
     </File>
     <File Include="Views/Stop/EditStops.cshtml">
       <publishTime>11/22/2013 18:57:18</publishTime>
-    </File>
-    <File Include="Views/Stop/Index.cshtml">
-      <publishTime>11/22/2013 19:06:52</publishTime>
-    </File>
-    <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>11/22/2013 19:34:40</publishTime>
     </File>
     <File Include="Views/Stop/Index.cshtml">
       <publishTime>11/22/2013 19:06:52</publishTime>
@@ -349,7 +332,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>09/25/2013 14:04:25</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>11/22/2013 12:29:01</publishTime>
+      <publishTime>11/29/2013 09:54:48</publishTime>
     </File>
   </ItemGroup>
 </Project>

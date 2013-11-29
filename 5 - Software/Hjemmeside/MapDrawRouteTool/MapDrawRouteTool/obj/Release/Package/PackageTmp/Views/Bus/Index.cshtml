@@ -46,9 +46,9 @@
             }
         });
     }
-
+    var selectedRoute;
     function Change(value) {
-        var selectedRoute;
+        selectedRoute = value;
         $.ajax({
             type: "POST",
             url: "Bus/GetBussesOnRoute",

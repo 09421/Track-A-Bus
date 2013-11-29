@@ -1,8 +1,10 @@
 ﻿@{
-    ViewBag.Title = "Busstop tool";
+    ViewBag.Title = "EditRoute";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
 <style type="text/css">
     html {
         height: 100%;
@@ -64,62 +66,108 @@
 
 
         google.maps.event.addListener(map, 'click', function (event) {
-            var mark = new google.maps.Marker({
-                map: map,
-                draggable: false,
-                position: event.latLng,
-                title: markers.length.toString()
-            });
+            if (markers.length <= 0) {
+                var mark = new google.maps.Marker({
+                    map: map,
+                    draggable: false,
+                    position: event.latLng,
+                    title: markers.length.toString()
+                });
 
 
-            markers.push(mark);
-            google.maps.event.addListener(mark, 'click', function () {
-                markers[markers.indexOf(mark)].setMap(null);
-                markers.splice(markers.indexOf(mark), 1);
-            });
-
-            setinput();
+                markers.push(mark);
+                google.maps.event.addListener(mark, 'click', function () {
+                    markers[markers.indexOf(mark)].setMap(null);
+                    markers = [];
+                });
+            }
 
         });
+
+        GetBusStops();
     }
 
-    function setinput() {
-        var d = document.getElementById("panel");
-        d.innerHTML += "<p><input id=\"mark" + markers.length + "\" type=\"text\"></input></p>";
+    function GetBusStops() {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetAllStops", "Stop")',
+            dataType: "json",
+            success: function (result) {
+                var select = document.getElementById("StopRoutes");
+                select.options.length = 0;
+                for (var i = 0; i < result.length; i++) {
+                    select.options.add(new Option(result[i]));
+                }
+            }
+        });
+
     }
 
     function SaveStopsToDB() {
         if (markers != null) {
 
-            for (var i = 0; i < markers.length; i++) {
-                cord.push(markers[i].getPosition().toString());
-                name.push(document.getElementById("mark" + (i + 1).toString()).value);
-            }
-
             $.ajax({
                 type: "POST",
-                url: "Stop/Save",
+                url: '@Url.Action("Save", "Stop")',
                 data: {
-                    c: JSON.stringify(cord),
-                    n: JSON.stringify(name),
+                    c: markers[0].getPosition().toString(),
+                    n: JSON.stringify(document.getElementById("StopName").value),
                     contentType: "application/json; charset=utf-8"
+                },
+                success: function () {
+                    var select = document.getElementById("StopRoutes");
+                    select.options.add(new Option(document.getElementById("StopName").value));
                 }
             });
-            cord = [];
-            name = [];
+
+            markers[0].setMap(null);
+            markers = [];
         }
     }
-    var cord = new Array();
-    var name = new Array();
+
+
+    function DeleteStopsFromDB() {
+
+        var e = document.getElementById("StopRoutes");
+        var stopToDelete = e.options[e.selectedIndex].text;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Delete", "Stop")',
+            data: {
+                stop: stopToDelete,
+                contentType: "application/json; charset=utf-8"
+            },
+            success: function () {
+                var elSel = document.getElementById('StopRoutes');
+                var i;
+                for (i = elSel.length - 1; i >= 0; i--) {
+                    if (elSel.options[i].selected) {
+                        elSel.remove(i);
+                    }
+                }
+            }
+        });
+    }
+
+
     google.maps.event.addDomListener(window, 'load', initialize);
     var markers = new Array();
 </script>
 
-<section id="control_panel" style="float: right; width: 30%; height: 70%; text-align: left; padding-top: 10px;">
+<div>
+    <p style="margin: 10px; height: 100%; width: 100%" class="site-title">Bus route editor</p>
+</div>
+
+<section id="control_panel" style="float: right; width: 45%; height: 70%; text-align: right; border: groove; margin: 10px;">
+    <input type="text" id="StopName" name="Stop name" />
     <input id="clickMe" type="button" value="Save stops" onclick="SaveStopsToDB();" />
-    <div id="panel"></div>
+    <input id="DeleteStop" type="button" value="delete stops" onclick="DeleteStopsFromDB();" />
+    <div id="panel">
+        <select size="10" name="Routes" id="StopRoutes" style="width: 150px;">
+        </select>
+    </div>
 </section>
-<section style="float: left; width: 70%; height: 70%;">
+<section style="float: left; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">
     <div id="map-canvas"></div>
 </section>
 

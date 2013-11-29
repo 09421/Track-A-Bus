@@ -44,14 +44,15 @@ namespace MapDrawRouteTool.Controllers
                         {
                             if (cords.Count == (names.Count * 2))
                             {
+
+                                cmd.CommandText = string.Format("INSERT INTO RoutePoint (Latitude, Longitude) VALUES({0}, {1});", cords[i], cords[i+1]);
+
                                 connection.Open();
-
-                                cmd.CommandText = "INSERT INTO RoutePoint (Latitude, Longitude) VALUES(?Lat, ?lng);";
-                                cmd.Parameters.Add("?Lat", MySqlDbType.Decimal).Value = decimal.Parse(cords[i]);
-                                cmd.Parameters.Add("?lng", MySqlDbType.Decimal).Value = decimal.Parse(cords[i + 1]);
                                 cmd.ExecuteNonQuery();
-
+                                connection.Close();
                                 cmd.CommandText = "SELECT ID FROM RoutePoint WHERE Latitude = " + cords[i] + ";";
+
+                                connection.Open();
                                 MySqlDataReader read = cmd.ExecuteReader();
                                 var ID = 0;
                                 while (read.Read())
@@ -59,13 +60,14 @@ namespace MapDrawRouteTool.Controllers
                                     ID = read.GetInt32(0);
                                 }
                                 read.Close();
+                                connection.Close();
 
-                                cmd.CommandText = "INSERT INTO BusStop (StopName, fk_RoutePoint) VALUES(?name, ?routePoint);";
-                                cmd.Parameters.Add("?name", MySqlDbType.String).Value = names[i / 2];
-                                cmd.Parameters.Add("?routePoint", MySqlDbType.Int32).Value = ID;
+
+                                cmd.CommandText = string.Format("INSERT INTO BusStop (StopName, fk_RoutePoint) VALUES('{0}', {1});", names[i / 2], ID);
+                                connection.Open();
                                 cmd.ExecuteNonQuery();
+                                connection.Close();
                             }
-                            connection.Close();
                         }
                         catch (Exception e)
                         {
