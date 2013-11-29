@@ -1,74 +1,150 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 4: Rediger busruter i listen af favoriter}
-\textbf{Test Case: Normalforløb A}
+\subsubsection{Use Case 2}
+\textbf{Test Case: Normalforløb 1}
 \\\begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.
+FORBEREDELSE:        &        TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.
 \\
-BESKRIVELSE:	&	Der testes, at det er muligt at favorisere en busrute.
+BESKRIVELSE:        &        Der testes, at det er muligt at få vist en rute, stoppesteder på ruten, samt en bus, vis position opdateres.
 \\\\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at favorisere en givet busrute, ved tryk på favoriserings knappen, i listen over alle busruter.
-\Forventet favoriserings knappen skifter farve, samt data om busruten vil blive hentet fra databasen og persisteret på SQLite databasen.
-\punkt 2
-\Aktion Brugeren vender tilbage til startskærmen for mobil-applikationen.
-\Forventet Den favoriserede busrute kan ses på listen over favoriserede busruter.
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over alle busruter.
+\Forventet Der vises et kort, med indtegnet busrute, stoppesteder samt en bus, vis position bliver opdateret.
 \end{testcase}
 \\
-\textbf{Test Case: Normalforløb B}
+\textbf{Test Case: Normalforløb 2}
 \\\begin{tabular}{l p{11cm}} 
-FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal en busrute være favoriseret.
+FORBEREDELSE:        &        TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal en busrute være favoriseret.
 \\
-BESKRIVELSE:	&	Der testes, at det er muligt at fjerne favorisering af en busrute.
+BESKRIVELSE:        &        Der testes, at det er muligt at indlæse samme busrute, stoppesteder og bus som i normalforløb 1, dog nu fra SQLite databasen.
 \\\\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at fjerne favorisering en givet busrute, ved tryk på favoriserings knappen, i listen over alle busruter.
-\Forventet favoriserings knappen skifter farve, samt data om busruten vil blive fjernet fra SQLite databasen.
-\punkt 2
-\Aktion Brugeren vender tilbage til startskærmen for mobil-applikationen.
-\Forventet Den favoriserede busrute kan ikke længere ses på listen over favoriserede busruter.
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over favorit busruter.
+\Forventet Der vises et kort, med indtegnet busrute, stoppesteder samt en bus, vis position bliver opdaterets.
+\end{testcase}
+\\
+\textbf{Test Case: Normalforløb 3}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:        &        TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt en kompleks  busrute.
+\\
+BESKRIVELSE:        &        Der testes, at det er muligt at få vist en kompleks rute, stoppesteder på ruten, samt en bus, vis position opdateres.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over alle busruter.
+\Forventet Der vises et kort, med indtegnet kompleks busrute, stoppesteder samt en bus, vis position bliver opdateret.
+\end{testcase}\\
+\textbf{Test Case: Normalforløb 4}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:        &        TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal en kompleks busrute være favoriseret.
+\\
+BESKRIVELSE:        &        Der testes, at det er muligt at indlæse samme busrute, stoppesteder og bus, som i normalforløb 3, dog nu fra SQLite databasen.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en kompleks busrute, ved tryk på en busrute, i listen over favorit busruter
+\Forventet Der vises et kort, med indtegnet kompleks busrute, stoppesteder samt en bus, vis position bliver opdateret.
+\end{testcase}
+\\
+\textbf{Test Case: Normalforløb 5}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:        &        TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt en byrute.
+\\
+BESKRIVELSE:        &        Der testes, at det er muligt at få vist en byrute, stoppesteder på ruten, samt en bus, vis position opdateres.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en byrute, ved tryk på en busrute, i listen over alle busruter.
+\Forventet Der vises et kort, med indtegnet byrute, stoppesteder samt en bus, vis position bliver opdateret.
+\end{testcase}
+\\
+\textbf{Test Case: Normalforløb 6}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:        &        TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal en byrute være favoriseret.
+\\
+BESKRIVELSE:        &        Der testes, at det er muligt at indlæse samme byrute, stoppesteder og bus, som i normalforløb 5, dog nu fra SQLite databasen.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en byrute, ved tryk på en busrute, i listen over favorit busruter
+\Forventet Der vises et kort, med indtegnet byrute, stoppesteder samt en bus, vis position bliver opdateret.
+\end{testcase}
+\\
+
+\textbf{Test Case: Ikke-funktionelle krav 1}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:        &        En busrute skal være valgt. Ruten, stoppesteder samt en bus skal være indtegnet. 
+\\
+BESKRIVELSE:        &        Der testes, at bussens position opdateres hver sekundt, plus en afvigelse på højst op til 0.5 sekundt.
+\\\\ 
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Et stopur startes på samme tid med at bussens position opdateres.
+\Forventet Det kan ses at bussens position opdateres hver sekunds, med en maks afvigelse på 0.5 sekunder.
 \end{testcase}
 \\
 \textbf{Test Case: Undtagelsesforløb 1}
 \\ \begin{tabular}{l p{11cm}}
-FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der ikke være forbindelse til databasen.\\
-BESKRIVELSE:	&	Der testes, at der bliver vist en fejlmeddelelse hvis der ikke kan skabes forbindelse til databasen.  \\ 
+FORBEREDELSE:        &         TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der ikke være forbindelse til databasen.\\
+BESKRIVELSE:        &        Der testes, at der bliver vist en fejlmeddelelse hvis der ikke kan skabes forbindelse til databasen.  \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at favorisere en givet busrute, ved tryk på favoriserings knappen, i listen over alle busruter.
-\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver det ikke er muligt at tilgå databasen.
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at få vist en givet busrute, ved tryk på en busrute, i listen over alle busruter.
+\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver det ikke er muligt at indlæse busruten.
 \end{testcase}
 \\
 \textbf{Test Case: Undtagelsesforløb 2}
 \\ \begin{tabular}{l p{11cm}}
-FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.\\
-BESKRIVELSE:	&	Der testes, at hvis indlæsning af data bliver annulleret, ved tryk på telefonens tilbage-knap, bliver data for busruten hentet færdig, samt der returneres til der til listen af busruter.  \\ 
+FORBEREDELSE:        &         Indlæsning af data er igangsat, samt der er gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute, i databasen\\
+BESKRIVELSE:        &        Der testes, at hvis indlæsning af data bliver annulleret, ved tryk på telefonens tilbage-knap, returneres til der til listen af busruter.  \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion brugeren trykker på telefonens tilbage-knap.
-\Forventet Indlæsning af data forsætter i baggrunden, samt der retuneres til startskærmen.
+\Aktion brugeren annullere indlæsning af data.
+\Forventet Indlæsning af data stoppes, samt der retuneres til listen af busruter.
 \end{testcase}
 \\
 \textbf{Test Case: Undtagelsesforløb 3}
 \\ \begin{tabular}{l p{11cm}}
-FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.\\
-BESKRIVELSE:	&	Der testes, at hvis systemet går i dvale, ved tryk på telefonens home-knap, bliver data for busruten hentet færdig i baggrunden.  \\ 
+FORBEREDELSE:        &         Indlæsning af data er igangsat, samt der er gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute, i databasen\\
+BESKRIVELSE:        &        Der testes, at hvis systemet går i dvale, ved tryk på telefonens home-knap,vil systemet indlæse data fra databasen i baggrunden.  \\ 
 \end{tabular}
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion brugeren trykker på telefonens home-knap.
-\Forventet Indlæsning af data forsætter i baggrunden.
+\Aktion Brugeren trykker på telefonens home-knap under indlæsning af data.
+\Forventet Systemet indlæser data færdig i baggrunden, ved genåbning af programmet, vil busrute, stoppesteder samt bussen kunne ses indtegnet på et kort.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 4}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:        &         kortet vises, med indtegnet busrute, stoppesteder samt en bus, vis position opdateres\\
+BESKRIVELSE:        &        Der testes, at hvis der mistes forbindelse til internetet imens systemet køre, vil der blive vist en fejlmeddelelse om at der ikke er forbindelse til internetet, samt busserns position ikke længere vil blive opdateret.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion Netvæksforbindelsen deaktiveres.
+\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver at der ikke er forbindelse til internetet, samt bussernes position ikke længere bliver opdateret.
 \end{testcase}
 \end{document}

@@ -1,69 +1,74 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 4: Rediger busrute i liste af favoriter}
+\subsubsection{Use Case 4: Rediger busruter i listen af favoriter}
 \textbf{Test Case: Normalforløb A}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.
 \\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
-\\
-BESKRIVELSE: & Det testes at det er muligt at tilføje ny bus til systemet.
+BESKRIVELSE:	&	Der testes, at det er muligt at favorisere en busrute.
+\\\\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
-\Forventet Busses bliver tilføjet til listen af busser i systemet
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at favorisere en givet busrute, ved tryk på favoriserings knappen, i listen over alle busruter.
+\Forventet favoriserings knappen skifter farve, samt data om busruten vil blive hentet fra databasen og persisteret på SQLite databasen.
 \punkt 2
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
-\Forventet Ændringer bliver gemt på databasen.
+\Aktion Brugeren vender tilbage til startskærmen for mobil-applikationen.
+\Forventet Den favoriserede busrute kan ses på listen over favoriserede busruter.
 \end{testcase}
-\textbf{Test Case: Normalforløb 2}
 \\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+\textbf{Test Case: Normalforløb B}
+\\\begin{tabular}{l p{11cm}} 
+FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal en busrute være favoriseret.
 \\
-BESKRIVELSE: & Det testes at det er muligt at slette en bus til systemet.
+BESKRIVELSE:	&	Der testes, at det er muligt at fjerne favorisering af en busrute.
+\\\\ 
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en bus fra listen over busser i systemet, og trykker på 'Remove' knappen.
-\Forventet Den valgte bus bliver fjernet fra liten af busser i systemet.
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at fjerne favorisering en givet busrute, ved tryk på favoriserings knappen, i listen over alle busruter.
+\Forventet favoriserings knappen skifter farve, samt data om busruten vil blive fjernet fra SQLite databasen.
 \punkt 2
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
-\Forventet Ændringer bliver gemt på databasen.
+\Aktion Brugeren vender tilbage til startskærmen for mobil-applikationen.
+\Forventet Den favoriserede busrute kan ikke længere ses på listen over favoriserede busruter.
 \end{testcase}
-\textbf{Test Case: Normalforløb 3}
 \\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
-\\
-BESKRIVELSE: & Det testes at det er muligt at ændre information om en bus der findes i systemet.
-\end{tabular}
-\\
-\begin{testcase}
-\punkt 1
-\Aktion Administratoren vælger en bus fra listen over busser i systemet, ændre teksten i feltet 'Bus name:'  og trykker på 'Add' knappen.
-\Forventet navnet på bussen, i listen over alle busser, vil blive ændret til det nye navn.
-\punkt 2
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
-\Forventet Ændringer bliver gemt på databasen.
-\end{testcase}
 \textbf{Test Case: Undtagelsesforløb 1}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden, samt der ikke er forbindelse til internet.
-\\
-BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der ikke være forbindelse til databasen.\\
+BESKRIVELSE:	&	Der testes, at der bliver vist en fejlmeddelelse hvis der ikke kan skabes forbindelse til databasen.  \\ 
 \end{tabular}
-\\
+\\\\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
-\Forventet Busses bliver tilføjet til listen af busser i systemet
-\punkt 2
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
-\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
+\Aktion Brugeren tilkendegiver overfor systemet at han ønsker at favorisere en givet busrute, ved tryk på favoriserings knappen, i listen over alle busruter.
+\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver det ikke er muligt at tilgå databasen.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 2}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.\\
+BESKRIVELSE:	&	Der testes, at hvis indlæsning af data bliver annulleret, ved tryk på telefonens tilbage-knap, bliver data for busruten hentet færdig, samt der returneres til der til listen af busruter.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion brugeren trykker på telefonens tilbage-knap.
+\Forventet Indlæsning af data forsætter i baggrunden, samt der retuneres til startskærmen.
+\end{testcase}
+\\
+\textbf{Test Case: Undtagelsesforløb 3}
+\\ \begin{tabular}{l p{11cm}}
+FORBEREDELSE:	&	 TrackABus android mobil-applikationen skal være startet, samt stå ved listen af busruter, desuden skal der i databasen være gemt rutepunkter, busstoppesteder samt en bus, for en valgte busrute.\\
+BESKRIVELSE:	&	Der testes, at hvis systemet går i dvale, ved tryk på telefonens home-knap, bliver data for busruten hentet færdig i baggrunden.  \\ 
+\end{tabular}
+\\\\
+\begin{testcase}
+\punkt 1
+\Aktion brugeren trykker på telefonens home-knap.
+\Forventet Indlæsning af data forsætter i baggrunden.
 \end{testcase}
 \end{document}
