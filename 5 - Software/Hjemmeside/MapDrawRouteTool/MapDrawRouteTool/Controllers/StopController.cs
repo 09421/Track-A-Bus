@@ -34,11 +34,9 @@ namespace MapDrawRouteTool.Controllers
             var cords = formatCord(c);
             var names = formatNames(n);
 
-            var mystring = System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
-
             for (var i = 0; i < cords.Count; i = i + 2)
             {
-                using (var connection = new MySqlConnection(mystring))
+                using (var connection = new MySqlConnection(getConnectionString()))
                 {
                     using (var cmd = connection.CreateCommand())
                     {
@@ -79,6 +77,69 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
+        public void Delete(string stop)
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        cmd.CommandText = string.Format("DELETE FROM BusStop WHERE StopName = '{0}'", stop);
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        connection.Close();
+                        Debug.WriteLine(e.Message);
+                    }
+                }
+            }
+        }
+
+        public JsonResult GetAllStops()
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        List<string> names = new List<string>();
+                        cmd.CommandText = "SELECT StopName FROM BusStop";
+                        connection.Open();
+
+                        var read = cmd.ExecuteReader();                        
+                        while (read.Read())
+                        {
+                            names.Add(read.GetString(0));
+                        }
+                        read.Close();
+                        connection.Close();
+
+                        return ConvertToJason(names);
+                    }
+                    catch (Exception e)
+                    {
+                        connection.Close();
+                        Debug.WriteLine(e.Message);
+                        return null;
+                    }
+                }
+            }
+        }
+
+        private JsonResult ConvertToJason(List<string> names)
+        {
+            JsonResult jr = new JsonResult();
+
+            jr.Data = names.ToList();
+            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
+            return jr;
+        }
+
         private List<string> formatNames(string name)
         {
             var t = name.Split(',');
@@ -115,6 +176,11 @@ namespace MapDrawRouteTool.Controllers
                 cords.Add(j);
             }
             return cords;
+        }
+
+        private static string getConnectionString()
+        {
+            return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
         }
     }
 }
