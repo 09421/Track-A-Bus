@@ -21,11 +21,11 @@ En samtidig forekomst.
 \\
 \\
 \textbf{Ikke funktionelle krav:}
-	\begin{itemize}
+	\begin{enumerate}[A.]
 	\item Opdatering af tid sker hver andet sekund, med en max. afvigelse på 0.5 sekunder.
 	\item Tid vil opskrives på formen "tt:mm:ss", hvor tt er timer, mm er minutter og ss er sekunder
 	\item Ved ingen kørende busser imod valgt stoppested, vil tid vises som "nn:nn:nn"
-	\end{itemize}
+	\end{enumerate}
 \textbf{Startbetingelser:}
 \\
 Normalforløb for Use Case 2 er blevet gennemført.
@@ -40,33 +40,33 @@ Brugeren bliver præsenteret for et kort, med indtegnet busrute samt tid til anko
 Brugeren bliver præsenteret for et kort, med indtegnet busrute.
 \\
 \\
-\textbf{Normalforløb:}
+\textbf{Normalforløb A:}
 \begin{enumerate}
 \item Brugeren bliver vist tiden indtil bussen ankommer til det valgte busstoppested, samt information om busstoppestedet.
 \end{enumerate}
 
-\begin{enumerate}[\text{Undtagelse} 1:]
+\begin{enumerate}[\text{Undtagelse} A:]
 	\item Positions data kan ikke tilgås.
-	\begin{enumerate}[A]
+	\begin{enumerate}[1.]
 		\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at tilgå positionsdata busserne.
 		\item Brugeren vil blive vist kortet, hvor busserne ses på deres senest hentede position. Bussens position opdateres ikke længere.
 	\end{enumerate}
 \end{enumerate}		
-\begin{enumerate}[\text{Undtagelse} 2:]
+\begin{enumerate}[\text{Undtagelse} B:]
 	\item Positions data for nærmeste bus kan igen tilgås.
 	\begin{enumerate}[1.]
 		\item Systemet fortsætter i normalforløbet. Bussernes position holdes igen opdateret
 		\item Systemet fjerner fejl-meddelelsen igen.
 	\end{enumerate}
 \end{enumerate}
-\begin{enumerate}[\text{Undtagelse} 3:]
+\begin{enumerate}[\text{Undtagelse} C:]
 	\item Hentningen af data annulleres.
 	\begin{enumerate}[1.]
 		\item Systemet stopper med at hente bussernes positions data.
 		\item Systemet returnerer til listen over busruter.
 	\end{enumerate}
 \end{enumerate}
-\begin{enumerate}[\text{Undtagelse} 4:]
+\begin{enumerate}[\text{Undtagelse} D:]
 	\item Systemet går i dvale, under hentning af data.
 	\begin{enumerate}[1.]
 		\item Systemet henter data færdige, og værdier opdateres.

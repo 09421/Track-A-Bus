@@ -2,61 +2,63 @@
 \begin{document}
 
 \subsubsection{Use Case 6: Rediger bus på rute}
-\textbf{Test Case: Normalforløb 1}
+\textbf{Test Case: Normalforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Den simple busrute og bus med ID "101" fra tidligere tests, skal stadig være oprettet. 
 \\
 BESKRIVELSE: & Det testes at det er muligt at tilføje en bus til en busrute der findes i systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en busrute fra listen over alle busruter der findes i systemet.
-\Forventet alle busser der køre på valgt rute, vises i listen 'busses on route'
+\Aktion Administratoren vælger den simple busrute fra listen over alle busruter der findes i systemet.
+\Forventet alle busser der køre på den simple rute, vises i listen 'busses on route'
 \punkt 2
-\Aktion Administratoren vælger en bus fra listen 'Avaliable busses', samt trykker på knappen '<-'.
-\Forventet Valgt bus bliver tilføjet til listen 'Busses on route'
+\Aktion Administratoren vælger bus med ID "101" fra listen 'Avaliable busses', samt trykker på knappen '<-'.
+\Forventet Valgt bus bliver tilføjet til listen 'Busses on route' og fjernet fra listen "Available busses"
 \punkt 3
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
 \\
-\textbf{Test Case: Normalforløb 2}
+\newpage
+\textbf{Test Case: Normalforløb B}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Normalforløb A skal være gennemført og den simple busrute skal stadig være oprettet.
 \\
 BESKRIVELSE: & Det testes at det er muligt at fjerne en bus fra en busrute.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en busrute fra listen over alle busruter der findes i systemet.
-\Forventet alle busser der køre på valgt rute, vises i listen 'busses on route'
+\Aktion Administratoren vælger den simple busrute fra listen over alle busruter der findes i systemet.
+\Forventet alle busser der køre på valgt rute, vises i listen 'Busses on route'
 \punkt 2
-\Aktion Administratoren vælger en bus fra listen 'Busses on route', samt trykker på knappen '->'.
-\Forventet Valgt bus bliver tilføjet til listen 'Avaliable busses', samt fjernet fra listen 'Busses on route'
+\Aktion Administratoren vælger bus med ID "101" fra listen 'Busses on route', samt trykker på knappen '->'.
+\Forventet Bus med ID "101" bliver tilføjet til listen 'Avaliable busses', samt fjernet fra listen 'Busses on route'
 \punkt 3
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
 \\
-\textbf{Test Case: Undtagelsesforløb 1}
+\newpage
+\textbf{Test Case: Undtagelsesforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden, samt der ikke er forbindelse til internet.
+FORBEREDELSE: &Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden, og der er ikke forbindelse til internettet. Den simple busrute og bus med ID "101" fra tidligere tests, skal stadig være oprettet. 
 \\
-BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om, at det ikke er muligt at gemme, da der ikke er adgang til internettet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en busrute fra listen over alle busruter der findes i systemet.
-\Forventet alle busser der køre på valgt rute, vises i listen 'busses on route'
+\Aktion Administratoren vælger den simple busrute fra listen over alle busruter der findes i systemet.
+\Forventet alle busser der kører på valgt rute, vises i listen 'Busses on route'
 \punkt 2
-\Aktion Administratoren vælger en bus fra listen 'Avaliable busses', samt trykker på knappen '<-'.
-\Forventet Valgt bus bliver tilføjet til listen 'Busses on route'
+\Aktion Administratoren vælger bus med ID "101" fra listen 'Avaliable busses', samt trykker på knappen '<-'.
+\Forventet Bus med ID "101" bliver tilføjet til listen 'Busses on route'
 \punkt 3
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.

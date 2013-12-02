@@ -1,10 +1,14 @@
 \documentclass[main]{subfiles}
 \begin{document}
 \subsubsection{Use Case scenarier}
-Det eneste krav for at tilgå denne Use Case er, at brugeren skal være logget ind som programmør. For at initialisere Use Casen tilkendegiver programmøren overfor systemet, at robotten ønskes simuleret. Herefter lister systemet tilgængelige programmer i systemet, hvorefter programmøren vælger, hvilket program der skal indlæses. Herefter startes simuleringen, og der vises data fra simuleringen på skærmen på samme måde, som hvis robotten var tilsluttet. Sidst afsluttes simuleringen. 
-\\
-Når loggen udskrives, udskrives den med et tidspunkt for hændelsen efterfulgt af informationer om selve hændelsen.
+Denne Use Case har tre normalforløb, idet at man både kan tilføje en bus, fjerne en bus eller ændre i en eksistere bus.
+Det er kun en administrator der kan initialisere denne Use Case.
+Normalforløb 1 beskriver, hvordan en bus tilføjes til systemet. Dette forgår ved at administratoren tilkendegiver overfor systemet at han vil tilføje en bus til systemet. Herefter gør systemet det muligt at indtaste information om bussen. Når administratoren har indtastet det ønskede information, tilkendegiver administratoren at han ønsker at gemme informationen. Systemet gemmer nu informationen på databasen.
+I normalforløb 2 fjernes en bus. Denne initieres ved, at administratoren vælger en bus fra en liste over alle busser i systemet. herefter tilkendegiver administratoren overfor systemet at han ønsker at fjerne den valgte bus fra systemet. Systemet fjerner nu den valgte bus fra databasen.
+Normalforløb 3 beskriver hvordan administratoren ænder information om en bus der eksistere i systemet. Administratoren vælger en bus fra listen over alle busser i systemet. Herefter tilkendegiver administratoren overfor systemet at han ønsker at ændre information om den valgte bus. Systemet gør det muligt for administratoren at ændre information om bussen. Når administratoren har indtastet det ønskede information, tilkendegiver administratoren at han ønsker at gemme informationen. Systemet gemmer nu informationen på databasen
 
 \subsubsection{Use Case Undtagelser}
-Den eneste undtagelse til denne Use Case består i at simuleringen afsluttes, hvis brugeren trykker på "Stop".
+Da informationen om busserne skal både hentes og gemmes på en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelsetil databasen.
+
+
 \end{document}

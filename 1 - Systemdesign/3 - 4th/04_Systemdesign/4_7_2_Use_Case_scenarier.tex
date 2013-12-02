@@ -2,13 +2,11 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier}
-Det er både operatøren og programmøren, der kan tilgå denne Use Case. Den initialiseres ved, at en af aktørerne tilkendegiver overfor systemet, han vil se gemte logfiler, hvorefter tilgængelige logfiler bliver listet. Herefter vælger aktøren hvilken logfil der skal vises, og således bliver data for denne logfil vist. Dernæst bliver logfilen gemt, ved at aktøren tilkendegiver overfor systemet, at filen ønskes gemt. Aktøren bliver dernæst præsenteret for et vindue, hvor placering for logfilen kan vælges, og hvor navnet på filen kan indtastes. Til sidst gemmes logfilen det ønskede sted, med det ønskede navn. 
+Før denne Use Case kan startes skal \textit{Use Case 1: Vis busruter} være gennemført. Fra listen over alle busruter, tilkendegiver brugeren overfor systemet at han ønsker at favorisere et busrute, eller fjerne en busrute fra favoriter.
+Ved favorisering af busrute, henter systemet den valgte busrute, samt stoppestederne for valgte busrute fra databasen, dernæst persisterer systemet dette på en sqlite database på telefonen. Busruten bliver markeret som favorit på listen over busruter. Brugeren vil nu kunne vælge den favoriseret busrute på startskærmen, i stedet for fra listen over alle busruter. 
+ved fjernelse fra favorisering vil systemet slette ruten, samt dens busstoppesteder fra sqlite databasen, fjerne markeringen fra listen over busruter, samt det ikke længere vil være muligt at vælge ruten fra startskærmen.
 
 \subsubsection{Use Case Undtagelser}
-Da databasen er sekundær aktør i Use Casen, og da logfiler hentes på databasen, er der risiko for, at forbindelsen til databasen mistes. Hvis dette er tilfældet, bliver aktøren spurgt, om han vil vente på at forbindelsen bliver genetableret, eller om programmet skal lukke ned. Vælges der at vente, bliver han igen præsenteret for samme besked, hvis forbindelsen ikke kunne genetableres. Hvis det er lykkedes at genetablere forbindelsen, kører systemet videre. Er der ingen gemte logfiler på databasen, er det ikke muligt at få vist data for en logfil.
-\\
-Aktøren har mulighed for blot at få vist en logfil, uden at få denne gemt, og hvis dette er tilfældet, skal han blot lade være med at tilkendegive, at filen ønskes gemt. Hvis han fortryder at gemme filen, er det også muligt at annullere handlingen. Når navnet på filen skal indtastes, er det muligt at aktøren vælger et navn, der allerede eksistere i den givne sti. Hvis dette er tilfældet, bliver han spurgt om han vil overskrive den eksisterende fil. Hvis han ikke vil dette, får han mulighed for at indtaste et andet navn, der ikke er optaget. 
-\\
-
+Da busruten samt busstoppestederne hentes fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen.
 
 \end{document}

@@ -2,66 +2,68 @@
 \begin{document}
 
 \subsubsection{Use Case 5: Rediger information om bus}
-\textbf{Test Case: Normalforløb 1}
+\textbf{Test Case: Normalforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden.
 \\
 BESKRIVELSE: & Det testes at det er muligt at tilføje ny bus til systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
-\Forventet Busses bliver tilføjet til listen af busser i systemet
+\Aktion Administratoren intaster "100", i feltet ' Bus ID:', hvorefter han trykker på 'Add'
+\Forventet Bussen bliver tilføjet til listen af busser i systemet
 \punkt 2
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\textbf{Test Case: Normalforløb 2}
+
+\textbf{Test Case: Normalforløb B}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Normalforløb A skal være gennemført.
 \\
-BESKRIVELSE: & Det testes at det er muligt at slette en bus til systemet.
+BESKRIVELSE: & Det testes at det er muligt at slette en bus fra systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en bus fra listen over busser i systemet, og trykker på 'Remove' knappen.
-\Forventet Den valgte bus bliver fjernet fra liten af busser i systemet.
+\Aktion Administratoren vælger bus med ID "100" fra listen over busser i systemet, og trykker på 'Remove' knappen.
+\Forventet Den valgte bus bliver fjernet fra listen af busser i systemet.
 \punkt 2
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\textbf{Test Case: Normalforløb 3}
+\newpage
+\textbf{Test Case: Normalforløb C}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden.
+FORBEREDELSE: &  Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Normalforløb A skal være gennemført.
 \\
 BESKRIVELSE: & Det testes at det er muligt at ændre information om en bus der findes i systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en bus fra listen over busser i systemet, ændre teksten i feltet 'Bus name:'  og trykker på 'Add' knappen.
-\Forventet navnet på bussen, i listen over alle busser, vil blive ændret til det nye navn.
+\Aktion Administratoren vælger bus med ID "100" fra listen over busser i systemet, ændre teksten i feltet 'Bus ID:' til "101" og trykker på 'Add' knappen.
+\Forventet bus med tidligere ID "100", i listen over alle busser, vil få ændret ID til "101".
 \punkt 2
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-\textbf{Test Case: Undtagelsesforløb 1}
+\textbf{Test Case: Undtagelsesforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger bus' siden, samt der ikke er forbindelse til internet.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden, og der ikke er forbindelse til internet.
 \\
-BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om, at det ikke er muligt at gemme, da der ikke er adgang til internet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren intaster navn på bussen, i feltet ' Bus Name:', hvorefter han trykker på 'Add'
-\Forventet Busses bliver tilføjet til listen af busser i systemet
+\Aktion Administratoren indtaster "102", i feltet "Bus Name:" , hvorefter han trykker på 'Add'
+\Forventet Bussen med ID "102" bliver tilføjet til listen af busser i systemet
 \punkt 2
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.

@@ -32,10 +32,10 @@ BEGIN
 	#Get possible BusRoutes from routeNumber. Used when a route has subroutes.
 	insert into possibleRoutes
 	select distinct BusRoute.ID, BusRoute_RoutePoint.ID from BusRoute
-	join BusRoute_BusStop on BusRoute.ID = BusRoute_BusStop.fk_BusRoute
-	join BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
-	join BusRoute_RoutePoint on BusStop.fk_RoutePoint = BusRoute_RoutePoint.fk_RoutePoint
-	where BusRoute.RouteNumber = routeNumber and BusStop.StopName = stopName;
+	inner join BusRoute_BusStop on BusRoute.ID = BusRoute_BusStop.fk_BusRoute
+	inner join BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+	inner join BusRoute_RoutePoint on BusRoute.ID = BusRoute_RoutePoint.fk_BusRoute and BusStop.fk_RoutePoint = BusRoute_RoutePoint.fk_RoutePoint
+	where BusRoute.RouteNumber = routeNumber and BusStop.StopName = stopName ;
 
 	#Closests ascending and descending bus processes. These processes also calculates the Closests Endpoint 
 	#and the distance from the closests bus to the busstop. This is calculated using the possibleRoutes table.
@@ -67,9 +67,6 @@ BEGIN
 	inner join BusRoute_BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
 	inner join Bus on BusRoute_BusStop.fk_BusRoute = Bus.fk_BusRoute
 	where Bus.ID = ClosestBusIdDesc Order by BusRoute_BusStop.ID asc limit 1 into EndBusStopDesc;
-
-
-
 	drop temporary table possibleRoutes;
 
 END$$
@@ -89,7 +86,7 @@ begin
 	declare busPos_lon decimal(20,15);
 	declare busPos_lat decimal(20,15);
 	declare currentBusDist float default 0;
-	declare leastBusDist float default 1000000000;
+	declare leastBusDist float default 100000;
 	declare closestEP int;
 
 	#Table contains all busses that are driving ascending.
@@ -104,10 +101,10 @@ begin
 	insert into BussesOnRouteAsc (busId, stopID) select distinct Bus.ID, possibleRoutes.possRouteStopID from Bus
 	inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
 	where Bus.IsDescending=false;
+
 	
 	#Get total number of busses.
 	select count(busId) from BussesOnRouteAsc into NumberOfBusses;	
-	
 
 	#Iterate though busses.
 	while BusCounter <= NumberOfBusses do
@@ -117,6 +114,7 @@ begin
 		select GetClosestEndpointAsc(currentBusId) into closestEndPoint; 
 		#Closests Route point is less than or equal to the stop id. Checks to see if the bus has driven past the stop.
 		#if it fails, dist is set to a high number. If no busses are valid, then the high number will be returned, but this is handled on the server.
+		insert into test values (closestEndPoint, currentStopId);
 		if(closestEndPoint <= currentStopId) then
 			#Latests position of the current bus.
 			select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus=currentBusId
@@ -160,7 +158,7 @@ begin
 	declare busPos_lon decimal(20,15);
 	declare busPos_lat decimal(20,15);
 	declare currentBusDist float default 0;
-	declare leastBusDist float default 1000000000;
+	declare leastBusDist float default 1000000;
 	declare closestEP int;
 
 	drop temporary table if exists BussesOnRouteDesc;

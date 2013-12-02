@@ -2,23 +2,11 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier}
-Denne Use Case sortere klodser efter materialetype. 
-Det kræves at robotten er i startposition, samt at den ikke har fat i en klods. 
-Klodserne kommer sekventielt kørerende på transportbåndet, og når en klods registreres af transportbåndssensoren samles denne op af robotarmen. 
-Her tilgåes Use \emph{Case 1.1: Mål og vej klods} (include). 
-Klodsen vendes, således at alle sider måles, og placeres slutteligt på vægten. 
-Dernæst findes materialetypen gennem \emph{Use Case 1.2: Bestem matrialetype} (include). 
-Her bliver densiteten udregnet, og materialetypen hentes i databasen, hvorefter den aktuelle klods data persisteres på databasen.
-Klodsen bliver dernæst placeret i sin respektive kasse, indeholdende den givne materialetype, hvorefter robotarmen kører til startposition.
-\\
-Et vigtigt ikke-funktionelt krav for denne Use Case er at det maksimalt må tage 3 minutter at sorterer en klods, altså fra klodsen er registeret på transportbåndet, til den succesfuldt er placeret i den korrekte kasse.
+Denne Use Case viser en liste over busruter, der er gemt i databasen, til brugeren. Det kræver at brugeren står ved startskærmen, dernæst tilkendegiver brugeren overfor systemet at han ønsker at se listen over gemte busruter. Herefter hentes busruterne fra databasen, hvorefter brugeren bliver præsenteret for en liste af busruter.
 
 \subsubsection{Use Case undtagelser}
-Undervejs i forløbet har brugeren mulighed for at afvige fra normalforløbet. 
-Der kan trykkes på enten en fysisk, eller softwarebaseret nødstopknap, hvilket stopper sorteringen. Ligeledes kan sorteringsmekanismen stoppes ved tryk på en pauseknap, som stopper sorteringsmekanismen midlertidigt, til det igen startes gennem brugergrænsefladen.
-\\
-Da der undervejs i Use Casen skrives et loggingindlæg til databasen omkring, hvordan processen forløber, er der risiko for, at der mistes forbindelse til databasen. Hvis dette sker, gemmer systemet selv beskederne og persisterer dem på databasen, når forbindelsen genetableres. Det samme sker, mht. klodsens data. Denne undtagelse er også gældende for de to include Use Cases tilhørende denne Use Case, da de ligeledes laver et logging indlæg til databasen. 
-\\
-Hvis der ikke er plads til klodsen i boksen med den tilhørende materialetype, modtager operatøren en besked herom, hvorefter robotarmen placerer klodsen til højre for sensoren på transportbåndet. Dette resulterer i, at klodsen kasseres, når sorteringsalgoritmen igen startes. 
+Da busruterne bliver hentet fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen, hvorpå han kan vende tilbage til startskærmen og prøve igen.
+Der er mulighed for at brugeren kan annullere indlæsningen fra databasen. Hvis dette sker vil systemet stoppe indlæsningen fra databasen, samt returnerer til startskærmen.
+Der er mulighed for at systemet går i dvale, imens der indlæses fra databasen. Hvis dette sker vil systemet hente busruterne færdig i baggrunden.
 
 \end{document}

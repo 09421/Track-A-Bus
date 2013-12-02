@@ -21,7 +21,7 @@ En samtidig forekomst.
 \\\\
 \textbf{Ikke funktionelle krav:}\\
 Ingen.\\\\
-\noindent;
+\noindent
 \textbf{Startbetingelser:}
 \\
 Man skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
@@ -36,21 +36,21 @@ en valgt busrute er blevet redigeret på en rute.
 Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, hvad der gik galt.
 \\\\
 \textbf{Normalforløb A: Bus bliver tilføjet til rute}
-	\begin{enumerate}
+	\begin{enumerate}[1.]
 	\item Administratoren vælger en busrute fra listen af busruter.
 	\item Administratoren vælger en bus fra listen af tilgængelige busser.
 	\item Administratoren tilkendegiver over for systemet, at der ønskes at tilføje den valgte bus, til den valgte busrute.
 	\item Systemet persisterer ændringerne.
 	\end{enumerate}
 	\textbf{Normalforløb B: Bus bliver fjernet fra rute}
-	\begin{enumerate}
+	\begin{enumerate}[1.]
 	\item Administratoren vælger en busrute fra listen af busruter.
 	\item Administratoren vælger en bus fra listen af tilgængelige busser.
 	\item Administratoren tilkendegiver over for systemet, at der ønskes at fjerne den valgte bus, fra den valgte busrute.
 	\item Systemet persisterer ændringerne.
 	\end{enumerate}
 \textbf{Undtagelser}
-	\begin{enumerate}[\text{Undtagelse 1}]
+	\begin{enumerate}[\text{Undtagelse A}]
 
 	\item Det er ikke muligt at persistere ændringerne.
 		

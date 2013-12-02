@@ -13,7 +13,7 @@ Administratoren tilkendegiver over for systemet at han ønsker at lave ændringer 
 \\
 Primære aktører:
 \begin{itemize}
-\item Administrator.
+	\item Administrator.
 \end{itemize}
 \textbf{Antal samtidige forekomster:}
 \\
@@ -21,10 +21,10 @@ En samtidig forekomst.
 \\
 \\
 \textbf{Ikke funktionelle krav:}
-\begin{itemize}
+\begin{enumerate}[A.]
 \item Rutenummer gemmes med 10 karakterer eller færre.
 \item Rutepunkters længde- og breddegrad gemmes med minimum 6 decimaler.
-\end{itemize}
+\end{enumerate}
 \textbf{Startbetingelser:}
 \\
 Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
@@ -41,49 +41,48 @@ Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af sy
 \\
 \\
 \textbf{Normalforløb A: Tilføjelse af busrute}
-	\begin{enumerate}
+\begin{enumerate}[1.]
 	\item Administrator tilkendegiver overfor systemet, at der ønskes at tilføjes en busrute.
 	\item Systemet præsenter administratoren for et værktøj, hvor et tomt kort kan ses. Her her er det muligt at tilføje en ny rute, med veje og busstoppesteder.
 	\item Administratoren tilføjer en rute.
 	\item Administratoren tilkendegiver overfor systemet, at ruten skal gemmes.
 	\item Den tilføjede rute persisteres.
-	\end{enumerate}
+\end{enumerate}
 	\textbf{Normalforløb B: Fjernelse af busrute}
-	\begin{enumerate}
+\begin{enumerate}[1.]
 	\item Administrator tilkendegiver overfor systemet, at der ønskes at fjerne en allerede persisteret rute.
 	\item Administratoren tilkendegiver overfor systemet, at fjernelsen af ruten skal gemmes.
 	\item Systemet fjerner den valgte rute persisteringen.
-	\end{enumerate}
+\end{enumerate}
 	\textbf{Normalforløb C: Ændring af busrute}
-	\begin{enumerate}
+\begin{enumerate}[1.]
 	\item Administrator tilkendegiver over for systemet, at der ønskers at ændre en given busrute.
 	\item Et værktøj bliver præsenteret, med den valgte rute indtegnet. Her kan der tilføjes eller fjernes veje og busstoppesteder.
 	\item Administratoren ændrer ruten.
 	\item Administratoren tilkendegiver over for systemet, at ændringer skal gemmes.
 	\item Systemet persister den ændrede rute.
-	\end{enumerate}
+\end{enumerate}
 \textbf{Undtagelser}
-	\begin{enumerate}[\text{Undtagelse 1}]
+\begin{enumerate}[\text{Undtagelse A}]
 
-	\item Administratoren annullerer ændringsprocessen, før tilføjelser, fjernelser eller ændringer er foretaget.
+		\item Administratoren annullerer ændringsprocessen, før tilføjelser, fjernelser eller ændringer er 		foretaget.
 		
 		\begin{enumerate}[1.]
-		\item Der returneres til administrations-hovedskærmen.
+			\item Der returneres til administrations-hovedskærmen.
 		\end{enumerate}
-	\end{enumerate}
-		\begin{enumerate}[\text{Undtagelse 2}]
-
+\end{enumerate}
+	
+\begin{enumerate}[\text{Undtagelse B}]
 	\item Administratoren annullerer ændringsprocessen, efter tilføjelser, fjernelser eller ændringer er foretaget.
-		
 		\begin{enumerate}[1.]
-		\item Administratoren bliver præsenteret for en meddelelse , hvori der bliver spurgt, om der vil gemmes eller ej.
-		\begin{enumerate}[A]
-		\item Hvis der ikke ønskes at gemmes, returneres der til administrations-hovedskærmen.
-		\item Hvis der ønskes at gemmes, bliver ændringerne persisteret. Herefter returneres der til administrations-hovedskærmen.
+			\item Administratoren bliver præsenteret for en meddelelse , hvori der bliver spurgt, om der vil gemmes eller ej.
+			\begin{enumerate}[a.]
+				\item Hvis der ikke ønskes at gemmes, returneres der til administrations-hovedskærmen.
+				\item Hvis der ønskes at gemmes, bliver ændringerne persisteret. Herefter returneres der til administrations-hovedskærmen.
+			\end{enumerate}
 		\end{enumerate}
-		\end{enumerate}
-	\end{enumerate}
-		\begin{enumerate}[\text{Undtagelse 3}]
+\end{enumerate}
+\begin{enumerate}[\text{Undtagelse C}]
 
 	\item Det er ikke muligt at persistere data.
 		
@@ -91,7 +90,6 @@ Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af sy
 		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere ændret data.
 		\item Systemet returner til det sted administratoren arbejdede, hvor de ændringer han har foretaget, stadig er tilstede.
 		\end{enumerate}
-	\end{enumerate}
+\end{enumerate}
 	
-
 
