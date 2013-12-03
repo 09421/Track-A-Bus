@@ -2,11 +2,11 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier}
-Før denne Use Case kan startes skal \textit{Use Case 1: Vis busruter} være gennemført. Fra listen over alle busruter, tilkendegiver brugeren overfor systemet at han ønsker at favorisere et busrute, eller fjerne en busrute fra favoriter.
-Ved favorisering af busrute, henter systemet den valgte busrute, samt stoppestederne for valgte busrute fra databasen, dernæst persisterer systemet dette på en sqlite database på telefonen. Busruten bliver markeret som favorit på listen over busruter. Brugeren vil nu kunne vælge den favoriseret busrute på startskærmen, i stedet for fra listen over alle busruter. 
-ved fjernelse fra favorisering vil systemet slette ruten, samt dens busstoppesteder fra sqlite databasen, fjerne markeringen fra listen over busruter, samt det ikke længere vil være muligt at vælge ruten fra startskærmen.
+Denne Use Case har 2 normalforløb, idet at man både kan tilføje en bus til en rute, samt fjerne en bus fra en rute. Det er kun en administrator der kan initialisere denne Use Case.
+Normalforløb 1 beskriver hvordan en bus tilføjes til en busrute. Dette forgår ved at administratoren først vælger en busrute fra en liste over alle busrute i systemet. Herefter vælger administratoren en bus, fra en liste over alle busser i systemet, som ikke allerede er på en busrute. Administratoren tilkendegiver nu overfor systemet at han ønsker at tilføje valgt bus, til valgt busrute. Administratoren kan nu gemme ændringerne, hvis dette vælges, gemmes ændringerne på databasen.
+Normalforløb 2 beskriver hvorledes en bus fjernes fra en valgt busrute. Dette forgår ved at administratoren vælger en busrute, fra listen over alle busrute i systemet. Herefter vælger administratoren en bus, fra listen over busser, der er på den valgte busrute. Administratoren tilkendegiver nu overfor systemet at den valgte bus ønskes fjernet fra valgt busrute. Administratoren kan nu gemme ændringerne, hvis dette vælges, gemmes ændringerne på databasen.
 
-\subsubsection{Use Case Undtagelser}
-Da busruten samt busstoppestederne hentes fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen.
+\subsubsection{Use Case undtagelser}
+Da informationen om busser og ruter skal både hentes og gemmes på en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen.
 
 \end{document}

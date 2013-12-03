@@ -8,9 +8,9 @@ Use Casene i systemet er som følgende:
 \begin{itemize}
 	\item Use Case 1: Vis Busruter
 	
-	\item Use Case 2: Vis Placering af alle busser og stoppesteder på 		valgt rute
+	\item Use Case 2: Vis Placering af alle busser og stoppesteder på valgt rute
 
-	\item Use Case 3: Vis placering af enkelt bus
+	\item Use Case 3: Vis tid for nærmeste bus, til valgt stoppested
 	
 	\item Use Case 4: Rediger busrute i liste af favoriter
 	
@@ -19,6 +19,8 @@ Use Casene i systemet er som følgende:
 	\item Use Case 6: Rediger bus på rute
 	
 	\item Use Case 7: Rediger busruteplan
+	
+	\item Use Case 8: Rediger stoppested
 \end{itemize}
 
 Use case diagram kan findes i bilag under Diagrammer/Use Case Diagram
@@ -33,7 +35,7 @@ Use case diagram kan findes i bilag under Diagrammer/Use Case Diagram
 
 Som det fremstår af Use Case diagrammet, figur \ref{fig:UseCaseDia}, er der udelukkende to aktører; brugeren og administratoren. Selvom samtlige Use Cases kommunikerer med den distribuerede databasen, er det blevet vedtaget, at databasen blot er en interresant og ikke en sekundær aktør.
 \\
-Use Case 1 til 4 er relateret til mobil applikationen og er derfor initieret af brugeren. Ligeledes er Use case 5 til 7 relateret til server-side operationer og således initieret administratoren. Brugeren kan kun tilgå databasen i læsnings-øjemed, mens administratoren både kan skrive og læse. Brugerne kan dog, hvis han ønsker, gemme dele af læst data lokalt. Use Cases for brugeren er derfor mere visuelle, end de er redigerende, hvor Use cases for administratoren er meget mere redigerende. Der er intet overlap mellem administratoren og brugern, således at den grafiske brugergrænseflade for administratoren skal udelukkende bruges af administratoren. \\\\ 
+Use Case 1 til 4 er relateret til mobil applikationen og er derfor initieret af brugeren. Ligeledes er Use case 5 til 8 relateret til server-side operationer og således initieret administratoren. Brugeren kan kun tilgå databasen i læsnings-øjemed, mens administratoren både kan skrive og læse. Brugerne kan dog, hvis han ønsker, gemme dele af læst data lokalt. Use Cases for brugeren er derfor mere visuelle, end de er redigerende, hvor Use cases for administratoren er meget mere redigerende. Der er intet overlap mellem administratoren og brugern, således at den grafiske brugergrænseflade for administratoren skal udelukkende bruges af administratoren. \\\\ 
 Brugeren skal kun tilgå mobil applikationen. Brugeren og administratorens Use Cases er derfor tæt koblet til deres respektive grafiske brugergrænseflade, da alle Use Cases initieres igennem disse. Eksempler på dette kan ses i \textit{afsnit 3.4 Grænseflader til person aktører}
 
 

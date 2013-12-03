@@ -1,12 +1,16 @@
-\documentclass[Main.tex]{subfiles} 
+\documentclass[main]{subfiles}
 \begin{document}
+\subsubsection{Use Case scenarier}
+Denne Use Case har tre normalforløb, idet at man både kan tilføje en bus, fjerne en bus eller ændre i en eksistere bus.
+Det er kun en administrator der kan initialisere denne Use Case.
+Normalforløb 1 beskriver, hvordan en bus tilføjes til systemet. Dette forgår ved at administratoren tilkendegiver overfor systemet at han vil tilføje en bus til systemet. Herefter gør systemet det muligt at indtaste information om bussen. Når administratoren har indtastet det ønskede information, tilkendegiver administratoren at han ønsker at gemme informationen. Systemet gemmer nu informationen på databasen.
 
-\subsubsection{Use Case scenarier} 
-Før denne Use Case kan startes, skal \textit{Use Case 2: Vis placering af alle busser og stoppesteder på valgte rute} være gennemført. Brugeren vælger en af busstoppestederne der er indtegnet på kortet. Systemet fjerner nu alle busser, undtaget den bus der er tættest på det valgte busstoppested, fra kortet. Systemet udregner nu hvor lang tid det vil tage for bussen at komme frem til det valgte busstoppested, samt henter information om det valgte busstoppested fra databasen. Herefter bliver brugeren præsenteret for ankomstiden, samt information om valgt busstoppested.
+Normalforløb 2 beskriver hvordan administratoren ænder information om en bus der eksistere i systemet. Administratoren vælger en bus fra listen over alle busser i systemet. Herefter tilkendegiver administratoren overfor systemet at han ønsker at ændre information om den valgte bus. Systemet gør det muligt for administratoren at ændre information om bussen. Når administratoren har indtastet det ønskede information, tilkendegiver administratoren at han ønsker at gemme informationen. Systemet gemmer nu informationen på databasen
 
+I normalforløb 3 fjernes en bus. Denne initieres ved, at administratoren vælger en bus fra en liste over alle busser i systemet. herefter tilkendegiver administratoren overfor systemet at han ønsker at fjerne den valgte bus fra systemet. Systemet fjerner nu den valgte bus fra databasen.
 
-\subsubsection{Use Case Undtagelser} 
-Da gps-koordinaterne, information om busstoppestedet samt udregningen for ankomsttiden til valgt busstoppested bliver hentet fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen. Hvis gps-koordinaterne ikke kan hentes, vil bussens position blot ikke længere opdateres. I det tilfælde at den nærmeste bus er for tæt på det valgte busstoppested, vil systemet også vise den bus der er næst-tættest på busstoppestedet, samt tid til den ankommer.
+\subsubsection{Use Case Undtagelser}
+Da informationen om busserne skal både hentes og gemmes på en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelsetil databasen.
 
 
 \end{document}
