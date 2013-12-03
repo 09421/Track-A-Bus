@@ -1,128 +1,115 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 5: Rediger busruteplan}
+\subsubsection{Use Case 7: Rediger busruteplan}
 \textbf{Test Case: Normalforløb A-1}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger busrute' siden.
 \\
 BESKRIVELSE: & Det testes at det er muligt at tilføje ny busrute til systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger et antal stoppesteder, fra listen over alle stoppesteder i systemet, samt trykker på knappen 'Add stops'.
+\Aktion Administratoren vælger minimum et stoppested fra listen, fra listen over alle stoppesteder i systemet, samt trykker på knappen 'Set bus stops'.
 \Forventet De valgte stoppesteder kan ses indtegnet på kortet.
 \punkt 2
 \Aktion Administratoren trykker på kortet, hvor han ønsker busruten skal starte, hvorefter han trykker på kortet, hvor han ønsker busruten skal ende.
 \Forventet En busrute vil blive indtegnet på kortet, med start og slut punkt der passer overens med der hvor der blev trykket på kortet.
 \punkt 3
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
-\Forventet busruten bliver persisteret på databasen.
+\Aktion Administratoren indtaster navnet "testruteafskåret" og tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
+\Forventet ruten "testruteaf (SE IFK-A)" bliver persisteret på databasen.
+\punkt IFK-A 
+\Aktion Siden refreshes efter punkt 3.
+\Forventet Rutenavnet er sat til "testruteaf"
+\punkt IFK-B
+\Aktion databasen åbnes efter punkt 3.
+\Forventet Alle punkter tastet ind med minimum seks decimaler.
 \end{testcase}
 \\
+\newpage
 \textbf{Test Case: Normalforløb A-2}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger busrute' siden.
 \\
 BESKRIVELSE: & Det testes at det er muligt at tilføje ny busrute, med waypoints, til systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger et antal stoppesteder, fra listen over alle stoppesteder i systemet, samt trykker på knappen 'Add stops'.
+\Aktion Administratoren vælger minimum stoppesteder, fra listen over alle stoppesteder i systemet, samt trykker på knappen 'Set bus stops'.
 \Forventet De valgte stoppesteder kan ses indtegnet på kortet.
 \punkt 2
 \Aktion Administratoren trykker på kortet, hvor han ønsker busruten skal starte, hvorefter han trykker på kortet, hvor han ønsker busruten skal ende.
 \Forventet En busrute vil blive indtegnet på kortet, med start og slut punkt der passer overens med der hvor der blev trykket på kortet.
 \punkt 3
 \Aktion Administratoren tager fat i et punkt på ruten, og trækker den ud til et andet sted på kortet.
-\Forventet ruten vil blive indteget med et waypoint mellem start, og slut punkt.
+\Forventet ruten vil blive indteget med et waypoint, indtegnet hvor administratoren gav slip på ruten.
 \punkt 4
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
+\Aktion Administratoren indtaster navnet "waypoint" og tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
 \Forventet busruten bliver persisteret på databasen.
 \end{testcase}
 \\
+\newpage
 \textbf{Test Case: Normalforløb A-3}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger busrute' siden. Det kræves at Normalforløb A-1 er gennemført, og ruten indtegnet.
 \\
 BESKRIVELSE: & Det testes at det er muligt at tilføje ny kompleks busrute til systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren trykker på det første punkt, hvorefter han trykker et nyt sted på kortet.
+\Aktion Administratoren trykker på punkt A, hvorefter han trykker et nyt sted på kortet.
 \Forventet En ny rute bliver indtegnet på kortet, mellem det første punkt, samt det nye punkt, valgt på kortet.
-\punkt 4
+\punkt 2
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ruten persisteret, ved tryk på 'Save' knappen.
 \Forventet busruten bliver persisteret på databasen.
 \end{testcase}
 \\
-\textbf{Test Case: Normalforløb B-1}
+\newpage
+\textbf{Test Case: Normalforløb B}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute.
-\\
-BESKRIVELSE: & Det testes at det er muligt at fjerne en busrute fra systemet.
-\end{tabular}
-\\
-\begin{testcase}
-\punkt 1
-\Aktion Administratoren vælger en busrute fra listen over ruter i systemet, samt trykker på knappen 'Delete'.
-\Forventet Den valgte busrute bliver slettet fra systemet.
-\end{testcase}
-\\
-\textbf{Test Case: Normalforløb C-1}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger busrute' siden. Normalforløb A-1 skal være gennemført.
 \\
 BESKRIVELSE: & Det testes at det er muligt at ændre i en busrute fra systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger en busrute fra listen over ruter i systemet.
+\Aktion Administratoren vælger busrute "testruteaf" fra listen over ruter i systemet.
 \Forventet Den valgte busrute bliver indteget på kortet.
 \punkt 2
+\Aktion Administratoren flytter punkt A til et nyt sted på kortet.
+\Forventet Ruten ændres til at starte fra det sted, punkt A er flyttet til.
+\punkt 3
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer persisteret, ved tryk på 'Save' knappen.
 \Forventet ændringer bliver persisteret på databasen.
+\punkt Unt-A
+\Aktion Efter punkt 2 deaktiveres internettet på computeren, og save knappen trykkes.
+\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
 \end{testcase}
 \\
-\textbf{Test Case: Undtagelsesforløb 1}
+\newpage
+\textbf{Test Case: Normalforløb C}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger busrute' siden, samt har indtegnet en simple busrute. Der er ingen forbindelse til internet.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger busrute' siden. Normalforløb A-1 skal være gennemført.
 \\
-BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
+BESKRIVELSE: & Det testes at det er muligt at fjerne en busrute fra systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer persisteret, ved tryk på 'Save' knappen.
-\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
+\Aktion Administratoren vælger busruten "testruteaf" fra listen over ruter i systemet, hvorefter han trykker på knappen 'Delete'.
+\Forventet "testruteaf" bliver slettet fra systemet.
 \end{testcase}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\\
+\newpage
 
 
 \end{document}

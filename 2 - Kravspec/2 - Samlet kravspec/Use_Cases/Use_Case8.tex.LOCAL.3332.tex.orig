@@ -1,0 +1,71 @@
+\subsection{Use Case 8: Rediger stoppested}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er at kunne rediger et stoppested i systemet.
+\\
+\\
+\textbf{Initiering:}
+\\
+Administratoren tilkendegiver over for systemet at han ønsker at rediger et stoppested.
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+\begin{itemize}
+\item Bruger.
+\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\
+\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Navnet på et stoppested på maks være på 100 karakterer.
+\end{itemize}
+\textbf{Startbetingelser:}
+\\
+Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
+\\
+\\
+\textbf{Slutresultat ved succes:}
+\\
+Administratoren har redigeret et stoppested i systemet.
+\\\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, hvad der gik galt.
+\\\\
+\textbf{Normalforløb A - Stoppested bliver tilføjet til systemet.}
+	\begin{enumerate}
+	\item Administratoren angiver indformation om det stoppested, der ønskes tilføjet til systemet.
+	\item Administratoren tilkendegiver over for systemet, at stoppestedet ønsket persisteret.
+	\item Systemet persister stoppestedet.
+	\end{enumerate}	
+\textbf{Normalforløb B - Stoppested bliver ændret i systemet.}
+	\begin{enumerate}
+	\item Administratoren vælger et stoppested fra en liste over stoppesteder, der findes i systemet.
+	\item Administratoren ændrer i information for valgt stoppested.
+	\item  Administratoren tilkendegiver over for systemet, at information om stoppested ønsket persisteret.
+	\item Systemet persister angivet information om stoppested.	
+	\end{enumerate}
+\textbf{Normalforløb C - Stoppested bliver fjernet fra systemet.}
+	\begin{enumerate}
+	\item Administratoren vælger et stoppested fra en liste over stoppesteder, der findes i systemet.
+	\item Administratoren tilkendegiver over for systemet, at valgt stoppested ønskes fjernet fra persistering.
+	\item Systemet fjerner persistering af valgt stoppested.
+	\end{enumerate}
+\textbf{Undtagelser}
+	\begin{enumerate}[\text{Undtagelse 1}]
+	\item Det er ikke muligt at persistere Stoppested.		
+		\begin{enumerate}[1.]
+		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere Stoppested.
+		\end{enumerate}
+	\end{enumerate}
+		\begin{enumerate}[\text{Undtagelse 2}]
+	\item Det er ikke muligt at få adgang til persisteret Stoppested.
+		\begin{enumerate}[2.]
+		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at indlæse persisteret Stoppested.
+		\end{enumerate}
+	\end{enumerate}

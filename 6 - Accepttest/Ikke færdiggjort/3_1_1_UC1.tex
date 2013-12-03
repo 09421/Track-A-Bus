@@ -1,8 +1,8 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 1}
-\textbf{Test Case: Normalforløb}
+\subsubsection{Use Case 1: Vis busruter}
+\textbf{Test Case: Normalforløb A}
 \\\begin{tabular}{l p{11cm}}
 FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal der i databasen være gemt en busrute.
 \\
@@ -16,7 +16,7 @@ BESKRIVELSE:	&	Der testes, at det er muligt at få vist en liste af alle busruter
 \Forventet Liste af busruter vises
 \end{testcase}
 \\
-\textbf{Test Case: Undtagelsesforløb 1}
+\textbf{Test Case: Undtagelsesforløb A}
 \\ \begin{tabular}{l p{11cm}}
 FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal der ikke være forbindelse til internetet \\
 BESKRIVELSE:	&	Der testes, at der bliver vist en fejlmeddelelse hvis der ikke kan skabes forbindelse til databasen.  \\ 
@@ -25,10 +25,10 @@ BESKRIVELSE:	&	Der testes, at der bliver vist en fejlmeddelelse hvis der ikke ka
 \begin{testcase}
 \punkt 1
 \Aktion Brugeren tilkendegiver overfor systemet, at han ønsker at få vist alle gemte busrute, ved at at trykke på knappen 'View busroutes'.
-\Forventet En fejlmeddelsebliver vist på skærmen, der beskriver det ikke er muligt at indlæse busruter.
+\Forventet En fejlmeddelse bliver vist på skærmen, der beskriver, at det ikke er muligt at indlæse busruter.
 \end{testcase}
-\\
-\textbf{Test Case: Undtagelsesforløb 2}
+\\\\
+\textbf{Test Case: Undtagelsesforløb B}
 \\ \begin{tabular}{l p{11cm}}
 FORBEREDELSE:	& 	Indlæsning af busruter er igangsat, samt der er gemt busruter i databasen.  \\
 BESKRIVELSE:	&	Der testes, at hvis indlæsning af busruter bliver annulleret, ved tryk på telefonens tilbage-knap, returnerers der til applikationens startskærm.  \\
@@ -36,11 +36,11 @@ BESKRIVELSE:	&	Der testes, at hvis indlæsning af busruter bliver annulleret, ved
 \\\\
 \begin{testcase}
 \punkt 1
-\Aktion Brugeren annullere indlæsning af busruter
-\Forventet Indlæsning af busruter stoppes, samt der retuneres til applikationens startskærm.
+\Aktion Brugeren annullerer indlæsningen af busruter
+\Forventet Indlæsningen af busruter stoppes, samt der retuneres til applikationens startskærm.
 \end{testcase}
 \\
-\textbf{Test Case: Undtagelsesforløb 3}
+\textbf{Test Case: Undtagelsesforløb C}
 \\ \begin{tabular}{l p{11cm}}
 FORBEREDELSE:	&	Indlæsning af busruter er igangsat, samt der er gemt busruter i databasen. \\
 BESKRIVELSE:	&	Det testes, at hvis systemet går i dvale under indlæsning af busruter, ved tryk på telefonens home-knap, vil systemet indlæse listen af busruter færdig i baggrunden.  \\
@@ -49,7 +49,7 @@ BESKRIVELSE:	&	Det testes, at hvis systemet går i dvale under indlæsning af busr
 \begin{testcase}
 \punkt 1
 \Aktion Brugeren trykker på telefonens home-knap under indlæsning af busruter
-\Forventet Systemet indlæser busruterne færdig i baggrunder, ved genåbning af programmet, vil liste af busruter kunne ses.
+\Forventet Systemet indlæser busruterne færdig i baggrunder, ved genåbning af programmet, vil listen af busruter kunne ses.
 \end{testcase}
 \end{document}
 

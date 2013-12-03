@@ -5,54 +5,56 @@
 \textbf{Test Case: Normalforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
 \\
 BESKRIVELSE: & Det testes at det er muligt at tilføje ny stoppested til systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren trykker et sted på kortet, indskriver navn på stoppested i feltet 'Name of stop', samt trykker på knappen 'Save'.
+\Aktion Administratoren trykker et sted på kortet, indskriver navnet "teststop" i feltet 'Name of stop', samt trykker på knappen 'Save stops'.
 \Forventet Stoppestedet bliver persisteret i databasen.
 \end{testcase}
 \textbf{Test Case: Normalforløb B}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
-\\
-BESKRIVELSE: & Det testes at det er muligt at slette et stoppested til systemet.
-\end{tabular}
-\\
-\begin{testcase}
-\punkt 1
-\Aktion Administratoren vælger et stoppested fra listen af alle stoppesteder i systemet, samt trykker på knappen 'Delete'
-\Forventet Det valgte stoppested bliver slettet fra databasen.
-\end{testcase}
-\textbf{Test Case: Normalforløb C}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger stoppested' siden. Normalforløb A skal være gennemført.
 \\
 BESKRIVELSE: & Det testes at det er muligt at ændre et stoppested der findes i systemet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger et stoppested fra listen af alle stoppesteder i systemet, ændre navn og placering, samt trykker på knappen 'Save'.
+\Aktion Administratoren vælger stoppestedet "teststop" fra listen af alle stoppesteder i systemet, ændrer navn og placering, samt trykker på knappen 'Save'.
 \Forventet Ændringer af stoppested bliver persisteret på databasen.
 \end{testcase}
 \\
-\textbf{Test Case: Undtagelsesforløb 1}
+\newpage
+\textbf{Test Case: Normalforløb C}
 \\
 \begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, samt står på 'Rediger stoppested' siden, samt der ikke er forbindelse til internet.
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger stoppested' siden. Normalforløb A skal være gennemført.
+\\
+BESKRIVELSE: & Det testes at det er muligt at slette et stoppested fra systemet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren vælger stoppestedet "teststop" fra listen af alle stoppesteder i systemet, samt trykker på knappen 'Delete stops'
+\Forventet Det valgte stoppested bliver slettet fra databasen.
+\end{testcase}
+
+\textbf{Test Case: Undtagelsesforløb A}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Brugeren er logget ind som 'Administrator' på administrations hjemmesiden, står på 'Rediger stoppested' siden, samt der ikke er forbindelse til internet.
 \\
 BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er muligt at gemme, da der ikke er adgang til internet.
 \end{tabular}
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren trykker et sted på kortet, indskriver navn på stoppested i feltet 'Name of stop', samt trykker på knappen 'Save'.
-\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persiterer ændringer.
+\Aktion Administratoren trykker et sted på kortet, indskriver "stopfejl" i feltet 'Name of stop', samt trykker på knappen 'Save'.
+\Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persitere ændringer.
 \end{testcase}
 \end{document}

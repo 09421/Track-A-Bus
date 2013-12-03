@@ -31,28 +31,28 @@ Listen af favoriserede busruter vil være blevet opdateret.
 \\
 Listen af favoriserede busruter vil være blevet opdateret.
 \\\\
-\textbf{Normalforløb 1 - Tilføjelse:}
+\textbf{Normalforløb A - Tilføjelse:}
 	
-	\begin{enumerate}
+	\begin{enumerate}[1.]
 	\item Systemet indlæser den valgte busrute, og dennes stoppesteder fra distribueret persisterede data.
 	\item Systemet persisterer den valgte busrute, og dennes stoppesteder lokalt.
 	\item Systemet markere på listen af busruter, at den valgte rute nu er favoriseret.
 	\item Systemet opdaterer listen over favoriserede busruter på hovedskærmen .
 	\end{enumerate}
-	\textbf{Normalforløb 1 - Fjernelse:}
+\textbf{Normalforløb B - Fjernelse:}
 	
-	\begin{enumerate}
+	\begin{enumerate}[1.]
 	\item Systemet persisterer ikke længer den valgte busrute, og dennes stoppesteder lokalt.
 	\item Systemet markerer på listen af busruter, at den valgte rute nu ikke længere er favoriseret.
 	\item Listen over favoriserede busruter på hovedskærmen opdateres.
 	\end{enumerate}
 \textbf{Undtagelser}
 
-	\begin{enumerate}[\text{Undtagelse 1}]
+	\begin{enumerate}[\text{Undtagelse A}]
 
 	\item Brugeren annullerer processen eller sætter den i dvale , under tilføjelse eller fjernelse af favorisering.
 		
-		\begin{enumerate}[1.]
+	\begin{enumerate}[1.]
 		\item Normalforløbet gøres færdig i baggrunden.
 		\end{enumerate}
 	\end{enumerate}

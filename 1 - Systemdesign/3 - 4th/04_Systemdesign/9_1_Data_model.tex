@@ -2,109 +2,243 @@
 \begin{document}
 
 \subsection{Data model}
-
 En kritisk del af dette system er data storage og data retrieval. Dette er blevet implementeret i form af to relationelle databaser; en distribueret og en lokal.\\
-Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \hyperref{"www.unoeuro.com"}
-Den distribuerede database er lavet som en MySQL databas
+Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \url{www.unoeuro.com}, ved navn \url{www.trackabus.dk}. Herunde er databasen oprettet som en MySQL database på serveren \url{http://mysql23.unoeuro.com}\\
+Den lokale database eksisterer, fordi brugeren skal kunne gemme busruter lokalt på sin telefon. Dette er blevet implementeret i form af en SQLite database. \\
+Diagrammer kan findes i fuld størrelse i bilag under Diagrammer/Database Diagrammer
 
-%Til dette projekt er der blevet gjort brug af en relationel database til brug af persistent data lagring. 
-%Selve databasen er lavet med MS SQL Server og oprettet på webhotel10.iha.dk. Diagrammer kan findes i fuld størrelse under Diagrammer/Database Diagrammer
+\subsubsection{Design af MySQL database}
 
-\subsubsection{Design af database}
+Den distribuerede database gemmer alt information vedrørende busserne og deres ruter. Opbygningen af databasen kan ses som tre komponenter der interagerer; Busser, busruter og stoppesteder.\\ 
+Samtlige komponenter er defineret ved positions data i form af punkter. Disse punkter er længde- og breddegrader og kan ses som den fysiske position af den komponent, de relaterer til. Disse falder derfor i tre katagorier; Busposition, rutepunkter med stoppesteder og waypoints. 
+\begin{itemize}
+	\item Busposition er defineret som den fysiske placering af en given bus. I dette projekt var der dog 	ikke tilgang til nogen fysiske busser, så denne katagori af positions data blev simuleret. Simulatoren kunne dog skiftes ud med en virkelig bus, hvis position for denne kunne stilles til rådighed. 
+	\item Rutepunter og stoppesteder indeholder positionsdata, som bruges til at tegne ruten eller lave udregning på. Disse udregninger er defineret senere under "Stored procedures" og "Functions".
+	\item Waypoints bruges som "genskabelses-punkter" til en given rute. Disse punkter bliver udelukkende brugt af administrationsværktøjet, til at genskabe den rute de beskriver.\\
+\end{itemize}
 
-Hoved komponenten i datalagringen i dette projekt består i, at gemme data om en klods, og linke den til en position i en boks samt en densitet/materiale. Hertil består persisteringen også af brugernavne og loggingindlæg. På figur \ref{fig:DBUML} ses et UML OO diagram over databasen 
+Hele systemet er opbygget omkring oprettelse, fjernelse og manipulation af positions data. Dette er klart afspejlet i database i form hvor meget dette data bliver brugt.\\ Tidligt i udviklingsprocessen blev det fastsat at positions data have en præcision på seks decimaler, da dette ville resultere i en positions afvigelse på under en meter. Systemet virker stadig med en lavere præcision, men dette vil resultere i en større positionsafvigelse.\\\\
+
+Databasen er bygget op af følgende tabeller: Bus, BusRoute, BusRoute\_RoutePoint, BusRoute\_BusStop, BusStop, GPSPosition, RoutePoint, Waypoint.\\
+På figur \ref{fig:MySQLUML} vises opbygningen af tabellerne som et UML OO diagram, og på figur \ref{fig:MySQLER} kan relationerne i databasen ses som et ER diagram.
+
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
-\caption{UML OO diagram over databasen}
-\label{fig:DBUML}
+\caption{UML OO diagram over den distribuerede MySQL database}
+\label{fig:MySQLUML}
 \end{figure}
-
-\noindent
-
-Som man kan se, har et indlæg i BrickTable (Hvor klodsernes beskrivelse ligger) en foreign key til BoxPositionTable (Hvor klodserne ligger) samt DensityMaterialTable(Hvor klodsernes densitet er beskrevet). UserTable(Hvor information om brugere af systemet ligger) og LoggingTable(Hvor alle system events gemmes) havde en relation i de første sprints, hvor LoggingTable havde en foreign key til UserTable, men dette blev kasseret da vi indså, at man i så fald ikke kunne fjerne en bruger fra systemet uden at slette alle brugerens logging indlæg. På figur \ref{fig:DBER} ses et ER diagram over databasen
 
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.55]{Diagrammer/Database/ER_Diagram.png}
-\caption{ER Diagram over databasen}
-\label{fig:DBER}
+\caption{ER Diagram over den distribuerede MySql database}
+\label{fig:MySQLER}
 \end{figure}
 
+Herunder følger en forklaring af tabellerne og deres rolle i systemet.
+\begin{itemize}
+	\item \textbf{Bus}
+	\begin{itemize}
+		\item Indeholder alt relevant data vedrørende kørende busser. fk\_BusRoute er en foreign key til BusRoute tabellen og definerer hvilken rute bussen kører på. IsDescending er et simpelt flag, som bestemmer i hvilken retning bussen kører. Hvis IsDescending er true, betyder det at bussen kører fra sidste til første punkt defineret ved ID i BusRoute\_RoutePoint, og omvendt hvis den er false. \\Som den eneste tabel er der mulighed for, at nulls kan fremkomme. Dette vil ske i situationer hvor bussen eksisterer i systemet, men endnu ikke er sat på en rute. Tabellens primary key er sat til at være det ID som defineres ved busses oprettelse. Dette nummer vil også stå på den fysisk bus.
+	\end{itemize}
+	\item \textbf{BusRoute}
+	\begin{itemize}
+		\item Indeholder detaljer omkring Busruten foruden dens rutepunkter. BusNumber er ikke nødvendigvis unikt, da en kompleks rute er bygget op af to eller flere underruter. Derfor bliver tabelens primary key sat til et autogeneret ID, som bliver inkrementeret ved nyt indlæg i BusRoute. BusNumber er rutenummeret, og også det nummer som vil kunne ses på bussens front. Nummeret er givet ved en varchar på 10 karakterer, da ruter også kan have bogstaver i deres nummer. \\
+Hvis SubRoute er sat til nul, vil ruten kun bestå af det enkelte ID, men hvis ruten er kompleks vil SubRoute starte fra et, og inkrementere med en for delrute på den givne rute. Ruter er i denne sammenhæng defineret som turen mellem to endestationer, og hvis en rute har mere end to endestation, vil den have minimum to hele ruter sat på det givne rutenummer.
+	\end{itemize}
+	\item \textbf{BusRoute\_RoutePoint}
+	\begin{itemize}
+		\item Indeholder den egentlige rute for det givne rutenummer.Primary keyen er IDet i denne tabel og autogenereret, men bruges til at definere rækkefølgen på punkterne, som ruten bliver opbygget af. fk\_BusRoute er foreign key til IDet for busruten, og fk\_RoutePoint er foreign key til IDet for rutepunktet på et givet sted på ruten. Det første og sidste punkt for den givne rute vil altid være de to endestationer på ruten.\\ Rutepunkterne for stoppestedet bliver lagt ind i listen ved hjælp af en forklaret i afsnittet "IMPLEMENTERING: ADMINISTRATOR SIDE".
+	\end{itemize}
+	\item \textbf{BusRoute\_BusStop}
+	\begin{itemize}
+		\item Indeholder stoppestedsplanen for det givne rutenummer. IDet i denne tabel er autogeneret, men bruges til at definere rækkefølgen på stoppestederne på den givne rute. fk\_BusRoute refererer til den busrute stoppestedet er på, og fk\_BusStop refererer til selve stoppestedet. Det første og sidste ID for den givne busrute, vil være de to endestationer på den givne rute.
+	\end{itemize}
+	\item \textbf{BusStop}
+	\begin{itemize}
+		\item Indeholder alle stoppesteder i systemet. Primary keyen er IDet i denne tabel og er autogeneret. StopName er navenet på det givne stoppested, og er en varchar på 100 karakterer.\\ fk\_RoutePoint er en foreign key til IDet i RoutePoint tabellen, og vil være det fysiske punkt for stoppestedet givet ved en længde- og breddegrad.
+	\end{itemize}
+	\item \textbf{RoutePoint}
+	\begin{itemize}
+		\item Indeholder alle punkter for alle ruter og stoppesteder. Primary keyen er sat til at være et autogeneret ID. Hvert indlæg i denne tabel vil definere en position på verdenskortet. Longitude og latitude er i denne sammenhæng længde- og breddegraden, og de er defineret ved en number med 15 decimaler. Alle 15 decimaler er ikke nødvendig i brug og ved en indsættelse af et tal på f.eks. 6 decimaler, vil de sidste 9 være sat til 0. 
+	\end{itemize}
+		\item \textbf{GPSPosition}
+	\begin{itemize}
+		\item Indeholder alle kørende bussers position. Primary keyen er sat til et ID, som bruges til at definere rækkefølgen på indlægene, således det højeste ID for en given bus vil være den nyeste position. Longitude og Latitude er Længde- og Breddegraden for den givne bus. Både Longitude og Latitude er givet ved 15 decimaler, dog hvor alle 15 ikke nødvendigvis er i brug. Ved en indsættelse af et tal på f.eks. 6 decimaler, vil de sidste 9 være sat til 0. UpdateTime er et timestamp for positionen og bruges til, at udregne hvor lang tid bussen har kørt. Dette er beskrevet nærmere  i afsnittene "Stored procedures" og "Functions". fk\_Bus er en foreign key til tabellen Bus og bruges til at definere hvilken bus der har lavet opdateringen.
+	\end{itemize}
+	\item \textbf{Waypoint}
+	\begin{itemize}
+		\item Indeholder alle punkter der er nødvendige for genskabelse af en rute på administrations siden. Primary keyen er IDet og autogeneret. Den Bruges ikke ti andet en at unikt markere punktet.\\
+Longitude og Latitude er Længde- og Breddegraden for det givne punkt. Både Longitude og Latitude er givet ved 15 decimaler, dog hvor alle 15 ikke nødvendigvis er i brug. Ved en indsættelse af et tal på f.eks. 6 decimaler, vil de sidste 9 være sat til 0. fk\_BusRoute er en foreign key til BusRoute tabellen, og definerer således hvilken BusRute det givne waypoint er relateret til.
+	\end{itemize}
+\end{itemize}
+\noindent
+\textbf{Normalform}\\
+Databasen er normaliseret til tredje normalform, hvor nulls er tilladt i enkelte tilfælde da det sås som gavnligt. Tabellen Bus indeholder alle oprettede busser, men det er ikke et krav, at en bus er på en rute. I tilfælde af en bus uden rute, vil fk\_BusRoute og IsDescending være null.\\ Det antages at tredje normalform er tilstrækkeligt for systemet.\\
+Begrundelsen for, at databasen er på tredjenormalform er:
+\begin{itemize}
+	\item Ingen elementer er i sig selv elementer. Dvs. ingen kolonner gentager sig  selv.
+	\item Ingen primary keys er composite keys, og derfor er ingen ikke keys afhængig af kun en del af nøglen
+	\item Ingen elementer er afhængigt af et ikke-nøgle element. Dvs. ingen kolonner i én tabel, definerer andre kolonner i samme tabel.
+\end{itemize}
 
-Vi har udelukkende en-til-mange forhold i systemet, da flere klodser kan ligge i en kasse, men en klods kan ikke ligge i flere kasser. En Klods har desuden kun 1 densitet, men flere klodser kan godt have samme densitet.\\
-Databasen er på anden normalform da vi ikke har nogen composite keys. Der eksisterer dog transitive afhængigheder så den ikke er på tredje normalform. I BrickTable er Volume transitivt afhængig af Height, Length og Width. Det er dog blevet valgt, at databasen kun skal være på anden normalform, og databasen overholder derfor kravende.
 
-\subsubsection{Triggers og stored procedures}
-Til implementeringen blev der lavet flere triggers og en funktion.\\\\
+\subsubsection{Design af SQLiteDatabase database}
+Mobil applikationen har en favoriserings funktion der bruges til at persistere brugervalgte ruter lokalt. Dette er gjort så brugeren hurtigt kan indlæse de ruter som bruges mest. Ruterne persisteres lokalt som et udsnit af den distribuerede database.\\ På figur \ref{fig:LiteUML} kan man se et UML OO diagram over den lokale SQLite database og på figur \ref{fig:LiteER} kan man se et ER diagram over samme database.
+\newpage
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den lokale SQLite database}
+\label{fig:LiteUML}
+\end{figure}
 
-\textbf{Triggers:}\\
-Flere tabeller er blevet lavet ved hjælp af en identity column som primary key. Dette skaber visse problemer i tabellen, navnligt når man prøver at slette en række fra databasen. En delete statement vil lave et hul i primary key kolonnen som ikke er synderligt kønt, og det er ikke muligt at lave en update statement på kolonnen, da det ikke kan gøres på identity kolonne. Der må insertes hvis man midlertidigt slår identity insert til, så ved hjælp af en on delete trigger blev det gjort muligt at lave en update on delete trigger. På kodeudsnit \ref{lst:SqlTriggerCode} set et kodeudsnit for en update on delete trigger på LoggingTable
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den lokale SQLite database}
+\label{fig:LiteER}
+\end{figure}
+\noindent
+Da den lokale database blot er et udsnit af den distribuerede MySQL database, henvises der til tabel beskrivelserne for MySQL tabellerne i forrige afsnit. Databasen er derfor også på tredje normalform, som MySQL databasen.\\
+Den eneste forskel fra MySQL databasen er, at denne tabel gør brug af Delete Cascades. Dette vil sige, at sletningen af data fra SQLite databasen kun kræver at man sletter fra BusRoute og RoutePoint tabellerne, da disse har foreign keys i de andre tabeller. Da flere ruter med de samme stoppesteder godt kan indskrives er det blevet vedtaget, at stoppestederne ikke slettes, når en rute ufavoriseres. Dette betyder at stoppestederne kan genbruges ved nye favoriseringer.
 
-\begin{lstlisting}[caption=SQL trigger for update af en identity kolonne, label={lst:SqlTriggerCode}]
-Create trigger [dbo].[LoggingTrigger]
-ON [dbo].[LoggingTable]
-FOR Delete	
-as
+\subsubsection{Stored procedures}
+\noindent
+Der eksisterer kun Stored Procedures på MySQL database siden, og derfor vil dette afsnit kun omhandle disse. \\
+Der er blevet lavet tre Stored Procedures i sammenhæng med tidsudregning for tætteste bus til valgt stoppested. Disse tre vil blive beskrevet herunder, givet sammen med et kodeudsnit. I kodeudsnittet vil ingen kommentarer være tilstede. For fuld kode henvises der til bilags CDen, i filen Stored Procedures under Kode/Database.\\
+I kodeudsnittene fremkommer forkortelserne "Asc" og "Desc. Dette står for Ascending og Descending og er en beskrivelse af, hvordan ruten indlæses. Ascending betyder at busruten indlæses fra første til sidste punkt i BusRoute\_RoutePoint tabellen og Descending betyder at den indlæses fra sidste til første punkt.\\
+Temporary tabeller bliver brugt meget i funktionerne og procedurene. De beskriver en fuldt funktionel tabel, med den forskel, at de kun er synlige fra den givne forbindelse. Når der i proceduren kun laves indskrivninger i temporary tables, gør det tilgangen trådsikker. Dette betyder at proceduren godt kan tilgås fra flere enheder på samme tid. \\\\
 
-Declare @DeletedID bigint
-Declare @TempTable Table (ID bigint, msg varchar(500), lvl nchar(50), ltime nchar(50), ldate nchar(50), luser nchar(50))
-Declare @Reseed int
-Set @DeletedID = (Select MIN(PK_LogID) From deleted)
+\textbf{CalcBusToStopTime}\\
+Denne Stored procedure er kernen i tidsudregningen. Den samler alle værdierne sender dem videre i de forskellige funktioner. På kodeudsnit \ref{lst:CalcBustoStopTime} ses et udsnit af proceduren. I den fulde procedure, vil udregningerne for begge retninger hen til stoppestedet foregå, men da dette blot er en duplikering af samme kode, med forskellige variabler og funktionsnavne, vises dette ikke. Alle deklareringer af variabler er også fjernet.
+\begin{lstlisting}[caption=CalcBusToStopTime. Finder nærmeste bus og udregner tiden begge veje, label={lst:CalcBustoStopTime}]
+create procedure CalcBusToStopTime(
+IN stopName varchar(100), IN routeNumber varchar(10),
+OUT TimeToStopSecAsc int, OUT TimeToStopSecDesc int, 
+OUT busIDAsc int, out busIDDesc int,
+OUT EndBusStopAsc varchar(100), OUT EndBusStopDesc varchar(100))
 
-Insert into @TempTable select * from LoggingTable where PK_LogID > @DeletedID
-update @TempTable set ID = ID - 1
-delete from LoggingTable where PK_LogID > @DeletedID
+BEGIN	
+drop temporary table if exists possibleRoutes;
+create temporary table possibleRoutes(
+	possRouteID int,
+	possRouteStopID int
+);
 
-SET IDENTITY_INSERT LoggingTable ON
-insert into LoggingTable (PK_LogID,LogMessage,LogLevel,LogTime,LogDate,LogUserName) select * from @TempTable
+insert into possibleRoutes
+select distinct BusRoute.ID, BusRoute_RoutePoint.ID from BusRoute
+join BusRoute_BusStop on BusRoute.ID = BusRoute_BusStop.fk_BusRoute
+join BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+join BusRoute_RoutePoint on BusStop.fk_RoutePoint = BusRoute_RoutePoint.fk_RoutePoint
+where BusRoute.RouteNumber = routeNumber and BusStop.StopName = stopName;
 
-SET IDENTITY_INSERT LoggingTable OFF
-set @Reseed = (Select MAX(PK_LogID) from LoggingTable)
-if @Reseed >= 0
-	dbcc checkident(LoggingTable, reseed, @Reseed)
-else 
-	dbcc checkident(LoggingTable, reseed, 0)
-GO
+call GetClosestBusAscProc(@ClosestEndEPIdAsc, @ClosestBDIstAsc, @ClosestBIDAsc );
+select @ClosestsEndPointIDAsc, @ClosestBDIstAsc, @ClosestBIDAsc 
+into ClosestEndPointIdAsc,ClosestBusDistanceAsc,ClosestBusIdAsc;
+	
+select CalcBusAvgSpeedAsc(ClosestBusIdAsc) into ClosestBusSpeedAsc;
+
+set TimeToStopSecAsc = ClosestBusDistanceAsc/ClosestBusSpeedAsc;
+set busIDAsc = ClosestBusIdAsc;
+
+select BusStop.StopName from BusStop 
+inner join BusRoute_BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+inner join Bus on BusRoute_BusStop.fk_BusRoute = Bus.fk_BusRoute
+where Bus.ID = ClosestBusIdAsc Order by BusRoute_BusStop.ID desc limit 1 into EndBusStopAsc;
+
+drop temporary table possibleRoutes;
+
+END$$
 \end{lstlisting}
+\noindent
+Proceduren modtager navnet på det valgt stop, samt det valgte rutenummer. Ved fuldent forløb vil den returnere tiden for den nærmeste bus til det valgte stop, den nærmeste bus samt endestationen for den nærmeste bus. Alt returneres parvist i form af begge retninger.\\
+Først findes mulige ruter fra givet stoppesteds navn og rutenummer og indlægges i en  Dette er nødvendigt i tilfælde af komplekse ruter, hvor mere end en rute kan have samme stoppested og rutenummer. Herefter kaldes den anden stored procedure, som beskrives senere i dette afsnit. Denne procedure returnerer tætteste rutepunkt, IDet for den tætteste bus, samt afstanden fra den nærmeste bus til stoppestedet. Herefter udregnes bussens gennemsnitshastighed ved kaldet til CalcBusAvgSpeedAsc, som bruger det fundne bus ID. Denne funktion beskrives dybere senere under afsnittet "Functions".\\ Tiden fra bussen til stoppestedet findes ved at dividere distancen med gennemsnitshastigheden (Meter / Meter/Sekund = Sekund). \\Til sidst findes endestation, og tiden, bus IDet og endestation returneres.\\
 
 \noindent
-Det første der sker efter erklæringen af variable er at DeletedID bliver sat til den mindste PKLogID af deleted. Deleted er en tabel der indeholder det slettede data. Herefter bliver alle rækker der har et større PKLogID end DeleteID, dvs alle rækker efter de slettede, sat ind i en midlertidig tabel. Så inkrementeres PKLogID i den midlertidige tabel med en, hvorefter alle rækker med større indlæg end de slettede, slettes fra tabellen. Så enables indsætning på en identity kolonne og den midlertidige tabel indsættes i LoggingTable. Identity reseedes til sidst til den største værdi af PKLogID i tabellen. Hvis tabellen er tom reseedes der til nul. Med dette er der blevet opnået en update statement på en identity kolonne. Dette sker ved samtlige tabeller der har en identity kolonne. \\
-Triggeren for BrickTable har dog et par tilføjelser. Når man sletter en klods så er det ikke nok bare at slette klodsen og opdatere primary key'en. Den række i BoxPositionTable som BrickTable refererer til skal også slettes og opdateres. Dette gøres ved at gemme foreign keyen over til BoxPositionTable fra det slettede, indsætte et dummy indlæg i BoxPositionTable og derefter slette den række som den slettede BrickTable række refererede til. Herefter slettes den række der har en primary key der stemmer overens med den slettede foreign key fra BrickTable, hvilket vil køre BoxPositionTable update on delete trigger. BrickTables update on delete fortsætter, og til sidst trækkes der en fra BoxPositionTables foreign key i BrickTable og dummy rækken i BoxPositionTable slettes. \\\\
+\textbf{GetClosestBusAscProc og GetClosestBusDescProc}
+Da proceduren for begge retninger er meget ens, vil der kun vises et kodeudsnit for GetClosestBusAscProc. Dette kan ses på kodeudnsit \ref{lst:GetClosestBusAscProc}.\\ Alle kommentarer og deklareringer er fjernet for at give et bedre overblik over funktionalitetet af proceduren. En detaljeret forklaring,  samt foreskellene mellem GetClosestBusAscProc og GetClosestBusDescProc, følger efter kodeudsnittet\\
 
-\noindent
-\textbf{Functions:} \\
-Den måde databasentilgangen er lavet på gør, at generel tilgang kan laves med funktioner på C\# siden, men der er et enkelt sted hvor det er nødvendigt at bruge en lang join funktion. Denne funktion er specifik for denne join, dvs. tabeller og kolonner er hardcodet ind i join funktionen på sql-siden. På kodeudsnit \ref{lst:SqlFunctionCode} ses koden bag funktionen. Den skal bruges fordi data om klodsen (ie. Densitet og placering i boksen) gemmes i andre tabeller end klodstabellen. 
-
-\begin{lstlisting}[caption=SQL funktion for inner join for brick data, label={lst:SqlFunctionCode}]
-create function [dbo].[GetTotalBrickData]()
-returns @ReturnTable table
-(
-BoxColumn bigint, ColumnPosition bigint, Length float,
-Height float, Width float, BrickVolume float,
-BrickMass float, Material nchar(50), Density float
-)
-as
+\begin{lstlisting}[caption=CalcBusToStopTime. Udregner nærmeste bus samt distance til stop og nærmeste rutepunkt, label={lst:CalcBustoStopTime}]
+create procedure GetClosestBusAscProc(OUT busClosestEndPointAsc int, Out routeLengthAsc float, OUT closestBusId int)
 begin
-insert @ReturnTable
-SELECT
-BoxPositionTable.BoxCollumn, BoxPositionTable.ColumnPosition, 
-BrickTable.Length, BrickTable.Height, BrickTable.Width,
-BrickTable.BrickVolume, BrickTable.BrickMass,
-DensityMaterialsTable.Material, DensityMaterialsTable.Density
+ 
+drop temporary table if exists BussesOnRouteAsc;
+create temporary table BussesOnRouteAsc(
+	autoId int auto_increment primary key,
+	busId int,
+	stopID int
+);
 
-FROM BoxPositionTable
-INNER JOIN BrickTable ON 
-BoxPositionTable.PK_BoxPositionID = BrickTable.FK_BoxPositionID 
-INNER JOIN DensityMaterialsTable ON 
-BrickTable.FK_DensityID = DensityMaterialsTable.PK_DensityID    
-                
-Return                     
-end            
-GO
+insert into BussesOnRouteAsc (busId, stopID) select distinct Bus.ID, possibleRoutes.possRouteStopID from Bus
+inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
+where Bus.IsDescending=false;
+	
+select count(busId) from BussesOnRouteAsc into NumberOfBusses;	
 
+while BusCounter <= NumberOfBusses do
+	select busId,stopID from BussesOnRouteAsc where autoId = BusCounter into currentBusId,currentStopId;
+	
+	select GetClosestEndpointAsc(currentBusId) 
+		into closestEndPoint; 
+
+	if(closestEndPoint <= currentStopId) then
+		select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = currentBusId
+			order by GPSPosition.ID desc limit 1 into busPos_lat, busPos_lon; 
+			
+			select CalcRouteLengthAsc(busPos_lon, busPos_lat, closestEndPoint, currentStopId) into currentBusDist;
+	else
+		set currentBusDist = 10000000;
+	end if;
+	if (currentBusDist < leastBusDist) then
+		set leastBusDist = currentBusDist;
+		set closestbID = currentBusId;
+		set closestEP = closestEndPoint;
+	end if;
+	set BusCounter = BusCounter + 1;
+end while;
+set busClosestEndPointAsc = closestEP;
+set routeLengthAsc = leastBusDist;
+set closestBusId = closestbID;
+	
+drop temporary table BussesOnRouteAsc;
+END $$
 \end{lstlisting}
-Denne funktion skal bruges ved visning af data om en klods på systemets GUI. Der skal altså bruges data fra flere tabeller end en, og frem for at lave flere select statements i træk, blev det valgt at lave en specifik funktion til at håndtere denne datahentning.
+
+
+%\textbf{Functions:} \\
+%Den måde databasentilgangen er lavet på gør, at generel tilgang kan laves med funktioner på C\# siden, men der er et enkelt sted hvor det er nødvendigt at bruge en lang join funktion. Denne funktion er specifik for denne join, dvs. tabeller og kolonner er hardcodet ind i join funktionen på sql-siden. På kodeudsnit \ref{lst:SqlFunctionCode} ses koden bag funktionen. Den skal bruges fordi data om klodsen (ie. Densitet og placering i boksen) gemmes i andre tabeller end klodstabellen. 
+%
+%\begin{lstlisting}[caption=SQL funktion for inner join for brick data, label={lst:SqlFunctionCode}]
+%create function [dbo].[GetTotalBrickData]()
+%returns @ReturnTable table
+%(
+%BoxColumn bigint, ColumnPosition bigint, Length float,
+%Height float, Width float, BrickVolume float,
+%BrickMass float, Material nchar(50), Density float
+%)
+%as
+%begin
+%insert @ReturnTable
+%SELECT
+%BoxPositionTable.BoxCollumn, BoxPositionTable.ColumnPosition, 
+%BrickTable.Length, BrickTable.Height, BrickTable.Width,
+%BrickTable.BrickVolume, BrickTable.BrickMass,
+%DensityMaterialsTable.Material, DensityMaterialsTable.Density
+%
+%FROM BoxPositionTable
+%INNER JOIN BrickTable ON 
+%BoxPositionTable.PK_BoxPositionID = BrickTable.FK_BoxPositionID 
+%INNER JOIN DensityMaterialsTable ON 
+%BrickTable.FK_DensityID = DensityMaterialsTable.PK_DensityID    
+%                
+%Return                     
+%end            
+%GO
+%
+%\end{lstlisting}
+%Denne funktion skal bruges ved visning af data om en klods på systemets GUI. Der skal altså bruges data fra flere tabeller end en, og frem for at lave flere select statements i træk, blev det valgt at lave en specifik funktion til at håndtere denne datahentning.
 
 \end{document}

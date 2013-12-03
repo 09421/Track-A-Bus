@@ -21,9 +21,9 @@ En samtidig forekomst.
 \\
 \\
 \textbf{Ikke funktionelle krav:}
-\begin{itemize}
+\begin{enumerate}[A.]
 \item Navnet på et stoppested på maks være på 100 karakterer.
-\end{itemize}
+\end{enumerate}
 \textbf{Startbetingelser:}
 \\
 Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
@@ -38,12 +38,22 @@ Administratoren har redigeret et stoppested i systemet.
 Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, hvad der gik galt.
 \\\\
 \textbf{Normalforløb A - Stoppested bliver tilføjet til systemet.}
-	\begin{enumerate}
+	\begin{enumerate}[1.]
 	\item Administratoren angiver indformation om det stoppested, der ønskes tilføjet til systemet.
 	\item Administratoren tilkendegiver over for systemet, at stoppestedet ønsket persisteret.
 	\item Systemet persister stoppestedet.
 	\end{enumerate}	
+<<<<<<< HEAD
 \textbf{Normalforløb B - Stoppested bliver ændret i systemet.}
+=======
+\textbf{Normalforløb B - Stoppested bliver fjernet fra systemet.}
+	\begin{enumerate}[1.]
+	\item Administratoren vælger et stoppested fra en liste over stoppesteder, der findes i systemet.
+	\item Administratoren tilkendegiver over for systemet, at valgt stoppested ønskes fjernet fra persistering.
+	\item Systemet fjerner persistering af valgt stoppested.
+	\end{enumerate}
+\textbf{Normalforløb C - Stoppested bliver ændret i systemet.}
+>>>>>>> 0376afdd7122171bf582d29162cb3d2bcfae551d
 	\begin{enumerate}
 	\item Administratoren vælger et stoppested fra en liste over stoppesteder, der findes i systemet.
 	\item Administratoren ændrer i information for valgt stoppested.
@@ -57,15 +67,15 @@ Administratoren er blevet præsenteret for en fejlmeddelelse, der informerer om, 
 	\item Systemet fjerner persistering af valgt stoppested.
 	\end{enumerate}
 \textbf{Undtagelser}
-	\begin{enumerate}[\text{Undtagelse 1}]
+	\begin{enumerate}[\text{Undtagelse A}]
 	\item Det er ikke muligt at persistere Stoppested.		
 		\begin{enumerate}[1.]
 		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere Stoppested.
 		\end{enumerate}
 	\end{enumerate}
-		\begin{enumerate}[\text{Undtagelse 2}]
+		\begin{enumerate}[\text{Undtagelse B}]
 	\item Det er ikke muligt at få adgang til persisteret Stoppested.
-		\begin{enumerate}[2.]
+		\begin{enumerate}[1.]
 		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at indlæse persisteret Stoppested.
 		\end{enumerate}
 	\end{enumerate}

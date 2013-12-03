@@ -1,0 +1,97 @@
+\subsection{Use Case 7: Rediger busruteplan}
+\textbf{Mål:}
+\\
+Målet med denne Use Case er, at kunne rediger en busruteplan.
+\\
+\\
+\textbf{Initiering:}
+\\
+Administratoren tilkendegiver over for systemet at han ønsker at lave ændringer i ruteplanen for en bus.
+\\
+\\
+\textbf{Aktører og interessenter:}
+\\
+Primære aktører:
+\begin{itemize}
+\item Administrator.
+\end{itemize}
+\textbf{Antal samtidige forekomster:}
+\\
+En samtidig forekomst.
+\\
+\\
+\textbf{Ikke funktionelle krav:}
+\begin{itemize}
+\item Rutenummer gemmes med 10 karakterer eller færre.
+\item Rutepunkters længde- og breddegrad gemmes med minimum 6 decimaler.
+\end{itemize}
+\textbf{Startbetingelser:}
+\\
+Brugeren skal have administrator rettigheder, for at kunne tilgå denne del af systemet.
+\\
+\\
+\textbf{Slutresultat ved succes:}
+\\
+Ændringer vil er blevet persisteret.
+\\
+\\
+\textbf{Slutresultat ved undtagelser:}
+\\
+Ændringer er ikke blevet persisteret.
+\\
+\\
+\textbf{Normalforløb A: Tilføjelse af busrute}
+	\begin{enumerate}
+	\item Administrator tilkendegiver overfor systemet, at der ønskes at tilføjes en busrute.
+	\item Systemet præsenter administratoren for et værktøj, hvor et tomt kort kan ses. Her her er det muligt at tilføje en ny rute, med veje og busstoppesteder.
+	\item Administratoren tilføjer en rute.
+	\item Administratoren tilkendegiver overfor systemet, at ruten skal gemmes.
+	\item Den tilføjede rute persisteres.
+	\end{enumerate}
+	\textbf{Normalforløb B: Ændring af busrute}
+	\begin{enumerate}
+	\item Administrator tilkendegiver over for systemet, at der ønskers at ændre en given busrute.
+	\item Et værktøj bliver præsenteret, med den valgte rute indtegnet. Her kan der tilføjes eller fjernes veje og busstoppesteder.
+	\item Administratoren ændrer ruten.
+	\item Administratoren tilkendegiver over for systemet, at ændringer skal gemmes.
+	\item Systemet persister den ændrede rute.
+	\end{enumerate}
+	\textbf{Normalforløb C: Fjernelse af busrute}
+	\begin{enumerate}
+	\item Administrator tilkendegiver overfor systemet, at der ønskes at fjerne en allerede persisteret rute.
+	\item Administratoren tilkendegiver overfor systemet, at fjernelsen af ruten skal gemmes.
+	\item Systemet fjerner den valgte rute persisteringen.
+	\end{enumerate}
+\textbf{Undtagelser}
+	\begin{enumerate}[\text{Undtagelse 1}]
+
+	\item Administratoren annullerer ændringsprocessen, før tilføjelser, fjernelser eller ændringer er foretaget.
+		
+		\begin{enumerate}[1.]
+		\item Der returneres til administrations-hovedskærmen.
+		\end{enumerate}
+	\end{enumerate}
+		\begin{enumerate}[\text{Undtagelse 2}]
+
+	\item Administratoren annullerer ændringsprocessen, efter tilføjelser, fjernelser eller ændringer er foretaget.
+		
+		\begin{enumerate}[1.]
+		\item Administratoren bliver præsenteret for en meddelelse , hvori der bliver spurgt, om der vil gemmes eller ej.
+		\begin{enumerate}[A]
+		\item Hvis der ikke ønskes at gemmes, returneres der til administrations-hovedskærmen.
+		\item Hvis der ønskes at gemmes, bliver ændringerne persisteret. Herefter returneres der til administrations-hovedskærmen.
+		\end{enumerate}
+		\end{enumerate}
+	\end{enumerate}
+		\begin{enumerate}[\text{Undtagelse 3}]
+
+	\item Det er ikke muligt at persistere data.
+		
+		\begin{enumerate}[1.]
+		\item Administratoren bliver præsenteret for en fejlmeddelelse, som informerer om, at det ikke er muligt at persistere ændret data.
+		\item Systemet returner til det sted administratoren arbejdede, hvor de ændringer han har foretaget, stadig er tilstede.
+		\end{enumerate}
+	\end{enumerate}
+	
+
+

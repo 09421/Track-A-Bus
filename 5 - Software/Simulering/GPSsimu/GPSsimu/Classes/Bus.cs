@@ -46,6 +46,9 @@ namespace TrackABusSim
                 initialRoute.TurnAround();
             }
             UpdateBusDB();
+
+            maxSpeed = startingMaxSpeed;
+            minSpeed = startingMinSpeed;
             
             gpsPosCalcThread = new Thread(new ThreadStart(gpsCalc));
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)gpsPosCalcThread.CurrentCulture.Clone();
@@ -61,6 +64,8 @@ namespace TrackABusSim
         public void stopSim()
         {
             gpsPosCalcThread.Abort();
+            while (gpsPosCalcThread.IsAlive)
+                Thread.Sleep(10);
         }
 
         private delegate void invoker(string text);

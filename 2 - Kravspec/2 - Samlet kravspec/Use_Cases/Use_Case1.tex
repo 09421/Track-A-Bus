@@ -21,7 +21,7 @@ En samtidig forekomst.
 \\
 \\
 \textbf{Ikke funktionelle krav:} \\
-Ingen\\\\
+Ingen\\
 
 \noindent
 \textbf{Startbetingelser:}
@@ -39,14 +39,14 @@ Brugeren får vist en liste over alle distribuerede persisterede busruter.(Se fig
 Brugeren får vist startskærmen.
 \\
 \\
-\textbf{Normalforløb:}
+\textbf{Normalforløb A:}
 
 \begin{enumerate}
 \item Systemet tilgår distribueret persisteret data, og henter busruterne.
 \item Systemet præsenterer brugeren overfor listen af busruter.
 \end{enumerate}
 \textbf{Undtagelser:}
-\begin{enumerate}[\text{Undtagelse} 1:] 
+\begin{enumerate}[\text{Undtagelse} A:] 
 \item Persisteret data kan ikke tilgås.
 
 	\begin{enumerate}[1.]
@@ -55,7 +55,7 @@ Brugeren får vist startskærmen.
 	\end{enumerate}
 \end{enumerate}
 
-\begin{enumerate}[\text{Undtagelse} 2:] 
+\begin{enumerate}[\text{Undtagelse} B:] 
 \item Brugeren annullerer indlæsningen. 
 	\begin{enumerate}[1.]
 	\item Systemet annullerer indlæsningen af data.
@@ -63,7 +63,7 @@ Brugeren får vist startskærmen.
 	\end{enumerate}
 \end{enumerate}
 
-\begin{enumerate}[\text{Undtagelse} 3:] 
+\begin{enumerate}[\text{Undtagelse} C:] 
 \item Systemet går i dvale, under indlæsningen. 
 	\begin{enumerate}[1.]
 	\item Systemet indlæser busruterne færdig i baggrunden.
