@@ -177,7 +177,7 @@
                             if (typeof that[k].markers != 'undefined') {
 
                                 var subroutemark = [];
-                                var wayMarkers = that[k].markers; 
+                                var wayMarkers = that[k].markers;
                                 for (var j = 0; j < wayMarkers.length; ++j) {
                                     subroutemark.push(wayMarkers[j].position);
                                 };
@@ -210,7 +210,7 @@
     }
 
     function calcRoute(start, end) {//Get the directions from a startMarker, to the end marker
-                                    //using the google directions service API
+        //using the google directions service API
         request = {
             origin: start.position,
             destination: end.position,
@@ -268,13 +268,8 @@
             if (status == google.maps.DirectionsStatus.OK) {
 
                 var dd = new google.maps.DirectionsRenderer(rendererOptions);
-                if (directionsDisplayArray.length == 1) {
-                    directionsDisplayArray[0].setDirections(response);
-                    directionsDisplayArray.push(dd);
-                }
-                else {
-                    directionsDisplayArray[directionsDisplayArray.length-1].setDirections(response);
-                }
+                directionsDisplayArray[0].setDirections(response);
+                directionsDisplayArray.push(dd);
 
                 google.maps.event.addListener(dd, 'directions_changed', function () {
                     var that = this;
@@ -305,6 +300,9 @@
     }
 
     function GetRoute(name) {
+
+        document.getElementById("RouteNumber").value = name.options[name.selectedIndex].value;
+
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetSelectedBusRoute", "Dir")',
@@ -318,7 +316,7 @@
                 var ID = result[0].ID;
                 var test = new Array();
                 var mapSet;
-                for(var i = 0; i<result.length; i++){
+                for (var i = 0; i < result.length; i++) {
                     if (result[i].ID == ID) {
                         test.push(result[i]);
                         mapSet = false;
@@ -329,18 +327,45 @@
                         test = [];
                         test.push(result[i])
                         mapSet = true;
-                    }                
+                    }
                 }
                 if (mapSet == false) {
                     SetRouteOnMap(test);
                 }
-                    
+            }
+        });
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetStopsOnRoute", "Dir")',
+            dataType: "json",
+            traditional: true,
+            data: {
+                RouteName: name.options[name.selectedIndex].value,
+                contentType: "application/json; charset=utf-8"
+            },
+            success: function (result) {
+
+                if (MarkerArray.length != 0) {
+                    for (var i = 0; i < MarkerArray.length; i++) {
+                        MarkerArray[i].setMap(null);
+                    }
+                    MarkerArray = [];
+                }
+
+                for (var i = 0; i < result.length; i++) {
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(result[i].Lat, result[i].Lng),
+                        map: map
+                    });
+                    MarkerArray.push(marker);
+                }
             }
         });
     }
 
     //Deletes the selected route from the database, all routepoints for the route, and waypoints
-    function DeleteChosenRoute() {
+    function DeleteChosenRoute(callback) {
         var selection = document.getElementById("SelRoutes");
         $.ajax({
             type: "POST",
@@ -356,10 +381,20 @@
                     alert("There are busses on the chosen route, please delete them first");
                 else if (result == -2)
                     alert("This should not happen");
-                else if (result == 42)
-                    alert("Delete success");
+                else if (result == 42) {
+                    var elSel = document.getElementById('SelRoutes');
+                    var i;
+                    for (i = elSel.length - 1; i >= 0; i--) {
+                        if (elSel.options[i].selected) {
+                            elSel.remove(i);
+                        }
+                    }
+                }
                 else
                     alert("WHAT DID YOU DO?!");
+
+                if (callback)
+                    callback(); //Brugt når man vil savechanges
             }
         });
     }
@@ -397,8 +432,14 @@
                         RouteNumber: document.getElementById("RouteNumber").value,
                         contentType: "application/json; charset=utf-8"
                     },
-                    Success: function () {
-                        alert("Save Done");
+                    success: function (result) {
+                        if (result == 0) {
+                            var select = document.getElementById("SelRoutes");
+                            select.options.add(new Option(document.getElementById("RouteNumber").value));
+                            alert("Save Done");
+                        }
+                        else if (result == -1)
+                            alert("The route does not have any busstops");
                     }
                 });
             }
@@ -437,8 +478,12 @@
             },
             success: function (result) {
 
-                if (MarkerArray.length != 0)
+                if (MarkerArray.length != 0) {
+                    for (var i = 0; i < MarkerArray.length; i++) {
+                        MarkerArray[i].setMap(null);
+                    }
                     MarkerArray = [];
+                }
 
                 for (var i = 0; i < result.length; i++) {
                     var marker = new google.maps.Marker({
@@ -446,10 +491,20 @@
                         map: map
                     });
 
-                    MarkerArray.push(new google.maps.LatLng(result[i].Lat, result[i].Lng));
+                    MarkerArray.push(marker);
                 }
             }
         });
+    }
+
+    //Save changes to a route
+    function SaveChangesToRoute() {
+        if (document.getElementById("ToLB").options.length > 0) {
+            DeleteChosenRoute(SaveRouteAndStops);
+
+
+
+        }
     }
 
     //function used to move items between the 2 lists selectors
@@ -536,7 +591,10 @@
 
 <section style="float: right; width: 45%; height: 70%; text-align: right; border: groove; margin: 10px;">
     <form name="combo_box">
-        <input type="text" id="RouteNumber" name="route name" style="float: left" />
+        <p style="color: ghostwhite;">
+            Route Name:
+            <input type="text" id="RouteNumber" name="route name" style="float: left" />
+        </p>
         <table>
             <tr>
                 <td>
@@ -550,7 +608,7 @@
                         value="<-">
                 </td>
                 <td>
-                    <select multiple size="10" name="ToLB" style="width: 150px">
+                    <select multiple size="10" name="ToLB" style="width: 150px" id="ToLB">
                     </select>
                 </td>
             </tr>
@@ -572,6 +630,9 @@
             <tr>
                 <td>
                     <input id="DeleteRoute" type="button" value="Delete route" onclick="DeleteChosenRoute();" style="width: auto;" />
+                </td>
+                <td>
+                    <input id="SaveChanges" type="button" value="Save Changes" onclick="SaveChangesToRoute();" style="width: auto;" />
                 </td>
             </tr>
         </table>

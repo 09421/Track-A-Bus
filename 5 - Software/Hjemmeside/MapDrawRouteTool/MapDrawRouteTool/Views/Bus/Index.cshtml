@@ -7,6 +7,9 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
+    var ListOfAllBusses = new Array();
+    var BussesNotOnRoute = new Array();
+    var BussesOnRoute = new Array();
     function ExecuteOnLoad() {
         $.ajax({
             type: "POST",
@@ -29,6 +32,7 @@
                 select.options.length = 0;
                 for (var i = 0; i < result.length; i++) {
                     select.options.add(new Option(result[i]));
+                    ListOfAllBusses.push(result[i]);
                 }
             }
         });
@@ -42,10 +46,14 @@
                 select.options.length = 0;
                 for (var i = 0; i < result.length; i++) {
                     select.options.add(new Option(result[i]));
+                    BussesNotOnRoute.push(result[i]);
                 }
             }
         });
+
+
     }
+
     var selectedRoute;
     function Change(value) {
         selectedRoute = value;
@@ -96,45 +104,83 @@
         });
     }
 
-    function RemoveSelected(busToremove) {
-        if (busToremove != null) {
-            $.ajax({
-                type: "POST",
-                url: "Bus/Deletebus",
-                traditional: true,
-                data: {
-                    BusName: busToremove
-                },
-                success: function () {
-                    alert("Delete Complete");
-                    var select = document.getElementById("busses");
+    function RemoveBus() {
+        var e = document.getElementById("Busname").value;
 
-                    select.options.remove((document.getElementById("Busname").value))
+        if (!BussesNotOnRoute.contains(e) && ListOfAllBusses.contains(e))
+            alert("Can't remove bus. Remove it from its route first");
+        else {
+            var elSel = document.getElementById('busses');
+            var i;
+            for (i = elSel.length - 1; i >= 0; i--) {
+                if (elSel.options[i].selected) {
+                    elSel.remove(i);
                 }
-            });
+            }
         }
     }
 
-    function AddNewBus() {
-        var BusName = document.getElementById("Busname").value;
-        if (BusName != null) {
-            $.ajax({
-                type: "POST",
-                url: "Bus/SaveNewBus",
-                traditional: true,
-                data: {
-                    BusName: BusName
-                },
-                success: function () {
-                    debugger;
-                    alert("Save Complete");
-                    var select = document.getElementById("busses");
-                    var AvailableBus = document.combo_box.ToLB
-                    select.options.add(new Option(document.getElementById("Busname").value));
-                    AvailableBus.options.add(new Option(document.getElementById("Busname").value));
-                }
-            });
+    Array.prototype.contains = function (obj) {
+        var i = this.length;
+        while (i--) {
+            if (this[i] == obj) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    function AddNewBus() {
+        if (ListOfAllBusses.contains(document.getElementById("Busname").value))
+            alert("Bus already exist");
+        else
+            document.getElementById("busses").options.add(new Option(document.getElementById("Busname").value));
+    }
+
+    function SaveBusses() {
+
+        var BussesInList = new Array();
+        for (var i = 0; i < document.getElementById("busses").options.length; i++) {
+            BussesInList.push(document.getElementById("busses").options[i].value);
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "Bus/SaveNewBus",
+            traditional: true,
+            data: {
+                NewBusList: BussesInList,
+                AllBusses: ListOfAllBusses
+            },
+            success: function(result) {
+                debugger;
+                if (result == "")
+                    alert("No Internet connection");
+                else if (result == -1)
+                    alert("Failed to save, please try again");
+                else {
+                    alert("Save Success");
+                    document.getElementById('ToLB').options.length = 0;
+
+                    for (var i = 0; i < ListOfAllBusses.length; i++) {
+                        if (!BussesNotOnRoute.contains(ListOfAllBusses[i])) {
+                            BussesOnRoute.push(ListOfAllBusses[i])
+                        }
+                    }
+
+                    for (var i = 0; i < document.getElementById('busses').options.length; i++) {
+                        if (!BussesOnRoute.contains(document.getElementById('busses').options[i].value)) {
+
+                            document.getElementById('ToLB').options.add(new Option(document.getElementById('busses').options[i].value));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function SetSelectedBus(name) {
+        document.getElementById("Busname").value = name;
     }
 
     var arrFrom = new Array();
@@ -181,6 +227,13 @@
             tbTo[ii] = no;
         }
     }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
 </script>
 
 <div>
@@ -206,7 +259,7 @@
                 </td>
                 <td>
                     <h4 style="color: ghostwhite;">Avaliable busses</h4>
-                    <select multiple size="10" name="ToLB" style="width: 200px">
+                    <select multiple size="10" name="ToLB" style="width: 200px" id="ToLB">
                     </select>
                 </td>
             </tr>
@@ -218,16 +271,16 @@
 <section style="float: right; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">
     <h3 style="color: ghostwhite;">Create/Delete bus</h3>
     <form name="Bus_box">
-        <select id="busses" multiple size="10" name="Routes" style="width: 170px">
+        <select id="busses" multiple size="10" name="busses" style="width: 170px" onchange="SetSelectedBus(this.value);">
         </select>
         <p style="color: ghostwhite;">
-            Bus name:
-            <input type="text" name="Busname" style="width: 100px" id="Busname">
+            Bus ID:
+            <input type="text" name="Busname" style="width: 100px" id="Busname" onkeypress="return isNumberKey(event)">
         </p>
         <p>
             <input type="button" value="Add" style="width: 80px" onclick="AddNewBus();" />
-            <input type="button" value="Remove" style="width: 80px" onclick="RemoveSelected(this.form.Routes);" />
+            <input type="button" value="Remove" style="width: 80px" onclick="RemoveBus();" />
         </p>
-        <input type="button" value="Save" style="width: 70px" />
+        <input type="button" value="Save" style="width: 70px" onclick="SaveBusses();" />
     </form>
 </section>

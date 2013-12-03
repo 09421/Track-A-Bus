@@ -31,72 +31,76 @@ namespace MapDrawRouteTool.Controllers
             return View();
         }
 
-        public void Save(List<string> route, List<string> routeWayPoints, List<string> stops, List<string> SubRoutes, List<string> SubrouteWaypoint, string RouteNumber)
+        public int Save(List<string> route, List<string> routeWayPoints, List<string> stops, List<string> SubRoutes, List<string> SubrouteWaypoint, string RouteNumber)
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
             customCulture.NumberFormat.NumberDecimalSeparator = ".";
             System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
-
-
-
-            var routeNumberId = InsertRouteNumber(RouteNumber);
-            if (routeWayPoints != null)
-                InsertWaypoints(routeNumberId, ConvertLatLng(routeWayPoints));
 
             List<List<string>> g = new List<List<string>>();
             List<List<string>> SubRoutesIDList = new List<List<string>>();
             List<string> pointList;
             List<string> pointIDList;
 
-
-
-
             int counter;
             if (route != null && stops != null)
             {
-                pointList = ConvertLatLng(route);
-
-
-                pointIDList = InsertRoutePoints(pointList);
-                if (SubRoutes != null)
+                try
                 {
-                    InsertSubRouteIntoBusRoute(RouteNumber, SubRoutes.Count());
-                    if (SubrouteWaypoint != null)
-                        InsertSubRouteWaypoints(SubrouteWaypoint, RouteNumber, SubRoutes.Count());
-                    g = ConvertSubRoute(SubRoutes);
-                    for (var i = 0; i < g.Count(); i++)
+                    var routeNumberId = InsertRouteNumber(RouteNumber);
+                    if (routeWayPoints != null)
+                        InsertWaypoints(routeNumberId, ConvertLatLng(routeWayPoints));
+                    pointList = ConvertLatLng(route);
+
+
+                    pointIDList = InsertRoutePoints(pointList);
+                    if (SubRoutes != null)
                     {
-                        SubRoutesIDList.Add(InsertRoutePoints(g[i]));
+                        InsertSubRouteIntoBusRoute(RouteNumber, SubRoutes.Count());
+                        if (SubrouteWaypoint != null)
+                            InsertSubRouteWaypoints(SubrouteWaypoint, RouteNumber, SubRoutes.Count());
+                        g = ConvertSubRoute(SubRoutes);
+                        for (var i = 0; i < g.Count(); i++)
+                        {
+                            SubRoutesIDList.Add(InsertRoutePoints(g[i]));
+                        }
+                        counter = SubRoutes.Count();
                     }
-                    counter = SubRoutes.Count();
+                    else
+                        counter = 0;
+
+                    List<List<String>> RouteAndStops;
+                    List<string> BusRouteWithStops = new List<string>();
+                    List<string> BusStops = new List<string>();
+                    for (int i = 0; i <= counter; i++)
+                    {
+                        if (i == 0) // main route
+                        {
+                            RouteAndStops = CalculateBusStopsForRoute(stops, pointIDList, RouteNumber, i);
+                            BusRouteWithStops = RouteAndStops[0];
+                            BusStops = RouteAndStops[1];
+                            InsertBusRoute_RoutePoint(routeNumberId, BusRouteWithStops);
+                            InsertBusRoute_BusStop(routeNumberId, BusStops);
+                        }
+                        else // subroute
+                        {
+                            RouteAndStops = CalculateBusStopsForRoute(stops, SubRoutesIDList[i - 1], RouteNumber, i);
+                            BusRouteWithStops = RouteAndStops[0];
+                            BusStops = RouteAndStops[1];
+                            InsertBusRoute_RoutePoint(routeNumberId + i, BusRouteWithStops);
+                            InsertBusRoute_BusStop(routeNumberId + i, BusStops);
+                        }
+                    }
                 }
-                else
-                    counter = 0;
-
-                List<List<String>> RouteAndStops;
-                List<string> BusRouteWithStops = new List<string>();
-                List<string> BusStops = new List<string>();
-                for (int i = 0; i <= counter; i++)
+                catch (Exception e)
                 {
-                    if (i == 0) // main route
-                    {
-                        RouteAndStops = CalculateBusStopsForRoute(stops, pointIDList, RouteNumber, i);
-                        BusRouteWithStops = RouteAndStops[0];
-                        BusStops = RouteAndStops[1];
-                        InsertBusRoute_RoutePoint(routeNumberId, BusRouteWithStops);
-                        InsertBusRoute_BusStop(routeNumberId, BusStops);
-                    }
-                    else // subroute
-                    {
-                        RouteAndStops = CalculateBusStopsForRoute(stops, SubRoutesIDList[i - 1], RouteNumber, i);
-                        BusRouteWithStops = RouteAndStops[0];
-                        BusStops = RouteAndStops[1];
-                        InsertBusRoute_RoutePoint(routeNumberId + i, BusRouteWithStops);
-                        InsertBusRoute_BusStop(routeNumberId + i, BusStops);
-                    }
-
+                    Debug.WriteLine(e.Message);
+                    return -42;
                 }
             }
+            else
+                return -1;
+            return 0;
         }
 
         private void InsertSubRouteWaypoints(List<string> SubrouteWaypoints, string routeNumber, int p)
@@ -136,7 +140,7 @@ namespace MapDrawRouteTool.Controllers
                             connection.Close();
                         }
 
-                            cmd.CommandText = "INSERT INTO Waypoint (Latitude, Longitude, fk_BusRoute) VALUES ";
+                        cmd.CommandText = "INSERT INTO Waypoint (Latitude, Longitude, fk_BusRoute) VALUES ";
                         for (int i = 0; i < ID.Count(); i++)
                         {
                             var points = ConvertLatLng(SubrouteWaypoints[i]);
@@ -186,7 +190,7 @@ namespace MapDrawRouteTool.Controllers
                             cmd.ExecuteNonQuery();
                             connection.Close();
                         }
-                        
+
                         cmd.CommandText = "INSERT INTO Waypoint (Latitude, Longitude, fk_BusRoute) VALUES ";
                         for (var i = 0; i < routeWayPoints.Count(); i = i + 2)
                         {
@@ -481,7 +485,7 @@ namespace MapDrawRouteTool.Controllers
 
                         for (var i = 0; i < count; i++)
                         {
-                            if (BusRouteID.Count() >= i+1)
+                            if (BusRouteID.Count() >= i + 1)
                             {
                                 cmd.CommandText = string.Format("UPDATE BusRoute (RouteNumber, SubRoute) VALUES('{0}', {1})", routeNumber, i + 1);
                                 connection.Open();
@@ -514,7 +518,7 @@ namespace MapDrawRouteTool.Controllers
                 {
                     long FirstID = 0;
                     int LastID = 0;
-                    
+
                     try
                     {
 
@@ -532,14 +536,14 @@ namespace MapDrawRouteTool.Controllers
                         while (LastReader.Read())
                         {
                             FirstID = LastReader.GetInt64(0);
-                        }  
+                        }
                         connection.Close();
                     }
                     catch (Exception e)
                     {
                         connection.Close();
                         Debug.WriteLine(e.Message);
-                    } 
+                    }
                     try
                     {
                         cmd.CommandText = "SELECT ID from RoutePoint order by(RoutePoint.ID) desc limit 1";
@@ -607,37 +611,32 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
-                        connection.Open();
-                        cmd.CommandText = "SELECT ID FROM BusStop WHERE StopName = ";
-
-                        for (var i = 0; i < stops.Count(); i++)
-                        {
-                            cmd.CommandText += "'" + stops[i] + "' OR StopName = ";
-                        }
-
-                        cmd.CommandText = cmd.CommandText.TrimEnd(" OR StopName = ".ToCharArray());
-
-                        var read = cmd.ExecuteReader();
 
                         List<int> ID = new List<int>();
-                        while (read.Read())
+                        foreach (var stop in stops)
                         {
-                            ID.Add(read.GetInt32(0));
+                            cmd.CommandText = string.Format("SELECT ID FROM BusStop WHERE StopName = '{0}'", stop);
+
+                            connection.Open();
+                            var read = cmd.ExecuteReader();
+                            while (read.Read())
+                            {
+                                ID.Add(read.GetInt32(0));
+                            }
+                            read.Close();
+                            connection.Close();
+
                         }
-                        read.Close();
-                        connection.Close();
 
-
-                        cmd.CommandText = "INSERT INTO BusRoute_BusStop (fk_BusRoute, fk_BusStop) VALUES";
-                        for (var i = 0; i < ID.Count(); i++)
+                        foreach (var id in ID)
                         {
-                            cmd.CommandText += "(" + routeNumberID + " , " + ID[i] + "),";
-                        }
-                        cmd.CommandText = cmd.CommandText.TrimEnd(',');
-                        connection.Open();
-                        cmd.ExecuteNonQuery();
+                            cmd.CommandText = "INSERT INTO BusRoute_BusStop (fk_BusRoute, fk_BusStop) VALUES" +
+                                              "(" + routeNumberID + " , " + id + ")";
 
-                        connection.Close();
+                            connection.Open();
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
                     }
                     catch (Exception e)
                     {
@@ -668,10 +667,10 @@ namespace MapDrawRouteTool.Controllers
             List<string> LatLng = new List<string>();
             var s = latLng.Split(',');
 
-            for (var i = 0; i < s.Count(); i = i+2)
+            for (var i = 0; i < s.Count(); i = i + 2)
             {
                 LatLng.Add(s[i].TrimStart('(').Trim());
-                LatLng.Add(s[i+1].TrimEnd(')').Trim());
+                LatLng.Add(s[i + 1].TrimEnd(')').Trim());
             }
 
             return LatLng;
@@ -712,7 +711,7 @@ namespace MapDrawRouteTool.Controllers
                         List<Waypoint> waypoints = new List<Waypoint>();
                         while (read.Read())
                         {
-                            waypoints.Add(new Waypoint() {ID = read.GetInt32(0), Lat = read.GetDecimal(1), Lng = read.GetDecimal(2) });
+                            waypoints.Add(new Waypoint() { ID = read.GetInt32(0), Lat = read.GetDecimal(1), Lng = read.GetDecimal(2) });
                         }
                         read.Close();
 
@@ -751,7 +750,7 @@ namespace MapDrawRouteTool.Controllers
                         connection.Close();
 
                         return ConvertToJason(names);
-                    
+
                     }
                     catch (Exception e)
                     {
@@ -771,7 +770,6 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
-
                         cmd.CommandText = string.Format("SELECT fk_RoutePoint FROM BusRoute_RoutePoint WHERE fk_BusRoute IN (SELECT ID FROM BusRoute WHERE RouteNumber = '{0}')", RouteName);
                         connection.Open();
                         var read1 = cmd.ExecuteReader();
@@ -792,7 +790,7 @@ namespace MapDrawRouteTool.Controllers
                             BusID.Add(read.GetInt32(0));
                         }
                         read.Close();
-                        if(BusID.Count > 0)
+                        if (BusID.Count > 0)
                             return -1;
                         connection.Close();
 
@@ -801,7 +799,7 @@ namespace MapDrawRouteTool.Controllers
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
-                        
+
                         cmd.CommandText = String.Format("DELETE FROM Waypoint WHERE fk_BusRoute IN (SELECT ID FROM BusRoute WHERE RouteNumber = '{0}')", RouteName);
                         connection.Open();
                         cmd.ExecuteNonQuery();
@@ -816,12 +814,12 @@ namespace MapDrawRouteTool.Controllers
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
-                        
+
                         cmd.CommandText = "DELETE FROM RoutePoint WHERE (ID = ";
 
-                        for(int i = 0; i<RouteID.Count(); i++)
+                        for (int i = 0; i < RouteID.Count(); i++)
                         {
-                            cmd.CommandText += RouteID[i] + " OR ID = ";                            
+                            cmd.CommandText += RouteID[i] + " OR ID = ";
                         }
                         cmd.CommandText = cmd.CommandText.TrimEnd("OR ID = ".ToCharArray());
                         cmd.CommandText += ") AND RoutePoint.ID NOT IN (SELECT BusStop.fk_routePoint FROM BusStop)";
@@ -833,14 +831,49 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
-                        return -2;                        
+                        return -2;
                     }
                 }
             }
-            
+
         }
 
-        [HttpGet]
+        public JsonResult GetStopsOnRoute(string RouteName)
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        List<BusStops> LatLng = new List<BusStops>();
+                        cmd.CommandText = string.Format("SELECT l.Latitude, l.Longitude FROM RoutePoint AS l " +
+                                                        "INNER JOIN BusStop AS Stops ON l.ID = Stops.fk_RoutePoint " +
+                                                        "INNER JOIN BusRoute_BusStop AS brbs ON Stops.ID = brbs.fk_BusStop " +
+                                                        "INNER JOIN BusRoute AS br ON brbs.fk_BusRoute = br.ID " +
+                                                        "WHERE br.RouteNumber = '{0}'", RouteName);
+
+                        connection.Open();
+                        var read = cmd.ExecuteReader();
+                        while (read.Read())
+                        {
+                            LatLng.Add(new BusStops() { Lat = read.GetDecimal(0), Lng = read.GetDecimal(1) });
+                        }
+                        read.Close();
+                        connection.Close();
+
+                        return ConvertToJason(LatLng);
+                    }
+                    catch (Exception e)
+                    {
+                        connection.Close();
+                        Debug.WriteLine(e.Message);
+                        return null;
+                    }
+                }
+            }
+        }
+
         public JsonResult GetStops()
         {
             string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
@@ -850,14 +883,14 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
-                        var stops = new List<stop>();
+                        var stops = new List<BusStops>();
                         connection.Open();
                         cmd.CommandText = "SELECT ID, StopName FROM BusStop;";
                         var read = cmd.ExecuteReader();
 
                         while (read.Read())
                         {
-                            stops.Add(new stop() { ID = read.GetInt32(0), name = read.GetString(1) });
+                            stops.Add(new BusStops() { ID = read.GetInt32(0), name = read.GetString(1) });
                         }
 
                         read.Close();
@@ -897,10 +930,10 @@ namespace MapDrawRouteTool.Controllers
 
                         var read = cmd.ExecuteReader();
 
-                        List<StopPos> LatLng = new List<StopPos>();
+                        List<BusStops> LatLng = new List<BusStops>();
                         while (read.Read())
                         {
-                            LatLng.Add(new StopPos() { Lat = read.GetDecimal(0), Lng = read.GetDecimal(1) });
+                            LatLng.Add(new BusStops() { Lat = read.GetDecimal(0), Lng = read.GetDecimal(1) });
                         }
                         read.Close();
                         connection.Close();
@@ -918,38 +951,11 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        private JsonResult ConvertToJason(List<StopPos> stops)
+        private JsonResult ConvertToJason<T>(List<T> ListOfItems)
         {
             JsonResult jr = new JsonResult();
 
-            jr.Data = stops.ToList();
-            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jr;
-        }
-
-        private JsonResult ConvertToJason(List<stop> stops)
-        {
-            JsonResult jr = new JsonResult();
-
-            jr.Data = stops.ToList();
-            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jr;
-        }
-
-        private JsonResult ConvertToJason(List<string> names)
-        {
-            JsonResult jr = new JsonResult();
-
-            jr.Data = names.ToList();
-            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jr;
-        }
-
-        private JsonResult ConvertToJason(List<Waypoint> waypoints)
-        {
-            JsonResult jr = new JsonResult();
-
-            jr.Data = waypoints.ToList();
+            jr.Data = ListOfItems.ToList();
             jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
             return jr;
         }
@@ -958,29 +964,5 @@ namespace MapDrawRouteTool.Controllers
         {
             return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
         }
-    }
-
-    public class stop
-    {
-        public int ID;
-        public string name;
-    }
-    public class StopPos
-    {
-        public Decimal Lat;
-        public Decimal Lng;
-    }
-
-    public class testclass
-    {
-        public List<string> ob;
-        public List<string> pb;
-    }
-
-    public class Waypoint
-    {
-        public int ID;
-        public decimal Lat;
-        public decimal Lng;
     }
 }

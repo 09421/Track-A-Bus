@@ -13,11 +13,16 @@ namespace MapDrawRouteTool.Models
     {
         public string busStopNames { get; set; }
 
-        public BusStops(string busStopName)
-        {
-            busStopNames = busStopName;
+        public int ID {get;set;}
+        public string name { get; set; }
+        public Decimal Lat { get; set; }
+        public Decimal Lng { get; set; }
+
+        //public BusStops(string busStopName)
+        //{
+        //    busStopNames = busStopName;
             
-        }
+        //}
 
         public static List<BusStops> GetAllBusStops()
         {
@@ -35,7 +40,7 @@ namespace MapDrawRouteTool.Models
 
                         while (read.Read())
                         {
-                            stops.Add(new BusStops(read.GetString(0)));
+                            stops.Add(new BusStops(){busStopNames = read.GetString(0)});
                         }
                         read.Close();
                         connection.Close();

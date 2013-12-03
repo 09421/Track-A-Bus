@@ -73,9 +73,8 @@
                     position: event.latLng,
                     title: markers.length.toString()
                 });
-
-
                 markers.push(mark);
+
                 google.maps.event.addListener(mark, 'click', function () {
                     markers[markers.indexOf(mark)].setMap(null);
                     markers = [];
@@ -149,6 +148,31 @@
         });
     }
 
+    function SetSelectedOnMap(selected) {
+        var e = document.getElementById("StopRoutes");
+        document.getElementById("StopName").value = e.options[e.selectedIndex].text;
+
+
+    }
+
+    function RenameStop() {
+        var e = document.getElementById("StopRoutes");
+        var oldstop = e.options[e.selectedIndex].text;
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Rename", "Stop")',
+            data: {
+                oldName: oldstop,
+                newName: document.getElementById("StopName").value,
+                contentType: "application/json; charset=utf-8"
+            },
+            success: function () {
+                var e = document.getElementById("StopRoutes");
+                e.options[e.selectedIndex].text = document.getElementById("StopName").value;
+            }
+        });
+    }
+
 
     google.maps.event.addDomListener(window, 'load', initialize);
     var markers = new Array();
@@ -159,12 +183,19 @@
 </div>
 
 <section id="control_panel" style="float: right; width: 45%; height: 70%; text-align: right; border: groove; margin: 10px;">
-    <input type="text" id="StopName" name="Stop name" />
-    <input id="clickMe" type="button" value="Save stops" onclick="SaveStopsToDB();" />
-    <input id="DeleteStop" type="button" value="delete stops" onclick="DeleteStopsFromDB();" />
-    <div id="panel">
-        <select size="10" name="Routes" id="StopRoutes" style="width: 150px;">
-        </select>
+    <div style="float: left; text-align: left;">
+        <p style="color: ghostwhite;">
+            Stop Name:
+            <input type="text" id="StopName" name="Stop name" />
+        </p>
+        <input id="clickMe" type="button" value="Save stop" onclick="SaveStopsToDB();" />
+
+        <div id="panel">
+            <select size="10" name="Routes" id="StopRoutes" style="width: 150px;" onchange="SetSelectedOnMap(this.value);">
+            </select>
+        </div>
+        <input id="DeleteStop" type="button" value="delete stop" onclick="DeleteStopsFromDB();" />
+        <input id="RenameStop" type="button" value="Rename stop" onclick="RenameStop();" />
     </div>
 </section>
 <section style="float: left; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">

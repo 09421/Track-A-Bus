@@ -81,6 +81,7 @@ namespace MapDrawRouteTool.Controllers
                 }
             }
         }
+
         public JsonResult GetBussesNotOnRoute()
         {
             using (var connection = new MySqlConnection(getConnectionString()))
@@ -119,26 +120,29 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
-                        cmd.CommandText = "Update Bus " +
-                                          "SET Bus.fk_BusRoute = (SELECT BusRoute.ID " +
-                                                                  "FROM BusRoute " +
-                                                                  "WHERE BusRoute.RouteNumber = '" + route + "') " +
-                                          "WHERE Bus.ID = ";
-
-                        for (var i = 0; i < bussesToAdd.Count(); i++)
+                        if (bussesToAdd != null)
                         {
-                            cmd.CommandText += bussesToAdd[i];
-                            cmd.CommandText += " OR Bus.ID = ";
+
+                            cmd.CommandText = "Update Bus " +
+                                              "SET Bus.fk_BusRoute = (SELECT BusRoute.ID " +
+                                                                      "FROM BusRoute " +
+                                                                      "WHERE BusRoute.RouteNumber = '" + route + "' AND SubRoute = 0) " +
+                                              "WHERE Bus.ID = ";
+
+                            for (var i = 0; i < bussesToAdd.Count(); i++)
+                            {
+                                cmd.CommandText += bussesToAdd[i];
+                                cmd.CommandText += " OR Bus.ID = ";
+                            }
+
+                            cmd.CommandText = cmd.CommandText.TrimEnd(" OR Bus.ID = ".ToCharArray());
+                            connection.Open();
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
                         }
-
-                        cmd.CommandText = cmd.CommandText.TrimEnd(" OR Bus.ID = ".ToCharArray());
-                        connection.Open();
-
-                        cmd.ExecuteNonQuery();
-
-                        cmd.CommandText = String.Format("UPDATE Bus " +
-                                          "SET Bus.fk_BusRoute = {0} " +
-                                          "WHERE Bus.ID = ", route);
+                        cmd.CommandText = "UPDATE Bus " +
+                                          "SET Bus.fk_BusRoute = null " +
+                                          "WHERE Bus.ID = ";
 
                         for (var i = 0; i < bussesToRemove.Count(); i++)
                         {
@@ -146,8 +150,8 @@ namespace MapDrawRouteTool.Controllers
                             cmd.CommandText += " OR Bus.ID = ";
                         }
                         cmd.CommandText = cmd.CommandText.TrimEnd(" OR Bus.ID = ".ToCharArray());
+                        connection.Open();
                         cmd.ExecuteNonQuery();
-
                         connection.Close();
                     }
                     catch (Exception e)
@@ -187,7 +191,28 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        public string SaveNewBus(string BusName)
+        public void SaveNewBus(List<string> NewBusList, List<string> AllBusses)
+        {
+            List<string> BussesToAdd = new List<string>();
+            List<string> BussesToRemove = new List<string>();
+
+            foreach (var bus in NewBusList)
+            {
+                if (!AllBusses.Contains(bus))
+                    BussesToAdd.Add(bus);
+            }
+
+            foreach (var bus in AllBusses)
+            {
+                if (!NewBusList.Contains(bus))
+                    BussesToRemove.Add(bus);
+            }
+
+            removeBusses(BussesToRemove);
+            addBusses(BussesToAdd);
+        }
+
+        private void removeBusses(List<string> bussesToRemove)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -195,23 +220,59 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
-                        cmd.CommandText = String.Format("INSERT INTO Bus (ID, IsDescending, fk_BusRoute) VALUES({0}, null, null)", BusName);
-                        connection.Open();
-                        cmd.ExecuteNonQuery();
-                        connection.Close();
-                        return "Success";
+                        foreach (var bus in bussesToRemove)
+                        {
+                            cmd.CommandText = string.Format("DELETE FROM Bus WHERE ID = {0}", bus);
+                            connection.Open();
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+
                     }
                     catch (Exception e)
                     {
                         Debug.WriteLine(e.Message);
                         connection.Close();
-                        return e.Message;
+                    }
+                }
+            }
+
+        }
+
+        private int addBusses(List<string> bussesToAdd)
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        foreach (var bus in bussesToAdd)
+                        {
+                            cmd.CommandText = string.Format("INSERT INTO Bus (ID, IsDescending, fk_BusRoute) " + 
+                                                            "VALUES({0}, null, null)", bus);
+                                                        
+                            connection.Open();
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
+                        }
+                        return 0;   
+                    }
+                    catch (Exception e)
+                    {               
+                        if(connection.State == System.Data.ConnectionState.Open)
+                            connection.Close();
+                        Debug.WriteLine(e.Message);
+                        if (e.Message == "Unable to connect to any of the specified MySQL hosts.")
+                            return -3;
+                        else
+                            return -1;
                     }
                 }
             }
         }
 
-        public void Deletebus(string BusName)
+        public int Deletebus(string BusName)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -223,11 +284,13 @@ namespace MapDrawRouteTool.Controllers
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
+                        return 0;
                     }
                     catch (Exception e)
                     {
                         connection.Close();
                         Debug.WriteLine(e.Message);
+                        return -1;
                     }
                 }
             }
@@ -237,6 +300,7 @@ namespace MapDrawRouteTool.Controllers
         {
             return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
         }
+
         private JsonResult ConvertToJason<T>(List<T> RouteNumber)
         {
             JsonResult jr = new JsonResult();

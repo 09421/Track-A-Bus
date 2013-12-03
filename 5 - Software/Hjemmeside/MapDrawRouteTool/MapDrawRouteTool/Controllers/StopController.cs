@@ -87,7 +87,23 @@ namespace MapDrawRouteTool.Controllers
                 {
                     try
                     {
+                        int fkID = 0;
+                        cmd.CommandText = string.Format("SELECT fk_RoutePoint FROM BusStop WHERE StopName = '{0}'", stop);
+                        connection.Open();
+                        var read = cmd.ExecuteReader();
+                        while (read.Read())
+                        {
+                            fkID = read.GetInt32(0);
+                        }
+                        read.Close();
+                        connection.Close();
+
                         cmd.CommandText = string.Format("DELETE FROM BusStop WHERE StopName = '{0}'", stop);
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+
+                        cmd.CommandText = string.Format("DELETE FROM RoutePoint WHERE ID = {0}", fkID);
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
@@ -96,6 +112,30 @@ namespace MapDrawRouteTool.Controllers
                     {
                         connection.Close();
                         Debug.WriteLine(e.Message);
+                    }
+                }
+            }
+        }
+
+        public void Rename(string oldName, string newName)
+        {
+            using (var connection = new MySqlConnection(getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+
+                        cmd.CommandText = string.Format("UPDATE BusStop SET StopName = '{0}' WHERE StopName = '{1}'", newName, oldName);
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+                        connection.Close();
                     }
                 }
             }
