@@ -716,7 +716,7 @@ namespace MapDrawRouteTool.Controllers
                         read.Close();
 
                         connection.Close();
-                        return ConvertToJason(waypoints);
+                        return JConverter.ConvertToJson(waypoints);
                     }
                     catch (Exception e)
                     {
@@ -749,7 +749,7 @@ namespace MapDrawRouteTool.Controllers
 
                         connection.Close();
 
-                        return ConvertToJason(names);
+                        return JConverter.ConvertToJson(names);
 
                     }
                     catch (Exception e)
@@ -862,7 +862,7 @@ namespace MapDrawRouteTool.Controllers
                         read.Close();
                         connection.Close();
 
-                        return ConvertToJason(LatLng);
+                        return JConverter.ConvertToJson(LatLng);
                     }
                     catch (Exception e)
                     {
@@ -897,7 +897,7 @@ namespace MapDrawRouteTool.Controllers
                         connection.Close();
 
 
-                        return ConvertToJason(stops);
+                        return JConverter.ConvertToJson(stops);
                     }
                     catch (Exception e)
                     {
@@ -938,7 +938,7 @@ namespace MapDrawRouteTool.Controllers
                         read.Close();
                         connection.Close();
 
-                        return ConvertToJason(LatLng);
+                        return JConverter.ConvertToJson(LatLng);
 
                     }
                     catch (Exception e)
@@ -949,15 +949,6 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
             }
-        }
-
-        private JsonResult ConvertToJason<T>(List<T> ListOfItems)
-        {
-            JsonResult jr = new JsonResult();
-
-            jr.Data = ListOfItems.ToList();
-            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jr;
         }
 
         private static string getConnectionString()

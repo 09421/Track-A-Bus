@@ -1,0 +1,53 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\newpage
+
+\subsubsection{Komponent 4: Mobile service}
+Denne komponent har til formål at være mellemled mellem mobil applikationen og MySQL databasen. komponenten er blevet lavet, da mobil applikationen ikke må have direkte adgang til en databasen, da dette har store sikkerhedsmessige implikationer. Uden denne service vil det også være muligt for ondsindet brugere at tilgå databasen og manipulere med data på en ikke ønsket måde. Et andet formål med denne web service er at gøre det gøre det nemt at udvikle ny mobil applikation, til et hvilkensomhelst styresystem, uden at skulle tænkte på database tilgang.\\\\
+\textbf{Design:}\\
+Mobil servicen bliver brugt til at hente data fra MySQL databasen som mobil applikationen skal bruge. Dette indebære at hente en liste af busruter, hente en bestemt rute, hente stoppestederne for en rute, hente positionen for alle busser på ruten og kalde den Stored procedure der udregner tiden før der er en bus ved et valgt stoppested. Web servicen er tilgængelig for alle, da de eneste funktionaliteter den udbyder er at hente data fra databasen. Med en åben web service er det muligt for alle at bruge data til at udvikle nye applikationer. på \url{http://trackabus.dk/AndroidToMySQLWebService.asmx} er det muligt at se tilgængelige funktioner.\\
+Her kan ses et eksempel på hvad det kræver at kalde funkionen GetBusPos fra web servicen, ved brug af SOAP. Det kan ses at den kræver et 'busNumber' i form af en string, som input parameter.
+
+\begin{lstlisting}[caption=request til service function GetBusPos, language=XML]
+POST /AndroidToMySQLWebService.asmx HTTP/1.1
+Host: trackabus.dk
+Content-Type: application/soap+xml; charset=utf-8
+Content-Length: length
+<?xml version="1.0" encoding="utf-8"?>
+<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <soap12:Body>
+    <GetbusPos xmlns="http://TrackABus.dk/Webservice/">
+      <busNumber>string</busNumber>
+    </GetbusPos>
+  </soap12:Body>
+</soap12:Envelope>}
+\end{lstlisting}
+Herunder ses det SOAP response man får tilbage efter at have lavet det overstående kald til servicen. Det kan ses at man får en liste af points tilbage, hvor hver point indeholder 3 strings, Lat, Lng og ID.
+
+\begin{lstlisting}[caption=response fra service function GetBusPos, language=XML]
+HTTP/1.1 200 OK
+Content-Type: application/soap+xml; charset=utf-8
+Content-Length: length
+<?xml version="1.0" encoding="utf-8"?>
+<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <soap12:Body>
+    <GetbusPosResponse xmlns="http://TrackABus.dk/Webservice/">
+      <GetbusPosResult>
+        <Point>
+          <Lat>string</Lat>
+          <Lng>string</Lng>
+          <ID>string</ID>
+        </Point>
+        <Point>
+          <Lat>string</Lat>
+          <Lng>string</Lng>
+          <ID>string</ID>
+        </Point>
+      </GetbusPosResult>
+    </GetbusPosResponse>
+  </soap12:Body>
+</soap12:Envelope>
+\end{lstlisting}
+
+\end{document}

@@ -1,0 +1,71 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Komponent 3: Administrations hjemmeside }
+Denne komponent har til formål at håndtere alle de adminitrative opgaver i system. Dette består af 4 delkomponenter:
+
+\begin{itemize}
+\item Den første delkomponent gør det muligt at tilføje en bus til systemet, fjerne den, eller rediger i en bus der allerede findes i systemet.
+\item Derefter skal det være muligt at tilføje eller fjerne en bus fra en rute der findes i systemet.
+\item Den tredje delkomponent gør det muligt at kunne oprette en hel ny busrute i systemet, ændrer i en allerede eksiterende busrute, eller slette en fra systemet.
+\item Den sisdte delkomponent består af muligheden for at kunne tilføje, ændre samt fjerne busstoppesteder fra systemet.
+\end{itemize}
+
+Alle disse delkomponenter udgøre tilsammen en vigtig del af systemet, da uden nogle af dem vil det ikke være muligt at kunne få vist nogle af overstående ting på mobil applikationen.\\\\
+
+\textbf{Design:}\\
+
+Hjemmesiden er blevet implementeret ved brug af Microsoft ASP.NET MVC 4 frameworket. Dette gør det nemt og hurtigt at implementere en sofistikeret og moderne hjemmeside, der følger gode design principper. MVC står for Model-View-Controller og følger de samme principper som MVVM angående 'separation of concerns'.\\
+For at kunne indtegne busruter og stoppesteder skal der bruges et kort, til dette er der blevet brugt Google maps samt Google Directions API.  
+
+Hjemmesiden består af 4 view,først og fremmest et view til startsiden der linker til de 3 andre views, der består af et der håndtere alt vedrørende busser, et til stoppesteder samt et til busruter.
+Det første view der håndtere alt om busserne
+
+%\begin{lstlisting}[caption=Funktionen Initialization(...)]
+%public bool Initialization(short sMode, short sSystemType)
+%{
+%    string sModeS;
+%    string sSystemTypeS;
+%    switch (sMode)
+%    {
+%        case 0:
+%            sModeS = "INIT_MODE_DEFAULT selects last used mode (from ini file).";
+%            break;
+%        case 1:
+%            sModeS = "INIT_MODE_ONLINE force online mode.";
+%            break;
+%        case 2:
+%            sModeS = "INIT_MODE_SIMULAT selects simulation mode.";
+%            break;
+%        default:
+%            sModeS = "Unknown INIT_MODE.";
+%            break;
+%    }
+%    switch (sSystemType)
+%    {
+%        case 0:
+%            sSystemTypeS = "DEFAULT_SYSTEM_TYPE let the libary detect the robot type.";
+%            break;
+%        case 41:
+%            sSystemTypeS = "ER4USB_SYSTEM_TYPE define robot type as ER-4 Scorbot with USB connection.";
+%            break;
+%        default:
+%            sSystemTypeS = "Unknown SYSTEM_TYPE.";
+%            break;
+%    }
+%
+%    logWindow.LogThis(loggingLevels.INFO, "Initialization: " + retVal, false);
+%    logWindow.LogThis(loggingLevels.INFO, "Initialization MODE: " + sModeS + " ## " + sSystemTypeS, true);
+%
+%    logFile.LogThis(loggingLevels.INFO, "Initialization: " + retVal, false);
+%    logFile.LogThis(loggingLevels.INFO, "Initialization MODE: " + sModeS + " ## " + sSystemTypeS, true);
+%    logFile.LogThis(loggingLevels.INFO, "newline", false);
+%
+%    initRuned = true;
+%    return retVal;
+%}
+%\end{lstlisting}
+
+
+
+\end{document}

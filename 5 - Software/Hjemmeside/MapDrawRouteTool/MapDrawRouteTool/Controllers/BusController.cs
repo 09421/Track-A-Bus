@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using MapDrawRouteTool.Models;
 
 namespace MapDrawRouteTool.Controllers
 {
@@ -20,7 +21,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetRouteNames()
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -38,7 +39,7 @@ namespace MapDrawRouteTool.Controllers
                         connection.Close();
                         read.Close();
 
-                        return ConvertToJason(RouteNumber);
+                        return JConverter.ConvertToJson(RouteNumber);
                     }
                     catch (Exception e)
                     {
@@ -52,7 +53,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetBussesOnRoute(string route)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -71,7 +72,7 @@ namespace MapDrawRouteTool.Controllers
                         }
                         read.Close();
                         connection.Close();
-                        return ConvertToJason(Busses);
+                        return JConverter.ConvertToJson(Busses);
                     }
                     catch (Exception e)
                     {
@@ -84,7 +85,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetBussesNotOnRoute()
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -101,7 +102,7 @@ namespace MapDrawRouteTool.Controllers
                         }
                         read.Close();
                         connection.Close();
-                        return ConvertToJason(Busses);
+                        return JConverter.ConvertToJson(Busses);
                     }
                     catch (Exception e)
                     {
@@ -114,7 +115,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int SaveChanges(List<string> bussesToAdd, string route, List<string> bussesToRemove)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -166,7 +167,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetAllBusses()
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -182,7 +183,7 @@ namespace MapDrawRouteTool.Controllers
                         }
                         read.Close();
                         connection.Close();
-                        return ConvertToJason(Busses);
+                        return JConverter.ConvertToJson(Busses);
                     }
                     catch (Exception e)
                     {
@@ -216,7 +217,7 @@ namespace MapDrawRouteTool.Controllers
 
         private void removeBusses(List<string> bussesToRemove)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -243,7 +244,7 @@ namespace MapDrawRouteTool.Controllers
 
         private int addBusses(List<string> bussesToAdd)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -251,18 +252,18 @@ namespace MapDrawRouteTool.Controllers
                     {
                         foreach (var bus in bussesToAdd)
                         {
-                            cmd.CommandText = string.Format("INSERT INTO Bus (ID, IsDescending, fk_BusRoute) " + 
+                            cmd.CommandText = string.Format("INSERT INTO Bus (ID, IsDescending, fk_BusRoute) " +
                                                             "VALUES({0}, null, null)", bus);
-                                                        
+
                             connection.Open();
                             cmd.ExecuteNonQuery();
                             connection.Close();
                         }
-                        return 0;   
+                        return 0;
                     }
                     catch (Exception e)
-                    {               
-                        if(connection.State == System.Data.ConnectionState.Open)
+                    {
+                        if (connection.State == System.Data.ConnectionState.Open)
                             connection.Close();
                         Debug.WriteLine(e.Message);
                         if (e.Message == "Unable to connect to any of the specified MySQL hosts.")
@@ -276,7 +277,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int Deletebus(string BusName)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -296,20 +297,6 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
             }
-        }
-
-        private static string getConnectionString()
-        {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
-        }
-
-        private JsonResult ConvertToJason<T>(List<T> RouteNumber)
-        {
-            JsonResult jr = new JsonResult();
-
-            jr.Data = RouteNumber.ToList();
-            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jr;
         }
     }
 }

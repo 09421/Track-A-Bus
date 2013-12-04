@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using MySql.Data.MySqlClient;
 using System.Configuration;
+using MapDrawRouteTool.Models;
 
 namespace MapDrawRouteTool.Controllers
 {
@@ -67,9 +68,8 @@ namespace MapDrawRouteTool.Controllers
                                 connection.Open();
                                 cmd.ExecuteNonQuery();
                                 connection.Close();
-                                return 0;
+                                
                             }
-                            else return -2;
                         }
                         catch (Exception e)
                         {
@@ -80,6 +80,7 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
             }
+            return 0;
         }
 
         public int Delete(string stop)
@@ -168,7 +169,7 @@ namespace MapDrawRouteTool.Controllers
                         read.Close();
                         connection.Close();
 
-                        return ConvertToJason(names);
+                        return JConverter.ConvertToJson(names);
                     }
                     catch (Exception e)
                     {
@@ -178,15 +179,6 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
             }
-        }
-
-        private JsonResult ConvertToJason(List<string> names)
-        {
-            JsonResult jr = new JsonResult();
-
-            jr.Data = names.ToList();
-            jr.JsonRequestBehavior = JsonRequestBehavior.AllowGet;
-            return jr;
         }
 
         private List<string> formatNames(string name)
