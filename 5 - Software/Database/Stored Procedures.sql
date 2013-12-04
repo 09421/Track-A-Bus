@@ -114,7 +114,6 @@ begin
 		select GetClosestEndpointAsc(currentBusId) into closestEndPoint; 
 		#Closests Route point is less than or equal to the stop id. Checks to see if the bus has driven past the stop.
 		#if it fails, dist is set to a high number. If no busses are valid, then the high number will be returned, but this is handled on the server.
-		insert into test values (closestEndPoint, currentStopId);
 		if(closestEndPoint <= currentStopId) then
 			#Latests position of the current bus.
 			select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus=currentBusId
@@ -122,7 +121,7 @@ begin
 			#Calculate distance from bus to stop.
 			select CalcRouteLengthAsc(busPos_lon, busPos_lat, closestEndPoint, currentStopId) into currentBusDist;
 		else
-			set currentBusDist = 10000000;
+			set currentBusDist = 1000000;
 		end if;
 		#If the distance from the current bus to the busstop is lesser than the one before.
 		#Change closests bus, routepoint, and distance.
@@ -158,7 +157,7 @@ begin
 	declare busPos_lon decimal(20,15);
 	declare busPos_lat decimal(20,15);
 	declare currentBusDist float default 0;
-	declare leastBusDist float default 1000000;
+	declare leastBusDist float default 100000;
 	declare closestEP int;
 
 	drop temporary table if exists BussesOnRouteDesc;
@@ -188,7 +187,7 @@ begin
 			#Calculate distance from bus to stop.
 			select CalcRouteLengthDesc(busPos_lon, busPos_lat, closestEndPoint, currentStopId) into currentBusDist;
 		else
-			set currentBusDist = 10000000;
+			set currentBusDist = 1000000;
 		end if;
 		#If the distance from the current bus to the busstop is lesser than the one before.
 		#Change closests bus.
