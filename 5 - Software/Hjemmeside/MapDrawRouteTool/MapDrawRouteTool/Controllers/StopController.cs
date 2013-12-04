@@ -29,7 +29,7 @@ namespace MapDrawRouteTool.Controllers
             return View();
         }
 
-        public void Save(string c, string n)
+        public int Save(string c, string n)
         {
             var cords = formatCord(c);
             var names = formatNames(n);
@@ -45,7 +45,7 @@ namespace MapDrawRouteTool.Controllers
                             if (cords.Count == (names.Count * 2))
                             {
 
-                                cmd.CommandText = string.Format("INSERT INTO RoutePoint (Latitude, Longitude) VALUES({0}, {1});", cords[i], cords[i+1]);
+                                cmd.CommandText = string.Format("INSERT INTO RoutePoint (Latitude, Longitude) VALUES({0}, {1});", cords[i], cords[i + 1]);
 
                                 connection.Open();
                                 cmd.ExecuteNonQuery();
@@ -55,7 +55,7 @@ namespace MapDrawRouteTool.Controllers
                                 connection.Open();
                                 MySqlDataReader read = cmd.ExecuteReader();
                                 var ID = 0;
-                                  while (read.Read())
+                                while (read.Read())
                                 {
                                     ID = read.GetInt32(0);
                                 }
@@ -67,19 +67,22 @@ namespace MapDrawRouteTool.Controllers
                                 connection.Open();
                                 cmd.ExecuteNonQuery();
                                 connection.Close();
+                                return 0;
                             }
+                            else return -2;
                         }
                         catch (Exception e)
                         {
                             Debug.WriteLine(e.ToString());
                             connection.Close();
+                            return -1;
                         }
                     }
                 }
             }
         }
 
-        public void Delete(string stop)
+        public int Delete(string stop)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -107,17 +110,19 @@ namespace MapDrawRouteTool.Controllers
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
+                        return 0;
                     }
                     catch (Exception e)
                     {
                         connection.Close();
                         Debug.WriteLine(e.Message);
+                        return -1;
                     }
                 }
             }
         }
 
-        public void Rename(string oldName, string newName)
+        public int Rename(string oldName, string newName)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -130,12 +135,14 @@ namespace MapDrawRouteTool.Controllers
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
+                        return 0;
 
                     }
                     catch (Exception e)
                     {
                         Debug.WriteLine(e.Message);
                         connection.Close();
+                        return -1;
                     }
                 }
             }

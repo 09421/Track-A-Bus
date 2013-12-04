@@ -112,7 +112,7 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        public void SaveChanges(List<string> bussesToAdd, string route, List<string> bussesToRemove)
+        public int SaveChanges(List<string> bussesToAdd, string route, List<string> bussesToRemove)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -153,10 +153,12 @@ namespace MapDrawRouteTool.Controllers
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
+                        return 0;
                     }
                     catch (Exception e)
                     {
                         connection.Close();
+                        return -1;
                     }
                 }
             }

@@ -113,9 +113,15 @@
                     n: JSON.stringify(document.getElementById("StopName").value),
                     contentType: "application/json; charset=utf-8"
                 },
-                success: function () {
-                    var select = document.getElementById("StopRoutes");
-                    select.options.add(new Option(document.getElementById("StopName").value));
+                success: function (result) {
+                    if (result == -1)
+                        alert("No Internet connection");
+                    else if(result == 0){
+                        var select = document.getElementById("StopRoutes");
+                        select.options.add(new Option(document.getElementById("StopName").value));
+                    }
+                    else if (result == -2)
+                        alert("Please name the stop");
                 }
             });
 
@@ -136,14 +142,18 @@
                 stop: stopToDelete,
                 contentType: "application/json; charset=utf-8"
             },
-            success: function () {
-                var elSel = document.getElementById('StopRoutes');
-                var i;
-                for (i = elSel.length - 1; i >= 0; i--) {
-                    if (elSel.options[i].selected) {
-                        elSel.remove(i);
+            success: function (result) {
+                if (result == 0) {
+                    var elSel = document.getElementById('StopRoutes');
+                    var i;
+                    for (i = elSel.length - 1; i >= 0; i--) {
+                        if (elSel.options[i].selected) {
+                            elSel.remove(i);
+                        }
                     }
                 }
+                else if (result == -1)
+                    alert("No Internet connection");
             }
         });
     }
@@ -166,9 +176,13 @@
                 newName: document.getElementById("StopName").value,
                 contentType: "application/json; charset=utf-8"
             },
-            success: function () {
-                var e = document.getElementById("StopRoutes");
-                e.options[e.selectedIndex].text = document.getElementById("StopName").value;
+            success: function (result) {
+                if (result == 0) {
+                    var e = document.getElementById("StopRoutes");
+                    e.options[e.selectedIndex].text = document.getElementById("StopName").value;
+                }
+                else if (result == -1)
+                    alert("No Internet connection");
             }
         });
     }
