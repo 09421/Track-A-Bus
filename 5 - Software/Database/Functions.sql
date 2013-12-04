@@ -6,7 +6,6 @@ create function GetClosestEndpointAsc(busID int)
 returns int
 begin
 	declare RouteCounter int default 1;
-	declare TotalRouteLines int;
 	declare BusLastPosLon decimal(20,15);
 	declare BusLastPosLat decimal(20,15);
 	declare R1x decimal(20,15);
@@ -15,7 +14,7 @@ begin
 	declare R2y decimal(20,15);
 	declare BusDist float ;
 	#initialize to high number, so first endpoint will be closer,
-	declare PrevBusDist float default 10000000;
+	declare PrevBusDist float default 100000;
 	declare ClosestEndPointId int;
 	declare LastChosenID int;
 	
@@ -39,8 +38,6 @@ begin
 	#Get the last ID, and the first ID;
 	select ChosenRouteAsc.ID from ChosenRouteAsc order by id asc limit 1 into RouteCounter;
 	select ChosenRouteAsc.ID from ChosenRouteAsc order by id desc limit 1 into LastChosenID;
-	#total number of points
-	select count(id) from ChosenRouteAsc into TotalRouteLines;
 
 	#Get last bus position.
 	select GPSPosition.Latitude,  GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = busID
@@ -72,7 +69,6 @@ create function GetClosestEndpointDesc (busID int)
 returns int
 begin
 	declare RouteCounter int;
-	declare TotalRouteLines int;
 	declare BusLastPosLon decimal(20,15);
 	declare BusLastPosLat decimal(20,15);
 	declare R1x decimal(20,15);
@@ -81,7 +77,7 @@ begin
 	declare R2y decimal(20,15);
 	declare BusDist float ;
 
-	declare PrevBusDist float default 10000000;
+	declare PrevBusDist float default 100000;
 	declare ClosestEndPointId int;
 	declare LastChosenID int;
 
