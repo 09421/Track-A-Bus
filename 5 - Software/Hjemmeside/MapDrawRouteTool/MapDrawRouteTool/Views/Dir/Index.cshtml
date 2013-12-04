@@ -268,7 +268,11 @@
             if (status == google.maps.DirectionsStatus.OK) {
 
                 var dd = new google.maps.DirectionsRenderer(rendererOptions);
-                directionsDisplayArray[0].setDirections(response);
+                
+                if (directionsDisplayArray.length == 1)
+                    directionsDisplayArray[0].setDirections(response);
+                else
+                    dd.setDirections(response);                
                 directionsDisplayArray.push(dd);
 
                 google.maps.event.addListener(dd, 'directions_changed', function () {
@@ -300,9 +304,7 @@
     }
 
     function GetRoute(name) {
-
         document.getElementById("RouteNumber").value = name.options[name.selectedIndex].value;
-
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetSelectedBusRoute", "Dir")',
@@ -313,7 +315,6 @@
                 contentType: "application/json; charset=utf-8"
             },
             success: function (result) {
-                debugger;
                 var ID = result[0].ID;
                 var test = new Array();
                 var mapSet;
@@ -353,13 +354,25 @@
                     }
                     MarkerArray = [];
                 }
-
+                var toStops = document.getElementById("ToLB");
+                var fromStops = document.combo_box.FromLB;
+                toStops.options.length = 0;
+                fromStops.options.length = 0;
+                for (var i = 0; i < allStops.length; i++)
+                    fromStops.options.add(new Option(allStops[i]));
                 for (var i = 0; i < result.length; i++) {
                     var marker = new google.maps.Marker({
                         position: new google.maps.LatLng(result[i].Lat, result[i].Lng),
-                        map: map
+                        map: map,
+                        title: result[i].name
                     });
                     MarkerArray.push(marker);
+                    for (var j = 0; j < document.combo_box.FromLB.options.length; j++) {
+                        if (fromStops.options[j].value == result[i].name) {
+                            fromStops.remove(j);
+                        }
+                    }
+                    toStops.options.add(new Option(result[i].name));
                 }
             }
         });
@@ -390,12 +403,13 @@
                             elSel.remove(i);
                         }
                     }
+                    if (callback)
+                        callback(); //Brugt når man vil savechanges
                 }
                 else
                     alert("WHAT DID YOU DO?!");
 
-                if (callback)
-                    callback(); //Brugt når man vil savechanges
+
             }
         });
     }
@@ -417,6 +431,11 @@
 
     //saves the route, and all its stops
     function SaveRouteAndStops() {
+        var stopsToSave = new Array();
+        var ele = document.getElementById("ToLB").options;
+        for (var i = 0; i < ele.length; i++) {
+            stopsToSave.push(ele[i].value);
+        }
         if (document.getElementById("RouteNumber").value != "") {
             if (DirectionsArray != null) {
                 $.ajax({
@@ -427,7 +446,7 @@
                     data: {
                         route: getRoutePath(),
                         routeWayPoints: waypoints,
-                        stops: arrTo,
+                        stops: stopsToSave,
                         SubRoutes: SplitRoute(SubRouteArray),
                         SubrouteWaypoint: SubRouteWaypoints,
                         RouteNumber: document.getElementById("RouteNumber").value,
@@ -451,7 +470,7 @@
             alert("Please Type in a route number");
     }
 
-
+    var allStops = new Array();
     //Gets a list of all the stops in the system
     function GetAllStops() {
         $.ajax({
@@ -463,6 +482,7 @@
                 select.options.length = 0;
                 for (var i = 0; i < result.length; i++) {
                     select.options.add(new Option(result[i].name, result[i].ID));
+                    allStops.push(result[i].name);
                 }
             }
         });
@@ -470,17 +490,22 @@
 
     //Inserts the selected markers, as stops, unto the map
     function CreateRoute() {
+        var stopsToSave = new Array();
+        var ele = document.getElementById("ToLB").options;
+        for (var i = 0; i < ele.length; i++) {
+            stopsToSave.push(ele[i].innerHTML);
+        }
+
         $.ajax({
             type: "POST",
             url: '@Url.Action("GetLatLng", "Dir")',
             dataType: "json",
             traditional: true,
             data: {
-                StopNames: arrTo,
+                StopNames: stopsToSave,
                 contentType: "application/json; charset=utf-8"
             },
             success: function (result) {
-
                 if (MarkerArray.length != 0) {
                     for (var i = 0; i < MarkerArray.length; i++) {
                         MarkerArray[i].setMap(null);
@@ -504,10 +529,9 @@
     function SaveChangesToRoute() {
         if (document.getElementById("ToLB").options.length > 0) {
             DeleteChosenRoute(SaveRouteAndStops);
-
-
-
         }
+        else
+            alert("Please add some busstops");
     }
 
     //function used to move items between the 2 lists selectors
@@ -594,7 +618,7 @@
 
 <section style="float: right; width: 45%; height: 70%; text-align: right; border: groove; margin: 10px;">
     <form name="combo_box">
-        <p style="color: ghostwhite; float: left" >
+        <p style="color: ghostwhite; float: left">
             Route Name:
             <input type="text" id="RouteNumber" name="route name" />
         </p>

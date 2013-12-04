@@ -194,7 +194,9 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        public void SaveNewBus(List<string> NewBusList, List<string> AllBusses)
+
+
+        public int SaveNewBus(List<string> NewBusList, List<string> AllBusses)
         {
             List<string> BussesToAdd = new List<string>();
             List<string> BussesToRemove = new List<string>();
@@ -212,7 +214,7 @@ namespace MapDrawRouteTool.Controllers
             }
 
             removeBusses(BussesToRemove);
-            addBusses(BussesToAdd);
+            return addBusses(BussesToAdd);
         }
 
         private void removeBusses(List<string> bussesToRemove)

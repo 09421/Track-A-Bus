@@ -36,8 +36,7 @@
             featureType: 'poi',
             stylers: [
                 { visibility: 'off' }]
-        }
-        ];
+        }];
 
         //Creates the DirectionsService
         directionsService = new google.maps.DirectionsService();
@@ -116,7 +115,7 @@
                 success: function (result) {
                     if (result == -1)
                         alert("No Internet connection");
-                    else if(result == 0){
+                    else if (result == 0) {
                         var select = document.getElementById("StopRoutes");
                         select.options.add(new Option(document.getElementById("StopName").value));
                     }
