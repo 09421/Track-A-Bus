@@ -1,0 +1,31 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 3: Rediger materialetype realisering}
+Denne Use Case bliver initialiseret ved, at programmøren på brugergrænsefladen trykker på 'Manage Materials'. Herefter kommer han ind et vindue, hvor der kan manipuleres med materialetyperne. Billeder kan findes i bilag under Billeder
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.60]{./Billeder/Brugergrenseflade/MaterialsWindow.png}
+	\caption{Materiale vinduet}
+	\label{fig:MaterialsWindow1}
+\end{figure}
+Normalforløb 1, hvor en ny materialetype tilføjes, bliver så initialiseret ved, at programmøren trykker på 'Add', hvorefter en nyt vindue fremkommer, hvor navnet og densiteten på den nye materialetype kan indtastes. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1.00]{./Billeder/Brugergrenseflade/AddEditWindow_Programmer.png}
+	\caption{Add eller Edit vinduet}
+	\label{fig:AddEditWindow_Programmer2}
+\end{figure}
+Normalforløb 2 handler om sletning af materialetype, og det fungerer ved, at en materialetype markeres, hvorefter der trykkes på 'Delete', hvilket selvfølgelig sletter den valgte materialetype. Det er også muligt at redigere i eksisterende materialetyper, hvilket er det sidste normalforløb. Dette gøres  ved at markere det ønskede materiale, efterfulgt af et tryk på 'Edit'. Her fremkommer så et nyt vindue, hvor navnet og densiteten kan ændres.
+\\\\
+Når vinduet åbnes hentes alle de gemte materialetyper på databasen, gennem kaldet til LoadMaterials funktionen. Denne funktion lægger så de hentede materialer ind i en observable collection, der kan indeholde MaterialsDataobjekter. MaterialsData klassen indeholder blot en række properties, og klassen bruges udelukkende til at indeholde data for en materialetype. I selve Viewlaget er der bindet til listen, således at materialetyperne kan ses på GUI'en.
+LoadMaterials efterspørger alle materialetyper i databasen. Dette gør den ved at oprette en besked, som håndteres i data access layer, som igen kalder videre ned til databasen efter informationer omkring alle gemte materialetyper. Disse returneres så til data access layer, hvorefter de kan tilgåes i modellaget, hvor de så ligges ind i en liste, så de kan tilgåes fra GUI'en.
+\\
+Endvidere er der en række funktioner i modellaget som bruges til at redigere i de eksisterende materialetyper og oprette nye materialetyper. F.eks. er det muligt at slette en materialetype gennem kaldet til DeleteMaterial(). Funktionen skal have en enkelt parameter, som angiver ID'et på selve materialetypen. Det er en stor fordel, at materialetyperne er sorteret i listen, i samme orden som de er i databasen. De vises også i samme orden, som er i i databasen, og derfor kan indexet i listen på selve GUI'en medsendes som parameter, hvilket gør koden forholdsvis simpel og let at forstå. 
+\\\\
+Det kan diskuteres om det er nødvendigt at indlæse hele listen på ny, efter hver operation f.eks. ved tilføjelse af et materiale. Men ved at gøre dette, sikres det, at materialetyperne som programmøren kan se, altid stemmer overens med dem på databasen. Ligeledes resulterer det også i, at listen af materialetyper på skærmen bliver opdateret efter hver operation. Ligeledes er det ikke nødvendigt med ret meget kode på selve listen, da den hele tiden opdateres, når data hentes fra databasen.
+\\\\
+Det skal nævnes, at der er et problem med implementeringen af Use Casen. Det er selvfølgelig muligt at tilføje materialetyper, men de vil i praksis aldrig kunne blive brugt. For det første er der kun 5 rum i boksen, der skal indeholde de sorterede klodser, så der er ikke plads til de nye materialetyper. Desuden er selve sorteringsalgoritmen laves således, at den anvender nogle rimelig faste koordinater, og hvis en ny materialetype så skulle tilføjes, skulle der laves en ny algoritme til dette. Det er ligeledes heller ikke muligt at slette en af standardmaterialerne, da dette vil resultere i problemer på databasen. Hvis en af disse bliver slettet, vil en klods på databasen komme til at have en fremmednøgle til en materialetype som ikke eksisterer. 
+Til gengæld er det muligt, at redigere i navnet og densiteten på de eksisterende materialetyper, hvis det ønskes. 
+\\\ 
+\end{document}

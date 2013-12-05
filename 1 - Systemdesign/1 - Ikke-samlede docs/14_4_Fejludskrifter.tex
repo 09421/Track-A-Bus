@@ -1,0 +1,153 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Fejludskrifter}
+Systemets fejludskrifter består hovedsagligt af logging indlæg til databasen, hvor logging niveauet er "ERROR" og i form af beskedbokse der fremkommer på skærmen. Nedenfor følger en liste af fejl. Der beskrives kort hvordan de forekommer og hvordan de kan udbedres. Hvis der i overskriften for fejlen står LOG til sidst er det en log besked til databasen, hvis det står MSG forekommer fejlen i en beskedboks.
+\begin{itemize}
+	\item \textbf{Initialization of the robot failed! LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når robotten ikke kan ikke findes eller ikke vil operere når der initialiseres. Brugeren kan ikke udbedre det direkte fra programmet, da det er en hardware fejl. 
+	\end{itemize}
+	
+	\item \textbf{Homing failed! LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når robotten under homing proceduren fejler. Denne fejl forekommer tilfældigt af og til og kan ikke ubedres fra programmet da det er en hardware fejl. Brugeren kan forsøge at kører homing igen indtil dette lykkes.
+	\end{itemize}
+	
+	\item \textbf{Robot was not able to move! LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når robotten er blokkeret eller af anden årsag ikke kan bevæge sig. For at udbedre fejlen kan brugeren fjerne hvad end der blokkerer robottens vej.
+	\end{itemize}
+	
+	\item \textbf{Something went wrong with the weight. Weight not obtained. LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når vægten malfunktionerer, og der fra den serielle port modtager "failed". Brugeren kan udbedre dette ved at konfirmere at forbindelser til vægten er sluttet rigtigt til, samt kontrollere at spændings- og groundforbindelser er tilsluttet rigtigt.
+	\end{itemize}
+	
+	\item \textbf{Could not find the materialtype. LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når den udregnede densitet ikke kan parres med en materialetype på databasen. Dette kan ske hvis der sker en fejllæsning fra en siderne eller på klodsen masse. Det kan forsøges at placerer klodsen på transportbåndet og starte sorteringen forfra. 
+	\end{itemize}
+	
+	\item \textbf{Could not find the total bricklength. LOG}
+	\begin{itemize}
+		\item Fejlen forekommer hvis den samlede længde af alle klodserne af den givne type i databasen, ikke kan hentes. Brugeren kan ikke udbedre dette. Klodsen udsmides og sorteringen fortsætter med en ny klods. 
+	\end{itemize}
+	
+	\item \textbf{No room for Brick in the box! LOG}
+	\begin{itemize}	
+		\item Fejlen forekommer når der ikke er plads til den klods der skal sorteres i det specifikke rum. Brugeren kan udbedre dette ved at fjerne klodser fra det gældende rum. 
+	\end{itemize}
+	
+	\item \textbf{Could not insert the box position into the database. LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når klodsens position i boksen ikke kan skrives til databasen. Klodsen må sorteres igen. Brugeren kan verificerer at der er forbindelse til databasen.
+	\end{itemize}
+	
+	\item \textbf{Could not insert the brick into the database. LOG}
+	\begin{itemize}
+		\item Fejlen forekommer når klodsen og dens tilhørende data ikke kan skrives til databasen. Brugeren kan ikke udbedre dette. Klodsen må sorteres igen.
+	\end{itemize}
+	
+	\item \textbf{Lost connection to database LOG}
+	\begin{itemize}
+		\item Fejlen forekommer hvis forbindelsen til databasen forsvinder. Brugeren kan udbedre dette ved at sørge for, at der forbindelse til internettet, og manuelt undersøge om databasen kan tilgås.
+	\end{itemize}	
+	
+	\item \textbf{Database Connection can not be established. To Retry Press 'Yes'. To Close the program press 'No'., MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når forbindelsen til databasen er forsvundet og der er en besked i køen der skal hente fra databasen.  Brugeren kan udbedre dette ved at sørge for at der er forbindelse til internettet, og manuelt undersøge om databasen kan tilgås.
+	\end{itemize}
+	
+	
+\item \textbf{Compile failed. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når der er syntax fejl i koden skrevet i IDE'en. Brugeren kan udbedre dette ved at rette fejlene i programmet. 
+	\end{itemize}
+	
+	
+	
+	\item \textbf{The robot is not online, or has not been homed! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer hvis robottens initialiseringen eller homingen fejler på robotten. Brugeren kan ikke udbedre dette. Det kan dog forsøges at home igen. 
+	\end{itemize}
+	
+	\item \textbf{Please input a value in all fields. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når man vil indstille transportbåndets position og alle felter ikke er udfyldt. Brugeren kan udbedre dette ved at udfylde alle felter
+	\end{itemize}
+	
+	\item \textbf{All fields must contain a real number. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når man vil indstille transportbåndets position og nogle felter indeholder andet end tal. Brugeren kan ubedre dette ved udelukkende at skrive tal i felterne.
+	\end{itemize}
+	
+	\item \textbf{The data input is wrong. Only real numbers. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når man vil indstille transportbåndets position og tallet bliver for stort. Brugeren kan udbedre dette ved at skrive realistiske tal i felterne
+	\end{itemize}
+	
+	
+	\item \textbf{Program is in progress! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når man vil starte et program, hvor et andet program allerede kører. Brugeren kan udbedre dette ved at vente til programmet er kørt færdigt, eller stoppe det kørende program. 
+	\end{itemize}
+	
+	\item \textbf{Please choose a program first! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når man trykker på start uden at have valgt et program. Brugeren kan udbedre dette ved at vælge et program fra listen. 
+	\end{itemize}
+	
+	\item \textbf{Can't load a file, that is being used by the robot! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når man vil redigere i et program som robotten er igang med at eksekvere. Brugeren kan udbedre dette ved at at vente til programmet er kørt færdigt, eller stoppe det kørende program. 
+	\end{itemize}
+	
+	\item \textbf{Cannot load a Standardprogram. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når standardprogrammet prøves at indlæses. Kan ikke udbedres da standardprogrammet ikke kan indlæses.  
+	\end{itemize}
+	
+	\item \textbf{Cannot load file! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når den specificerede fil ikke kan findes på den givne sti. Brugeren kan udbedre fejlen ved at undersøge om han har specificeret den rigtige sti og om filen rent faktisk eksisterer.
+	\end{itemize}
+	
+	\item \textbf{Can't overwrite standardprogram, sorry. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når brugeren prøver at overskrive standard programmet fra IDE'en. Denne fejl kan udbedres ved at vælge et andet filnavn.
+	\end{itemize}
+	
+	\item \textbf{Please name the program. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når brugeren prøver at gemme et program skrevet i IDE'en uden at specificere et navn på filen. Brugeren kan udbedre dette ved at skrive et filnavn.
+	\end{itemize}
+	
+	\item \textbf{Can't delete standardprogram. MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når brugeren prøver at slette standard programmet fra IDE'en. Denne fejl kan udbedres ved at vælge en anden fil.
+	\end{itemize}
+	
+	\item \textbf{Can't delete this file! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når brugeren prøver at slette et program skrevet i IDE'en uden at specificere et navn på filen. Brugeren kan udbedre dette ved at vælge en eksisterende fil.
+	\end{itemize}
+	
+	\item \textbf{Invalid username or password! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer på loginskærmen hvis det skrevne brugernavn og password ikke passer sammen. Dette kan udbedres ved at undersøge om man har skrevet det rigtige brugernavn eller password.
+	\end{itemize}
+	
+	\item \textbf{Can't delete default material! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når brugeren prøver at slette en materialetyper, der er indskrevet som default. Denne fejl kan udbedres ved at slette en anden materiale type end de fem, der er default materialetyper.
+	\end{itemize}
+	
+	\item \textbf{Robot have not been homed! MSG}
+	\begin{itemize}
+		\item Fejlen forekommer når brugeren prøver at starte et program uden at robotten er blevet homet. Denne fejl kan udbedres ved at home robotten før et program startes.
+	\end{itemize}
+
+\end{itemize}
+
+\end{document}

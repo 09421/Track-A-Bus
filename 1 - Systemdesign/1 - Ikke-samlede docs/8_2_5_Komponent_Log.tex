@@ -1,0 +1,32 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Komponent 5: Log}
+Denne komponent fungerer som et fælles loggingframework for hele systemet. Komponenten er implementeret via et singleton designpattern, hvilket sikrer, at det er den samme log der benyttes på tværs af systemet. Den vigtigste funktion i komponenten er, at indskrive loggen i systemets database, men indeholder også mulighed for at logge til fil, logge til et WPF-vindue og en log der bruges i simuleringsøjemed. 
+\\
+Loggen er baseret på et centralt interface, ILog, som indeholder funktionen logThis() og RobotMoved. Dette interface implementeres af forskellige klasser, der henholdsvis har til opgave at logge til forskellige medier. Dette betyder at logtypen kan udskiftes uden større problemer, endda på runtime.
+Strukturen er fremvist på billedet herunder:
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Diagrammer/Klassediagrammer/Klassediagrammer/JPGFiler/Pakke_LogginFramework.jpg}
+\caption{Sturktur over Log}
+\end{figure}
+
+
+Implementeringen af LogThis varierer fra logtype til logtype. Mens der altid logges et tidspunkt, et loglevel og en besked, er det ikke altid der logges f.eks. metoden eller filen hvorfra kaldet kommer. Metoden RobotMoved er en version af LogThis, som er specialiseret til at indsætte beskeder om robottens bevægelse.
+Loggen er baseret på et loglevel, defineret som en global enum, der indeholder alle loglevels.\\
+
+\textbf{LogToFile}\\
+Der gemmes her persistent til en fil på disken. Filen gemmes som udgangspunkt i programmappen med et filnavn bestående af logtidspunktet.\\
+
+\textbf{LogToWindow}\\
+En version, der logger til en collection, der implementerer INotifyPropertyChanged og derfor kan bindes til fra viewet\\
+
+\textbf{LogToDB}\\
+Den log der bruges under et normalt programforløb, gemmer til databasen. Dette viste sig problemfyldt, da brugergrænsefladen ikke kunne binde dertil. Derfor blev det valgt også at opretholde en lokal kopi af loggen. Denne kopi skulle ydermere tilgåes af en tråd anden end Dispatcher, hvilket ikke er muligt med en ObservableCollection, da denne ikke er trådsikker. Dette problem blev løst ved at lave en klasse SafeObservable, som både implementerer INotifyPropertyChanged interfacet og indeholder trådbeskyttelse.
+
+
+
+
+\end{document}

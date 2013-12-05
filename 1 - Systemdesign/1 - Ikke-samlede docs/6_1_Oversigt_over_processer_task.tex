@@ -1,0 +1,17 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Oversigt over processer/task}
+Processen på PC'en består samlet set af 6 tråde.\\
+\begin{figure}[H]
+\centering
+\includegraphics[scale=1]{Billeder/ProcesTaskView.jpg}
+\caption{Oversigt over tråde}
+\end{figure}
+\textbf{System} - Hovedtråd som starter og initialiserer robotten. Tråden sørger også for brugergrænsefladen.\\ 
+\textbf{MsgQueue} - Opretter en besked kø som bruges til at sende eller modtage beskeder til og fra databasen.\\
+\textbf{Homing} - Tråd som gør at robotten kan home igennem brugergrænsefladen.\\
+\textbf{BrickSort} - Tråd der sørger for at sortere de forskellige klodser.\\
+\textbf{ResetRobot} - Tråd der gør det muligt at stoppe programmet i en given sekvens igennem brugergrænsefladen, hvorefter den returnere til startpositionen.\\
+\textbf{CheckForHoming} - Tråd der tjekker hvornår robotten er homet.\\
+\end{document}

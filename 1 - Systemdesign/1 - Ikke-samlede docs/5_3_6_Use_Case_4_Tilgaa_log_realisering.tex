@@ -1,0 +1,9 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 4: Tilgå log realisering}
+
+Fra start af blev der blev det bestemet at Loggen skulle gemmes på databasen, men da databasen og specielt databasefaden blev implementeret løbende, blev loggen i første omgang lavet som så den skrev til en konsol, og den kunne derfor tilgåes herigennem. Da databasen blev færdigudviklet blev der implementeret en version af logklassen, som gik igennem data access layer til databasen.
+Rent programteknisk foregår det ved at brugeren vælger en dato, hvorefter alle logbeskeder fra denne dato hentes fra databasen. 
+Funktionaliteten med at gemme til en lokal fil på klient PC'en blev implementeret via .NET biblioteker og fildialogen i WPF, derfor kaldes det direkte i Business logic layer og Presentation layer.
+\end{document}

@@ -1,0 +1,72 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Arkitektur mønstre}
+
+Nedenstående liste er en opremsning af de standard arkitekturmønstre, der er anvendt i systemet. 
+Under listen er de forskellige mønstre dokumenteret.
+
+\begin{itemize}
+  \item Model View ViewModel (MVVM)
+  \item Singleton
+  \item Adapter
+  \item Strategy
+  \item Facade
+  \item Publish-Subscribe
+  \item Mediator
+\end{itemize}
+
+\subsubsection*{Model View ViewModel (MVVM)}
+
+MVVM-mønstret bruges til at opretholde en overskuelig arkitektur i systemets implementering. 
+Det sørger bl.a. for, at det er muligt at udføre softwaretest på alt kode.
+Koden opdeles i fire lag; \textit{View}, \textit{ViewModel}, \textit{Model} og \textit{DAL}\footnote{Data acces Layer}. 
+\\
+Se \url{http://en.wikipedia.org/wiki/Model_View_ViewModel} for mere dokumentation.
+
+
+
+\subsubsection*{Singleton}
+Singleton bruges til at oprette ét objekt af en instance. 
+Når først objektet er oprettet vil andre, der forsøger at oprette det, få returneret det samme objekt, som der blev oprettet først.
+\\
+Se afsnit 26.5 i \textit{Applying UML and Patterns} for yderlige information.
+
+
+
+\subsubsection*{Adapter}
+Adapter-mønstret bruges til at oprette et interface og en klasse til en anden klasse, således den anden klasses funktioner kan tilgås fra interfacet.
+\\
+Se afsnit 26.1 i \textit{Applying UML and Patterns} for yderlig information.
+
+
+
+\subsubsection*{Strategy}
+Strategy-mønstret bruges til at udskifte funktionalitet på run-time, således den samme funktion kan kaldes, men hentes fra forskellige klasser.
+\\
+Se afsnit 26.7 i \textit{Applying UML and Patterns} for yderlig information.
+
+
+
+\subsubsection*{Facade}
+Facade-mønstret bruges til at pakke flere sammenhængende klasser ind i en .dll-fil, således det kan tilgås af vilkårligt andre klasser med samme funktionalitet.
+\\
+Se afsnit 26.9 i \textit{Applying UML and Patterns} for yderlig information.
+
+
+
+\subsubsection*{Publish-Subscribe}
+Publish-Subscribe-mønstret bruges til at få flere klasser til at videregive information, uden de skal vente på en returkald. 
+På denne måde kan andre klasser tilgå informationen, uden klassen der afgav den informationen kender de(n) der modtager.
+\\
+Se afsnit 26.9 i \textit{Applying UML and Patterns} for yderlig information.
+
+
+
+\subsubsection*{Mediator}
+Mediator-mønstret opretter en klasse til at sende information imellem to andre klasser, således kaldet kan testes.
+\\
+Se \url{http://en.wikipedia.org/wiki/Mediator_pattern}
+
+
+\end{document}

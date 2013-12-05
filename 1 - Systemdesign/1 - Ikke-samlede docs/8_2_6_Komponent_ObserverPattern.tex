@@ -1,0 +1,98 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\newpage
+
+\subsubsection{Komponent 6: Beskedkø, observer pattern og database tilgang}
+Komponenten består af tre dele; Beskeden, en beskedkø og en observer. Denne del af dokumentet vil beskrive hvordan databasen tilgås ved hjælp af disse tre dele.
+\\\\\textbf{Besked:}\\
+Klassen "Message" består udelukkende af overloadede constructorer. Alt efter hvilke funktionaliteter man vil tilgå på databasen, laves en specifik Message. Hvis brugeren f.eks. vil lave et Select statement uden en where clause, laves en message med tre parametre; En operation, en tabel, og de kolonner der skal hentes. Hvis brugeren gerne vil have en where clause på beskeden, skal han lave en besked med fem parametre; De tre forrige samt en kolonne der skal søges i og en værdi der skal søges efter. Inde i denne klasse ligger der også flere enumerations; En der indeholder hvilken operation der skal laves, en der indeholder de forskellige tabeller man kan tilgå og en for hver tabel med de kolonner der eksister i tabellen. På kodeudsnit \ref{lst:MessageConstructor} ses hvordan en select statement uden where clause bliver oprettet.
+
+\begin{lstlisting}[caption=Eksempel på en Message constructor , label=lst:MessageConstructor] 
+public Message(Operations operation, Tables table, string column)
+{
+            
+      Op = operation;
+      Tb = table;
+      Column = column;
+}
+
+\end{lstlisting}
+
+Disse beskeder kan tilgås frit fra hele systemet. Når beskeden er oprettet bliver de lagt i beskedkøen.
+\\\textbf{Beskedkø:}\\
+Klassen MsgQueue bruges til samle beskeder fra hele systemet og sørge for, at de beskeder der kom først bliver håndteret først. Selv hvis forbindelsen til databasen forsvinder, så er det muligt for systemet at fortsætte, indtil der skal hentes noget fra databasen. Når der skal hentes noget fra databasen, bliver systemet nødt til at vente, da en select statement ofte er kritisk for systemts videre kørsel. Klassen består af en privat Queue der der typedefineret til objekter af typen Message. Til at tilgå køen er der blevet lavet tre funktioner; En til at tage den forreste Message fra køen, en til at ligge en message på køen og en til at kigge på den forreste Message i køen.  Beskedkøen er bygget op som Singleton designmønsteret, dvs. uanset hvor du tilgår beskedkøen fra, er det den samme kø. Det er også Publisher delen af Observer design mønsteret. Dertil har den en funktion, NotifyAll, der fortæller Subscriberen, DatabaseObserver klassen, at en besked er klar til at blive håndteret, og venter ellers bare hvis køen er tom. På kodeudsnit \ref{lst:NotifyAll} kan det ses hvordan NotifyAll funktionen er implementeret
+
+\begin{lstlisting}[caption=Eksempel på en Message constructor , label=lst:NotifyAll] 
+public void NotifyObservers()
+{
+     while (true)
+     {
+           if (_dbQueue.Count != 0)
+           {
+                selectFlag = false;
+                foreach (Message m in _dbQueue)
+                {
+                     if (
+                              m.Op == Operations.Select
+                           || m.Op == Operations.SelectDistinct
+                           || m.Op == Operations.SelectMax 
+                           || m.Op == Operations.SelectBetween
+                        )
+                               selectFlag = true;
+                }
+                _dbObserver.Notify(SingletonMsgQueue);
+           }
+
+           else
+          {
+                Thread.Sleep(35);
+          }
+		
+     }
+}
+\end{lstlisting}
+Hvis køen er tom ventes der i 35 millisekunder, ellers undersøges der om der ligger en besked, der skal hente fra databasen i køen. Hvis der gør sættes der et flag, som bruges i DatabaseObserver klassen. Herefter kaldes notify på observeren, med køen som parameter. Hvis forbindelsen forsvinder vil der i DatabaseObserver klassen kaste en event, som gribes i MsgQueue klassen. Denne spørger brugeren om han vil prøve at skabe forbindelse igen, eller om han vil lukke systemet ned. \\
+
+\noindent
+\textbf{Observer:}\\ 
+Klassen DatabaseObserver er subscriber delen af Observer design mønsteret og har til opgave at håndtere beskederne til databasen, samt at vedligeholde forbindelsen. Klassen består af to hoved funktioner og to trådfunktioner som er beskrevet nærmere i afsnit 6.3 Kommunikation og synkronisering. Den første hovedfunktion er Notify som kaldes fra klassen MsgQueue. Funktionens vigtigste opgave er, at hente en besked fra køen og kalde den næste hovedfunktion, handleMessage, med den hentede besked som parameter. Ud over dette skal den også gribe den exception der kastes, hvis forbindelsen fejler og ligge en besked i køen, der beskriver at forbindelsen er tabt. Når forbindelsen reetableres skal den også ligge en besked i køen der beskriver at forbindelsen er reetableret. Desuden skal den event der bliver brugt i beskedkø delen også kastes, hvis der er en select besked i køen. På figur \ref{fig:Test} kan man se et mere detaljeret hændelsesforløb over Notify funktionen. Sekvensdiagrammet kan ses i bilag under Diagrammer/Detaljerede sekvensdiagrammer
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/dSSD/Notifier/Notify.jpg}
+\caption{dSSD over Notify i DatabaseObserver klassen}
+\label{fig:Test}
+\end{figure}
+
+I den anden hovedfunktion, handleMessage, bliver database facaden tilgået, alt efter hvilke attributer der er sat i beskeden. Den består i realiteten af en switch/case på den operation der er sat i beskeden. I nogle af casene er det muligt at to forskellige funktioner kan tilgås, alt efter om en specifik attribut er null eller ej. På kode eksempel \ref{lst:handleMessageSwitch} ses det hvordan facaden tilgås ved en switch case og hvordan det besluttes om funktionen skal tilgås med eller uden en where clause.
+
+\begin{lstlisting}[caption=Eksempel på en Message constructor , label=lst:handleMessageSwitch]
+....... 
+switch(msg.Op)
+{
+      case Operations.Select:
+           if (whereColumn == null)
+           {
+                 RetrievedItemsList = 
+                         _dbFacade.SelectFrom(
+                         		column, table
+                         					 );
+                 MsgQueue.HandlingSelect = false;
+                 SemPool.Release();
+                 break;
+           }
+           else
+           {
+                 RetrievedItemsList = 
+                        _dbFacade.SelectFrom(                                  
+                                column, table, 
+                                whereColumn, value.ToString()
+                                            );
+                 MsgQueue.HandlingSelect = false;
+                 SemPool.Release();
+                 break;
+           }
+}
+\end{lstlisting}
+Det forrige eksempel viser håndteringen af select statement. Hvis whereColumn ikke er sat, betyder det, at der ikke vil laves en select statement med en where clause. Herefter hentes der fra databasen og ligges over i RetrievedItemsList. HandlingSelect bruges i tilfælde af, at to forskellige tråde laver en select besked på samme tid. Release() bruges til at signalere til den tråd der venter, at den må fortsætte. Der kan læses mere om dette i Process/Task view unde afsnit 6.3 Kommunikation og synkronisering
+\end{document}
