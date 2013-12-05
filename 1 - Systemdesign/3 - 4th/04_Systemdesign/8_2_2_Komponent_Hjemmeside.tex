@@ -40,20 +40,63 @@ For at tilføje en bus, skriver administratoren bussens ID ind i feltet: 'Bus ID'
 
 Anden del af dette view gør det muligt at tilføje busser til en busrute og fjerne busser fra en busrute. Denne del består af 3 lister, hvor den ene indeholder alle busruter, hentet fra databasen, en der indeholder alle busser, der ikke er på nogle busruter samt en der viser hvilke busser der køre på en valgt busrute. I dette views Onload funktion bliver der, ud over den overnævte GetAllBusses() funktion, også kaldt 2 andre funktioner, dette forgår igen gennem 2 ajax kald til controlleren, den første henter navnene på alle busruter fra databasen, den anden henter en liste af ID'er for alle de busser der ikke er tilknyttet en rute endnu. Disse 2 ajax kald er magen til ajax kaldet vist i kodeudsnit: \ref{lst:AjaxGetAllBusses}, den eneste forskel er hvilken controller funktion der bliver kaldt, samt hvilen HTML select element der bliver tilføjet til. Det er nu muligt for administratoren at vælge en af busruterne, fra listen. Dette vil trigger et 'onchange' event, der laver endnu et ajax kald til controller for at hente alle de busser der køre på den valgte rute, og vise dem i listen 'Busses on route'. Der kan nu tilføjes busser fra listen 'Avaliable busses' over til listen 'Busses on route' og ved tryk på knappen 'Save' vil de busser der er blevet flyttet til listen 'Busses on route' bliver opdateret i databasen, således at de nu er knyttet til den valgte rute.\\
 
-Det næste view gør det muligt at oprette en ny busrute, ændrer i en der alleredes findes, samt slette en givet busrute fra systemet. For at indtegne en busrute, kræver det et kort, hertil er der blevet brug Google maps API. Før dette API kan bruges, kræves der en API key der kan fås fra googles api console. For at få vist kortet på hjemmesiden, kræves det at kortet bliver initializeret. Først og fremmest skal man have lavet plads til det på siden.\\
+Det næste view gør det muligt at oprette en ny busrute, ændrer i en der alleredes findes, samt slette en givet busrute fra systemet. For at indtegne en busrute, kræver det et kort, hertil er der blevet brugt Google maps API og Google Directions API. For at få vist kortet på hjemmesiden, kræves det at kortet bliver initializeret. Først og fremmest skal man have lavet plads til det på siden.\\\\
 \begin{lstlisting}[caption=Div til google maps, label={lst:mapsDiv}, language=HTML]
 <section id="Map">
     <div id="map-canvas"></div>
 </section>
 \end{lstlisting}
-Når vores HTML body element er loaded, kaldes en JavaScript function, der initializere kortet.
-Først bliver der defineret en style, som kortet skal bruge, denne fjerner 'Points of interest'. Dernæst bliver der oprettet et mapOptions object, der definere forskellige options for kortet, så som kortets start position, type og styles. 
-\begin{lstlisting}[caption=Map style, label={lst:MapStyle}, language=Java]
-        var featureOpts = [{
-            featureType: 'poi',
-            stylers: [
-                { visibility: 'off' }]
-        }];
+Når vores HTML body element er loaded bliver dens OnLoad() event kaldt, dette kalder en JavaScript function, der initializere kortet samt Google directions service.
+Først bliver der defineret en style, som kortet skal bruge, denne fjerner 'Points of interest'. Dernæst bliver der oprettet et mapOptions object, der definere forskellige options for kortet, her bliver kortets start position defineret til at vise Aarhus, kort typen bliver sat til ROADMAP, da dette vil vise kortet som et simplet vej kort. StreetViewControl bliver sat til false, da det er en feature der ikke er relevant for systemet.
+\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+var featureOpts = [{
+	featureType: 'poi',
+	stylers: [
+		{ visibility: 'off' }]
+}];
+var Aarhus = new google.maps.LatLng(56.155955, 10.205011);
+var mapOptions = {
+	zoom: 13,
+	mapTypeId: google.maps.MapTypeId.ROADMAP,
+	center: Aarhus,
+	streetViewControl: false,
+	styles: featureOpts
+};
+\end{lstlisting}
+Efter at have defineret mapOptions bliver oprettet et map object. Dette object skal have det overnævte HTML map-canvas div element, samt mapOptions som constructor parameter.
+\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+\end{lstlisting}
+kortet er nu blevet initialiseret og bliver vist på siden. Det næste der bliver initialiseret er Google direction renderer, dette bliver brugt til at vise en rute på kortet mellem 2 givet punkter. Først bliver der defineret de options som ruten skal bruge. Dette indebære om det skal være muligt at trække i ruten, for at ændre på den vej den skal tage, og om det skal være muligt at klikke på de markers der repræsentere start og slut punktet for ruten. Dette rendererOptions object bliver derefter brugt i constructoren for DirectionsRenderer, der laver et nyt DirectionsRenderer object der senere bliver brugt til at tegne ruten på kortet.
+\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+rendererOptions = {
+map: map,
+	draggable: true,
+	markerOptions: {
+		clickable: true
+	},
+	suppressInfoWindows: true
+};
+directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 \end{lstlisting}
 
+efter kortet og direction renderen er blevet initialiseret, bliver der sat en listener på kortet der lytter efter om der bliver trykket på kortet.
+\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+google.maps.event.addListener(map, 'click', function (event) {
+	if (startPoint == null && endPoint == null) //No markers, set first
+		startPoint = new google.maps.Marker({
+			map: map,
+			draggable: true,
+			position: event.latLng
+		});
+	else if (startPoint != null && endPoint == null) {//if 1 markers, set last markers
+		endPoint = new google.maps.Marker({
+			map: map,
+			draggable: true,
+			position: event.latLng
+		});
+		calcRoute(startPoint, endPoint);
+		ClearMarkers();
+}
+\end{lstlisting}
 \end{document}
