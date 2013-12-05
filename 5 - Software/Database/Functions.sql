@@ -263,10 +263,10 @@ end $$
 
 
 
-#Calculates average speed of the bus. Ascending and descedning version of the function are identical with the exception of the table used.
+#Calculates average speed of the bus.
 DELIMITER $$
-drop function if exists CalcBusAvgSpeedAsc $$
-create function CalcBusAvgSpeedAsc(BusId int)
+drop function if exists CalcBusAvgSpeed $$
+create function CalcBusAvgSpeed(BusId int)
 returns float
 begin
 	declare PosCounter int default 1;
@@ -281,8 +281,8 @@ begin
 	declare secondsDriven int default 0;
 	declare speed float;
 	
-		drop temporary table if exists BusGPSAsc;
-		create TEMPORARY table if not exists BusGPSAsc(
+		drop temporary table if exists BusGPS;
+		create TEMPORARY table if not exists BusGPS(
 		id int auto_increment primary key, 
 		pos_lat decimal(20,15),
 		pos_lon decimal(20,15),
@@ -290,82 +290,31 @@ begin
 	);
 	
 	#Get all positional data for this bus
-	insert into BusGPSAsc (pos_lat, pos_lon, busUpdateTime)
+	insert into BusGPS (pos_lat, pos_lon, busUpdateTime)
 	select GPSPosition.Latitude,  GPSPosition.Longitude, GPSPosition.Updatetime from GPSPosition
-	where GPSPosition.fk_Bus=BusId;
+	where GPSPosition.fk_Bus=BusId order by GPSPosition.ID asc;
 	
 	#Get amount of positional data for this bus
-	select count(id) from BusGPSAsc into MaxPosCounter;
+	select count(id) from BusGPS into MaxPosCounter;
 	#Iterate through positional data calculating how far the bus has traveled
 	#and how long it has take it to drive the disntance.
 	while PosCounter < MaxPosCounter do
 		#Get current position and next position
-		select pos_lon from BusGPSAsc where id= PosCounter into R1x;
-		select pos_lat from BusGPSAsc where id= PosCounter into R1y;
-		select pos_lon from BusGPSAsc where id = PosCounter+1 into R2x;
-		select pos_lat from BusGPSAsc where id = PosCounter+1 into R2y;
+		select pos_lon from BusGPS where id= PosCounter into R1x;
+		select pos_lat from BusGPS where id= PosCounter into R1y;
+		select pos_lon from BusGPS where id = PosCounter+1 into R2x;
+		select pos_lat from BusGPS where id = PosCounter+1 into R2y;
 		#Calculate distance in meters. This distance will be incremented, so it holds the total distance traveled
 		set Distance = Distance + Haversine(R2y, R1y, R1x, R2x);
 		#Get update time for those two positions.
-		select busUpdateTime from BusGPSAsc where id= PosCounter  into ThisTime;
-		select busUpdateTime from BusGPSAsc where id = PosCounter+1  into NextTime;
+		select busUpdateTime from BusGPS where id= PosCounter  into ThisTime;
+		select busUpdateTime from BusGPS where id = PosCounter+1  into NextTime;
 		#Calculate time it has taken in seconds. This time will incremented, so it holds the total time traveled.
 		set secondsDriven = secondsDriven + (Time_To_Sec(NextTime) - Time_To_Sec(ThisTime));
 		set PosCounter = PosCounter + 1;
 	end while;
 	# TotalMeters / TotalSeconds = average speed.
 	set speed = Distance/secondsDriven;
-	drop temporary table BusGPSAsc;
+	drop temporary table BusGPS;
 	return speed;
 end $$
-
-DELIMITER $$
-drop function if exists CalcBusAvgSpeedDesc $$
-create function CalcBusAvgSpeedDesc(BusId int)
-returns float
-begin
-	declare PosCounter int default 1;
-	declare MaxPosCounter int;
-	declare Distance float default 0;
-	declare R1x decimal(20,15);
-	declare R1y decimal(20,15);
-	declare R2x decimal(20,15);
-	declare R2y decimal(20,15);
-	declare ThisTime Time;
-	declare NextTime Time;
-	declare secondsDriven int default 0;
-	declare speed float;
-		drop temporary table if exists BusGPSDesc;
-		create TEMPORARY table if not exists BusGPSDesc(
-		id int auto_increment primary key, 
-		pos_lat decimal(20,15),
-		pos_lon decimal(20,15),
-		busUpdateTime time
-	);
-	
-	#Get all positional data for this bus
-	insert into BusGPSDesc (pos_lat, pos_lon, busUpdateTime)
-	select GPSPosition.Latitude,  GPSPosition.Longitude, GPSPosition.Updatetime from GPSPosition
-	where GPSPosition.fk_Bus=BusId;
-	
-	#Get amount of positional data for this bus
-	select count(id) from BusGPSDesc into MaxPosCounter;
-	#Iterate through positional data calculating how far the bus has traveled
-	#and how long it has take it to drive the disntance.
-	while PosCounter < MaxPosCounter do
-		select pos_lon from BusGPSDesc where id= PosCounter into R1x;
-		select pos_lat from BusGPSDesc where id= PosCounter into R1y;
-		select pos_lon from BusGPSDesc where id = PosCounter+1 into R2x;
-		select pos_lat from BusGPSDesc where id = PosCounter+1 into R2y;
-		set Distance = Distance + Haversine(R2y, R1y, R1x, R2x);
-		select busUpdateTime from BusGPSDesc where id= PosCounter  into ThisTime;
-		select busUpdateTime from BusGPSDesc where id = PosCounter+1  into NextTime;
-		set secondsDriven = secondsDriven + (Time_To_Sec(NextTime) - Time_To_Sec(ThisTime));
-		set PosCounter = PosCounter + 1;
-	end while;
-	# Meters / seconds = speed.
-	set speed = Distance/secondsDriven;
-	drop temporary table BusGPSDesc;
-	return speed;
-end $$
-delimiter ;

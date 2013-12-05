@@ -76,6 +76,8 @@ namespace TrackABusSim
                     bs.stopSim();
                 }
                 isRunning = false;
+                DatabaseAcces.SelectWait = false;
+                DatabaseAcces.InsertWait = false;
             }
         }
 

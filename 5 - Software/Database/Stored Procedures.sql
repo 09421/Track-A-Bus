@@ -48,8 +48,8 @@ BEGIN
 	into ClosestEndPointIdDesc,ClosestBusDistanceDesc,ClosestBusIdDesc;
 	
 	#Calculates the average speed of the bus.
-	select CalcBusAvgSpeedAsc(ClosestBusIdAsc) into ClosestBusSpeedAsc;
-	select CalcBusAvgSpeedDesc(ClosestBusIdDesc) into ClosestBusSpeedDesc;
+	select CalcBusAvgSpeed(ClosestBusIdAsc) into ClosestBusSpeedAsc;
+	select CalcBusAvgSpeed(ClosestBusIdDesc) into ClosestBusSpeedDesc;
 
 	#Time to stop = meters / meters / second = seconds
 	set TimeToStopSecAsc = ClosestBusDistanceAsc/ClosestBusSpeedAsc;

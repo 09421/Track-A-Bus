@@ -302,7 +302,6 @@ namespace MapDrawRouteTool
                         }
 
                         connection.Close();
-                        i = 8;
                         return results;
                     }
                     catch (Exception e)

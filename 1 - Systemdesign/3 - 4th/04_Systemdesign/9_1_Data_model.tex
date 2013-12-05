@@ -160,7 +160,7 @@ Først findes mulige ruter fra givet stoppesteds navn og rutenummer og indlægges 
 
 \noindent
 \textbf{GetClosestBusAscProc og GetClosestBusDescProc}
-Da proceduren for begge retninger er meget ens, vil der kun vises et kodeudsnit for GetClosestBusAscProc. Dette kan ses på kodeudnsit \ref{lst:GetClosestBusAscProc}.\\ Alle kommentarer og deklareringer er fjernet for at give et bedre overblik over funktionalitetet af proceduren. En detaljeret forklaring,  samt foreskellene mellem GetClosestBusAscProc og GetClosestBusDescProc, følger efter kodeudsnittet.\\
+Da proceduren for begge retninger er meget ens, vil der kun vises et kodeudsnit for GetClosestBusAscProc. Dette kan ses på kodeudnsit \ref{lst:GetClosestBusAscProc}.\\ Alle kommentarer og deklareringer er fjernet for at give et bedre overblik over funktionalitetet af proceduren. En detaljeret forklaring,  samt forskellene mellem GetClosestBusAscProc og GetClosestBusDescProc, følger efter kodeudsnittet.\\
 
 \begin{lstlisting}[caption=GetClosestBusAscProc. Udregner nærmeste bus- samt distance til stop og nærmeste rutepunkt, label={lst:GetClosestBusAscProc},language=SQL]
 create procedure GetClosestBusAscProc(OUT busClosestEndPointAsc int, Out routeLengthAsc float, OUT closestBusId int)
@@ -213,31 +213,33 @@ Alle buser, som kører på en af de ruter i \textit{possibleRoutes} og hvor \texti
 While-loopets rolle er, at iterere igennem samtlige busser, og udregne distancen fra hver bus til dens parrede stoppested, hvorefter at vælge den bus der har den korteste distance til sit stoppested.\\ 
 Først udregnes Det nærmeste rutepunkt ved et kald til funktionen \textit{GetClosestEndpointAsc}. Hvis dette rutepunkt har et større ID end busstoppets, vil distancen fra bussen til stoppestedet sættes tallet til 10000000, altså meget højt. I en fysisk forstand vil dette ske, hvis bussen er kørt forbi det givne stoppested, og derfor ikke længere kan være den nærmeste bus til stoppestedet. Hvis rutepunktet derimod har et mindre ID end stoppestedet vil de nyeste koordinater for bussen findes, og distancen fra bussen hen til stoppestedet vil udregnes ved et kald til funktionen \textit{CalcRouteLengthAsc}.\\
 Herefter undersøges der, om den givne bus har en mindre distance hen til stoppestedet end den bus med den nuværende korteste distance. leastBusDist er sættes til 100000, altså højt, men ikke lige så højt som det tal den nuværende distance sættes til, hvis bussen er kørt forbi stoppestedet. Dette vil betyde at ingen sådan bus, ved en fejl, kan vælges som den tætteste bus. Hvis denne bus derimod har en mindre distance end den nuværende korteste distance, vil den mindste distance sættes til denne. IDet, samt det tætteste rutepunkt, for denne bus vil også sættes i denne situation. Til sidst vil den korteste distance, det tætteste rutepunkt samt IDet for den tætteste bus blive returneret.\\
-I GetClosestBusDescProc (samme udregning, blot for rute der køre fra sidste til første stoppested), er der to definerende foreskelle. 
+I GetClosestBusDescProc (samme udregning, blot for rute der køre fra sidste til første stoppested), er der to definerende forskelle.\\ 
 
-\begin{lstlisting}[caption=GetClosestBusDescProc foreskel 1, label={lst:GetClosestBusDescProc_Diff1},language=SQL]
+På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff1}, kan den første ændring ses. I dette tilfælde hentes der kun busser ud hvor \textit{IsDescending} er true, altså hvor den givne bus kører fra første til sidste stoppested.
+
+\begin{lstlisting}[caption=GetClosestBusDescProc forskel 1, label={lst:GetClosestBusDescProc_Diff1},language=SQL]
 ...
 insert into BussesOnRouteDesc (busId,stopId) select distinct Bus.ID, 			possibleRoutes.possRouteStopID from Bus
 inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
 where Bus.IsDescending=true;
 ...
 \end{lstlisting}
-på kodeudsnit \ref{lst:GetClosestBusDescProc_Diff1}, kan den første ændring ses. I dette tilfælde hentes der kun busser ud hvor \textit{IsDescending} er true, altså hvor den givne bus kører fra første til sidste stoppested.
 
-\begin{lstlisting}[caption=GetClosestBusDescProc foreskel 2, label={lst:GetClosestBusDescProc_Diff2},language=SQL]
+\noindent
+På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff2}, kan den anden ændring ses. Hvis en bus kører fra første til sidste stoppested, vil det nærmeste rutepunkt til bussen, have et større ID end stoppestedet, hvis bussen endnu ikke er kørt forbi. Derfor undersøges der her om rutepunktets ID er større eller ligmed stoppestedets ID, hvor der i GetClosestBusAscProc undersøges om det er mindre eller ligemed. \\
+\begin{lstlisting}[caption=GetClosestBusDescProc forskel 2, label={lst:GetClosestBusDescProc_Diff2},language=SQL]
 ...
 if(closestEndPoint >= currentStopId) then
 ...
 \end{lstlisting}
-\noindent
-På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff2}, kan den anden ændring ses. Hvis en bus kører fra første til sidste stoppested, vil det nærmeste rutepunkt til bussen, have et større ID end stoppestedet, hvis bussen endnu ikke er kørt forbi. Derfor undersøges der her om rutepunktets ID er større eller ligmed stoppestedets ID, hvor der i GetClosestBusAscProc undersøges om det er mindre eller ligemed. \\
+
 \noindent
 \subsubsection{Functions:} 
 Igennem forløbet af \textit{CalcBusToStopTime} proceduren, tages en del funktioner i brug. Disse bruges når kun en enkelt værdi behøves returneres. Funktionerne er delt om i to typer; Funktioner til udregning af relevant information til procedurene, samt matematik-funktioner. Der vil ikke vises kodeeksempler for matematik funktionerne i dette afsnit, men der henvises til \textbf{IMPLEMENTATION-MATEMATIK}, for beskrivelser af disse. \\
-Som i \textit{Stored Procedures}-afsnittet, er funktionerne bygget op parvist; En funktion til busser der kører fra første til sidste stop (ascending), samt en anden til busser, der kører fra sidste til første stop (descending). Der vil kun vises et kodeudsnit af ascending-funktionerne, hvorefter foreskellene i descending-funktionerne beskrives. Kodeudsnittene vil ikke indeholde kommentarer eller initialiseringer af variable, så et bedre overblik af funktionalitet kan gives. For fulde kodeudsnit henvises der til bilags CDen i filen Functions under Kode/Database. \\\\
+Som i \textit{Stored Procedures}-afsnittet, er funktionerne bygget op parvist; En funktion til busser der kører fra første til sidste stop (ascending), samt en anden til busser, der kører fra sidste til første stop (descending). Der vil kun vises et kodeudsnit af ascending-funktionerne, hvorefter forskellene i descending-funktionerne beskrives. Kodeudsnittene vil ikke indeholde kommentarer eller initialiseringer af variable, så et bedre overblik af funktionalitet kan gives. For fulde kodeudsnit henvises der til bilags CDen i filen Functions under Kode/Database. \\\\
 \noindent
-\textbf{GetClosestEndpointAsc og GetClosestEndpointDesc}
-Denne funktion tages i brug i \textit{GetClosestBusAscProc}-procedure, og bruges til at finde IDet for det rutepunkt, en given bus er tættest på. Dette ID er dog ikke rutepunktet egentlige ID i \textit{RoutePoint}-tabellen, men derimod dens ID i \textit{BusRoute\_RoutePoint}-tabellen. Denne bus er defineret ved dens ID, givet til funktionen som dens eneste parameter. På kodeudsnit \ref{lst:GetClosestEndpointAsc} kan \textit{GetClosestEndpointAsc}-funktionen ses. Den er givet uden kommentarer eller initialiseringer af variable.\\
+\textbf{GetClosestEndpointAsc og GetClosestEndpointDesc}\\
+Disse funktioner tages i brug i \textit{GetClosestBusAscProc-} og \textit{GetClosestBusDescProc} procedurene, og bruges til at finde IDet for det rutepunkt, en given bus er tættest på. Dette ID er dog ikke rutepunktet egentlige ID i \textit{RoutePoint}-tabellen, men derimod dens ID i \textit{BusRoute\_RoutePoint}-tabellen. Denne bus er defineret ved dens ID, givet til funktionen som dens eneste parameter. På kodeudsnit \ref{lst:GetClosestEndpointAsc} kan \textit{GetClosestEndpointAsc}-funktionen ses. Den er givet uden kommentarer eller initialisering af variabler.\\
 \begin{lstlisting}[caption=GetClosestEndpointAsc finder det tætteste punkt på ruten fra bussen, label={lst:GetClosestEndpointAsc},language=SQL]
 create function GetClosestEndpointAsc(busID int)
 returns int
@@ -280,8 +282,8 @@ END$$
 \end{lstlisting}
 Ruten som den givne bus kører på hentes ud og gemmes i en temporary tabel. I denne tabel gemmes længde- og breddegrader, sammen med det ID punktet har, i \textit{BusRoute\_RoutePoint}-tabellen. Da samtlige punkter ligges ind i databasen samtidig, efter en rute er skabt på hjemmesiden, garanteres det, at punterne ligger sekvensielt. Punkterne gemmes altså i rækkefølge i \textit{BusRoute\_RoutePoint}, uden spring i IDerne. Dette gør at punkterne kan itereres igennem, uden at der skal tages højde for spring, og kan sorteres efter ID i den rækkefølge man skal bruge (ascending for første til sidste stoppested, descending for sidste til første stoppested). Det er meget sandsynligt at det første ID hentet ikke er et, Så det første og sidste punkt på ruten findes også, og bruges som den nedre og øvre grænse for while-lykken. På den måde vil der itereres igennem samtlige punkter på ruten, hvor IDet for første og sidste stop ikke har nogen betydning for funktionen. Inden while-løkken startes hentes bussens sidste position ud, så det ikke har nogen betydning hvis bussens position ændrer sig under itereringen af ruten.\\
 Så længe \textit{routeCounter} (det nuværende ID der undersøges) er \textit{LastChosenID} (Det sidste ID på ruten), udtages punkterne for det nuværende ID og det næste. Således laves der et linjestykke spændt ud mellem to punkter, og afstanden fra bussen til dens tætteste punkt på dette linjestyke, udregnes i \textit{CalcRouteLineDist}. Denne funktion er udelukkende matematisk og vil beskrives i \textbf{IMPLEMENTATION-MATEMATIK}. Hvis bussens position på et givent linjestykke ikke er gyldigt, vil 1000000, et stort tal, returneres. Dette tal vil være større end prevBusDist som har en initial værdi sat til 100000. Dette sørger for, at det givne endpoint ikke,ved en fejl, tælles med. Hvis den udregnede værdi af distancen til punktet på linjen, er mindre end den forrige distance, vil det næste punkt på ruten, i forhold til det punkt man undersøger, søttes til bussens tætteste. Ved en fuldent gennemiterering af ruten, vil bussens tætteste rutepunkt være fundet, og IDet for dette punkt returneres. \\
-I \textit{GetClosestEndpointDesc} er der nogle enkelte foreskelle, som her vil beskrives. På kodeudsnit \ref{lst:GetClosestEndpointDesc_diff1}, kan det ses hvordan ruten nu hentes ud i en tabel, hvor der sorteres efter IDet i \textit{BusRoute\_RoutePoint} tabellen, i faldende rækkefølge.
-\begin{lstlisting}[caption=GetClosestEndpointDesc foreskel 1, label={lst:GetClosestEndpointDesc_diff1},language=SQL]
+I \textit{GetClosestEndpointDesc} er der nogle enkelte forskelle, som her vil beskrives. På kodeudsnit \ref{lst:GetClosestEndpointDesc_diff1}, kan det ses hvordan ruten nu hentes ud i en tabel, hvor der sorteres efter IDet i \textit{BusRoute\_RoutePoint} tabellen, i faldende rækkefølge.
+\begin{lstlisting}[caption=GetClosestEndpointDesc forskel 1, label={lst:GetClosestEndpointDesc_diff1},language=SQL]
 ...
 	insert into ChosenRouteDesc  (id,bus_lat,bus_lon)
 	select BusRoute_RoutePoint.ID, RoutePoint.Latitude,  RoutePoint.Longitude from RoutePoint
@@ -291,9 +293,9 @@ I \textit{GetClosestEndpointDesc} er der nogle enkelte foreskelle, som her vil b
 	order by(BusRoute_RoutePoint.ID) desc;
 ...
 \end{lstlisting}
-
+\noindent
 På kodeudsnit \ref{lst:GetClosestEndpointDesc_diff2} ses det hvordan, der nu læses i modsat rækkefølge fra \textit{ChosenRouteDesc} tabellen. \textit{RouteCounter} er nu den øverste grænse, og {LastChosenID} er nu den nedre. Der læses nu også i omvendt rækkefølge fra tabellen, da IDerne nu er faldende. Det vil også sige, at \textit{RouteCounter} dekrementeres i stedet for inkrementeres i slutningen af hver iteration.
-\begin{lstlisting}[caption=GetClosestEndpointDesc foreskel 2, label={lst:GetClosestEndpointDesc_diff2},language=SQL]
+\begin{lstlisting}[caption=GetClosestEndpointDesc forskel 2, label={lst:GetClosestEndpointDesc_diff2},language=SQL]
 ...
 select ChosenRouteDesc.ID from ChosenRouteDesc order by id asc limit 1 into LastChosenID;
 select ChosenRouteDesc.ID from ChosenRouteDesc order by id desc limit 1 into RouteCounter;
@@ -308,4 +310,91 @@ Set RouteCounter = RouteCounter - 1;
 ...
 \end{lstlisting}
 
+\textbf{CalcRouteLengthAsc og CalcRouteLengthDesc}\\
+Disse funktioner tages i brug i \textit{GetClosestBusAscProc-} og \textit{GetClosestBusDescProc} procedurene. De bruges til at udregne afstanden fra en bus til det valgte stoppested. Funktionerne modtager  et koordinat-sæt for bussen, IDet for bussens tætteste rutepunkt fra forrige funktioner, samt ID et på stoppestedet. Bemærk at disse IDer er hentet fra \textit{BusRoute\_RoutePoint} tabellerne og symboliserer derfor rutepunktet og stoppestedets placering på ruten, og ikke deres egentlige IDer i \textit{RoutePoint} og \textit{BusStop} tabellerne. Funktionerne er ikke meget forskellige, ud over hvilken ChosenRoute tabel fra forrige funktioner, der tages i brug. Herudover itereres der også i omvendt rækkefølge. Der vises kodeudsnit for \textit{CalcRouteLengthAsc}, hvorefter funktionen forklares i detajler. Til sidst forklares forskellene mellem \textit{CalcRouteLengthAsc} og \textit{CalcRouteLengthDesc} mere detaljeret. På kodeudsnit \ref{lst:CalcRouteLengthAsc} kan funktionen ses uden kommentarer eller initialiseringer uden værdi. Dette gøres for at bevare det funktionelle overblik.
+
+\begin{lstlisting}[caption=CalcRouteLengthAsc. Udregner afstanden fra bus til stoppested, label={CalcRouteLengthAsc},language=SQL]
+drop function if exists CalcRouteLengthAsc $$
+create function CalcRouteLengthAsc(bus_pos_lon decimal(20,15), bus_pos_lat decimal(20,15), BusClosestEndPointID int, busStopId int)
+returns float
+BEGIN
+declare RouteCounter int default BusClosestEndPointID;
+
+select bus_lon from ChosenRouteAsc where id = RouteCounter into R2x;
+select bus_lat from ChosenRouteAsc where id = RouteCounter into R2y;
+set BusToStop = Haversine(R2y, bus_pos_lat, R2x, bus_pos_lon);
+
+while RouteCounter < busStopId do
+	select bus_lon from ChosenRouteAsc where id = RouteCounter into R1x;
+	select bus_lat from ChosenRouteAsc where id = RouteCounter into R1y;
+	select bus_lon from ChosenRouteAsc where id = RouteCounter+1 into R2x;
+	select bus_lat from ChosenRouteAsc where id = RouteCounter+1 into R2y;
+	set BusToStop = BusToStop + Haversine(R2y, R1y, R1x, R2x);	
+	set RouteCounter = RouteCounter+1;
+end while;
+drop temporary table ChosenRouteAsc;
+return BusToStop;
+END$$
+\end{lstlisting}
+\textit{RouteCounter} initialiseres til det tætteste rutepunkt, hvorefter dette ID bruges til at hente det første koordinatsæt ud fra \textit{ChosenRouteAsc}. Dette koordinat sæt bruges sammen med bussens koordinater til at udregne afstanden fra bussen til rutepunktet. Denne udregning sker i den anden matematik funktion, Haversine. Denne funktion finder afstanden mellem to koordinater i fugleflugt. Funktionen vil ikke beskrives videre i dette afsnit, for mere information henvises der til afsnittet \textbf{IMPLEMENTERING-MATEMATIK}. Herefter itereres der igennem ruten, hvor IDet for det tætteste rutepunkt på bussen er den nedre grænse, og IDet for stoppestedet er den øvre. Ved hver iteration findes afstanden mellem det nuværende punkt og det næste, og den totale afstand inkrementeres med denne værdi. Til sidst returneres den totale afstand.\\
+I \textit{CalcRouteLengthAsc} gøres der brug af \textit{ChosenRouteDesc} tabellen i stedet for \textit{ChosenRouteAsc}. Desuden bruges IDet for stoppestedet nu som den nedre grænse og det tætteste rutepunkt som den øvre, og \textit{RouteCounter} dekrementeres i stedet. Dette kan ses på kodeudsnit \ref{ChosenRouteDesc_diff1}
+\begin{lstlisting}[caption=CalcRouteLengthDesc forskel, label={lst:ChosenRouteDesc_diff1},language=SQL]
+...
+while RouteCounter > busStopId do
+	select bus_lon from ChosenRouteDesc where id = RouteCounter into R1x;
+	select bus_lat from ChosenRouteDesc where id = RouteCounter into R1y;
+	select bus_lon from ChosenRouteDesc where id = RouteCounter-1 into R2x;
+	select bus_lat from ChosenRouteDesc where id = RouteCounter-1 into R2y;
+...
+	set RouteCounter = RouteCounter-1;
+...
+\end{lstlisting}
+
+\textbf{CalcBusAvgSpeed}\\
+Denne funktion tages i brug i slutningen af \textit{CalcBusToStopTime} proceduren, og bruges til at udregne bussens gennemsnitshastighed. Dette bruges sammen med bussens afstand til stoppestedet, til at udregne hvor lang tid der er tilbage, før bussen når stoppestedet.Funktionen modtager IDet på et bus som den eneste parameter.\\
+Da det i denne funktion er ligegyldigt, hvilken rute bussen kører på, er det også ligegyldigt hvilken vej den kører. Derfor er det kun nødvendigt at have en funktion til at udregne gennemsnitshastigheden. På kodeudsnit. På kodeudsnit \ref{lst:CalcBusAvgSpeed} kan funktionen ses uden kommentarer eller initialiseringer uden værdi. Dette gøres for at bevare det funktionelle overblik. Efter udsnittet forklares funktion detaljeret.
+\begin{lstlisting}[caption=CalcBusAvgSpeed. Udregner gennemsnitshastigheden for en bus. label={lst:CalcBusAvgSpeed},language=SQL]
+	create function CalcBusAvgSpeed(BusId int)
+returns float
+begin
+	drop temporary table if exists BusGPS;
+	create TEMPORARY table if not exists BusGPS(
+	id int auto_increment primary key, 
+	pos_lat decimal(20,15),
+	pos_lon decimal(20,15),
+	busUpdateTime time
+);
+	
+insert into BusGPS (pos_lat, pos_lon, busUpdateTime)
+select GPSPosition.Latitude,  GPSPosition.Longitude, GPSPosition.Updatetime from GPSPosition
+where GPSPosition.fk_Bus=BusId order by GPSPosition.ID asc;;
+	
+select count(id) from BusGPS into MaxPosCounter;
+while PosCounter < MaxPosCounter do
+
+	select pos_lon from BusGPS where id= PosCounter into R1x;
+	select pos_lat from BusGPS where id= PosCounter into R1y;
+	select pos_lon from BusGPS where id = PosCounter+1 into R2x;
+	select pos_lat from BusGPS where id = PosCounter+1 into R2y;
+
+	set Distance = Distance + Haversine(R2y, R1y, R1x, R2x);
+	select busUpdateTime from BusGPS where id= PosCounter  into ThisTime;
+	select busUpdateTime from BusGPS where id = PosCounter+1  into NextTime;
+	set secondsDriven = secondsDriven + (Time_To_Sec(NextTime) - Time_To_Sec(ThisTime));
+	set PosCounter = PosCounter + 1;
+end while;
+set speed = Distance/secondsDriven;
+drop temporary table BusGPS;
+return speed;
+end $$
+\end{lstlisting}
+Første udhentes alle GPS position og opdaterings tiderne for disse, for det relevante bus ID. Dette data indskrives i BusGPS, en temporary tabel, med et ID, som autoinkrementeres fra 1. Antallet af GPS opdateringer fundet for den givne bus, bruges i en while-løkke som den øvre grænse. En counter instantieres til et, og bruges som den nedre grænse.\\
+Ved hver iteration hentes den opdatering af bussens position, hvis ID i BusGPS svarer til counteren. Den næste opdatering i rækken hentes også ud, og afstanden mellem de to punkter udregnes ved hjælp af Haversine funktionen. Den totale afstand inkrementeres med den udregne afstand. Herefter findes opdateringstiden for det første punkt, samt opdateringstiden for det næste. De to tidspunkter omregnes til sekunder, og tiden for det først punkt trækkes fra tiden for det næste. Således findes den tid, det har taget bussen at køre det linjestykke, som spændes over de to punkter. Den totale tid inkrementeres med den fundende tid. \\
+Efter fuldent gennemiterering af bussens positioner, divideres den total afstand med tiden det har taget at køre afstanden. Således findes gennemsnitshastigheden, og denne værdi returneres.\\\\
+\noindent
+\textbf{Haversine og CalcRouteLineDist}\\
+Disse to funktioner vil ikke vises som kodeudsnit, da de blot er MySQL implementeringer af matematiske funktioner.\\ 
+Haversine bruges til at udregne afstanden mellem to punkter, i en fugleflugt. CalcRouteLineDist bruges til at udregne afstanden fra et punkt, til det nærmeste punkt på en linje, udspændt af to andre punkter. Udregninger vil blive vist og forklaret nærmere under afsnittet \textbf{IMPLEMENETERING-MATEMATIK}.
+
 \end{document}
+

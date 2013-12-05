@@ -2,59 +2,188 @@
 \begin{document}
 
 \subsection{Implementering af persistens}
-Persisteringen af data består af to hoveddele. En facade til den direkte tilgang og en besked kø der lavet efter observer design mønsteret som bliver beskrevet i implementeringsviewet, afsnit 8.2.7-Observer Pattern
-\\
-For at tilgå databasen på C\# siden er der blevet brugt facade designmønsteret. Tilgangen til databasen sker altså igennem én klasse, så vi bevarer lav kobling. Til selve forbindelsen blev der brugt SQLCommands. Dette er en del af .Net frameworket. Forbindelsen ligger hardcodet i facaden, dvs. at det ikke er op til brugeren af systemet, at definere hvilken database man tilgår. Denne forbindelse består af en streng med bruger id, password, server, database og diverse optionelle valgmuligheder som f.eks. Connection Timeout som i dette tilfælde bestemmer, hvor lang tid systemet maksimalt må bruge på at skabe forbindelse. På kodeudsnit \ref{lst:SqlconnectionCode} kan man se hvordan forbindelsen bliver defineret og oprettet.
-\begin{lstlisting}[caption=Definition and opening of connection to database, label={lst:SqlconnectionCode}]
-private const string UserID     = "user id=F12I4PRJ4Gr5;";
-private const string Password   = "password=F12I4PRJ4Gr5;";
-private const string Server     = "server=webhotel10.iha.dk;"; 
-private const string Database   = "database=F12I4PRJ4Gr5; ";
-private const string ConnectionTimeOut = "Connection TimeOut=2";
+Datapersistering og datahentning er vigtig komponent i dette system. Implementering af persistens vil derfor blive beskrevet meget nøje, og herunder delt op i tre dele; Implementering i mobilapplikation, Implementering i simulator og Implementering i online værktøjer. Hver del vil ikke have en beskrivelse af den fulde implementering, men blot repræsenteret af væsentlige dele. For fuld implementering af persistens henvises der til bilags CDen, i den respektive komponent under mappen Kode.
 
-private readonly SqlConnection _myConnection = new SqlConnection(
-                                        UserID +
-                                        Password +
-                                        Server +
-                                        Database +
-                                        ConnectionTimeOut
-                                        );
-..............
-
-if (_myConnection.State != ConnectionState.Open)
-        _myConnection.Open();
+\subsubsection{Implementering af persistens i mobilapplikationen}
+Persistering i denne komponent falder i to underpunkter. Dette er fordi, denne komponent er den eneste, som har kontakt til to databaser; Den distribuerede MySQL database samt den lokale SQLite database. Disse to vil blive beskrevet i seperate afsnit. \\\\
+\noindent
+\textbf{Tilgang til MySQL databasen}\\
+Mobilapplikationen har aldrig direkte tilgang til den distrubuerede database. Tilgang sker i afsnittet \textit{Implementering af online værktøjet} i underafsnitet \textit{Mobilservice}.\\
+Applikation kommunikerer med den databasen igennem en service, og altid kun som en læsning. Dette gør det muligt at tilgå databasen fra flere enheder, da en database læsning er trådsikker. Grunden til at der bliver gjort brug af en service er, at databasen tilgangen skal kunne gemmes væk fra brugeren, således en en person ikke kan få fuld tilgang til databasen igennem sin mobil. \\
+Selve kommunikationen med servicen sker igennem en SoapProvider. SOAP står for Simple Object Access Protocol, og bruges som et transportmetode til XML beskeder. Når mobilen tilgår servicen opretter den en SOAP-envelope, der indeholder information om, hvilken metoden der skal kaldes, under hvilket namespace metoden ligger, samt eventuelle parametre metoden modtager og parametre navnene. På kodeudsnit \ref{lst:SoapProvider} kan en generisk oprettelse og transmitering af en SoapEnvelope ses. 
+\begin{lstlisting}[caption=Generisk SoapEnvelope., label={lst:SoapProvider},language=Java]
+SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
+request.addProperty(PARAMETER_NAME, PARAMETER_VALUE);
+SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+envelope.dotNet = true;
+envelope.setOutputSoapObject(request);
+HttpTransportSE androidHttpTransport = new HttpTransportSE(URL_OF_SERVICE);
+androidHttpTransport.call(NAMESPACE+METHOD_NAME, envelope);
+SoapObject response = (SoapObject)envelope.getResponse(); 
 \end{lstlisting}
-Forbindelsen bliver brugt ved at eksekvere en SQL streng fra C\# siden, altså en SQL statement skrevet i en string. Det er blevet forsøgt at gøre disse commands generelle, så alt efter hvad man vil på en vilkårlig tabel, kan man tilgå en generel funktion, som specificeres via parametre. Når en funktion, der henter noget fra databasen køres, vil data returneres via en SQLDatareader som funktionen, ExecuteReader(), returnerer. Nedunder, på kodeudsnit \ref{lst:SqlcommandCode} kan man se, hvordan en simpel SELECT statement bliver brugt, kørt og hvordan den returnerer data.
+Requestet oprettes som et SoapObject, hvor metodenavnet, samt det namespace metoden ligger i, gives med. Disse to parametre er simple strings. Til metodekaldet kan der tilføjes parametre ved addProperty metode, som tager imod et parameter navn og en parameter værdi, begge to strings. Envelopen bliver oprettet og en versionsnummer bliver givet med, der definerer hvilken version af protokollen der skal tages i brug. I vores projekt har vi udelukkende gjort brug af version 1.1. dotNet flaget er sat til true, da vores service er skabt i ASP.NET. Request-objektet sættes i envelopen, og kommunikerer med servicen over HTTP. Efter den relevante metode er færdigjort på servicen bliver returværdien sat i envelopen, og et SoapObject indeholdende de returnerede værdier fås ved et kald til getResponse på envelopen.\\
+Et SoapObject er reelt set et XML-træ, som kan itereres igennem. Et eksempel på et sådan XML-struktur kan ses i afsnitet \textit{8.2.4 Komponent: Webservice}\\ Et fuldt eksempel på et kald til servicen kan ses på kodeudsnit \ref{lst:GetBusPos}. Denne funktion bruges til at hente samtlige busser med et givent busnummer, og returnere dem som en ArrayList. Vil alt efter SoapObject responset forklares.
+\begin{lstlisting} [caption=GetBusPos. Returnerer alle bussers position på en given rute., label={lst:GetBusPos},language=Java]
 
-\begin{lstlisting}[caption= Definition of a Select statement with a where clause, label={lst:SqlcommandCode}]
-public List<string> SelectFrom(string columnName, 
-						                   string tableName,
-							   	             string whereColumnName,
-							                 string target)
-{		
-      if (_myConnection.State != ConnectionState.Open)
-                _myConnection.Open();
-                
-      var back = new List<string>();
-      var command = new SqlCommand(string.Format(
-      			          "SELECT {0} FROM {1} WHERE {2}='{3}'",
-      		              columnName, tableName,
-      		              whereColumnName, 
-      		              target), 
-      		              _myConnection);
-      		              
-      var read = command.ExecuteReader();
-      while (read.Read())
-      {
-            back.Add(read[columnName].ToString().TrimEnd(' '));
-                
-      }
-      read.Close();
-      _myConnection.Close();
-      return back;
+final String NAMESPACE = "http://TrackABus.dk/Webservice/";
+final String URL = "http://trackabus.dk/AndroidToMySQLWebService.asmx"; 
+...
+public ArrayList<LatLng> GetBusPos(String BusNumber)
+{	  
+	  ArrayList<LatLng> BusPoint = new ArrayList<LatLng>();
+	  try
+	  {
+		  	SoapObject request = new SoapObject(NAMESPACE, "GetbusPos");
+		  	request.addProperty("busNumber", BusNumber);
+		  	SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+		  	envelope.dotNet = true;
+		  	envelope.setOutputSoapObject(request);
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+			androidHttpTransport.call(NAMESPACE+"GetbusPos", envelope);
+			SoapObject response = (SoapObject)envelope.getResponse();
+			
+			for(int i = 0; i<response.getPropertyCount(); i++)
+			{
+				double a = Double.parseDouble(((SoapObject)response.getProperty(i)).getProperty(0).toString().replace(",", "."));
+				double b = Double.parseDouble(((SoapObject)response.getProperty(i)).getProperty(1).toString().replace(",", "."));
+				BusPoint.add(new LatLng(a, b));
+			}
+	  }
+	  catch(Exception e)
+	  {
+		  return null;
+	  }
+	  return BusPoint;
 }
 \end{lstlisting}
 \noindent
-Når man kalder Execute reader bliver den specificerede streng kørt på databasen. Hvis operationen på databasen returnerer noget vil dette blive hentet via read[columnName] hvor columnName er den kolonne man vil hente fra. Hvis der hentes flere kolonne fra databasen vil disse blive gemt i den kolonne man specificerer. Database tilgangen sker på samme måde ved samtlige funktioner, med den undtagelse, at der ikke returneres noget på de operationer på databasen, der ikke skal returnere noget f.eks. insert- eller update statements. Disse operationer er de eneste der forekommer på databasen, udover de triggers og functions der også kan køres.
+Metoden på servicen returnerer en liste, indeholdende typen "Point",som er en custom datatype lavet i servicen. Denne har to attributer,Latitude og Longitude, som begge er strings. getPropertyCount() returner længden af denne liste, og bruges til at iterere igennem den. \\
+Det første kald af getProperty på responset, returnerer "Point" datatypen. Denne property castes til et nyt SoapObjekt, hvor getPropety kaldes igen. Rækkefølgen af propeties i et SoapObject, defineres af rækkefølgen de bliver oprettet i, i datatypen. I "Point" kommer latitude først og longitude kommer bagefter. GetProperty(0) på et "Point" SoapObjekt vil derfor returnerer latitude og GetProperty(1) returnerer longitude. Begge bliver castet til en string, og decimalpoint sættes til et dot frem for et komma. Dette gøres da ASP.NET tager et decimalpoint som værende komma.\\ 
+Da applikationen er lavet til Android bruges biblioteket ksoap2, som er specifik for android. I dette bibliotek ligger alle funktioner, der er nødvendige for brug af SOAP. For mere information om protokolen henvises der til afsnittet: "REFERENCE" under SOAP.\\\\
+\noindent
+\textbf{Tilgang til SQLite databasen}\\
+Når en busrute favoriseres gemmes alt data om denne i en lokal SQLite database. Dette gøres for at spare datatrafik for ruter, som brugeren ville tage i brug ofte. Samtidig muligøres det også, at brugeren kan indlæse en rute med stoppestedder, uden at have internet. Hvis kortet samtidig er cachet (Google Maps cacher indlæste kort), kan kortet også indlæses og indtegnes.\\
+Der er gjort brug af en ContentProvider i denne sammenhæng, som abstraherer data-access laget, så flere applikationer kan tilgå databasen, med den samme protokol, hvis det skulle være nødvendigt.\\ En ContentProvidere tilgås igennem et kald til getContentResolver(), hvorefter der kan kaldes til de implementerede CRUD-operationer. En ContentProvider skal defineres i projektets AndroidManifest, før den kan tilgås. Dette gøres ved at give den et navn, samt en autoritet, som er den samme værdi som navnet. \\
+Da ContentProvideren blot er et transportlag mellem brugeren og databasen, er det nødvendigt for den, at kende den egentlige database. Dette er gjort ved at lave en inner class til provideren, som extender SQLiteOpenHelper. Denne klasse indeholder create proceduren, samt muligheden for at kunne tilgå både en læsbar og skrivbar version af databasen. Create proceduren bliver kørt hvis databasen med det valgte navn ikke eksisterer i forvejen, og bruges til at oprette databasen og tabellerne deri. En SQLite database gør, som default, ikke brug af foreign key constraints. Det er derfor blevet implementeret sådan, at foreign key contraints aktiveres hver gang databasen åbnes.\\
+\\Hver CRUD-operation modtager et URI, der skal være en kombination af en identifieren "content://", en authority (ContentProviderens placering i projektet) samt evt. en tabel og en underoperation.  Hvis en given CRUD-operation på ContentProvider siden er lavet, sådan at der altid gøre det samme (f.eks. en query der altid returner alt data i den samme tabel), vil identifieren og autoriteten være nok, til at kunne tilgå denne operation. Hvis tilgangen derimod skal være specifik for en given tabel, og evt. underoperation kan en UriMatcher tages i brug. Denne kobler et URI med en given værdi, hvorefter der i operationen kan laves en switch/case der matcher det medsendte URI, og vælger en operation ud fra dette. På \ref{lst:URIexample} ses et eksempl på, hvordan dette er implementeret i systemet. Det skal noteres at dette ikke er komplet implementering, men blot et udsnit. Kommentarer vises ved "!!"
+\begin{lstlisting}[caption=GetBusPos. ContentProvider implementering., label={lst:URIexample},language=Java]
+!!ContentProvider class!!
+public static final String AUTHORITY = "dk.TrackABus.DataProviders.UserPrefProvider";
+public static String BUSSTOP_TABLE = "BusStop";
+private static final int BUSSTOP_CONTEXT = 1;
+private static final int BUSSTOP_NUM_CONTEXT = 2;
+...
+static {
+	uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+	uriMatcher.addURI(AUTHORITY, BUSSTOP_TABLE, BUSSTOP_CONTEXT);
+	uriMatcher.addURI(AUTHORITY, BUSSTOP_TABLE+"/#", BUSSTOP_NUM_CONTEXT);
+}
+...
+public Cursor query(Uri uri, String[] projection, String selection,
+		String[] selectionArgs, String sortOrder)
+String Query;
+SQLiteDatabase db = dbHelper.getReadableDatabase()
+switch(uriMatcher.match(uri))
+{
+	case BUSSTOP_CONTEXT:
+		routeID = selection;
+		query = !!Query to get all busstops and their position on a route with id being RouteID!!
+		returningCursor =  db.rawQuery(query,null);	
+		break;
+	case BUSSTOP_NUM_CONTEXT:
+		stopID = uri.getLastPathSegment();
+		query = !!Query to get a single bustop with id being stopID!!
+		returningCursor =  db.rawQuery(query,null);	
+	default
+		return null;
+}
+return returningCursor;
 
+...
+!!BusStop model class!!
+public static final Uri CONTENT_URI = Uri.parse("content://"
+			+ UserPrefProvider.AUTHORITY + "/BusStop");
+			
+...
+!!Hentningen af stoppesteder!!
+getContentResolver().query(UserPrefBusStop.CONTENT_URI, null, RouteID, null, null);
+String StopID = !!Some ID!!
+String specifikStop = UserPrefBusStop.CONTENT_URI.toString() + "/"+ StopID;
+getContentResolver().query(Uri.parse(specifikStop),null,null,null,null);
+
+\end{lstlisting}
+Den første del af kodeeksemplet viser oprettelsen af URIMatcheren. Hvis UriMatcheren kender det ID den bliver givet ved URImatcher.match, vil den returner en værdi, der svarer til den, den er blevet givet ved oprettelse. Herefter ses et eksempel på query-metoden. Hvis URIet kun indeholder BusStop udover autoriteten, vælges BUSSTOP\_CONTEXT, og der hentes alle stoppesteder, som er relevant for den rute der sættes i selection parameteren. Hvis tabellen efterfølges af et nummer i URIet, vælges BUSSTOP\_NUM \_CONTEXT, og der hentes kun det stoppested som har det ID sat i URIet.\\
+Til samtlige tabeller i SQLite databasen er der lavet en model klasse. Disse klasser indeholder kun statiske variabler. Disse definerer den givne tabels kolonner samt den URI ContentProvideren skal have med for at tilgå den tabel, modellen definerer.\\ I sidste del af kodeafsnittet kan det ses, hvordan ContentProvideren tilgås. Det første kald tilgår query funktionen under BUSSTOP\_CONTEXT, og henter alle stoppesteder ud for ruten hvor IDet er "RouteID" . Det andet kald tilgår også query funktionen men under BUSSTOP\_NUM\_CONTEXT, og henter stoppestedet ud hvor IDet er "StopID". \\
+\noindent
+\subsubsection{Implementering af persistens i simulator}
+Simulatoren implementerer persistens i form af at hente ruter, opdatere hvilken vej en bus kører, samt udregne og persistere ny GPS position for en bus. Samtlige busser kører i deres egen tråd i simulatoren, derfor er det vigtigt at håndtere trådsikkerhed når databasen skal tilgås. DatabaseAccess klassen tager sig af selve databasen tilgangen, og indeholder to funktioner; En til at skrive til databasen, samt en til at læse. Begge funktioner er statiske, og indeholder en binær semafor, således kun en tråd af gangen kan tilgå databasen. Hvis en tråd allerede er igang med en datahentning eller -skrivning, vil den anden tråd tvinges til at vente, til processen er færdig. Begge funktioner modtager en string, som er den kommando der skal udføres på database. Funktionen der læser fra databasen tager yderligere en liste af strings, som indeholder de kolonner der skal læses fra. Efter fuldent tilgang returneres en liste af strings, med de værdier der er blevet hentet. \\Databasen tilgangen bliver håndteret med i librariet MySQL.Data. Da simulatoren er lavet i Visual Studio 2012, og er en WPF-applikation, er der blot gjort brug af NuGet til at hente og tilføje dette library til programmet. Forbindelsesopsætningen ligger i App.config filen, og hentes ud når der skal bruges en ny forbindelse. På kodeudsnit \ref{lst:SimuDatabaseAcces} ses funktionen der læser fra databasen, samt hvordan den tilgås. Kun denne vil vises, da det er den mest interresante. Fuld kode kan findes på bilags CDen under Kode/Simulator. 
+\begin{lstlisting}
+public static bool SelectWait = false;
+public static List<string> Query(string rawQueryText,List<string> columns)
+{
+	while(SelectWait)
+	{
+		Thread.Sleep(10);
+	}
+	SelectWait = true;
+    using(MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["TrackABusConn"].ToString()))
+	{
+		using(MySqlCommand cmd = conn.CreateCommand())
+		{
+			try
+			{
+				List<string> returnList = new List<string>();
+				cmd.CommandText = rawQueryText;
+				conn.Open();
+				MySqlDataReader reader = cmd.ExecuteReader();
+				while (reader.Read())
+				{
+					foreach (string c in columns)
+					{
+						returnList.Add(reader[c].ToString());
+					}
+				}
+				reader.Close();
+				conn.Close();
+				SelectWait = false;
+				return returnList;
+			}
+			catch(Exception e)
+			{
+				SelectWait = false;
+				return null;
+			}
+		}
+	} 
+}
+...
+String query = "Select BusRoute.ID from BusRoute";
+List<string> queryColumns = new List<string>(){"ID"};
+List<string> returnVal= DatabaseAcces.Query(query, queryColumns);
+\end{lstlisting}
+Som det ses, ventes der i starten af funktionen på, at semaforen frigives. Hvis tråden skal tilgå databasen og en anden tråd allerede er igang, ventes der på, at den låsende tråd gør processen færdigm og sætter SelectWait til false.\\
+Når forbindelsen oprettes, gives den en configurations string. Denne string indeholder Database navn, server, brugernavn og password, som er alt hvad forbindelsen skal bruge, for at tilgå databasen. Af denne forbindelse laves der en kommando, som indeholder alt den information som skal eksekveres på forbindelsen.  Ved kaldet til ExecuteReader(), udføres kommandoen og en reader returneres med de rækker der kunne hentes udfra den givne query. I skrivnings funktionen ville ExecuteNonQuery(), blive kaldt i stedet, da der, i dette tilfælde, ikke skulle returneres noget data. Readeren repræsenterer en række, og når Read() bliver kaldt på den, læser den næste række. Hvis Read() returner false, er der ikke flere rækker at læse. Når data skal hentes ud fra reader, kan man enten vælge at bruge index (kolonne nummeret i rækken), eller kolonnenavn. I dette tilfælde gives samtlige kolonner med som en parameter, og derfor læses der på navn. Til sidst frigøres semaforen og læst data returneres.\\
+I slutningen af kodeudsnittet kan det ses, hvordan denne funktion tilgås. Først laves der en query, som i dette tilfælde henter samtlige Busrute IDer. Herefter oprettes der en liste af de kolonner der skal hentes hvorefter Query funktionen kaldes med begge værdier.
+
+\subsubsection{Implementering af persistens i online værktøjet}
+Online værktøjet er todelt i mobil service og hjemmeside. Begge dele er lavet i ASP.NET, og derfor vil database tilgangs proceduren være ens med simulatoren. Servicen står får at lade mobil applikationen tilgå data på MySQL databasen, hvilket også betyder, at funktionerne kun læser data. Ved et kald til servicen vil læst data pakkes ved hjælp af SOAP, som er beskrevet tidligere i dette afsnit.\\ Servicen står i midlertid også for at kalde tidsudregnings proceduren på databasen, hvilket er et anderledes kald, end en læsning. På kodeudsnit \ref{lst:kaldTilTidsUdregning} ses det, hvordan servicen tilgår denne procedure. Det skal noteres at det ikke er den fulde funktion der vises, men blot et udsnit, og derfor kun viser de vigtigste dele. Herved vises der ikke hvordan forbindelsen og kommandoen laves, da oprettelsen er ens med simulatoren.
+\begin{lstlisting}
+...
+cmd.CommandText = "CalcBusToStopTime";
+cmd.CommandType = System.Data.CommandType.StoredProcedure;
+...
+cmd.Parameters.Add("?stopName", MySqlDbType.VarChar);
+cmd.Parameters["?stopName"].Value = StopName;
+cmd.Parameters["?stopName"].Direction = System.Data.ParameterDirection.Input
+...
+cmd.Parameters.Add(new MySqlParameter("?TimeToStopSecAsc", MySqlDbType.Int32));                     cmd.Parameters["?TimeToStopSecAsc"].Direction = System.Data.ParameterDirection.Output;
+...
+cmd.ExecuteNonQuery();
+...
+string TimeToStopAsc = cmd.Parameters["?TimeToStopSecAsc"].Value.ToString();
+string EndStopAsc = cmd.Parameters["?EndBusStopAsc"].Value.ToString();
+\end{lstlisting}
+I kodeudsnittet kan det ses, hvordan der i kodeudsnittet, i forrige afsnit, blev tilføjet en kommandotext bestående af en MySQL string, nu bliver tilføjet flere værdier til kommandoen. Først og fremmest bliver kommandotypen sat som værende en stored procedure. Herefter kan det ses hvordan både en input og en output parameter bliver sat i kommandoen. Parameterne bliver givet et navn, samt en datatype, hvorefter de gives en værdi hvis de er input parametre. Herefter gives parameteren en retning; Input hvis de er værdier der skal læses i proceduren og output hvis de skal skrives til. Efter proceduren er kørt, vil output parameterne nu kunne læses, med de værdier der er blevet udregnet. I dette tilfæde er der kun vist to parametre, men antallet og deres navne og retning, skal passe overens med den procedure der er lavet på database siden. I afsnittet \textit{9.1.2: Stored Procedures} kan der læses om trådsikkerheden for proceduren.\\
+
+Da databasetilgangen på hjemmesiden kun er flertrådet når der læses, er systemet trådsikkert. Når der læses vil det altid ske i hovedtråden. Databasen tilgås ligesom servicen og simulatoren ved hjælp af MySql.Data bibilioteket, og tilgås kun i form af simple CRUD-operationer. Der vil derfor ikke vises et kodeeksempel, det dette anses som værende beskrevet i tidligere afsnit.
 \end{document}

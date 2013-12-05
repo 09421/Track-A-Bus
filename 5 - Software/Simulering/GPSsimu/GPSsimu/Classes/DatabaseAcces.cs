@@ -11,7 +11,7 @@ namespace TrackABusSim
 {
     public class DatabaseAcces
     {
-        private static bool SelectWait = false;
+        public static bool SelectWait = false;
         public static List<string> Query(string rawQueryText, List<string> columns)
         {
             while(SelectWait)
@@ -47,11 +47,10 @@ namespace TrackABusSim
                         return null;
                     }
                 }
-            }
-            
+            } 
         }
 
-        private static bool InsertWait = false;
+        public static bool InsertWait = false;
         public static void InsertOrUpdate(string rawInsertionOrUpdatingText)
         {
             while(InsertWait)
@@ -71,7 +70,7 @@ namespace TrackABusSim
                         conn.Close();
                     }
                     catch (Exception e)
-                    { }
+                    { InsertWait = false; }
                 }
             }
             InsertWait = false;
