@@ -1,0 +1,16 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Implementeringsbiblioteker}
+Da systemet er baseret på .NET, og derfor er der selvfølgelig brugt adskellige .NET biblioteker. Det er langt fra alle der vil blive beskrevet i dette afsnit, hvor kun de vigtigste er forklaret.
+
+\begin{itemize}
+\item System.IO.Ports - Bibliotek, som indeholder funtioner der bruges til kommunikation over den serielle port. Se klassen RobotProjekt.Weights.Weight.
+\item WPF.Themes - Bibliotek der indeholder brugergrænsefladens tema.
+\item Microsoft.Scripting - Er blevet brugt til at lave en scripting-engine til brug i IDEen. Se komponentbeskrivelsen af IDEen under afsnit 8.
+\item Galasoft.Mvvmlight - Bibliotek fra Galasoft, som bruges til MVVM funktiontionalitet. Fx indeholder det en implementering af RelayCommand, og et Message System.
+\item NUnit.Framework - NUnit frameworket, som bruges til automatiserede test.
+\end{itemize}
+
+
+\end{document}

@@ -1,0 +1,50 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Grænseflader til eksternt software}
+Programmet skal kommunikere med en dll-fil (Se \textit{Bilag: DLL filer/UDBC.dll}, for at se nærmere på denne), hvor forskellige funktioner til robotten findes. Denne dll-fil var udleveret sammen med robotten.
+
+\subsubsection{USBC.dll}
+
+I USBC.dll-filen findes alle funktioner der er nødvendige, for at få robotten til at bevæge sig, som der ønskes. Funktionerne i biblioteket er dog skrevet i C++, og som det kan læses i \textit{SBS\_Kravspecifikation}, benyttes C\# som programmeringssprog. Dermed blev kommunikationen med denne en smule mere kompliceret, da C\# er managed code og C++ unmanaged code. C++ laver name mangling på funktionerne, og derfor skulle funktionernes "specielle" navn findes. \\
+Et andet problem var, at når en pointer (delegate) i C\# sættes til at pege på noget data fra C++, kan garbagecollectoren ikke se, at der bliver peget på noget. Dermed vil garbagecollectoren gå ind og deallokere pointeren. For at løse dette problem er funktioner i marshall biblioteket blevet benyttet. Disse benyttes netop til at få managed kode til at kunne kalde unmanaged kode fra en dll-fil. Dermed ignorerer garbagecollectoren pointerfunktionerne.
+\\\\
+De forskellige funktioner til robotten og deres tilhørende beskrivelse er først og fremmest fundet i dokumentet \textit{USBC-documentation}. Der gøres opmærksom på, at ikke alle funktioner er beskrevet fyldestgørende i dette dokument.\\
+Når en funktion skal benyttes, findes den i dll-filen via visual studios kommandoprompt. Her benyttes kommandoens dumpbin på dll-filen, og dermed listes samtlige funktioner med navn, samt hvordan navnet vil se ud i C\#. Disse er blevet gemt i et excel dokument (\textit{se bilag:  DLL filer/USBC excel}). Det underlige navn der ses, er hvordan funktionsnavnet ser ud i C\#.\\
+Fra PInvoke benyttes 'DllImport'. Denne skal kende et EntryPoint, som er navnet på funktionen i dll-filen (navnet som det vil se ud i C\# ). Dermed kan compileren kende navnet, og nu skal funktionen bare kaldes med en identisk prototype.\\
+\begin{lstlisting}[caption=Funktionskald, label={lst:funkKald}]
+[DllImport("USBC.dll", 
+      EntryPoint = "?Initialization@@YAHFFP6AXPAX@Z1@Z",
+        CallingConvention = CallingConvention.Cdecl)]
+public static extern bool Initialization(
+    short initMode,
+    short systemType,
+    CallBackFun.CallBackFunInitEnd fnInitEnd,
+    CallBackFun.CallBackFunError fnErrMessage
+    );
+\end{lstlisting}
+Kodeudsnit \ref{lst:funkKald} viser et eksempel på et funktionskald fra dll'en. CallingConvention specificerer den måde funktioner i unmanaged kode skal kaldes på.\\
+Alle funktionskald til dll-filen er lagt i en fil for sig (USBCDLL.cs). I parameterlisten er der to CallBack funktioner. Disse er pointere til andre funktioner. Alle disse CallBack funktioner, som er defineret som delegates, ligger også i deres egen fil, så der er en overskuelig opdeling (CallBackFun.cs).
+\\\\
+Udover de omtalte filer, skulle der også laves to klasser, hvor der ligger noget information til de forskellige funktioner i dll'en. Den information funktionerne skulle bruge ligger i to headerfiler("USBCDEF", og "ERROR"), der også er skrevet i C++ (se \textit{Bilag : DLL filer/UDBC.dll}). Disse skal naturligvis også være identiske i vores projekt, og skal derfor konverteres til C\#.
+\\
+Før klassen er der en attribut, som vist på kodeudsnit \ref{lst:Attribut}. 
+\begin{lstlisting}[caption=Titel der skal rettes, label={lst:Attribut}]
+[StructLayout(LayoutKind.Sequential, Pack = 0, CharSet = CharSet.Ansi)]
+\end{lstlisting}
+
+Denne søger for at feltet i klassen bliver lagt i hukommelsen sekventielt, hvilket er vigtigt for at klassen kan bruges og forstås. Derudover bruges [MarshalAs(..)] attributten, over array, string og andre typer der er forskel på i C\# og C++. Klassen kan heller ikke bare initieres via new operatoren, da det vil se ud som om de ikke bruges, og dermed vil garbagecollectoren fjerne dem igen. Derfor skal de initieres på en speciel måde, som vist på kodeudsnit \ref{lst:InitConfigData}
+\begin{lstlisting}[caption=Titel der skal rettes, label={lst:InitConfigData}]
+public void InitConfigData(ConfigData configData, IntPtr configDataPtr)
+{
+    configData = new ConfigData();
+
+    configDataPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ConfigData)));
+
+    Marshal.StructureToPtr(configData, configDataPtr, false);
+
+}
+\end{lstlisting}
+Via Marshal.AllocHGlobal() allokeres instansen, så garbagecollectoren ikke fjerner den. Parameteren er størrelsen af det, der skal allokeres. Derefter Sættes en pointer til at pege på det.
+
+\end{document}

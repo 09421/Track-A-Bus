@@ -1,0 +1,400 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Data model}
+En kritisk del af dette system er data storage og data retrieval. Dette er blevet implementeret i form af to relationelle databaser; en distribueret og en lokal.\\
+Til den distribuerede database og til administrationshjemmesiden er et domænenavn blevet købt hos \url{www.unoeuro.com}, ved navn \url{www.trackabus.dk}. Herunde er databasen oprettet som en MySQL database på serveren \url{http://mysql23.unoeuro.com}\\
+Den lokale database eksisterer, fordi brugeren skal kunne gemme busruter lokalt på sin telefon. Dette er blevet implementeret i form af en SQLite database. \\
+Diagrammer kan findes i fuld størrelse i bilag under Diagrammer/Database Diagrammer
+
+\subsubsection{Design af MySQL database}
+
+Den distribuerede database gemmer alt information vedrørende busserne og deres ruter. Opbygningen af databasen kan ses som tre komponenter der interagerer; Busser, busruter og stoppesteder.\\ 
+Samtlige komponenter er defineret ved positions data i form af punkter. Disse punkter er længde- og breddegrader og kan ses som den fysiske position af den komponent, de relaterer til. Disse falder derfor i tre katagorier; Busposition, rutepunkter med stoppesteder og waypoints. 
+\begin{itemize}
+	\item Busposition er defineret som den fysiske placering af en given bus. I dette projekt var der dog 	ikke tilgang til nogen fysiske busser, så denne katagori af positions data blev simuleret. Simulatoren kunne dog skiftes ud med en virkelig bus, hvis position for denne kunne stilles til rådighed. 
+	\item Rutepunter og stoppesteder indeholder positionsdata, som bruges til at tegne ruten eller lave udregning på. Disse udregninger er defineret senere under "Stored procedures" og "Functions".
+	\item Waypoints bruges som "genskabelses-punkter" til en given rute. Disse punkter bliver udelukkende brugt af administrationsværktøjet, til at genskabe den rute de beskriver.\\
+\end{itemize}
+
+Hele systemet er opbygget omkring oprettelse, fjernelse og manipulation af positions data. Dette er klart afspejlet i database i form hvor meget dette data bliver brugt.\\ Tidligt i udviklingsprocessen blev det fastsat at positions data have en præcision på seks decimaler, da dette ville resultere i en positions afvigelse på under en meter. Systemet virker stadig med en lavere præcision, men dette vil resultere i en større positionsafvigelse.\\\\
+
+Databasen er bygget op af følgende tabeller: Bus, BusRoute, BusRoute\_RoutePoint, BusRoute\_BusStop, BusStop, GPSPosition, RoutePoint, Waypoint.\\
+På figur \ref{fig:MySQLUML} vises opbygningen af tabellerne som et UML OO diagram, og på figur \ref{fig:MySQLER} kan relationerne i databasen ses som et ER diagram.
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den distribuerede MySQL database}
+\label{fig:MySQLUML}
+\end{figure}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/ER_Diagram.png}
+\caption{ER Diagram over den distribuerede MySql database}
+\label{fig:MySQLER}
+\end{figure}
+
+Herunder følger en forklaring af tabellerne og deres rolle i systemet.
+\begin{itemize}
+	\item \textbf{Bus}
+	\begin{itemize}
+		\item Indeholder alt relevant data vedrørende kørende busser. fk\_BusRoute er en foreign key til BusRoute tabellen og definerer hvilken rute bussen kører på. IsDescending er et simpelt flag, som bestemmer i hvilken retning bussen kører. Hvis IsDescending er true, betyder det at bussen kører fra sidste til første punkt defineret ved ID i BusRoute\_RoutePoint, og omvendt hvis den er false. \\Som den eneste tabel er der mulighed for, at nulls kan fremkomme. Dette vil ske i situationer hvor bussen eksisterer i systemet, men endnu ikke er sat på en rute. Tabellens primary key er sat til at være det ID som defineres ved busses oprettelse. Dette nummer vil også stå på den fysisk bus.
+	\end{itemize}
+	\item \textbf{BusRoute}
+	\begin{itemize}
+		\item Indeholder detaljer omkring Busruten foruden dens rutepunkter. BusNumber er ikke nødvendigvis unikt, da en kompleks rute er bygget op af to eller flere underruter. Derfor bliver tabelens primary key sat til et autogeneret ID, som bliver inkrementeret ved nyt indlæg i BusRoute. BusNumber er rutenummeret, og også det nummer som vil kunne ses på bussens front. Nummeret er givet ved en varchar på 10 karakterer, da ruter også kan have bogstaver i deres nummer. \\
+Hvis SubRoute er sat til nul, vil ruten kun bestå af det enkelte ID, men hvis ruten er kompleks vil SubRoute starte fra et, og inkrementere med en for delrute på den givne rute. Ruter er i denne sammenhæng defineret som turen mellem to endestationer, og hvis en rute har mere end to endestation, vil den have minimum to hele ruter sat på det givne rutenummer.
+	\end{itemize}
+	\item \textbf{BusRoute\_RoutePoint}
+	\begin{itemize}
+		\item Indeholder den egentlige rute for det givne rutenummer.Primary keyen er IDet i denne tabel og autogenereret, men bruges til at definere rækkefølgen på punkterne, som ruten bliver opbygget af. fk\_BusRoute er foreign key til IDet for busruten, og fk\_RoutePoint er foreign key til IDet for rutepunktet på et givet sted på ruten. Det første og sidste punkt for den givne rute vil altid være de to endestationer på ruten.\\ Rutepunkterne for stoppestedet bliver lagt ind i listen ved hjælp af en forklaret i afsnittet "IMPLEMENTERING: ADMINISTRATOR SIDE".
+	\end{itemize}
+	\item \textbf{BusRoute\_BusStop}
+	\begin{itemize}
+		\item Indeholder stoppestedsplanen for det givne rutenummer. IDet i denne tabel er autogeneret, men bruges til at definere rækkefølgen på stoppestederne på den givne rute. fk\_BusRoute refererer til den busrute stoppestedet er på, og fk\_BusStop refererer til selve stoppestedet. Det første og sidste ID for den givne busrute, vil være de to endestationer på den givne rute.
+	\end{itemize}
+	\item \textbf{BusStop}
+	\begin{itemize}
+		\item Indeholder alle stoppesteder i systemet. Primary keyen er IDet i denne tabel og er autogeneret. StopName er navenet på det givne stoppested, og er en varchar på 100 karakterer.\\ fk\_RoutePoint er en foreign key til IDet i RoutePoint tabellen, og vil være det fysiske punkt for stoppestedet givet ved en længde- og breddegrad.
+	\end{itemize}
+	\item \textbf{RoutePoint}
+	\begin{itemize}
+		\item Indeholder alle punkter for alle ruter og stoppesteder. Primary keyen er sat til at være et autogeneret ID. Hvert indlæg i denne tabel vil definere en position på verdenskortet. Longitude og latitude er i denne sammenhæng længde- og breddegraden, og de er defineret ved en number med 15 decimaler. Alle 15 decimaler er ikke nødvendig i brug og ved en indsættelse af et tal på f.eks. 6 decimaler, vil de sidste 9 være sat til 0. 
+	\end{itemize}
+		\item \textbf{GPSPosition}
+	\begin{itemize}
+		\item Indeholder alle kørende bussers position. Primary keyen er sat til et ID, som bruges til at definere rækkefølgen på indlægene, således det højeste ID for en given bus vil være den nyeste position. Longitude og Latitude er Længde- og Breddegraden for den givne bus. Både Longitude og Latitude er givet ved 15 decimaler, dog hvor alle 15 ikke nødvendigvis er i brug. Ved en indsættelse af et tal på f.eks. 6 decimaler, vil de sidste 9 være sat til 0. UpdateTime er et timestamp for positionen og bruges til, at udregne hvor lang tid bussen har kørt. Dette er beskrevet nærmere  i afsnittene "Stored procedures" og "Functions". fk\_Bus er en foreign key til tabellen Bus og bruges til at definere hvilken bus der har lavet opdateringen.
+	\end{itemize}
+	\item \textbf{Waypoint}
+	\begin{itemize}
+		\item Indeholder alle punkter der er nødvendige for genskabelse af en rute på administrations siden. Primary keyen er IDet og autogeneret. Den Bruges ikke ti andet en at unikt markere punktet.\\
+Longitude og Latitude er Længde- og Breddegraden for det givne punkt. Både Longitude og Latitude er givet ved 15 decimaler, dog hvor alle 15 ikke nødvendigvis er i brug. Ved en indsættelse af et tal på f.eks. 6 decimaler, vil de sidste 9 være sat til 0. fk\_BusRoute er en foreign key til BusRoute tabellen, og definerer således hvilken Busrute det givne waypoint er relateret til.
+	\end{itemize}
+\end{itemize}
+\noindent
+\textbf{Normalform}\\
+Databasen er normaliseret til tredje normalform, hvor nulls er tilladt i enkelte tilfælde da det sås som gavnligt. Tabellen Bus indeholder alle oprettede busser, men det er ikke et krav, at en bus er på en rute. I tilfælde af en bus uden rute, vil fk\_BusRoute og IsDescending være null.\\ Det antages at tredje normalform er tilstrækkeligt for systemet.\\
+Begrundelsen for, at databasen er på tredjenormalform er:
+\begin{itemize}
+	\item Ingen elementer er i sig selv elementer. Dvs. ingen kolonner gentager sig  selv.
+	\item Ingen primary keys er composite keys, og derfor er ingen ikke keys afhængig af kun en del af nøglen
+	\item Ingen elementer er afhængigt af et ikke-nøgle element. Dvs. ingen kolonner i én tabel, definerer andre kolonner i samme tabel.
+\end{itemize}
+
+
+\subsubsection{Design af SQLiteDatabase database}
+Mobil applikationen har en favoriserings funktion der bruges til at persistere brugervalgte ruter lokalt. Dette er gjort så brugeren hurtigt kan indlæse de ruter som bruges mest. Ruterne persisteres lokalt som et udsnit af den distribuerede database.\\ På figur \ref{fig:LiteUML} kan man se et UML OO diagram over den lokale SQLite database og på figur \ref{fig:LiteER} kan man se et ER diagram over samme database.
+\newpage
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den lokale SQLite database}
+\label{fig:LiteUML}
+\end{figure}
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.55]{Diagrammer/Database/UML_Database_diagram.png}
+\caption{UML OO diagram over den lokale SQLite database}
+\label{fig:LiteER}
+\end{figure}
+\noindent
+Da den lokale database blot er et udsnit af den distribuerede MySQL database, henvises der til tabel beskrivelserne for MySQL tabellerne i forrige afsnit. Databasen er derfor også på tredje normalform, som MySQL databasen.\\
+Den eneste forskel fra MySQL databasen er, at denne tabel gør brug af Delete Cascades. Dette vil sige, at sletningen af data fra SQLite databasen kun kræver at man sletter fra BusRoute og RoutePoint tabellerne, da disse har foreign keys i de andre tabeller. Da flere ruter med de samme stoppesteder godt kan indskrives er det blevet vedtaget, at stoppestederne ikke slettes, når en rute ufavoriseres. Dette betyder at stoppestederne kan genbruges ved nye favoriseringer.
+
+\subsubsection{Stored procedures}
+\noindent
+Der eksisterer kun Stored Procedures på MySQL database siden, og derfor vil dette afsnit kun omhandle disse. \\
+Der er blevet lavet tre Stored Procedures i sammenhæng med tidsudregning for tætteste bus til valgt stoppested. Disse tre vil blive beskrevet herunder, givet sammen med et kodeudsnit. I kodeudsnittet vil ingen kommentarer være tilstede. For fuld kode henvises der til bilags CDen, i filen Stored Procedures under Kode/Database.\\
+I kodeudsnittene fremkommer forkortelserne "Asc" og "Desc. Dette står for Ascending og Descending og er en beskrivelse af, hvordan ruten indlæses. Ascending betyder at busruten indlæses fra første til sidste punkt i BusRoute\_RoutePoint tabellen og Descending betyder at den indlæses fra sidste til første punkt.\\
+Temporary tabeller bliver brugt meget i funktionerne og procedurene. De beskriver en fuldt funktionel tabel, med den forskel, at de kun er synlige fra den givne forbindelse. Når der i proceduren kun laves indskrivninger i temporary tables, gør det tilgangen trådsikker. Dette betyder at proceduren godt kan tilgås fra flere enheder på samme tid. \\\\
+\noindent
+\textbf{CalcBusToStopTime}\\
+Denne Stored procedure er kernen i tidsudregningen. Den samler alle værdierne sender dem videre i de forskellige funktioner. På kodeudsnit \ref{lst:CalcBustoStopTime} ses et udsnit af proceduren. I den fulde procedure, vil udregningerne for begge retninger hen til stoppestedet foregå, men da dette blot er en duplikering af samme kode, med forskellige variabler og funktionsnavne, vises dette ikke. Alle deklareringer af variabler er også fjernet.
+\begin{lstlisting}[caption=CalcBusToStopTime. Finder nærmeste bus og udregner tiden begge veje, label={lst:CalcBustoStopTime},language=SQL]
+create procedure CalcBusToStopTime(
+IN stopName varchar(100), IN routeNumber varchar(10),
+OUT TimeToStopSecAsc int, OUT TimeToStopSecDesc int, 
+OUT busIDAsc int, out busIDDesc int,
+OUT EndBusStopAsc varchar(100), OUT EndBusStopDesc varchar(100))
+
+BEGIN	
+drop temporary table if exists possibleRoutes;
+create temporary table possibleRoutes(
+	possRouteID int,
+	possRouteStopID int
+);
+
+insert into possibleRoutes
+select distinct BusRoute.ID, BusRoute_RoutePoint.ID from BusRoute
+inner join BusRoute_BusStop on BusRoute.ID = BusRoute_BusStop.fk_BusRoute
+inner join BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+inner join BusRoute_RoutePoint on BusRoute.ID = BusRoute_RoutePoint.fk_BusRoute
+   and BusStop.fk_RoutePoint = BusRoute_RoutePoint.fk_RoutePoint
+where BusRoute.RouteNumber = routeNumber and BusStop.StopName = stopName ;
+
+call GetClosestBusAscProc(@ClosestEndEPIdAsc, @ClosestBDIstAsc, @ClosestBIDAsc );
+select @ClosestsEndPointIDAsc, @ClosestBDIstAsc, @ClosestBIDAsc 
+into ClosestEndPointIdAsc,ClosestBusDistanceAsc,ClosestBusIdAsc;
+	
+select CalcBusAvgSpeedAsc(ClosestBusIdAsc) into ClosestBusSpeedAsc;
+
+set TimeToStopSecAsc = ClosestBusDistanceAsc/ClosestBusSpeedAsc;
+set busIDAsc = ClosestBusIdAsc;
+
+select BusStop.StopName from BusStop 
+inner join BusRoute_BusStop on BusRoute_BusStop.fk_BusStop = BusStop.ID
+inner join Bus on BusRoute_BusStop.fk_BusRoute = Bus.fk_BusRoute
+where Bus.ID = ClosestBusIdAsc Order by BusRoute_BusStop.ID desc limit 1 into EndBusStopAsc;
+
+drop temporary table possibleRoutes;
+
+END$$
+\end{lstlisting}
+\noindent
+Proceduren modtager navnet på det valgt stop, samt det valgte rutenummer. Ved fuldent forløb vil den returnere tiden for den nærmeste bus til det valgte stop, den nærmeste bus samt endestationen for den nærmeste bus. Alt returneres parvist i form af begge retninger.\\
+Først findes mulige ruter fra givet stoppesteds navn og rutenummer og indlægges i en  Dette er nødvendigt i tilfælde af komplekse ruter, hvor mere end en rute kan have samme stoppested og rutenummer. Herefter kaldes den anden stored procedure, som beskrives senere i dette afsnit. Denne procedure returnerer tætteste rutepunkt, IDet for den tætteste bus, samt afstanden fra den nærmeste bus til stoppestedet. Herefter udregnes bussens gennemsnitshastighed ved kaldet til \textit{CalcBusAvgSpeedAsc}, som bruger det fundne bus ID. Denne funktion beskrives dybere senere under afsnittet "Functions".\\ Tiden fra bussen til stoppestedet findes ved at dividere distancen med gennemsnitshastigheden (Meter / Meter/Sekund = Sekund). \\Til sidst findes endestationen, og returneres sammen med tiden og bus IDet.\\
+
+\noindent
+\textbf{GetClosestBusAscProc og GetClosestBusDescProc}
+Da proceduren for begge retninger er meget ens, vil der kun vises et kodeudsnit for GetClosestBusAscProc. Dette kan ses på kodeudnsit \ref{lst:GetClosestBusAscProc}.\\ Alle kommentarer og deklareringer er fjernet for at give et bedre overblik over funktionalitetet af proceduren. En detaljeret forklaring,  samt forskellene mellem GetClosestBusAscProc og GetClosestBusDescProc, følger efter kodeudsnittet.\\
+
+\begin{lstlisting}[caption=GetClosestBusAscProc. Udregner nærmeste bus- samt distance til stop og nærmeste rutepunkt, label={lst:GetClosestBusAscProc},language=SQL]
+create procedure GetClosestBusAscProc(OUT busClosestEndPointAsc int, Out routeLengthAsc float, OUT closestBusId int)
+begin
+ 
+drop temporary table if exists BussesOnRouteAsc;
+create temporary table BussesOnRouteAsc(
+	autoId int auto_increment primary key,
+	busId int,
+	stopID int
+);
+
+insert into BussesOnRouteAsc (busId, stopID) select distinct Bus.ID, possibleRoutes.possRouteStopID from Bus
+inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
+where Bus.IsDescending=false;
+	
+select count(busId) from BussesOnRouteAsc into NumberOfBusses;	
+
+while BusCounter <= NumberOfBusses do
+	select busId,stopID from BussesOnRouteAsc where autoId = BusCounter into currentBusId,currentStopId;
+	
+	select GetClosestEndpointAsc(currentBusId) 
+		into closestEndPoint; 
+
+	if(closestEndPoint <= currentStopId) then
+		select GPSPosition.Latitude, GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = currentBusId
+		order by GPSPosition.ID desc limit 1 into busPos_lat, busPos_lon; 
+			
+		select CalcRouteLengthAsc(busPos_lon, busPos_lat, closestEndPoint, currentStopId) into currentBusDist;
+	else
+		set currentBusDist = 10000000;
+	end if;
+	if (currentBusDist < leastBusDist) then
+		set leastBusDist = currentBusDist;
+		set closestbID = currentBusId;
+		set closestEP = closestEndPoint;
+	end if;
+	set BusCounter = BusCounter + 1;
+end while;
+set busClosestEndPointAsc = closestEP;
+set routeLengthAsc = leastBusDist;
+set closestBusId = closestbID;
+	
+drop temporary table BussesOnRouteAsc;
+END $$
+\end{lstlisting}
+\noindent
+\\Denne procedure modtager ingen parametre, da den kun bruger data sat i \textit{possibleRoutes} tabellen fra fundet i forrige procedure. Hovedfunktionaliteten i denne procedure er, at at udregne hvilken bus, der er tættest på det valgte stoppested. Dette repræsenteres ved bussens ID. Igennem denne udregning findes der også to underresultater der skal bruges i senere udregninger; Distancen fra bussen hen til stoppestedet,samt det tætteste rutepunkt bussen endnu ikke har nået. \\
+Alle buser, som kører på en af de ruter i \textit{possibleRoutes} og hvor \textit{IsDescending} er sat til false (bussen kører fra første til sidste stoppested) udtages. Disse busser bliver parret med det ID stoppestedet har, i \textit{BusRoute\_RoutePoint} tabellen og et auto-inkrementeret ID startende fra 1, og lagt ind i \textit{BussesOnRouteAsc} tabellen. Herefter findes det antal af busser, der er blevet udtaget, og dette tal bruges til den øvre grænse for while-loopet. Den nedre grænse er blot en counter som sættes til 1 ved initiering.\\
+While-loopets rolle er, at iterere igennem samtlige busser, og udregne distancen fra hver bus til dens parrede stoppested, hvorefter at vælge den bus der har den korteste distance til sit stoppested.\\ 
+Først udregnes Det nærmeste rutepunkt ved et kald til funktionen \textit{GetClosestEndpointAsc}. Hvis dette rutepunkt har et større ID end busstoppets, vil distancen fra bussen til stoppestedet sættes tallet til 10000000, altså meget højt. I en fysisk forstand vil dette ske, hvis bussen er kørt forbi det givne stoppested, og derfor ikke længere kan være den nærmeste bus til stoppestedet. Hvis rutepunktet derimod har et mindre ID end stoppestedet vil de nyeste koordinater for bussen findes, og distancen fra bussen hen til stoppestedet vil udregnes ved et kald til funktionen \textit{CalcRouteLengthAsc}.\\
+Herefter undersøges der, om den givne bus har en mindre distance hen til stoppestedet end den bus med den nuværende korteste distance. leastBusDist er sættes til 100000, altså højt, men ikke lige så højt som det tal den nuværende distance sættes til, hvis bussen er kørt forbi stoppestedet. Dette vil betyde at ingen sådan bus, ved en fejl, kan vælges som den tætteste bus. Hvis denne bus derimod har en mindre distance end den nuværende korteste distance, vil den mindste distance sættes til denne. IDet, samt det tætteste rutepunkt, for denne bus vil også sættes i denne situation. Til sidst vil den korteste distance, det tætteste rutepunkt samt IDet for den tætteste bus blive returneret.\\
+I GetClosestBusDescProc (samme udregning, blot for rute der køre fra sidste til første stoppested), er der to definerende forskelle.\\ 
+
+På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff1}, kan den første ændring ses. I dette tilfælde hentes der kun busser ud hvor \textit{IsDescending} er true, altså hvor den givne bus kører fra første til sidste stoppested.
+
+\begin{lstlisting}[caption=GetClosestBusDescProc forskel 1, label={lst:GetClosestBusDescProc_Diff1},language=SQL]
+...
+insert into BussesOnRouteDesc (busId,stopId) select distinct Bus.ID, 			possibleRoutes.possRouteStopID from Bus
+inner join possibleRoutes on Bus.fk_BusRoute = possibleRoutes.possRouteID
+where Bus.IsDescending=true;
+...
+\end{lstlisting}
+
+\noindent
+På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff2}, kan den anden ændring ses. Hvis en bus kører fra første til sidste stoppested, vil det nærmeste rutepunkt til bussen, have et større ID end stoppestedet, hvis bussen endnu ikke er kørt forbi. Derfor undersøges der her om rutepunktets ID er større eller ligmed stoppestedets ID, hvor der i GetClosestBusAscProc undersøges om det er mindre eller ligemed. \\
+\begin{lstlisting}[caption=GetClosestBusDescProc forskel 2, label={lst:GetClosestBusDescProc_Diff2},language=SQL]
+...
+if(closestEndPoint >= currentStopId) then
+...
+\end{lstlisting}
+
+\noindent
+\subsubsection{Functions:} 
+Igennem forløbet af \textit{CalcBusToStopTime} proceduren, tages en del funktioner i brug. Disse bruges når kun en enkelt værdi behøves returneres. Funktionerne er delt om i to typer; Funktioner til udregning af relevant information til procedurene, samt matematik-funktioner. Der vil ikke vises kodeeksempler for matematik funktionerne i dette afsnit, men der henvises til \textbf{IMPLEMENTATION-MATEMATIK}, for beskrivelser af disse. \\
+Som i \textit{Stored Procedures}-afsnittet, er funktionerne bygget op parvist; En funktion til busser der kører fra første til sidste stop (ascending), samt en anden til busser, der kører fra sidste til første stop (descending). Der vil kun vises et kodeudsnit af ascending-funktionerne, hvorefter forskellene i descending-funktionerne beskrives. Kodeudsnittene vil ikke indeholde kommentarer eller initialiseringer af variable, så et bedre overblik af funktionalitet kan gives. For fulde kodeudsnit henvises der til bilags CDen i filen Functions under Kode/Database. \\\\
+\noindent
+\textbf{GetClosestEndpointAsc og GetClosestEndpointDesc}\\
+Disse funktioner tages i brug i \textit{GetClosestBusAscProc-} og \textit{GetClosestBusDescProc} procedurene, og bruges til at finde IDet for det rutepunkt, en given bus er tættest på. Dette ID er dog ikke rutepunktet egentlige ID i \textit{RoutePoint}-tabellen, men derimod dens ID i \textit{BusRoute\_RoutePoint}-tabellen. Denne bus er defineret ved dens ID, givet til funktionen som dens eneste parameter. På kodeudsnit \ref{lst:GetClosestEndpointAsc} kan \textit{GetClosestEndpointAsc}-funktionen ses. Den er givet uden kommentarer eller initialisering af variabler.\\
+\begin{lstlisting}[caption=GetClosestEndpointAsc finder det tætteste punkt på ruten fra bussen, label={lst:GetClosestEndpointAsc},language=SQL]
+create function GetClosestEndpointAsc(busID int)
+returns int
+begin
+drop temporary table if exists ChosenRouteAsc;
+create TEMPORARY table if not exists ChosenRouteAsc(
+	id int primary key,
+	bus_lat decimal(20,15),
+	bus_lon decimal(20,15)
+);
+
+insert into ChosenRouteAsc (id,bus_lat,bus_lon)
+select BusRoute_RoutePoint.ID, RoutePoint.Latitude,  RoutePoint.Longitude from RoutePoint
+inner join BusRoute_RoutePoint on BusRoute_RoutePoint.fk_RoutePoint = RoutePoint.ID
+inner join Bus on Bus.fk_BusRoute = BusRoute_RoutePoint.fk_BusRoute
+where Bus.ID = busID
+order by(BusRoute_RoutePoint.ID) asc;
+
+select ChosenRouteAsc.ID from ChosenRouteAsc order by id asc limit 1 into RouteCounter;
+select ChosenRouteAsc.ID from ChosenRouteAsc order by id desc limit 1 into LastChosenID;
+
+select GPSPosition.Latitude,  GPSPosition.Longitude from GPSPosition where GPSPosition.fk_Bus = busID
+order by GPSPosition.ID desc limit 1 into BusLastPosLat, BusLastPosLon;
+
+while RouteCounter < LastChosenID do
+	select bus_lon from ChosenRouteAsc where id = RouteCounter into R1x;
+	select bus_lat from ChosenRouteAsc where id = RouteCounter into R1y;
+	select bus_lon from ChosenRouteAsc where id = RouteCounter+1 into R2x;
+	select bus_lat from ChosenRouteAsc where id = RouteCounter+1 into R2y;
+	set BusDist = CalcRouteLineDist(BusLastPosLon, BusLastPosLat, R1x, R1y, R2x, R2y);
+
+	if BusDist < PrevBusDist then
+		set PrevBusDist = BusDist;
+		set ClosestEndPointId = RouteCounter+1;
+	end if;
+	Set RouteCounter = RouteCounter + 1;
+end while;
+return ClosestEndPointId;
+END$$
+\end{lstlisting}
+Ruten som den givne bus kører på hentes ud og gemmes i en temporary tabel. I denne tabel gemmes længde- og breddegrader, sammen med det ID punktet har, i \textit{BusRoute\_RoutePoint}-tabellen. Da samtlige punkter ligges ind i databasen samtidig, efter en rute er skabt på hjemmesiden, garanteres det, at punterne ligger sekvensielt. Punkterne gemmes altså i rækkefølge i \textit{BusRoute\_RoutePoint}, uden spring i IDerne. Dette gør at punkterne kan itereres igennem, uden at der skal tages højde for spring, og kan sorteres efter ID i den rækkefølge man skal bruge (ascending for første til sidste stoppested, descending for sidste til første stoppested). Det er meget sandsynligt at det første ID hentet ikke er et, Så det første og sidste punkt på ruten findes også, og bruges som den nedre og øvre grænse for while-lykken. På den måde vil der itereres igennem samtlige punkter på ruten, hvor IDet for første og sidste stop ikke har nogen betydning for funktionen. Inden while-løkken startes hentes bussens sidste position ud, så det ikke har nogen betydning hvis bussens position ændrer sig under itereringen af ruten.\\
+Så længe \textit{routeCounter} (det nuværende ID der undersøges) er \textit{LastChosenID} (Det sidste ID på ruten), udtages punkterne for det nuværende ID og det næste. Således laves der et linjestykke spændt ud mellem to punkter, og afstanden fra bussen til dens tætteste punkt på dette linjestyke, udregnes i \textit{CalcRouteLineDist}. Denne funktion er udelukkende matematisk og vil beskrives i \textbf{IMPLEMENTATION-MATEMATIK}. Hvis bussens position på et givent linjestykke ikke er gyldigt, vil 1000000, et stort tal, returneres. Dette tal vil være større end prevBusDist som har en initial værdi sat til 100000. Dette sørger for, at det givne endpoint ikke,ved en fejl, tælles med. Hvis den udregnede værdi af distancen til punktet på linjen, er mindre end den forrige distance, vil det næste punkt på ruten, i forhold til det punkt man undersøger, søttes til bussens tætteste. Ved en fuldent gennemiterering af ruten, vil bussens tætteste rutepunkt være fundet, og IDet for dette punkt returneres. \\
+I \textit{GetClosestEndpointDesc} er der nogle enkelte forskelle, som her vil beskrives. På kodeudsnit \ref{lst:GetClosestEndpointDesc_diff1}, kan det ses hvordan ruten nu hentes ud i en tabel, hvor der sorteres efter IDet i \textit{BusRoute\_RoutePoint} tabellen, i faldende rækkefølge.
+\begin{lstlisting}[caption=GetClosestEndpointDesc forskel 1, label={lst:GetClosestEndpointDesc_diff1},language=SQL]
+...
+	insert into ChosenRouteDesc  (id,bus_lat,bus_lon)
+	select BusRoute_RoutePoint.ID, RoutePoint.Latitude,  RoutePoint.Longitude from RoutePoint
+	inner join BusRoute_RoutePoint on BusRoute_RoutePoint.fk_RoutePoint = RoutePoint.ID
+	inner join Bus on Bus.fk_BusRoute = BusRoute_RoutePoint.fk_BusRoute
+	where Bus.ID = busID
+	order by(BusRoute_RoutePoint.ID) desc;
+...
+\end{lstlisting}
+\noindent
+På kodeudsnit \ref{lst:GetClosestEndpointDesc_diff2} ses det hvordan, der nu læses i modsat rækkefølge fra \textit{ChosenRouteDesc} tabellen. \textit{RouteCounter} er nu den øverste grænse, og {LastChosenID} er nu den nedre. Der læses nu også i omvendt rækkefølge fra tabellen, da IDerne nu er faldende. Det vil også sige, at \textit{RouteCounter} dekrementeres i stedet for inkrementeres i slutningen af hver iteration.
+\begin{lstlisting}[caption=GetClosestEndpointDesc forskel 2, label={lst:GetClosestEndpointDesc_diff2},language=SQL]
+...
+select ChosenRouteDesc.ID from ChosenRouteDesc order by id asc limit 1 into LastChosenID;
+select ChosenRouteDesc.ID from ChosenRouteDesc order by id desc limit 1 into RouteCounter;
+...
+while RouteCounter >  LastChosenID  do
+	select bus_lon from ChosenRouteDesc where id = RouteCounter into R1x;
+	select bus_lat from ChosenRouteDesc where id = RouteCounter into R1y;
+	select bus_lon from ChosenRouteDesc where id = RouteCounter-1 into R2x;
+	select bus_lat from ChosenRouteDesc where id = RouteCounter-1 into R2y;
+...
+Set RouteCounter = RouteCounter - 1;
+...
+\end{lstlisting}
+
+\textbf{CalcRouteLengthAsc og CalcRouteLengthDesc}\\
+Disse funktioner tages i brug i \textit{GetClosestBusAscProc-} og \textit{GetClosestBusDescProc} procedurene. De bruges til at udregne afstanden fra en bus til det valgte stoppested. Funktionerne modtager  et koordinat-sæt for bussen, IDet for bussens tætteste rutepunkt fra forrige funktioner, samt ID et på stoppestedet. Bemærk at disse IDer er hentet fra \textit{BusRoute\_RoutePoint} tabellerne og symboliserer derfor rutepunktet og stoppestedets placering på ruten, og ikke deres egentlige IDer i \textit{RoutePoint} og \textit{BusStop} tabellerne. Funktionerne er ikke meget forskellige, ud over hvilken ChosenRoute tabel fra forrige funktioner, der tages i brug. Herudover itereres der også i omvendt rækkefølge. Der vises kodeudsnit for \textit{CalcRouteLengthAsc}, hvorefter funktionen forklares i detajler. Til sidst forklares forskellene mellem \textit{CalcRouteLengthAsc} og \textit{CalcRouteLengthDesc} mere detaljeret. På kodeudsnit \ref{lst:CalcRouteLengthAsc} kan funktionen ses uden kommentarer eller initialiseringer uden værdi. Dette gøres for at bevare det funktionelle overblik.
+
+\begin{lstlisting}[caption=CalcRouteLengthAsc. Udregner afstanden fra bus til stoppested, label={CalcRouteLengthAsc},language=SQL]
+drop function if exists CalcRouteLengthAsc $$
+create function CalcRouteLengthAsc(bus_pos_lon decimal(20,15), bus_pos_lat decimal(20,15), BusClosestEndPointID int, busStopId int)
+returns float
+BEGIN
+declare RouteCounter int default BusClosestEndPointID;
+
+select bus_lon from ChosenRouteAsc where id = RouteCounter into R2x;
+select bus_lat from ChosenRouteAsc where id = RouteCounter into R2y;
+set BusToStop = Haversine(R2y, bus_pos_lat, R2x, bus_pos_lon);
+
+while RouteCounter < busStopId do
+	select bus_lon from ChosenRouteAsc where id = RouteCounter into R1x;
+	select bus_lat from ChosenRouteAsc where id = RouteCounter into R1y;
+	select bus_lon from ChosenRouteAsc where id = RouteCounter+1 into R2x;
+	select bus_lat from ChosenRouteAsc where id = RouteCounter+1 into R2y;
+	set BusToStop = BusToStop + Haversine(R2y, R1y, R1x, R2x);	
+	set RouteCounter = RouteCounter+1;
+end while;
+drop temporary table ChosenRouteAsc;
+return BusToStop;
+END$$
+\end{lstlisting}
+\textit{RouteCounter} initialiseres til det tætteste rutepunkt, hvorefter dette ID bruges til at hente det første koordinatsæt ud fra \textit{ChosenRouteAsc}. Dette koordinat sæt bruges sammen med bussens koordinater til at udregne afstanden fra bussen til rutepunktet. Denne udregning sker i den anden matematik funktion, Haversine. Denne funktion finder afstanden mellem to koordinater i fugleflugt. Funktionen vil ikke beskrives videre i dette afsnit, for mere information henvises der til afsnittet \textbf{IMPLEMENTERING-MATEMATIK}. Herefter itereres der igennem ruten, hvor IDet for det tætteste rutepunkt på bussen er den nedre grænse, og IDet for stoppestedet er den øvre. Ved hver iteration findes afstanden mellem det nuværende punkt og det næste, og den totale afstand inkrementeres med denne værdi. Til sidst returneres den totale afstand.\\
+I \textit{CalcRouteLengthAsc} gøres der brug af \textit{ChosenRouteDesc} tabellen i stedet for \textit{ChosenRouteAsc}. Desuden bruges IDet for stoppestedet nu som den nedre grænse og det tætteste rutepunkt som den øvre, og \textit{RouteCounter} dekrementeres i stedet. Dette kan ses på kodeudsnit \ref{ChosenRouteDesc_diff1}
+\begin{lstlisting}[caption=CalcRouteLengthDesc forskel, label={lst:ChosenRouteDesc_diff1},language=SQL]
+...
+while RouteCounter > busStopId do
+	select bus_lon from ChosenRouteDesc where id = RouteCounter into R1x;
+	select bus_lat from ChosenRouteDesc where id = RouteCounter into R1y;
+	select bus_lon from ChosenRouteDesc where id = RouteCounter-1 into R2x;
+	select bus_lat from ChosenRouteDesc where id = RouteCounter-1 into R2y;
+...
+	set RouteCounter = RouteCounter-1;
+...
+\end{lstlisting}
+
+\textbf{CalcBusAvgSpeed}\\
+Denne funktion tages i brug i slutningen af \textit{CalcBusToStopTime} proceduren, og bruges til at udregne bussens gennemsnitshastighed. Dette bruges sammen med bussens afstand til stoppestedet, til at udregne hvor lang tid der er tilbage, før bussen når stoppestedet.Funktionen modtager IDet på et bus som den eneste parameter.\\
+Da det i denne funktion er ligegyldigt, hvilken rute bussen kører på, er det også ligegyldigt hvilken vej den kører. Derfor er det kun nødvendigt at have en funktion til at udregne gennemsnitshastigheden. På kodeudsnit. På kodeudsnit \ref{lst:CalcBusAvgSpeed} kan funktionen ses uden kommentarer eller initialiseringer uden værdi. Dette gøres for at bevare det funktionelle overblik. Efter udsnittet forklares funktion detaljeret.
+\begin{lstlisting}[caption=CalcBusAvgSpeed. Udregner gennemsnitshastigheden for en bus. label={lst:CalcBusAvgSpeed},language=SQL]
+	create function CalcBusAvgSpeed(BusId int)
+returns float
+begin
+	drop temporary table if exists BusGPS;
+	create TEMPORARY table if not exists BusGPS(
+	id int auto_increment primary key, 
+	pos_lat decimal(20,15),
+	pos_lon decimal(20,15),
+	busUpdateTime time
+);
+	
+insert into BusGPS (pos_lat, pos_lon, busUpdateTime)
+select GPSPosition.Latitude,  GPSPosition.Longitude, GPSPosition.Updatetime from GPSPosition
+where GPSPosition.fk_Bus=BusId order by GPSPosition.ID asc;;
+	
+select count(id) from BusGPS into MaxPosCounter;
+while PosCounter < MaxPosCounter do
+
+	select pos_lon from BusGPS where id= PosCounter into R1x;
+	select pos_lat from BusGPS where id= PosCounter into R1y;
+	select pos_lon from BusGPS where id = PosCounter+1 into R2x;
+	select pos_lat from BusGPS where id = PosCounter+1 into R2y;
+
+	set Distance = Distance + Haversine(R2y, R1y, R1x, R2x);
+	select busUpdateTime from BusGPS where id= PosCounter  into ThisTime;
+	select busUpdateTime from BusGPS where id = PosCounter+1  into NextTime;
+	set secondsDriven = secondsDriven + (Time_To_Sec(NextTime) - Time_To_Sec(ThisTime));
+	set PosCounter = PosCounter + 1;
+end while;
+set speed = Distance/secondsDriven;
+drop temporary table BusGPS;
+return speed;
+end $$
+\end{lstlisting}
+Første udhentes alle GPS position og opdaterings tiderne for disse, for det relevante bus ID. Dette data indskrives i BusGPS, en temporary tabel, med et ID, som autoinkrementeres fra 1. Antallet af GPS opdateringer fundet for den givne bus, bruges i en while-løkke som den øvre grænse. En counter instantieres til et, og bruges som den nedre grænse.\\
+Ved hver iteration hentes den opdatering af bussens position, hvis ID i BusGPS svarer til counteren. Den næste opdatering i rækken hentes også ud, og afstanden mellem de to punkter udregnes ved hjælp af Haversine funktionen. Den totale afstand inkrementeres med den udregne afstand. Herefter findes opdateringstiden for det første punkt, samt opdateringstiden for det næste. De to tidspunkter omregnes til sekunder, og tiden for det først punkt trækkes fra tiden for det næste. Således findes den tid, det har taget bussen at køre det linjestykke, som spændes over de to punkter. Den totale tid inkrementeres med den fundende tid. \\
+Efter fuldent gennemiterering af bussens positioner, divideres den total afstand med tiden det har taget at køre afstanden. Således findes gennemsnitshastigheden, og denne værdi returneres.\\\\
+\noindent
+\textbf{Haversine og CalcRouteLineDist}\\
+Disse to funktioner vil ikke vises som kodeudsnit, da de blot er MySQL implementeringer af matematiske funktioner.\\ 
+Haversine bruges til at udregne afstanden mellem to punkter, i en fugleflugt. CalcRouteLineDist bruges til at udregne afstanden fra et punkt, til det nærmeste punkt på en linje, udspændt af to andre punkter. Udregninger vil blive vist og forklaret nærmere under afsnittet \textbf{IMPLEMENETERING-MATEMATIK}.
+
+\end{document}
+

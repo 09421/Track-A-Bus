@@ -1,0 +1,98 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Grænseflader til person aktører}
+Systemet har to forskellige personaktører, der begge fungerer som primæraktører, hvilket også ses ud af Use Case Diagrammet for systemet(Use Case diagram findes i afsnit \textit{4 USE CASE VIEW} figur \ref{fig:UseCaseDia}). 
+Disse to har forskellige mål med systemet, og derfor benytter de hver især forskellige elementer i brugergrænsefladen. 
+De har dermed også forskellige rettigheder, til at bruge nogle af de forskellige elementer. 
+\\
+Begge aktører benytter naturligvis en PC, for at interagere med systemet. 
+De starter i et log-in vindue\footnote{Alle billeder i afsnittet kan findes i \textit{Bilag 3: Billeder/Brugergrænseflade}}. 
+Her logges der ind som enten programmør eller operatør. Brugerfladen ses her nedenfor på figur \ref{fig:LoginWindow}.
+Herefter kommer brugeren til et vindue, hvor der kan vælges imellem kategorier af funktionaliteter.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.8]{./Billeder/Brugergrenseflade/LoginWindow.png}
+	\caption{Login Vindue}
+	\label{fig:LoginWindow}
+\end{figure}
+\subsubsection{Operatør}
+Når der logges ind som operatør, har man begrænset adgang til systemet. 
+Operatøren har kun adgang til to af funktionaliteterne i hovedvinduet, som det ses på figur \ref{fig:MenuWindow_Operator}. Disse er Show log og Run, hvor Run kun leder til benyttelse af den rigtige robot, og ikke har mulighed for at simuler den. Programmøren er den eneste der kan simulere robotten, se figur \ref{fig:SimOrRealWindow_Operator}.
+Brugergrænsefladen for operatøren ses på nedenstående billeder \ref{fig:MenuWindow_Operator}:
+\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.75]{./Billeder/Brugergrenseflade/MenuWindow_Operator.png}
+	\caption{Hovedmenu vinduet set fra Operatørens rettigheder. Som det ses har operatøren kun tilgang til Run og Show log. Det ses yderligere at "Admin Permissions" er "Not Granted"}
+	\label{fig:MenuWindow_Operator}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.75]{./Billeder/Brugergrenseflade/SimOrRealWindow_Operator.png}
+	\caption{Valg af robottype vindue}
+	\label{fig:SimOrRealWindow_Operator}
+\end{figure}
+
+Nedenstående billeder \ref{fig:RunWindow_Simulatedrobot_Programmer}, viser grænsefladen, hvor operatøren kører programmerne ud fra. Operatøren har naturligvis mulighed for at starte systemet med en af de brugerdefinerede programmer eller med standardprogrammet. 
+Derudover kan operatøren stoppe og resette programmet, hvis der skulle opstå problemer, eller blot pause programmet. Til at holde øje med systemet, er der først og fremmest en processboks, der viser hvad robotten laver og har lavet. Operatøren kan også hurtigt få et overblik, over den aktuelle klods der sorteres nederst i vinduet, hvor der opdateres data omkring klodsen. Derover er der en notifikationsboks i siden, hvor der kommer beskeder, hvis der er noget operatøren skal være opmærksom på.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.55]{./Billeder/Brugergrenseflade/RunWindow_Simulatedrobot_Programmer.png}
+	\caption{Run vinduet, med logging undervejs.}
+	\label{fig:RunWindow_Simulatedrobot_Programmer}
+\end{figure}
+
+Nedenstående billede \ref{fig:LogWindow_Operator}, viser grænsefladen, hvor operatøren kan tilgå de logs der er lavet ved hver programkørsel. Han har mulighed for at gemme en selvvalgt log til en tekstfil, og dermed behøves programmet ikke køres, hvis han vil tilgå en logfil flere gange.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.55]{./Billeder/Brugergrenseflade/LogWindow_Operator.png}
+	\caption{Log vinduet, med tidligere logs.}
+	\label{fig:LogWindow_Operator}
+\end{figure}
+
+\subsubsection{Programmør}
+Programmøren har samme grafiske brugergrænseflade som operatøren, dog med fuld tilgængelighed. Brugergrænsefladen for operatøren ses på nedenstående figur \ref{fig:MenuWindow_Programmer}:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{./Billeder/Brugergrenseflade/MenuWindow_Programmer.png}
+	\caption{Hovedmenu vinduet ser fra Programmørens rettigheder. Som det ses har programmøren tilgang til alt. Det ses yderligere at "Admin Permissions" er "Granted" skrevet med grønt}
+	\label{fig:MenuWindow_Programmer}
+\end{figure}
+
+Nedenstående billede viser log materialevinduet, hvor der er trykket på Add/Edit knappen. Som det ses kan programmøren tilføje en ny materialetype, eller fjerne en eksisterende.\footnote{Det er ikke muligt at slette de fem første densiteter, der svarer til de fem klodser, der er gemt i systemet.}
+Derudover kan han også redigerer i eksisterede materialetyper, herunder navn og densitet. Derudover kan programmøren printe en listen over materialetyper, via menuen i toppen, hvilket der også ses et lille eksempel her på figur \ref{fig:MaterialsWindow_Programmer}. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.50]{./Billeder/Brugergrenseflade/MaterialsWindow_Programmer.png}
+	\caption{Materials vinduet}
+	\label{fig:MaterialsWindow_Programmer}
+\end{figure}
+
+Nedenstående figur \ref{fig:IDEWindow_programmer} viser vinduet, hvor programmøren kan gå ind og lave egne sekvenser til robotten. Når programmøren skriver et program, er der en smule intellisense, der viser de funktioner der er tilgængelige, når han bruger punktum operatoren.\\
+Han kan hente gamle programmer og redigerer dem, gemme programmer, slette dem samt compile det program der er indlæst i vinduet, hvor programøren vil få ad vide om der er nogle syntax fejl, og i så fald hvor fejlen er.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.50]{./Billeder/Brugergrenseflade/IDEWindow_programmer.png}
+	\caption{IDE vinduet}
+	\label{fig:IDEWindow_programmer}
+\end{figure}
+
+Nedenstående billede \ref{fig:ManageBricksWindow_Programmer} viser vinduet, hvor programmøren kan få et overblik over de klodser der er sorteret, samt slette hvis han har fjernet nogle fra boksen. Derudover kan han ligesom i materialevinduet printe en listen over sorterede klodser
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.50]{./Billeder/Brugergrenseflade/ManageBricksWindow_Programmer.png}
+	\caption{ManageBricks vinduet}
+	\label{fig:ManageBricksWindow_Programmer}
+\end{figure}
+
+Nedenstående billede \ref{fig:EditConveyerBeltPosition} viser vinduet, hvor programøren skal gå ind og angive en række længder, hvis han har rykket om på opstillingen. Når der trykkes i en boks, flyttes pilen på billedet, så programmøren ved hvilken længde han skal angive.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.60]{./Billeder/Brugergrenseflade/EditConveyerBeltPosition.png}
+	\caption{Edit Conveyer Belt Position vinduet}
+	\label{fig:EditConveyerBeltPosition}
+\end{figure}
+
+\end{document}

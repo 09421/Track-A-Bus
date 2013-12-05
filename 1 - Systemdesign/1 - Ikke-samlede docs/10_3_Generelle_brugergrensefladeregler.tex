@@ -1,0 +1,18 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsection{Generelle brugergrænsefladeregler}
+Kravene til brugergrænsefladen kan deles op i to kategorier:
+\begin{itemize}
+\item Arkitekturspecifikke
+\item Udseendesspecifikke
+\end{itemize}
+Begge er beskrevet herunder
+\subsubsection{Arkitekturspecifikke}
+Brugergrænsefalden er baseret på MVVM designmønsteret, som beskrevet i afsnit \textit{10.2 - Arkitektur mønstre}. Dette er valgt af to grunde; Det betyder lavere kobling mellem model og view, og brugergrænsefalden kan derfor udskriftes uden større problemer. Desuden betyder det, at det er markant nemmere at teste kode der ligger tæt op af brugergrænsefladen. 
+Viewet er lavet udelukkende i XAML, og i viewmodellen ligger en række properties, som omformer data fra modellen til viewet, samt en række commands der kalder ned i modellens logik. Det var ideologen at der absolut ikke måtte placeres kode i den såkaldte "Code-behind" fil. Dette var dog ikke helt muligt når der f.eks. skulle åbnes nye vinduer. Derfor blev det besluttet, at sådanne operation skulle baseres på Mediator Pattern (nærmere beskrevet i afsnit \textit{10.2 - Arkitektur mønstre}. Dette betød at der stadig blev holdt en forholdsvis lav kobling.
+
+\subsubsection{Udseendesspecifikke}
+For at holde et strengent ens udseende på tværs af hele brugergrænsefladen blev det besluttet at bruge WPF-themes fra codeplex. Dette påvirker at alle kontroller altid har samme udseende.
+
+\end{document}

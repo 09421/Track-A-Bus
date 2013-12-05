@@ -1,0 +1,14 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 1: Sorter klods realisering}
+Sorter klods Use Casen er realiseret ved at systemet starter med at kalde ned i Data Access Layer, som muliggør kommunikation med Robot Dll'en. Her benyttes funktionen EnterManual(), hvor der indikeres at robotten skal styres via. akser og ikke koordinater. Herefter bliver der startet en while-løkke, som benytter funktionen MoveManual som har to parametre. Den ene sættes til at styre aksen, hvori transportbåndet er og den anden angiver hastigheden på transportbåndet. While-løkken er aktiv, indtil der er en klods der afbryder sensoren på transportbåndet. Når dette indtræffer vil en variabel blive ændret og programmet vil afbryde while-løkken. \\
+Use Casen gør herefter brug af Use Case 1.1 og Use Case 1.2 som er beskrevet i afsnit 5.3.2 og 5.3.3. I disse include Use Cases bliver den givne klods målt og vejet, samt dens materialetype bestemmes.\\ 
+Inden det givne materiale flyttes over til kassen, bliver der først valideret om der er plads til klodsen. Hvis dette ikke er tilfældet bliver klodsen afleveret på enden af transportbåndet og kørt ud over kanten. I tilfældet af der er plads til klodsen flyttes det givne materiale over til kassen, ved hjælp af funktionerne DefineVectorCoordinates, NameAndTeachVector samt MoveLinear, som findes i Robot Dll'en. DefineVector definere den givne vektor med koordinater og NameAndTeach navngiver den og indsætter vektoren i hukommelsen. MoveLinear bliver herefter brugt og den flytter robotarmen hen til den givne vektors koordinat. I implementeringen er disse 3 funktioner sat ind i en hjælpe funktion(MoveRobot()), som bliver kaldt flere gange i en sekvens for at få robotarmen til at lægge den givne klods det rigtige sted. Når klodsen er lagt på plads flyttes robotarmen hen til et absolut punkt som angiver startpositionen for robotarmen - Use casen er derefter udført og opfyldt. \\\\
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Billeder/UseCaseRealiseringer/UC1.jpg}
+\caption{Simpelt sekvensdiagram over Sorter Klods}
+\end{figure}
+
+\end{document}

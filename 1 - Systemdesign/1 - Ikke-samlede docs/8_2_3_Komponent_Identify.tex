@@ -1,0 +1,290 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\newpage
+
+\subsubsection{Komponent 3: Bestem placering af Transportbånd}
+For at kunne bestemme placeringen for transportbåndet skal der udføres nogle beregninger vha. 3 målinger fra brugeren til transportbåndet.
+Disse ses på figur \ref{fig_oversigt}\\
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.65]{Identify/Full_messure.png}
+\caption{Oversigt over målinger til at beregne transportbåndets placering}
+\label{fig_oversigt}
+\end{figure}
+\\
+Med de tre længder kan der beregnes nogle relativt præcise koordinater for, hvor robotten skal samle klodsen op på transportbåndet, og hvor den skal sætte den på transportbåndet for at rotere den.
+\\\\
+De 3 punkter, \textit{BTBe}(Box-TransportBåndEnde), \textit{RTBe} (Robot-TransportBåndEnde) og \textit{RTBs} (Robot-TransportBåndStart), har bestemte punkter der skal måles mellem.
+\\
+Eftersom robottens centrum er defineret med koordinatsættet \textit{(0;0)} i robottens indre, er det ikke muligt, at foretage en måling dertil. 
+\\
+Derfor er punktet, \textit{Robot} valgt ved robottens fod.\\
+For \textit{Box} er punktet ved kassens hjørne valgt.\\
+For \textit{TransportBåndEnde} (\textit{TBe}) er et punkt under et hul på transportbåndet valgt.\\
+For \textit{TransportBåndStart} (\textit{TBs}) er et punkt ved siden af transportbåndets fod valgt.
+\\
+\begin{figure}[h!]
+\centering 
+\includegraphics[scale=0.75]{Identify/Punkter.png}
+\caption{Punkter der måles imellem}
+\label{Robotfoto}
+\end{figure}
+
+De følgende længder, |\textit{BTBe}|, |\textit{BTBe}| og |\textit{BTBe}|, skal måles og kan angives i vinduet, vist på figur \ref{fig:window}.
+\\
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.4]{Identify/Window.png}
+\caption{Vindue måling skal tastes ind i}
+\label{fig:window}
+\end{figure}
+
+For bedre overskuelighed vises målingerne i et koordinatsystem på figur \ref{Identify_graf}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{Identify/Oversigt.png}
+\caption{Oversigt over mulig opstilling for transportbåndet}
+\label{Identify_graf}
+\end{figure}
+De tre stiplede linjer på figur \ref{Identify_graf} er de tre sider der skal måles. 
+De 2 hele linjer er længden mellem robotten og kassen, samt 2 punkter på transportbåndet.
+\\
+Eftersom transportbåndet kan placeres i en vilkårlig position, er der dog nogle begrænsninger:
+	
+	\begin{enumerate}
+	\item Højden må ikke justeres på nogen måde.
+	\item Transportbåndet skal være placeret på den viste side, som vist på figur \ref{Robotfoto}.
+	\item Transportbåndet må ikke roteres til siden.
+		
+		\begin{enumerate}
+		\item Det må ikke ligge på siden.
+		\item Det må ikke tilte.
+		\end{enumerate}
+	
+	\item Transportbåndet må ikke roteres rundt, således båndet kører fra robotten mod kassen.
+	\end{enumerate}
+
+\underline{BEREGNINGER}\\
+For at beregne hvor transportbåndet er, i forhold til robotten og kassen, samt hvor klodsen skal samles op og roteres, kræver en del beregninger.
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{Identify/Messures.png}
+\caption{Beregninger for Transportbåndet. De fede streger viser målinger og cirklerne viser hvor længden kunne være}
+\end{figure}
+Disse vises herunder:
+\\\\
+Når de 3 målinger er indtastet, eksekveres følgende metode:
+\begin{lstlisting}[caption=Funktionen CalculateTBCoords(...)]
+internal void CalculateTBCoords( out double xTBe, out double yTBe, out double xTBs, out double yTBs )
+{
+  double a1;
+
+  a1 = (yKasse - yRobot) / (xKasse - xRobot);
+  if (double.IsNaN(a1))
+  {
+      a1 = 120; //Hældning på 120 er meget stejlt og vil gå an
+  }
+
+  double angleR1 = Math.Atan(a1) * deg;
+
+  double angleR2 = CosEquation(KTBe, RTBe, RK);
+  var angleTotal = angleR1 + angleR2;
+
+  yTBe = yRobot + RTBe * Math.Sin(angleTotal*rad);
+  xTBe = xRobot + RTBe * Math.Sin((180 - 90 - angleTotal)*rad);
+
+  double angleR3 = CosEquation(TB, RTBe, RTBs);
+  angleTotal += angleR3;
+  yTBs = yRobot + RTBs * Math.Sin(angleTotal*rad);
+  xTBs = xRobot + RTBs * Math.Sin((180 - 90 - angleTotal) * rad);
+}
+\end{lstlisting} 
+Beregningerne forklares bedst med en tegning:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{Identify/Angles.png}
+\caption{Illustration af beregninger}
+\end{figure}
+
+
+Først beregnes hældningen på mellem kassen og robotten (linje 5):
+\begin{align}
+a &= \dfrac{y_2 - y_1}{x_2 - y_1} \\
+a1 &= \dfrac{y_{kasse} - y_{Robot}}{x_{kasse} - x_{Robot}}
+\end{align}
+Det er muligt, at ændre koordinaterne for kassen eller robotten, således de står "lige over hinanden", altså deres x-værdi bliver ens.
+Hvis dette er tilfældet vil der blive divideret med nul. 
+\\
+Dette er normalt en ulovlig operation, men da \textit{xKasse} og \textit{xRobot} er defineret af typen \textit{double}, vil værdien være \textit{NaN} - uendelig stor.
+\\
+Skulle det være tilfældet, kan der blot indsættes en meget stor hældning som erstatning, da "uendelig stor" ikke er til at regne med.
+\\\\
+Herefter beregnes hældningen i grader (linje 11):
+\begin{align}
+\theta &= tan^{-1}(a) \\
+angleR1 &= tan^{-1}(a1) \cdot \dfrac{180}{\pi}
+\end{align}
+Der ganges med $\dfrac{180}{\pi}$, da værdien ønskes gemt i grader og C\#'s \textit{Math}-klasse bruger radianer.
+\\\\
+Herefter beregnes vinklen $\angle BoxRobotTBe$ med cosinus-relationen (linje 13):
+\begin{align}
+\angle A &= cos^{-1}\left(\dfrac{b^2 + c^2 - a^2}{b \cdot c \cdot 2}\right)\\
+angleR2 &= cos^{-1}\left(\dfrac{|RTBe|^2 + |RK|^2 - |KTBe|^2}{|RTBe| \cdot |RK| \cdot 2}\right)
+\end{align}
+De to vinkler ligges herefter sammen, således den fulde vinkel til \textit{TBe} findes (linje 14):
+\begin{align}
+angleTotal = angleR1 + angleR2
+\end{align}
+Nu kan y-koordinaten til \textit{TBe} findes vha. sinus-relationen, samt \textit{Robot}'s x- og y-koordinat (linje 16-17):
+\\
+\begin{align}
+\dfrac{a}{sin(A)} &= \dfrac{b}{sin(B)} \Leftrightarrow \\
+a &= \dfrac{b \cdot sin(A)}{sin(B)} \\
+\text{Da B = 90 og} sin(90) &= 0 \text{ undlades nævneren}\\
+a &= b \cdot sin(A) \label{Sinus-relation}\\
+y_{TBe} &=y_{Robot} + |RTB_e| \cdot sin(angleTotal) \\
+x_{TBe} &=x_{Robot} + |RTB_e| \cdot sin\left((180 - 90 - angleTotal) \cdot \dfrac{\pi}{180}\right)
+\end{align}
+Her ganges der med $\dfrac{\pi}{180}$ for omskrivning fra grader til radianer.\\
+De $180 - 90 - angleTotal$ er der sidste vinkel i trekanten.
+\\\\
+Nu kan vinklen $\angle TBeRobotTBs$ findes ved cosinus-relationen (linje 19), hvorefter TBs's y-koordinat (linje 21) findes vha. \textit{angleTotal} (linje 20) og x-koordinat (linje 21) ligeledes.
+\\\\
+Nu kan punkterne, hvor klodsen skal samles op beregnes:
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{Identify/CalcSensor.png}
+\caption{Illustration af beregning for SensorPickUp}
+\end{figure}
+
+%\newpage
+\begin{lstlisting}[caption=Funktionen 'CalculateSensorCoords()']
+internal void CalculateSensorCoords()
+{
+    y4 = _TBe_y;
+    x4 = _TBe_x;
+    y3 = _TBs_y;
+    x3 = _TBs_x;
+
+    double a1;
+
+    a1 = (y4 - y3) / (x4 - x3);
+    if (double.IsNaN(a1))
+    {
+        a1 = 120; 
+    }
+
+    double a2 = Math.Abs( -1 / a1);
+    double angleA1 = Math.Atan(a1);
+
+    double yOrtogonal;
+    if(angleA1 * deg < 0)
+        yOrtogonal = y3 + TBsSensor * Math.Sin(angleA1);  
+    else
+        yOrtogonal = y3 - TBsSensor * Math.Sin(angleA1);  
+
+    double xOrtogonal;
+        
+    if(angleA1*deg < 0)
+        xOrtogonal = x3 + TBsSensor * Math.Sin((180 - 90 - angleA1 * deg) * rad);
+    else
+        xOrtogonal = x3 - TBsSensor * Math.Sin((180 - 90 - angleA1 * deg) * rad);
+
+    double GK = HalfBandSize * Math.Sin(Math.Atan(a2));
+
+    if(a1 > 0)
+        y5 = yOrtogonal - GK;
+    else
+        y5 = yOrtogonal + GK;
+
+    double GE = HalfBandSize * Math.Sin((180 - 90 - Math.Atan(a2) * deg) * rad);
+    x5 = xOrtogonal + GE;
+}
+
+\end{lstlisting}
+De fundene punkter for transportbåndet læses ind i 4 lokale koordinater (linje 3-6).
+\\
+Herefter beregnes hældningen på transportbåndet (linje 10) og det checkes om de skulle stå lige over hinanden (Ens x-koordinator). 
+Hvis dette er tilfældet sættes hældningen til 120 (blot et højt tal) (linje 11-14).
+\\\\
+Nu findes det punkt, hvor punktet \textit{PickUp} står ortogonalt på (vinkelret):
+\begin{align}
+a_{2} &= \dfrac{-1}{a_1}
+\end{align} 
+Da denne skal bruges til at finde en længe, \textit{skal} dette være positivt (linje 16).\\
+Når hældningen, \textit{a1}, er beregnet, findes den i grader (linje 17).
+\\\\
+Først findes det ortogonale punkts y-koordinat:\\
+Vha. Sinus-relationerne (ligning \ref{Sinus-relation}) findes forskellen på y-koordinatet.\\
+Hvis \textit{AngleA1} i grader er negativ lægges forskellen til \textit{TBe}'s y-koordinat (linje 20-21).\\
+Hvis \textit{AngleA1} i grader er positiv trækkes forskellen fra \textit{TBe}'s y-koordinat (linje 22-23).
+\\\\
+Herefter findes det ortogonale punkts x-koordinatet på samme måde:\\
+Ved at kombinere ligning \ref{Sinus-relation}, og reglen om, at en trekant er 180\degree, beregnes den sidste vinkel i trekanten:
+\begin{align}
+\text{Sidste vinkel} &= 180\degree - 90\degree - angleA1
+\label{Trekant_sidste_Vinkel}
+\end{align}
+Hvis \textit{AngleR1} i grader er negativ lægges forskellen til \textit{TBe}'s x-koordinat (linje 27-28).\\
+Hvis \textit{AngleA1} i grader er positiv trækkes forskellen fra \textit{TBe}'s x-koordinat (linje 29-30).
+\\\\
+Når det ortogonale punkt er fundet, findes koordinatsættet til \textit{PickUp} (angivet ved \textit{x5} og \textit{y5}):
+\\
+Først findes forskellen på y-koordinatet (linje 32) med sinus-relationen. 
+Hvis \textit{a1} er positiv trækkes forskellen fra \textit{yOrtogonal} (linje 34-35).\\
+Hvis \textit{a1} er negativ lægges forskellen til \textit{yOrtogonal} (linje 34-35).
+\\\\
+Herefter findes forskellen på x-koordinatet (linje 39) med sinus-relationen og formlen for den sidste vinkel (ligning \ref{Trekant_sidste_Vinkel}).
+\\
+Forskellen lægges til \textit{xOrtogonal}.
+
+\begin{lstlisting}[caption=Udsnit af funktionen 'CalculateRotateCoords()', firstnumber=19, label={lst:CalcRotate}]
+  double yOrtogonal;
+  if (angleA1 * deg < 0)
+      yOrtogonal = y3 + (TBsSensor - TBsPickUp) * Math.Sin(angleA1);  
+  else
+      yOrtogonal = y3 - (TBsSensor - TBsPickUp) * Math.Sin(angleA1);  
+
+  double xOrtogonal;
+
+  if(angleA1 * deg < 0)
+      xOrtogonal = x3 + (TBsSensor - TBsPickUp) * Math.Sin((180 - 90 - angleA1 * deg) * rad);
+  else
+      xOrtogonal = x3 - (TBsSensor - TBsPickUp) * Math.Sin((180 - 90 - angleA1 * deg) * rad);
+  
+\end{lstlisting}
+På kodeudsnit \ref{lst:CalcRotate} ses et udsnit af funktionen \textit{CalculateRotateCoords()}. 
+Det viste er det eneste der afviger fra funktionen \textit{CalculateSensorCoords()}:
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=0.75]{Identify/CalcRotate.png}
+\caption{Illustration af CalculateRotateCoords()}
+\label{Fig:Rotate}
+\end{figure}
+
+Som illustreret på figur \ref{Fig:Rotate}, beregnes længden til punktet \textit{yOrtogonal}, hvor klodsen skal roteres, ved at trække afstanden fra sensoren til punktet fra længden til sensoren og gange med sinus-relationen (ligning \ref{Sinus-relation}).
+\\
+Hvis vinklen (\textit{angleA1)} er negativ, lægges \textit{y3} (\textit{TBs}'s y-koordinat) til beregningen (linje 21).
+\\
+Hvis den er positiv trækkes det fra \textit{y3} (linje 23).
+\\\\
+\textit{xOrtogonal} findes ved samme fremgangsmetode, hvor sinusrelationen (ligning \ref{Sinus-relation}) og ligning \ref{Trekant_sidste_Vinkel} kombineres.
+\\
+Hvis vinklen (\textit{angleA1)} er negativ, lægges beregningen til \textit{y3} (\textit{TBs}'s y-koordinat) (linje 30).
+\\
+Hvis vinklen (\textit{angleA1)} er positiv, trækkes beregningen fra \textit{y3} (\textit{TBs}'s y-koordinat) (linje 30).
+
+\newpage
+
+For at bruge beregningerne kaldes funktionen \textit{Messure(...\footnote{Her mangler 3 parameter med forståelige navne})}, hvorefter 2 arrays med index hver i sær på 2.
+\\
+Herefter kaldes \textit{PickUpCoords(out array1)} og \textit{RotateCoords(out array2)} og de to koordinatsæt kan nu tilgås igennem de to arrays. 
+Herefter 
+
+	
+
+
+\end{document}
