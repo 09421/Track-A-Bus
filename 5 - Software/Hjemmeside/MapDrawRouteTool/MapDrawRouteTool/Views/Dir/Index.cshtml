@@ -33,20 +33,17 @@
     var directionsDisplayArray = new Array();
     var rendererOptions;
 
-
-
     function ExecuteOnLoad() {//from _layout when loaded
         GetBusRoutesNamesFromDB();
     }
 
     function initialize() {
-        // Instantiate a directions service.
+        // fjerner points of interest fra mappet
         var featureOpts = [{
             featureType: 'poi',
             stylers: [
                 { visibility: 'off' }]
-        }
-        ];
+        }];
 
         //Creates the DirectionsService
         directionsService = new google.maps.DirectionsService();
@@ -63,8 +60,6 @@
         map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
         // Create a renderer for directions and bind it to the map.
-
-
         rendererOptions = {
             map: map,
             draggable: true,
@@ -76,11 +71,9 @@
         directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
         directionsDisplayArray.push(directionsDisplay);
 
-
         //Sets the mapto use the TransitLayer
         var transitLayer = new google.maps.TransitLayer();
         transitLayer.setMap(map);
-
 
         //Gets markers and the route, when route created, or dragged
         google.maps.event.addListener(directionsDisplay, 'directions_changed', function () {
@@ -97,6 +90,7 @@
                         };
                     }
                 }
+
                 temp = that.directions.routes;
 
                 for (var i = 0; i < StartEndMarkers.length; i++)
@@ -116,7 +110,7 @@
 
         var SubRuteMarkers = new Array();
 
-        //listener for when the marker get a click event
+        //listener for when the map get a click event
         google.maps.event.addListener(map, 'click', function (event) {
             if (startPoint == null && endPoint == null) //No markers, set first
                 startPoint = new google.maps.Marker({
@@ -168,6 +162,8 @@
         directionsDisplayArray.push(dd);
 
         google.maps.event.addListener(dd, 'directions_changed', function () {
+
+
             var that = this;
             for (var i = 0; i < directionsDisplayArray.length; i++) {
                 if (directionsDisplayArray[i] == that) {
@@ -268,14 +264,9 @@
             if (status == google.maps.DirectionsStatus.OK) {
 
                 dd = new google.maps.DirectionsRenderer(rendererOptions);
-                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);
                 directionsDisplayArray.push(dd);
-                //if (directionsDisplayArray.length == 1) {
-                //    directionsDisplayArray[0].setDirections(response);
-                //    directionsDisplayArray.push(dd);
-                //}
-                //else
-                //    dd.setDirections(response);
+                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);
+                
                 
 
 
@@ -324,7 +315,7 @@
                     directionsDisplayArray[i].setMap(null);
                 }
                 directionsDisplayArray = [];
-                directionsDisplayArray.push(new google.maps.DirectionsRenderer(rendererOptions));
+                
 
                 var ID = result[0].ID;
                 var test = new Array();
@@ -445,7 +436,7 @@
         var stopsToSave = new Array();
         var ele = document.getElementById("ToLB").options;
         for (var i = 0; i < ele.length; i++) {
-            stopsToSave.push(ele[i].value);
+            stopsToSave.push(ele[i].innerHTML);
         }
         if (document.getElementById("RouteNumber").value != "") {
             if (DirectionsArray != null) {
@@ -620,6 +611,7 @@
     var arrFrom = new Array();
     var arrTo = new Array();
     var arrLU = new Array();
+
     google.maps.event.addDomListener(window, 'load', initialize);//is needed to show the map on the page
 </script>
 

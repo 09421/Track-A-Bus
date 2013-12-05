@@ -165,6 +165,7 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
+        
         public JsonResult GetAllBusses()
         {
             using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
@@ -194,9 +195,7 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-
-
-        public int SaveNewBus(List<string> NewBusList, List<string> AllBusses)
+        public int SaveBusChanges(List<string> NewBusList, List<string> AllBusses)
         {
             List<string> BussesToAdd = new List<string>();
             List<string> BussesToRemove = new List<string>();
@@ -277,28 +276,28 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        public int Deletebus(string BusName)
-        {
-            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    try
-                    {
-                        cmd.CommandText = String.Format("DELETE FROM Bus WHERE ID = {0}", BusName);
-                        connection.Open();
-                        cmd.ExecuteNonQuery();
-                        connection.Close();
-                        return 0;
-                    }
-                    catch (Exception e)
-                    {
-                        connection.Close();
-                        Debug.WriteLine(e.Message);
-                        return -1;
-                    }
-                }
-            }
-        }
+        //public int Deletebus(string BusName)
+        //{
+        //    using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
+        //    {
+        //        using (var cmd = connection.CreateCommand())
+        //        {
+        //            try
+        //            {
+        //                cmd.CommandText = String.Format("DELETE FROM Bus WHERE ID = {0}", BusName);
+        //                connection.Open();
+        //                cmd.ExecuteNonQuery();
+        //                connection.Close();
+        //                return 0;
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                connection.Close();
+        //                Debug.WriteLine(e.Message);
+        //                return -1;
+        //            }
+        //        }
+        //    }
+        //}
     }
 }
