@@ -165,12 +165,13 @@
         $.ajax({
             type: "POST",
             dataType: "json",
-            url: '@Url.Action("GetPosistion", "Stop")',
+            url: "Stop/GetPosistion",
             data: {
                 stopName: e.options[e.selectedIndex].text,
                 contentType: "application/json; charset=utf-8"
             },
             success: function (result) {
+                alert(result.length);
                 if (markers.length > 0) {
                     markers[0].setMap(null);
                     markers = [];
@@ -181,6 +182,11 @@
                     position: new google.maps.LatLng(result[0], result[1])
                 });
                 markers.push(mark)
+                google.maps.event.addListener(mark, 'click', function () {
+                    markers[markers.indexOf(mark)].setMap(null);
+                    markers = [];
+                    document.getElementById("StopName").value = null;
+                });
                     
             }
         });

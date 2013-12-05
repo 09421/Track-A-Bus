@@ -12,60 +12,32 @@ Denne komponent har til formål at håndtere alle de adminitrative opgaver i syste
 \end{itemize}
 
 Alle disse delkomponenter udgøre tilsammen en vigtig del af systemet, da uden nogle af dem vil det ikke være muligt at kunne få vist nogle af overstående ting på mobil applikationen.\\\\
-
 \textbf{Design:}\\
-
 Hjemmesiden er blevet implementeret ved brug af Microsoft ASP.NET MVC 4 frameworket. Dette gør det nemt og hurtigt at implementere en sofistikeret og moderne hjemmeside, der følger gode design principper. MVC står for Model-View-Controller og følger de samme principper som MVVM angående 'separation of concerns'.\\
 For at kunne indtegne busruter og stoppesteder skal der bruges et kort, til dette er der blevet brugt Google maps samt Google Directions API.  
 
-Hjemmesiden består af 4 view,først og fremmest et view til startsiden der linker til de 3 andre views, der består af et der håndtere alt vedrørende busser, et til stoppesteder samt et til busruter.
-Det første view der håndtere alt om busserne
-
-%\begin{lstlisting}[caption=Funktionen Initialization(...)]
-%public bool Initialization(short sMode, short sSystemType)
-%{
-%    string sModeS;
-%    string sSystemTypeS;
-%    switch (sMode)
-%    {
-%        case 0:
-%            sModeS = "INIT_MODE_DEFAULT selects last used mode (from ini file).";
-%            break;
-%        case 1:
-%            sModeS = "INIT_MODE_ONLINE force online mode.";
-%            break;
-%        case 2:
-%            sModeS = "INIT_MODE_SIMULAT selects simulation mode.";
-%            break;
-%        default:
-%            sModeS = "Unknown INIT_MODE.";
-%            break;
-%    }
-%    switch (sSystemType)
-%    {
-%        case 0:
-%            sSystemTypeS = "DEFAULT_SYSTEM_TYPE let the libary detect the robot type.";
-%            break;
-%        case 41:
-%            sSystemTypeS = "ER4USB_SYSTEM_TYPE define robot type as ER-4 Scorbot with USB connection.";
-%            break;
-%        default:
-%            sSystemTypeS = "Unknown SYSTEM_TYPE.";
-%            break;
-%    }
-%
-%    logWindow.LogThis(loggingLevels.INFO, "Initialization: " + retVal, false);
-%    logWindow.LogThis(loggingLevels.INFO, "Initialization MODE: " + sModeS + " ## " + sSystemTypeS, true);
-%
-%    logFile.LogThis(loggingLevels.INFO, "Initialization: " + retVal, false);
-%    logFile.LogThis(loggingLevels.INFO, "Initialization MODE: " + sModeS + " ## " + sSystemTypeS, true);
-%    logFile.LogThis(loggingLevels.INFO, "newline", false);
-%
-%    initRuned = true;
-%    return retVal;
-%}
-%\end{lstlisting}
-
+Hjemmesiden består af 4 view,først og fremmest et view til startsiden der linker til de 3 andre views, der består af et der håndtere alt vedrørende busser, et til stoppesteder samt et til busruter.\\
+Det første view der håndtere alt om busserne består af 2 dele. Første del gør det muligt at tilføje en ny bus til systemet, fjerne en bus fra systemet og rediger ID'et for en bus.
+Dette er blevet implementeret ved at når view'et bliver loaded, bliver en JavaScript function kalde, der kalder funktionen GetAllBusses() i controlleren, der henter alle busser der er i MySQL databasen. Til at lave dette kald fra JavaScript til controlleren, bliver der brugt ajax. Ajax gør det muligt at udvæksle data med controlleren og updatere view'et uden at skulle reloade hele websiden.
+\begin{lstlisting}[caption=Ajax kald til controller funkionen 'GetAllBusses', language=Java]
+        $.ajax({
+            type: "POST",
+            url: "Bus/GetAllBusses",
+            dataType: "json",
+            success: function (result) {
+                var select = document.getElementById("busses");
+                select.options.length = 0;
+                for (var i = 0; i < result.length; i++) {
+                    select.options.add(new Option(result[i]));
+                    ListOfAllBusses.push(result[i]);
+                }
+            }
+        });
+\end{lstlisting}
+Dette eksemple på et ajax kald, kalder GetAllBusses(), dette er en funktion der ligger i controlleren, som henter en liste af alle bussernes ID'er fra MySQL databasen. Når controlleren er færdig retunere den et json object, og callback funkionen der er defineret i success parameteren af ajax bliver kaldt. Result parameteren på callback funktionen er returværdien fra controller funktionen, der i dette tilfælde er et json object, der indeholder en liste af alle bussernes ID'er, hentet fra MySQL databasen. Callback funktionen løber igennem listen af ID'er og tilføjer dem til et HTML select element. Dette gør det muligt for administratoren  at se hvilke busser der er gemt i databasen. Administratoren har nu mulighed for at enten tilføje en ny bus, slette en bus, eller ændre ID'et på en bus.
+\begin{itemize}
+\item For at tilføje en bus, skriver administratoren bussens ID ind i feltet: 'Bus ID' hvorefter han trykker på knappen 'Add'. Dette vil tilføje busses til listen, administratoren kan blive ved med at tilføje busser til listen. Først ved tryk på 'Save' knappen vil de nye busser blive gemt på databasen. Dette sker igen gennem et ajax kald til controller, der kalder SaveNewBus() funktionen.
+\end{itemize}
 
 
 \end{document}

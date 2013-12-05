@@ -267,13 +267,17 @@
         directionsService.route(request, function (response, status) {
             if (status == google.maps.DirectionsStatus.OK) {
 
-                var dd = new google.maps.DirectionsRenderer(rendererOptions);
-                
-                if (directionsDisplayArray.length == 1)
-                    directionsDisplayArray[0].setDirections(response);
-                else
-                    dd.setDirections(response);                
+                dd = new google.maps.DirectionsRenderer(rendererOptions);
+                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);
                 directionsDisplayArray.push(dd);
+                //if (directionsDisplayArray.length == 1) {
+                //    directionsDisplayArray[0].setDirections(response);
+                //    directionsDisplayArray.push(dd);
+                //}
+                //else
+                //    dd.setDirections(response);
+                
+
 
                 google.maps.event.addListener(dd, 'directions_changed', function () {
                     var that = this;
@@ -315,6 +319,13 @@
                 contentType: "application/json; charset=utf-8"
             },
             success: function (result) {
+
+                for (var i = 0; i < directionsDisplayArray.length; i++) {
+                    directionsDisplayArray[i].setMap(null);
+                }
+                directionsDisplayArray = [];
+                directionsDisplayArray.push(new google.maps.DirectionsRenderer(rendererOptions));
+
                 var ID = result[0].ID;
                 var test = new Array();
                 var mapSet;

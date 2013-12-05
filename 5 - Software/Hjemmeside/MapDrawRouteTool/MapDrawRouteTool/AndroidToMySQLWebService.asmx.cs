@@ -15,7 +15,7 @@ namespace MapDrawRouteTool
     public class AndroidToMySQLWebService : System.Web.Services.WebService
     {
         [WebMethod]
-        public List<string> GetBusList()
+        public List<string> GetBusRouteList()
         {
             List<string> Buslist = new List<string>();
 
