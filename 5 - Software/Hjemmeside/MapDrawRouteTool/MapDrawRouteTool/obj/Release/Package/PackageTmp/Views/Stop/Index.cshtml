@@ -36,8 +36,7 @@
             featureType: 'poi',
             stylers: [
                 { visibility: 'off' }]
-        }
-        ];
+        }];
 
         //Creates the DirectionsService
         directionsService = new google.maps.DirectionsService();
@@ -69,7 +68,7 @@
             if (markers.length <= 0) {
                 var mark = new google.maps.Marker({
                     map: map,
-                    draggable: false,
+                    draggable: true,
                     position: event.latLng,
                     title: markers.length.toString()
                 });
@@ -107,6 +106,7 @@
 
             $.ajax({
                 type: "POST",
+                dataType: "json",
                 url: '@Url.Action("Save", "Stop")',
                 data: {
                     c: markers[0].getPosition().toString(),
@@ -116,7 +116,7 @@
                 success: function (result) {
                     if (result == -1)
                         alert("No Internet connection");
-                    else if(result == 0){
+                    else if (result == 0) {
                         var select = document.getElementById("StopRoutes");
                         select.options.add(new Option(document.getElementById("StopName").value));
                     }
@@ -162,6 +162,34 @@
         var e = document.getElementById("StopRoutes");
         document.getElementById("StopName").value = e.options[e.selectedIndex].text;
 
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: "Stop/GetPosistion",
+            data: {
+                stopName: e.options[e.selectedIndex].text,
+                contentType: "application/json; charset=utf-8"
+            },
+            success: function (result) {
+                alert(result.length);
+                if (markers.length > 0) {
+                    markers[0].setMap(null);
+                    markers = [];
+                }
+                var mark = new google.maps.Marker({
+                    map: map,
+                    draggable: true,
+                    position: new google.maps.LatLng(result[0], result[1])
+                });
+                markers.push(mark)
+                google.maps.event.addListener(mark, 'click', function () {
+                    markers[markers.indexOf(mark)].setMap(null);
+                    markers = [];
+                    document.getElementById("StopName").value = null;
+                });
+                    
+            }
+        });
 
     }
 
@@ -174,12 +202,14 @@
             data: {
                 oldName: oldstop,
                 newName: document.getElementById("StopName").value,
+                NewPos: markers[0].getPosition().toString(),
                 contentType: "application/json; charset=utf-8"
             },
             success: function (result) {
                 if (result == 0) {
                     var e = document.getElementById("StopRoutes");
                     e.options[e.selectedIndex].text = document.getElementById("StopName").value;
+                    alert("Save complete");
                 }
                 else if (result == -1)
                     alert("No Internet connection");
@@ -209,7 +239,7 @@
             </select>
         </div>
         <input id="DeleteStop" type="button" value="delete stop" onclick="DeleteStopsFromDB();" />
-        <input id="RenameStop" type="button" value="Rename stop" onclick="RenameStop();" />
+        <input id="RenameStop" type="button" value="Save changes" onclick="RenameStop();" />
     </div>
 </section>
 <section style="float: left; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">

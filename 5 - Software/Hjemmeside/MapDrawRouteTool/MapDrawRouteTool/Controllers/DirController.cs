@@ -105,7 +105,7 @@ namespace MapDrawRouteTool.Controllers
 
         private void InsertSubRouteWaypoints(List<string> SubrouteWaypoints, string routeNumber, int p)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -122,23 +122,23 @@ namespace MapDrawRouteTool.Controllers
                         read1.Close();
                         connection.Close();
 
-                        cmd.CommandText = string.Format("SELECT ID FROM Waypoint WHERE fk_BusRoute IN (SELECT ID FROM BusRoute WHERE RouteNumber = '{0}' AND SubRoute > 0)", routeNumber);
-                        connection.Open();
-                        var read2 = cmd.ExecuteReader();
-                        List<int> WayID = new List<int>();
-                        while (read2.Read())
-                        {
-                            WayID.Add(read2.GetInt32(0));
-                        }
-                        read2.Close();
-                        connection.Close();
-                        if (WayID.Count() > 0)
-                        {
-                            cmd.CommandText = string.Format("SET SQL_SAFE_UPDATES=0; DELETE FROM Waypoint WHERE fk_BusRoute = {0}", WayID.First());
-                            connection.Open();
-                            cmd.ExecuteNonQuery();
-                            connection.Close();
-                        }
+                        //cmd.CommandText = string.Format("SELECT ID FROM Waypoint WHERE fk_BusRoute IN (SELECT ID FROM BusRoute WHERE RouteNumber = '{0}' AND SubRoute > 0)", routeNumber);
+                        //connection.Open();
+                        //var read2 = cmd.ExecuteReader();
+                        //List<int> WayID = new List<int>();
+                        //while (read2.Read())
+                        //{
+                        //    WayID.Add(read2.GetInt32(0));
+                        //}
+                        //read2.Close();
+                        //connection.Close();
+                        //if (WayID.Count() > 0)
+                        //{
+                        //    cmd.CommandText = string.Format("SET SQL_SAFE_UPDATES=0; DELETE FROM Waypoint WHERE fk_BusRoute = {0}", WayID.First());
+                        //    connection.Open();
+                        //    cmd.ExecuteNonQuery();
+                        //    connection.Close();
+                        //}
 
                         cmd.CommandText = "INSERT INTO Waypoint (Latitude, Longitude, fk_BusRoute) VALUES ";
                         for (int i = 0; i < ID.Count(); i++)
@@ -166,7 +166,7 @@ namespace MapDrawRouteTool.Controllers
 
         private void InsertWaypoints(int routeNumberId, List<string> routeWayPoints)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -215,7 +215,7 @@ namespace MapDrawRouteTool.Controllers
         private List<List<string>> CalculateBusStopsForRoute(List<string> stops, List<string> chosenRouteID, string routeNumber, int subRoute)
         {
             int routeID;
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -236,7 +236,7 @@ namespace MapDrawRouteTool.Controllers
             List<string> StopOnRoute = new List<string>();
             int stopCounter = 0;
 
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -278,7 +278,7 @@ namespace MapDrawRouteTool.Controllers
 
                 int pointBeforeStopIndex = 0;
 
-                using (var connection = new MySqlConnection(getConnectionString()))
+                using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
                 {
                     using (var cmd = connection.CreateCommand())
                     {
@@ -421,7 +421,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int InsertRouteNumber(string routeNumber)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -465,7 +465,7 @@ namespace MapDrawRouteTool.Controllers
 
         public void InsertSubRouteIntoBusRoute(string routeNumber, int count)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -511,7 +511,7 @@ namespace MapDrawRouteTool.Controllers
 
         public List<string> InsertRoutePoints(List<string> points)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 List<string> idOFInserted = new List<string>();
                 using (var cmd = connection.CreateCommand())
@@ -574,7 +574,7 @@ namespace MapDrawRouteTool.Controllers
 
         public void InsertBusRoute_RoutePoint(int routeNumberID, List<string> points)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -605,7 +605,7 @@ namespace MapDrawRouteTool.Controllers
 
         public void InsertBusRoute_BusStop(int routeNumberID, List<string> stops)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -696,12 +696,12 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetSelectedBusRoute(string RouteName)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
                     try
-                    {
+                    {                        
                         cmd.CommandText = String.Format("SELECT fk_BusRoute, Latitude, Longitude FROM Waypoint " +
                                           "WHERE fk_BusRoute IN (SELECT ID FROM BusRoute WHERE RouteNumber = '{0}')", RouteName);
 
@@ -730,7 +730,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetBusRoutesNames()
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -764,7 +764,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int DeleteSelectedBusRoute(string RouteName)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -840,14 +840,14 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetStopsOnRoute(string RouteName)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
                     try
                     {
                         List<BusStops> LatLng = new List<BusStops>();
-                        cmd.CommandText = string.Format("SELECT l.Latitude, l.Longitude FROM RoutePoint AS l " +
+                        cmd.CommandText = string.Format("SELECT l.Latitude, l.Longitude, Stops.StopName FROM RoutePoint AS l " +
                                                         "INNER JOIN BusStop AS Stops ON l.ID = Stops.fk_RoutePoint " +
                                                         "INNER JOIN BusRoute_BusStop AS brbs ON Stops.ID = brbs.fk_BusStop " +
                                                         "INNER JOIN BusRoute AS br ON brbs.fk_BusRoute = br.ID " +
@@ -857,7 +857,7 @@ namespace MapDrawRouteTool.Controllers
                         var read = cmd.ExecuteReader();
                         while (read.Read())
                         {
-                            LatLng.Add(new BusStops() { Lat = read.GetDecimal(0), Lng = read.GetDecimal(1) });
+                            LatLng.Add(new BusStops() { Lat = read.GetDecimal(0), Lng = read.GetDecimal(1), name = read.GetString(2) });
                         }
                         read.Close();
                         connection.Close();
@@ -911,7 +911,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetLatLng(List<string> StopNames)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -949,11 +949,6 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
             }
-        }
-
-        private static string getConnectionString()
-        {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
         }
     }
 }

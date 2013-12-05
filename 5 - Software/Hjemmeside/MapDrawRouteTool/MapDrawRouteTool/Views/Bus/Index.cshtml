@@ -101,7 +101,7 @@
             success: function (result) {
                 if (result == 0)
                     alert("Save Complete");
-                else if (result == -1)
+                else if (result == -1 || result == "")
                     alert("No Internet connection");
             }
         });
@@ -134,10 +134,26 @@
     }
 
     function AddNewBus() {
-        if (ListOfAllBusses.contains(document.getElementById("Busname").value))
+        var busname = document.getElementById("Busname").value;
+
+        for (var i = 0; i < document.getElementById("busses").options.length; i++) {
+            if (document.getElementById("busses").options[i].value == busname) {
+                alert("Bus already exist")
+                return 0;
+            }
+        }
+
+        if (ListOfAllBusses.contains(busname))
             alert("Bus already exist");
-        else
-            document.getElementById("busses").options.add(new Option(document.getElementById("Busname").value));
+        else{            
+            document.getElementById("busses").options.add(new Option(busname));            
+        }
+    }
+
+    function RenameBus() {
+
+        var e = document.getElementById("busses");
+        var sbus = e.options[e.selectedIndex].text = document.getElementById("Busname").value;
     }
 
     function SaveBusses() {
@@ -149,7 +165,7 @@
 
         $.ajax({
             type: "POST",
-            url: "Bus/SaveNewBus",
+            url: "Bus/SaveBusChanges",
             traditional: true,
             data: {
                 NewBusList: BussesInList,
@@ -157,7 +173,7 @@
             },
             success: function(result) {
                 debugger;
-                if (result == "")
+                if (result == "" || result == -3)
                     alert("No Internet connection");
                 else if (result == -1)
                     alert("Failed to save, please try again");
@@ -283,6 +299,7 @@
         <p>
             <input type="button" value="Add" style="width: 80px" onclick="AddNewBus();" />
             <input type="button" value="Remove" style="width: 80px" onclick="RemoveBus();" />
+            <input type="button" value="Remove" style="width: 80px" onclick="RenameBus();" />
         </p>
         <input type="button" value="Save" style="width: 70px" onclick="SaveBusses();" />
     </form>

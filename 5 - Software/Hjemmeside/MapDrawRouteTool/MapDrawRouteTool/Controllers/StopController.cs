@@ -123,7 +123,7 @@ namespace MapDrawRouteTool.Controllers
             }
         }
 
-        public int Rename(string oldName, string newName)
+        public int Rename(string oldName, string newName, string NewPos)
         {
             using (var connection = new MySqlConnection(getConnectionString()))
             {
@@ -132,10 +132,17 @@ namespace MapDrawRouteTool.Controllers
                     try
                     {
 
-                        cmd.CommandText = string.Format("UPDATE BusStop SET StopName = '{0}' WHERE StopName = '{1}'", newName, oldName);
+                        cmd.CommandText = string.Format("UPDATE BusStop SET StopName = '{0}'  WHERE StopName = '{1}'", newName, oldName);
                         connection.Open();
                         cmd.ExecuteNonQuery();
                         connection.Close();
+
+                        cmd.CommandText = string.Format("UPDATE RoutePoint SET Latitude = {0}, Longitude = {1} WHERE ID = " +
+                                          "(SELECT fk_RoutePoint FROM BusStop WHERE StopName = '{2}')", NewPos.Split(',')[0].TrimStart('('), NewPos.Split(',')[1].TrimEnd(')'), newName);
+                        connection.Open();
+                        cmd.ExecuteNonQuery();
+                        connection.Close();
+
                         return 0;
 
                     }
@@ -179,6 +186,41 @@ namespace MapDrawRouteTool.Controllers
                     }
                 }
             }
+        }
+
+        public JsonResult GetPosistion(string stopName)
+        {
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    try
+                    {
+                        List<string> LatLng = new List<string>();
+                        cmd.CommandText = string.Format("SELECT Latitude, Longitude FROM RoutePoint " +
+                                          "INNER JOIN BusStop ON RoutePoint.ID = BusStop.fk_RoutePoint " +
+                                          "WHERE BusStop.StopName = '{0}'", stopName);
+
+                        connection.Open();
+                        var read = cmd.ExecuteReader();
+                        while (read.Read())
+                        {
+                            LatLng.Add(read.GetDecimal(0).ToString());
+                            LatLng.Add(read.GetDecimal(1).ToString());
+                        }
+                        read.Close();
+                        connection.Close();
+                        return JConverter.ConvertToJson(LatLng);
+                    }
+                    catch (Exception e)
+                    {
+                        connection.Close();
+                        Debug.WriteLine(e.Message);
+                        return null;
+                    }
+                }
+            }
+
         }
 
         private List<string> formatNames(string name)
