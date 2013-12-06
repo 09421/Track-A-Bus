@@ -172,7 +172,6 @@
                 AllBusses: ListOfAllBusses
             },
             success: function(result) {
-                debugger;
                 if (result == "" || result == -3)
                     alert("No Internet connection");
                 else if (result == -1)
@@ -299,7 +298,7 @@
         <p>
             <input type="button" value="Add" style="width: 80px" onclick="AddNewBus();" />
             <input type="button" value="Remove" style="width: 80px" onclick="RemoveBus();" />
-            <input type="button" value="Remove" style="width: 80px" onclick="RenameBus();" />
+            <input type="button" value="Rename" style="width: 80px" onclick="RenameBus();" />
         </p>
         <input type="button" value="Save" style="width: 70px" onclick="SaveBusses();" />
     </form>

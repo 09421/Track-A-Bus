@@ -18,25 +18,8 @@ BESKRIVELSE: & Det testes at det er muligt at tilføje ny bus til systemet.
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
-
-\textbf{Test Case: Normalforløb B}
-\\
-\begin{tabular}{ l  p{12cm} }
-FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Normalforløb A skal være gennemført.
-\\
-BESKRIVELSE: & Det testes at det er muligt at slette en bus fra systemet.
-\end{tabular}
-\\
-\begin{testcase}
-\punkt 1
-\Aktion Administratoren vælger bus med ID "100" fra listen over busser i systemet, og trykker på 'Remove' knappen.
-\Forventet Den valgte bus bliver fjernet fra listen af busser i systemet.
-\punkt 2
-\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
-\Forventet Ændringer bliver gemt på databasen.
-\end{testcase}
 \newpage
-\textbf{Test Case: Normalforløb C}
+\textbf{Test Case: Normalforløb B}
 \\
 \begin{tabular}{ l  p{12cm} }
 FORBEREDELSE: &  Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Normalforløb A skal være gennemført.
@@ -46,12 +29,28 @@ BESKRIVELSE: & Det testes at det er muligt at ændre information om en bus der fi
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger bus med ID "100" fra listen over busser i systemet, ændre teksten i feltet 'Bus ID:' til "101" og trykker på 'Add' knappen.
+\Aktion Administratoren vælger bus med ID "100" fra listen over busser i systemet, ændre teksten i feltet 'Bus ID:' til "101" og trykker på 'Rename' knappen.
 \Forventet bus med tidligere ID "100", i listen over alle busser, vil få ændret ID til "101".
 \punkt 2
 \Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
 \Forventet Ændringer bliver gemt på databasen.
 \end{testcase}
+\textbf{Test Case: Normalforløb C}
+\\
+\begin{tabular}{ l  p{12cm} }
+FORBEREDELSE: & Administratoren er logget ind på administrations hjemmesiden, samt står på 'Rediger bus' siden. Normalforløb A skal være gennemført.
+\\
+BESKRIVELSE: & Det testes at det er muligt at slette en bus fra systemet.
+\end{tabular}
+\\
+\begin{testcase}
+\punkt 1
+\Aktion Administratoren vælger bus med ID "101" fra listen over busser i systemet, og trykker på 'Remove' knappen.
+\Forventet Den valgte bus bliver fjernet fra listen af busser i systemet.
+\punkt 2
+\Aktion Administratoren tilkendegiver overfor systemet at han ønsker ændringer gemt, ved tryk på 'Save' knap
+\Forventet Ændringer bliver gemt på databasen.
+\end{testcase}\\
 \textbf{Test Case: Undtagelsesforløb A}
 \\
 \begin{tabular}{ l  p{12cm} }

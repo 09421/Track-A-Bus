@@ -128,6 +128,7 @@
                 ClearMarkers();
             }//If there is a route, and first marker for a subroute, set last marker for subroute
             else if (startPoint != null && endPoint != null && (SubRuteMarkers.length % 2) == 1) {
+
                 SubRuteMarkers.push(new google.maps.Marker({
                     map: map,
                     draggable: true,
@@ -162,8 +163,6 @@
         directionsDisplayArray.push(dd);
 
         google.maps.event.addListener(dd, 'directions_changed', function () {
-
-
             var that = this;
             for (var i = 0; i < directionsDisplayArray.length; i++) {
                 if (directionsDisplayArray[i] == that) {
@@ -181,9 +180,7 @@
                             }
                         }
                     }, 100);
-
                 }
-
             }
         });
 
@@ -196,6 +193,7 @@
 
         directionsService.route(request, function (response, status) {
             if (status == google.maps.DirectionsStatus.OK) {
+                debugger;
                 route = response.routes[0];
 
                 directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);
@@ -265,33 +263,67 @@
 
                 dd = new google.maps.DirectionsRenderer(rendererOptions);
                 directionsDisplayArray.push(dd);
-                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);
-                
-                
+                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);                
 
 
-                google.maps.event.addListener(dd, 'directions_changed', function () {
-                    var that = this;
-                    for (var i = 0; i < directionsDisplayArray.length; i++) {
-                        if (directionsDisplayArray[i] == that) {
-                            SubRouteArray[i] = that;
-                            setTimeout(function () {
-                                for (var k in that) {
-                                    if (typeof that[k].markers != 'undefined') {
-                                        var subroutemark = [];
-                                        var wayMarkers = that[k].markers;
-                                        for (var j = 0; j < wayMarkers.length; ++j) {
-                                            subroutemark.push(wayMarkers[j].position);
-                                        };
-                                        SubRouteWaypoints[i - 2] = subroutemark;
-                                    }
+                if (directionsDisplayArray.length == 1) {
+                    google.maps.event.addListener(dd, 'directions_changed', function () {
+                        var that = this;
+                        setTimeout(function () {//we need a short delay
+                            for (var k in that) {//iterate over all properties
+                                if (typeof that[k].markers != 'undefined') {//find the desired property
+                                    var markers = that[k].markers;
+                                    waypoints = [];
+                                    for (var i = 0; i < markers.length; ++i) {//collect the data
+                                        waypoints.push(markers[i].position);
+                                        markers[i].setZIndex(1);
+                                        StartEndMarkers.push(markers[i]);
+                                    };
                                 }
-                            }, 100);
+                            }
+
+                            temp = that.directions.routes;
+
+                            for (var i = 0; i < StartEndMarkers.length; i++)
+
+                                google.maps.event.addListener(StartEndMarkers[i], 'click', function (event) {
+
+                                    SubRuteMarkers.push(new google.maps.Marker({
+                                        map: map,
+                                        draggable: true,
+                                        position: event.latLng
+                                    }));
+
+                                });
+                        }, 100);
+
+                    });
+                }
+                else {
+                    google.maps.event.addListener(dd, 'directions_changed', function () {
+                        var that = this;
+                        for (var i = 0; i < directionsDisplayArray.length; i++) {
+                            if (directionsDisplayArray[i] == that) {
+                                SubRouteArray[i] = that;
+                                setTimeout(function () {
+                                    for (var k in that) {
+                                        if (typeof that[k].markers != 'undefined') {
+                                            var subroutemark = [];
+                                            var wayMarkers = that[k].markers;
+                                            for (var j = 0; j < wayMarkers.length; ++j) {
+                                                subroutemark.push(wayMarkers[j].position);
+                                            };
+                                            SubRouteWaypoints[i - 2] = subroutemark;
+                                        }
+                                    }
+                                }, 100);
+
+                            }
 
                         }
+                    });
+                }
 
-                    }
-                });
 
 
             }
@@ -457,7 +489,14 @@
                     success: function (result) {
                         if (result == 0) {
                             var select = document.getElementById("SelRoutes");
-                            select.options.add(new Option(document.getElementById("RouteNumber").value));
+                            var name = document.getElementById("RouteNumber").value;
+                            if (name.length > 10) {
+                                while (name.length > 10)
+                                {
+                                    name = name.slice(0, -1);
+                                }                                
+                            }
+                            select.options.add(new Option(name));
                             alert("Save Done");
                         }
                         else if (result == -1)
