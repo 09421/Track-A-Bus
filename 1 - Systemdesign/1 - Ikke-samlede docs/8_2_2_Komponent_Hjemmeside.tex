@@ -64,11 +64,11 @@ var mapOptions = {
 };
 \end{lstlisting}
 Efter at have defineret mapOptions bliver oprettet et map object. Dette object skal have det overnævte HTML map-canvas div element, samt mapOptions som constructor parameter.
-\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+\begin{lstlisting}[caption=Map object init, label={lst:Mapobject}, language=Java]
 map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 \end{lstlisting}
 kortet er nu blevet initialiseret og bliver vist på siden. Det næste der bliver initialiseret er Google direction renderer, dette bliver brugt til at vise en rute på kortet mellem 2 givet punkter. Først bliver der defineret de options som ruten skal bruge. Dette indebære om det skal være muligt at trække i ruten, for at ændre på den vej den skal tage, og om det skal være muligt at klikke på de markers der repræsentere start og slut punktet for ruten. Dette rendererOptions object bliver derefter brugt i constructoren for DirectionsRenderer, der laver et nyt DirectionsRenderer object der senere bliver brugt til at tegne ruten på kortet.
-\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+\begin{lstlisting}[caption=DirectionsRenderer opsætning, label={lst:rendererOptions}, language=Java]
 rendererOptions = {
 map: map,
 	draggable: true,
@@ -81,7 +81,7 @@ directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 \end{lstlisting}
 
 efter kortet og direction renderen er blevet initialiseret, bliver der sat en listener på kortet der lytter efter om der bliver trykket på kortet.
-\begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
+\begin{lstlisting}[caption=map klik listener, label={lst:kliklistener}, language=Java]
 google.maps.event.addListener(map, 'click', function (event) {
 	if (startPoint == null && endPoint == null) //No markers, set first
 		startPoint = new google.maps.Marker({
@@ -99,6 +99,20 @@ google.maps.event.addListener(map, 'click', function (event) {
 		ClearMarkers();
 }
 \end{lstlisting}
-Når der bliver trykket på kortet vil listenern tjekke på om der er blevet trykket på kortet tidligere, hvis der ikke er, vil der blive plaseret en marker på kortet, der hvor der blev trykket.  
-
+Når der bliver trykket på kortet vil listenern tjekke på om der er blevet trykket på kortet tidligere, hvis der ikke er, vil der blive plaseret en marker på kortet, der hvor der blev trykket, denne marker symbolisere der hvor busruten starter. Hvis der allerede er 1 marker på kortet vil der bliver plaseret endnu en marker, denne marker symbolisere der hvor busruten slutter. Efter begge markers er blevet placeret vil functionen calcRoute(startPoint, endPoint) blive kaldt. Denne function bruger Google direction service til at udregne en rute der går mellem 2 punkter. Dette bliver gjort ved først at lave et request object der definere start og slut GPS koordinaterne for ruten, samt hvilken Travelmode der skal bruges. Med TravelMode sat til DRIVING, vil der blive udregnet den rute der er hurtigts at tage med bil. 
+\begin{lstlisting}[caption=calcRoute function, label={lst:calcRoute}, language=Java]
+function calcRoute(start, end) {
+	request = {
+		origin: start.position,
+		destination: end.position,
+		travelMode: google.maps.TravelMode.DRIVING
+	};
+	directionsService.route(request, function (response, status) {
+		if (status == google.maps.DirectionsStatus.OK) {
+			route = response.routes[0];
+			directionsDisplayArray[0].setDirections(response);
+		}
+	});
+}
+\end{lstlisting}
 \end{document}
