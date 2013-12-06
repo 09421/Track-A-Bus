@@ -37,7 +37,7 @@ namespace MapDrawRouteTool.Controllers
 
             for (var i = 0; i < cords.Count; i = i + 2)
             {
-                using (var connection = new MySqlConnection(getConnectionString()))
+                using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
                 {
                     using (var cmd = connection.CreateCommand())
                     {
@@ -85,7 +85,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int Delete(string stop)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -125,7 +125,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int Rename(string oldName, string newName, string NewPos)
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -158,7 +158,7 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetAllStops()
         {
-            using (var connection = new MySqlConnection(getConnectionString()))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
@@ -259,11 +259,6 @@ namespace MapDrawRouteTool.Controllers
                 cords.Add(j);
             }
             return cords;
-        }
-
-        private static string getConnectionString()
-        {
-            return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
         }
     }
 }

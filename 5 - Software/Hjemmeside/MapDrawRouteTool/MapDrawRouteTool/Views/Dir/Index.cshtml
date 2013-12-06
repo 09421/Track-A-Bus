@@ -102,7 +102,6 @@
                             draggable: true,
                             position: event.latLng
                         }));
-
                     });
             }, 100);
 
@@ -233,10 +232,8 @@
                 });
             });
         }
-
         return DirectionsArray;
     }
-
 
     function SetRouteOnMap(route) {
         startPoint = new google.maps.LatLng(route[0].Lat, route[0].Lng, false);
@@ -526,7 +523,7 @@
     }
 
     //Inserts the selected markers, as stops, unto the map
-    function CreateRoute() {
+    function SetBusStopsOnMap() {
         var stopsToSave = new Array();
         var ele = document.getElementById("ToLB").options;
         for (var i = 0; i < ele.length; i++) {
@@ -679,7 +676,7 @@
             </tr>
             <tr>
                 <td>
-                    <input id="AddStops" type="button" value="Set bus stops" onclick="CreateRoute();" style="width: auto;" />
+                    <input id="AddStops" type="button" value="Set bus stops" onclick="SetBusStopsOnMap();" style="width: auto;" />
 
                 </td>
                 <td>

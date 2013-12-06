@@ -44,6 +44,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return null;
                     }
                 }
@@ -77,6 +78,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return null;
                     }
                 }
@@ -107,6 +109,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return null;
                     }
                 }
@@ -159,6 +162,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return -1;
                     }
                 }
@@ -189,6 +193,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return null;
                     }
                 }

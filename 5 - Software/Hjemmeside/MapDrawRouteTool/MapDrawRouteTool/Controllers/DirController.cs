@@ -214,22 +214,6 @@ namespace MapDrawRouteTool.Controllers
 
         private List<List<string>> CalculateBusStopsForRoute(List<string> stops, List<string> chosenRouteID, string routeNumber, int subRoute)
         {
-            int routeID;
-            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    connection.Open();
-                    cmd.CommandText = string.Format("Select BusRoute.ID from BusRoute where BusRoute.RouteNumber = '{0}' and BusRoute.SubRoute = {1}", routeNumber, subRoute);
-                    MySqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        routeID = int.Parse(reader["ID"].ToString());
-                    }
-                    connection.Close();
-                }
-            }
-
             List<List<string>> RouteAndStops = new List<List<string>>();
             List<string> chosenRouteLatLng = new List<string>();
             List<string> RouteWithStopsID = new List<string>(chosenRouteID);
@@ -274,7 +258,6 @@ namespace MapDrawRouteTool.Controllers
                 decimal stopLon = 0;
                 decimal leastDist = -1;
                 decimal currentDist;
-                decimal distToEp;
 
                 int pointBeforeStopIndex = 0;
 
@@ -457,6 +440,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return 0;
                     }
                 }
@@ -504,6 +488,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                     }
                 }
             }
@@ -831,6 +816,7 @@ namespace MapDrawRouteTool.Controllers
                     catch (Exception e)
                     {
                         connection.Close();
+                        Debug.WriteLine(e.Message);
                         return -2;
                     }
                 }

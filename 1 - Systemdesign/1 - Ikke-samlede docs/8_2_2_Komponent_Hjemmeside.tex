@@ -16,7 +16,7 @@ Alle disse delkomponenter udgøre tilsammen en vigtig del af systemet, da uden no
 Hjemmesiden er blevet implementeret ved brug af Microsoft ASP.NET MVC 4 frameworket. Dette gør det nemt og hurtigt at implementere en sofistikeret og moderne hjemmeside, der følger gode design principper. MVC står for Model-View-Controller og følger de samme principper som MVVM angående 'separation of concerns'.\\
 For at kunne indtegne busruter og stoppesteder skal der bruges et kort, til dette er der blevet brugt Google maps samt Google Directions API.  
 
-Hjemmesiden består af 4 view, først og fremmest et view til startsiden der linker til de 3 andre views, der består af et der håndtere alt vedrørende busser, et til stoppesteder samt et til busruter.\\
+Hjemmesiden består af 4 view, hvor hver view har en controller knyttet til sig, først et view til startsiden der linker til de 3 andre views, der består af et der håndtere alt vedrørende busser, et til stoppesteder samt et til busruter.\\
 Det første view der håndtere alt om busserne består af 2 dele. Første del gør det muligt at tilføje en ny bus til systemet, fjerne en bus fra systemet og rediger ID'et for en bus.
 Dette er blevet implementeret ved at når view'et bliver loaded, bliver en JavaScript function kalde, der kalder funktionen GetAllBusses() i controlleren, der henter alle busser der er i MySQL databasen. Til at lave dette kald fra JavaScript til controlleren, bliver der brugt ajax. Ajax gør det muligt at udvæksle data med controlleren og updatere view'et uden at skulle reloade hele websiden.
 \begin{lstlisting}[caption=Ajax kald til controller funkionen 'GetAllBusses', label={lst:AjaxGetAllBusses}, language=Java]
@@ -34,7 +34,7 @@ Dette er blevet implementeret ved at når view'et bliver loaded, bliver en JavaSc
             }
         });
 \end{lstlisting}
-Dette eksemple på et ajax kald, kalder GetAllBusses(), dette er en funktion der ligger i controlleren, som henter en liste af alle bussernes ID'er fra MySQL databasen. Se \textit{afsnit 9.2.3 Implementering af persistens i online værktøjet} for nærmere beskrivelse af hvordan databasen bliver tilgået. Når controlleren er færdig retunere den et json object, og callback funkionen der er defineret i success parameteren af ajax bliver kaldt. Result parameteren på callback funktionen er returværdien fra controller funktionen, der i dette tilfælde er et json object, der indeholder en liste af alle bussernes ID'er, hentet fra MySQL databasen. Callback funktionen løber igennem listen af ID'er og tilføjer dem til et HTML select element. Dette gør det muligt for administratoren  at se hvilke busser der er gemt i databasen. Administratoren har nu mulighed for at enten tilføje en ny bus, slette en bus, eller ændre ID'et på en bus.
+Dette eksemple på et ajax kald, kalder GetAllBusses(), dette er en funktion der ligger i Bus controlleren, som henter en liste af alle bussernes ID'er fra MySQL databasen. Se \textit{afsnit 9.2.3 Implementering af persistens i online værktøjet} for nærmere beskrivelse af hvordan databasen bliver tilgået. Når controlleren er færdig retunere den et json object, og callback funkionen der er defineret i success parameteren af ajax bliver kaldt. Result parameteren på callback funktionen er returværdien fra controller funktionen, der i dette tilfælde er et json object, der indeholder en liste af alle bussernes ID'er, hentet fra MySQL databasen. Callback funktionen løber igennem listen af ID'er og tilføjer dem til et HTML select element. Dette gør det muligt for administratoren  at se hvilke busser der er gemt i databasen. Administratoren har nu mulighed for at enten tilføje en ny bus, slette en bus, eller ændre ID'et på en bus.
 
 For at tilføje en bus, skriver administratoren bussens ID ind i feltet: 'Bus ID' hvorefter han trykker på knappen 'Add'. Dette vil tilføje busses til listen, administratoren kan blive ved med at tilføje busser til listen. Administratoren kan også fjerne en bus fra listen, ved at vælge en bus i listen og trykke på knappen 'Remove', der er også mulighed for at ændre navnet for en bus, ved at vælge en bus, og trykker på 'Rename' knappen. Først ved tryk på 'Save' knappen vil ændringerne blive tilføjet til databasen. Dette sker igen gennem et ajax kald til controller, der kalder SaveBusChanges() funktionen. Denne funktion modtager listen af busser, med de nye busser administratoren har tilføjet, samt en liste af alle busserne på databasen. Funktionen sammenligner de 2 lister, finder de busser der er blevet tilføjet, de som er blevet fjernet og dem som har fået nyt ID. Efter alt er fundet, vil den slette de relevante busser fra databasen og tilføje de nye busser.
 
@@ -46,7 +46,7 @@ Det næste view gør det muligt at oprette en ny busrute, ændrer i en der allerede
     <div id="map-canvas"></div>
 </section>
 \end{lstlisting}
-Når vores HTML body element er loaded bliver dens OnLoad() event kaldt, dette kalder en JavaScript function, der initializere kortet samt Google directions service.
+Når HTML body elementet er loaded bliver dens OnLoad() event kaldt, dette kalder en JavaScript function, der initializere kortet samt Google directions service.
 Først bliver der defineret en style, som kortet skal bruge, denne fjerner 'Points of interest'. Dernæst bliver der oprettet et mapOptions object, der definere forskellige options for kortet, her bliver kortets start position defineret til at vise Aarhus, kort typen bliver sat til ROADMAP, da dette vil vise kortet som et simplet vej kort. StreetViewControl bliver sat til false, da det er en feature der ikke er relevant for systemet.
 \begin{lstlisting}[caption=Map opsætning, label={lst:MapStyle}, language=Java]
 var featureOpts = [{
@@ -99,7 +99,7 @@ google.maps.event.addListener(map, 'click', function (event) {
 		ClearMarkers();
 }
 \end{lstlisting}
-Når der bliver trykket på kortet vil listenern tjekke på om der er blevet trykket på kortet tidligere, hvis der ikke er, vil der blive plaseret en marker på kortet, der hvor der blev trykket, denne marker symbolisere der hvor busruten starter. Hvis der allerede er 1 marker på kortet vil der bliver plaseret endnu en marker, denne marker symbolisere der hvor busruten slutter. Efter begge markers er blevet placeret vil functionen calcRoute(startPoint, endPoint) blive kaldt. Denne function bruger Google direction service til at udregne en rute der går mellem 2 punkter. Dette bliver gjort ved først at lave et request object der definere start og slut GPS koordinaterne for ruten, samt hvilken Travelmode der skal bruges. Med TravelMode sat til DRIVING, vil der blive udregnet den rute der er hurtigts at tage med bil. 
+Når der bliver trykket på kortet vil listenern tjekke på om der er blevet trykket på kortet tidligere, hvis der ikke er, vil der blive plaseret en marker på kortet, der hvor der blev trykket, denne marker symbolisere der hvor busruten starter. Hvis der allerede er 1 marker på kortet vil der bliver placeret endnu en marker, denne marker symbolisere der hvor busruten slutter. Efter begge markers er blevet placeret vil functionen calcRoute(startPoint, endPoint) blive kaldt. Denne function bruger Google direction service til at udregne en rute der går mellem 2 punkter. Dette bliver gjort ved først at lave et request object der definere start og slut GPS koordinaterne for ruten, disse koordinater bliver taget fra de 2 marker der er blevet placeret på kortet, samt hvilken Travelmode der skal bruges. Med TravelMode sat til DRIVING, vil der blive udregnet den rute der er hurtigts at tage med bil. 
 \begin{lstlisting}[caption=calcRoute function, label={lst:calcRoute}, language=Java]
 function calcRoute(start, end) {
 	request = {
@@ -115,4 +115,61 @@ function calcRoute(start, end) {
 	});
 }
 \end{lstlisting}
+Start og slut markerne har også en click listener på sig, dette skal bruges når en kompleks rute skal lave. dette bliver gjort ved at der bliver lavet endnu en DirectionsRenderer der laver en rute mellem enten start eller slut markeren, og et andet punkt på kortet hvor der er blevet trykket. 
+
+der er også blevet sat en listener på direction renderer'ne, der lytter efter om ruten ændre sig. I tilfælde af at ruten bliver ændret, vil listenerns callback function blive kaldt. Som det første, bliver der sat en kort delay, dette sker da ruten skal udregnes færdig før de forskellige properties der skal bruges, bliver sat. Efter dette delay bliver der itereret igennem alle properties, for at finde den af typen: 'Markers', der indeholder de markers de symboliser start og slut punkterne, samt alle de waypoints der må være blevet lavet på ruten, ved at administratoren har ændret på ruten. GPS koordinaterne for disse markers vil blive brugt når hele ruten skal gemmes på databasen. Som det sidste i listenern vil information om ruten, der i blandt de GPS koordinater der bliver brugt til at tegne ruten, gemt i en variable der senere bliver brugt når ruten skal gemmes på MySQL databasen.
+\begin{lstlisting}[caption=directions renderer listener, label={lst:DirectionsRenderern}, language=Java]
+google.maps.event.addListener(directionsDisplay, 'directions_changed', function () {
+	var that = this;
+	setTimeout(function () {//et kort delay, så ruten kan nå at blive udregnet helt
+		for (var k in that) {//kigger alle properties igennem efter den der skal bruges.
+			if (typeof that[k].markers != 'undefined') {//Hvis man finder den man skal bruge
+				var markers = that[k].markers;
+				waypoints = [];
+				for (var i = 0; i < markers.length; ++i) {
+					waypoints.push(markers[i].position);
+					markers[i].setZIndex(1);
+					StartEndMarkers.push(markers[i]);
+				};
+			}
+		}
+		temp = that.directions.routes;
+	}, 100);
+});
+\end{lstlisting}
+For at kunne sætte stoppesteder på en rute, kaldes funktionen SetBusStopsOnMap(), der henter navnene på de stoppesteder der er i listen 'ToLB'. Efter alle navnene er hentet, bliver der lavet et ajax kald til controllerens GetLatLng() funktion der bruger stopnavnene til at hente GPS koordinaterne for hver stop i MySQL databasen. Disse koordinater bliver sendt tilbage til ajax callback funktionen som et Json object, der bliver brugt til at tegne stoppestederne ind på kortet ved brug af markers.
+\\
+\begin{lstlisting}[caption=SaveRouteAndStops, label={lst:SaveRouteAndStops}, language=Java]
+function SaveRouteAndStops() {
+$.ajax({
+	type: "POST",
+	url: '@Url.Action("Save", "Dir")',
+	dataType: "json",
+	traditional: true,
+	data: {
+		route: getRoutePath(),
+		routeWayPoints: waypoints,
+		stops: stopsToSave,
+		SubRoutes: SplitRoute(SubRouteArray),
+		SubrouteWaypoint: SubRouteWaypoints,
+		RouteNumber: document.getElementById("RouteNumber").value,
+		contentType: "application/json; charset=utf-8"
+}
+\end{lstlisting}
+SaveRouteAndStops() funktionen, står for at samle data der skal gemmes i databasen, og sende det til Save funktionen i Dir controlleren gennem et ajax kald. Først finder den alle de GPS koordinater der bruges til at tegne ruten, hertil bliver funktionen getRoutePath() brugt. her bliver den tidligere defineret temp variable, der holder information om ruten, brugt. For at få GPS-koordinaterne for de punkter der bliver brugt til at tegne ruten, skal hver path, for hver step, for hver leg findes. Når disse er fundet, retuneres en liste af GPS koordinater. For mere information om path, step og legs refereres til Google maps api doc
+Dernæst bliver der fundet de waypoints og stoppesteder der ligger på ruten. Waypoints skal bruges til at genskabe ruten på hjemmesiden. Til sidste bliver der fundet de ruter der udgøre en kompleks rute, hvis dette er blevet tilføjet. controlleren kalder CalculateBusStopsForRoute() funktionen der laver udregninger på mellem hvilke rute punkter stoppestedet skal ligge, \textit{se afsnit 8.2.5 Anvendt matematik} for dybere beskrivelse af udregningerne der bliver fortaget. Efter alle udregnigner er fortaget, bliver alt data indsat i MySQL databasen \textit{Se afsnit 9.2.3 Implementering af persistens i online værktøjet} for hvordan databasen bliver tilgået.
+\\
+
+Det sidste view omhandler funktionerne for at tilføje, nye stoppesteder, ændre position og navn for eksiterende stoppesteder, samt slette dem fra databasen. For at kunne oprette nye stoppesteder, bliver der igen brugt Google maps API, dette bliver initialiseret på samme måde som beskrevet tidligere i afsnittet, dog uden Google Direction Services, da det kun er enkelte punkter på kortet der skal gemmes. For at oprette et nyt stoppested, bliver kortets listener event kaldt, ved tryk på kortet, dette event vil sætte en marker på kortet, der hvor der blev trykket, som symbolisere stoppestedets position.
+\begin{lstlisting}[caption=Stoppested map listener, label={lst:StoppestedMapListener}, language=Java]
+google.maps.event.addListener(map, 'click', function (event) {
+	if (markers.length <= 0) {
+		var mark = new google.maps.Marker({
+			map: map,
+			draggable: true,
+			position: event.latLng,
+			title: markers.length.toString()
+});
+\end{lstlisting}
+SaveStopsToDB() funktionen kan nu kaldes, denne vil lave et ajax kald til stop constrolleren, med GPS koordinaterne og navnet på stoppestedet, der vil gemme det på MySQL databasen.
 \end{document}
