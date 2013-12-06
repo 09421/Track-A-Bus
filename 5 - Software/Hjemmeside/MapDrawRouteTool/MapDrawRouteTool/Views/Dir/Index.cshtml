@@ -32,7 +32,7 @@
     var StartEndMarkers = new Array();
     var directionsDisplayArray = new Array();
     var rendererOptions;
-
+    var SubRuteMarkers = new Array();
     function ExecuteOnLoad() {//from _layout when loaded
         GetBusRoutesNamesFromDB();
     }
@@ -108,7 +108,7 @@
 
         });
 
-        var SubRuteMarkers = new Array();
+        SubRuteMarkers = new Array();
 
         //listener for when the map get a click event
         google.maps.event.addListener(map, 'click', function (event) {
@@ -239,8 +239,8 @@
 
 
     function SetRouteOnMap(route) {
-        var start = new google.maps.LatLng(route[0].Lat, route[0].Lng, false);
-        var end = new google.maps.LatLng(route[route.length - 1].Lat, route[route.length - 1].Lng, false);
+        startPoint = new google.maps.LatLng(route[0].Lat, route[0].Lng, false);
+        endPoint = new google.maps.LatLng(route[route.length - 1].Lat, route[route.length - 1].Lng, false);
         var routeWaypoints = new Array();
         route.pop();
         route.shift();
@@ -252,8 +252,8 @@
         }
 
         request = {
-            origin: start,
-            destination: end,
+            origin: startPoint,
+            destination: endPoint,
             waypoints: routeWaypoints,
             travelMode: google.maps.TravelMode.DRIVING
         };
@@ -262,8 +262,7 @@
             if (status == google.maps.DirectionsStatus.OK) {
 
                 dd = new google.maps.DirectionsRenderer(rendererOptions);
-                directionsDisplayArray.push(dd);
-                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);                
+                directionsDisplayArray.push(dd);                               
 
 
                 if (directionsDisplayArray.length == 1) {
@@ -284,10 +283,8 @@
 
                             temp = that.directions.routes;
 
-                            for (var i = 0; i < StartEndMarkers.length; i++)
-
+                            for (var i = 0; i < StartEndMarkers.length; i++) {
                                 google.maps.event.addListener(StartEndMarkers[i], 'click', function (event) {
-
                                     SubRuteMarkers.push(new google.maps.Marker({
                                         map: map,
                                         draggable: true,
@@ -295,6 +292,7 @@
                                     }));
 
                                 });
+                            }
                         }, 100);
 
                     });
@@ -323,9 +321,7 @@
                         }
                     });
                 }
-
-
-
+                directionsDisplayArray[directionsDisplayArray.length - 1].setDirections(response);
             }
         });
     }
@@ -428,7 +424,7 @@
                 if (result == -1)
                     alert("There are busses on the chosen route, please delete them first");
                 else if (result == -2)
-                    alert("This should not happen");
+                    alert("No Internet connection");
                 else if (result == 42) {
                     var elSel = document.getElementById('SelRoutes');
                     var i;
