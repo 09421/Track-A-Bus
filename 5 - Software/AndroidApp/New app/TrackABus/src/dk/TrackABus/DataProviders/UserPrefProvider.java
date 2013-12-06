@@ -13,6 +13,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.util.Log;
 
 public class UserPrefProvider extends ContentProvider {
 
@@ -46,7 +47,6 @@ public class UserPrefProvider extends ContentProvider {
 		uriMatcher.addURI(AUTHORITY, ROUTEPOINT_TABLE+"/#", ROUTEPOINT_CONTEXT);
 		uriMatcher.addURI(AUTHORITY, BUSROUTE_ROUTEPOINT_TABLE+"/#", BUSROUTE_ROUTEPOINT_CONTEXT);
 		uriMatcher.addURI(AUTHORITY, BUSROUTE_BUSSTOP_TABLE+"/#", BUSROUTE_BUSSTOP_CONTEXT);
-		
 	}
 
 	private static class UserPrefDB extends SQLiteOpenHelper {

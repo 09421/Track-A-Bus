@@ -2,12 +2,14 @@ package dk.TrackABus;
 
 import java.util.ArrayList;
 
+import dk.TrackABus.DataProviders.UserPrefProvider;
 import dk.TrackABus.Models.UserPrefBusRoute;
 
 
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +23,7 @@ public class MainScreenActivity extends Activity{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ConnectivityChecker.setInternetConn(getApplicationContext());
 		setContentView(R.layout.mainscreenactivity);
 		l = (ListView)findViewById(R.id.FavoriteList);	
 		SetFavoriteBusListAdapter(l);
@@ -28,7 +31,6 @@ public class MainScreenActivity extends Activity{
 	}
 
 	private void SetFavoriteBusListAdapter(ListView l) {
-			
 		Cursor c = getContentResolver().query(UserPrefBusRoute.CONTENT_URI, null,null, null, null);
 		ArrayList<String> values = new ArrayList<String>();		
 

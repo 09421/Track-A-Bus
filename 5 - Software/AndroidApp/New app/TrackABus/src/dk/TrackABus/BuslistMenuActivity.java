@@ -30,6 +30,7 @@ public class BuslistMenuActivity extends ListActivity {
 		ArrayList<String> BusList;
 		ArrayAdapter<String> adapter;
 		TrackABusProvider BusProvider;
+		BuslistAdapter busListAdapter = null;
 		Boolean mBound = false;
 		ProgressBar pBar; 
 		
@@ -38,27 +39,16 @@ public class BuslistMenuActivity extends ListActivity {
 	    @Override
 	    protected void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.activity_mainmenu);
-	        
+	        setContentView(R.layout.activity_mainmenu); 
 	        pBar = (ProgressBar)findViewById(R.id.PBar);
 	        pBar.setVisibility(View.VISIBLE);
 	        BusList = new ArrayList<String>(); 
 	    }
 	    
-	    public boolean isOnline() {
-	        ConnectivityManager cm =
-	            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-	        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-	            return true;
-	        }
-	        return false;
-	    }
-	    
 	    @Override
 	    protected void onStart(){
 	    	super.onStart();
-	    	if(isOnline()){
+	    	if(ConnectivityChecker.hasInternet){
 		    	Intent intent = new Intent(getApplicationContext(), TrackABusProvider.class);
 		    	startService(intent);
 		    	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
@@ -95,21 +85,26 @@ public class BuslistMenuActivity extends ListActivity {
  	
 	    	for(int i = 0; i < busList.size(); i++)
 	    		AllBusses.add(i, new ListBusData(FavoriteBusses.contains(busList.get(i)), busList.get(i)));   	
-	    	
-			setListAdapter(new BuslistAdapter(AllBusses, getApplicationContext()));
-			
+	    	busListAdapter = new BuslistAdapter(AllBusses, getApplicationContext());
+			setListAdapter(busListAdapter);
 	    	pBar.setVisibility(View.GONE);			
 		}
 
 		@Override
 		protected void onListItemClick(ListView l, View v, int position, long id) {
-			super.onListItemClick(l, v, position, id);			
-			Intent myIntent = new Intent(getApplicationContext(), BusMapActivity.class);
+			super.onListItemClick(l, v, position, id);	
+
 			
-			ListBusData a = (ListBusData)l.getItemAtPosition(position);			
+			Intent myIntent = new Intent(getApplicationContext(), BusMapActivity.class);
+			ListBusData a = (ListBusData)l.getItemAtPosition(position);	
+			if(!ConnectivityChecker.hasInternet && !a.IsFavorite)
+			{
+				Toast.makeText(this, "No connection to internet. Can only show route for favorite bus " , Toast.LENGTH_SHORT).show();
+				return;
+			}
 			
 			myIntent.putExtra("SELECTED_BUS", a.BusNumber);
-			myIntent.putExtra("isFavorite", false);
+			myIntent.putExtra("isFavorite",a.IsFavorite);
 			startActivityForResult(myIntent, 0);
 		}
 		
@@ -151,7 +146,6 @@ public class BuslistMenuActivity extends ListActivity {
 		
 		@Override
 		protected void onDestroy() {
-			super.onDestroy();
 			try{
 				if(mBound)
 					Log.e("DEBUG", "SERVICE UNBOUND");
@@ -159,10 +153,20 @@ public class BuslistMenuActivity extends ListActivity {
 			}catch(Exception e){
 				Log.e("DEBUG", e.getMessage());				
 			}
+
+			super.onDestroy();
 		}
 
 		@Override
 		protected void onPause() {
 			super.onPause();
+
+		}
+		
+		@Override
+		protected void onStop() {
+			super.onStop();
+				
+
 		}
 }

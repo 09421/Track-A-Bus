@@ -16,40 +16,24 @@ import com.google.android.gms.maps.model.LatLng;
 import android.util.Log;
 
 public class SoapProvider {
-	private SoapObject response;
-	private ArrayList<String> resultlist;
 	final String NAMESPACE = "http://TrackABus.dk/Webservice/"; //the namespace that you'll find in the header of your asmx webservice
-	String METHOD_NAME= "HelloWorld"; //the webservice method that you want to call
-	String SOAP_ACTION = NAMESPACE+METHOD_NAME;
 	final String URL = "http://trackabus.dk/AndroidToMySQLWebService.asmx"; //the url of your webservice
 	  
 	  public SoapProvider()
 	  {
-		  this.SOAP_ACTION =NAMESPACE+METHOD_NAME;
 	  }
 	  
-	  private SoapObject init(String METHOD_NAME){
-		  
-		  try{
-			  SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-			  request.addProperty("arg0", METHOD_NAME);
+	  public ArrayList<String> GetBusList(){
+		  ArrayList<String> resultlist = new ArrayList<String>();
+		  try {
+			  SoapObject request = new SoapObject(NAMESPACE, "GetBusRouteList");
 			  SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
 			  envelope.dotNet = true;
 			  envelope.setOutputSoapObject(request);
 			  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
-			  androidHttpTransport.call(NAMESPACE+METHOD_NAME, envelope);
-			  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
-		  }	catch (Exception e) {
-			  Log.d("Fail", e.getMessage());
-			  return null;
-		  }		  
-		  return response;
-	  }
-	  
-	  public ArrayList<String> GetBusList(){
-		  try {
-			  init("GetBusList");			  
-			  resultlist = new ArrayList<String>();
+			  androidHttpTransport.call(NAMESPACE+"GetBusRouteList", envelope);
+			  SoapObject response = (SoapObject)envelope.getResponse(); //get the response from your webservice
+			  
 			  for(int i = 0; i<response.getPropertyCount();i++){
 				  SoapPrimitive f = (SoapPrimitive)response.getProperty(i);
 				  resultlist.add(f.toString());				  
@@ -63,7 +47,6 @@ public class SoapProvider {
 	  
 	  public ArrayList<BusStop> GetBusStops(String BusNumber){
 		  ArrayList<BusStop> BusStoplist = new ArrayList<BusStop>();
-		  
 		  try{
 			  SoapObject request = new SoapObject(NAMESPACE, "GetBusStops");
 			  request.addProperty("busNumber", BusNumber);
@@ -72,7 +55,7 @@ public class SoapProvider {
 			  envelope.setOutputSoapObject(request);
 			  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 			  androidHttpTransport.call(NAMESPACE+"GetBusStops", envelope);
-			  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
+			  SoapObject response = (SoapObject)envelope.getResponse(); //get the response from your webservice
 			  int test = response.getPropertyCount();
 			  if(test <= 1)
 			  {
@@ -117,7 +100,7 @@ public class SoapProvider {
 				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
 				  androidHttpTransport.call(NAMESPACE+"GetBusRoute", envelope);
 
-				  response = (SoapObject)envelope.getResponse(); //get the response from your webservice
+				  SoapObject response = (SoapObject)envelope.getResponse(); //get the response from your webservice
 
 
 				  ArrayList<RoutePoint> points;
@@ -159,30 +142,32 @@ public class SoapProvider {
 			  return Route;
 		}
 		
-		public ArrayList<LatLng> GetBusPos(String BusNumber){
-			  
-			  ArrayList<LatLng> BusPoint = new ArrayList<LatLng>();;
-			  try{
-				  SoapObject request = new SoapObject(NAMESPACE, "GetbusPos");
-				  request.addProperty("busNumber", BusNumber);
-				  SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-				  envelope.dotNet = true;
-				  envelope.setOutputSoapObject(request);
-				  HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
-				  androidHttpTransport.call(NAMESPACE+"GetbusPos", envelope);
-				  SoapObject testresponse = (SoapObject)envelope.getResponse(); //get the response from your webservice
-				  
-				  for(int i = 0; i<testresponse.getPropertyCount(); i++){
-					  double a = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(0).toString().replace(",", "."));
-					  double b = Double.parseDouble(((SoapObject)testresponse.getProperty(i)).getProperty(1).toString().replace(",", "."));
-					  BusPoint.add(new LatLng(a, b));
-				  }
-
-			  }catch(Exception e){
-				  return null;
-			  }
-			  return BusPoint;
-		}
+public ArrayList<LatLng> GetBusPos(String BusNumber)
+{	  
+	  ArrayList<LatLng> BusPoint = new ArrayList<LatLng>();
+	  try
+	  {
+		  	SoapObject request = new SoapObject(NAMESPACE, "GetbusPos");
+		  	request.addProperty("busNumber", BusNumber);
+		  	SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+		  	envelope.dotNet = true;
+		  	envelope.setOutputSoapObject(request);
+			HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+			androidHttpTransport.call(NAMESPACE+"GetbusPos", envelope);
+			SoapObject response = (SoapObject)envelope.getResponse(); //get the response from your webservice 
+			for(int i = 0; i<response.getPropertyCount(); i++)
+			{
+				double a = Double.parseDouble(((SoapObject)response.getProperty(i)).getProperty(0).toString().replace(",", "."));
+				double b = Double.parseDouble(((SoapObject)response.getProperty(i)).getProperty(1).toString().replace(",", "."));
+				BusPoint.add(new LatLng(a, b));
+			}
+	  }
+	  catch(Exception e)
+	  {
+		  return null;
+	  }
+	  return BusPoint;
+}
 		
 		public ArrayList<String> GetBusToStopTime(String stopName, String routeNumber)
 		{
@@ -203,14 +188,15 @@ public class SoapProvider {
 					RouteList.add(testresponse.getProperty(2).toString());
 					RouteList.add(testresponse.getProperty(1).toString());
 					RouteList.add(testresponse.getProperty(3).toString());
-					Log.e("DEBUG", RouteList.get(0) + " : "+ RouteList.get(1) + " : " + RouteList.get(2) + " : " + RouteList.get(3));
+					Log.e("Acceptest", "New data!");
 				  }
+				  
 				  catch(Exception e)
 				  {
 					Log.e("DEBUG", e.getMessage());
 				  }
 			  }catch(Exception e){
-				  return null;
+				  RouteList.add(e.toString());
 			  }
 			  return RouteList;
 		

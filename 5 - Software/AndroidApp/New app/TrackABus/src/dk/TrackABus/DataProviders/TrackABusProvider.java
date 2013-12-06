@@ -93,7 +93,6 @@ public class TrackABusProvider extends Service{
 		        	b.putParcelableArrayList("BusRoute", arg0);
 		        	b.putParcelableArrayList("BusStop", arg1);
 
-					
 					Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
 					bMsg.setData(b);
 					try {

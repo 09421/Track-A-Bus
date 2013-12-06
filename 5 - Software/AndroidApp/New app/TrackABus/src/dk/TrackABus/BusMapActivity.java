@@ -113,11 +113,14 @@ public class BusMapActivity extends Activity {
 			if(msg != null){
 				switch(msg.what){
 				case BUS_ROUTE_DONE:
+			        View mapFragment = mMapFragment.getView();
+			        //return if user closes window during loading.
+			        if(mapFragment == null)
+			        	return;
 			        pBar.setVisibility(View.GONE);
 			        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
-			        mMapFragment.getView().setVisibility(View.VISIBLE);
+			        mapFragment.setVisibility(View.VISIBLE);
 			        ((View)findViewById(R.id.TopInformationBarFrame)).setVisibility(View.VISIBLE);
-			        
 					ArrayList<BusRoute> BusRoutes = msg.getData().getParcelableArrayList("BusRoute");
 					ArrayList<BusStop> BusStops = msg.getData().getParcelableArrayList("BusStop");
 			        
@@ -127,7 +130,7 @@ public class BusMapActivity extends Activity {
 					}
 					DrawBusStops(BusStops);
 					
-					if(isOnline())
+					if(ConnectivityChecker.hasInternet)
 						UpdateBusLocation();
 					else
 						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();					
@@ -165,8 +168,8 @@ public class BusMapActivity extends Activity {
 	private void InitStopInformation(String BusStop)
 	{
 		((TextView)this.findViewById(R.id.StopInfo)).setText(BusStop);
-		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("-------------");
-		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("-------------");
+		((TextView)this.findViewById(R.id.DescendingBusEndStopInfo)).setText("Loading");
+		((TextView)this.findViewById(R.id.AscendingBusEndStopInfo)).setText("Loading");
 		((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
 		((TextView)this.findViewById(R.id.AscendingBusTime)).setText("nn:nn:nn"); 
 		
@@ -177,6 +180,8 @@ public class BusMapActivity extends Activity {
 		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.VISIBLE);
 		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
 	}
+	
+	
 	
 	private void UpdateTimeDesc(String DescSeconds)
 	{
@@ -224,7 +229,6 @@ public class BusMapActivity extends Activity {
 	        	final ArrayList<LatLng> SelectedBusPos = soapProvider.GetBusPos(SelectedBus);
 	
 	    		Runnable setFirstMark = new Runnable(){
-	
 	    			@Override
 	    			public void run() {
 	    				marks = new ArrayList<Marker>();
@@ -253,9 +257,7 @@ public class BusMapActivity extends Activity {
 		public void run() {
 			while(Running){				
 				CurrentLatLng = soapProvider.GetBusPos(SelectedBus);
-				if(CurrentLatLng != null){
-					handler.post(setMark);
-				}
+				handler.post(setMark);
 				try {
 					Thread.sleep(1000);
 					if(!Running)
@@ -266,10 +268,19 @@ public class BusMapActivity extends Activity {
 			}
 		}
 		ArrayList<LatLng> CurrentLatLng;
+		boolean posMsgShown = false;
 		Runnable setMark = new Runnable(){
-
 			@Override
 			public void run() {
+				if(CurrentLatLng == null && !posMsgShown)
+				{
+					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_SHORT).show();
+					posMsgShown = true;
+					return;
+				}
+				else if(CurrentLatLng == null && posMsgShown)
+					return;
+				posMsgShown = false;
 				for(int j = 0; j<marks.size(); j++){
 					marks.get(j).remove();
 				}
@@ -303,6 +314,119 @@ public class BusMapActivity extends Activity {
 	
 	private boolean timeUpdating;
 	private Thread updateTimeThread;
+	
+	private class timeUpdater implements Runnable{
+		@Override
+		public void run(){
+			class UpdateTimeRunnable implements Runnable{
+				public String ascS;
+				public String descS;
+				public String aStop;
+				public String dStop;
+				public UpdateTimeRunnable(String ascSec, String descSec, String ascStop, String descStop)
+				{
+					
+					ascS = ascSec; descS = descSec;
+					aStop = ascStop; dStop = descStop;
+				}
+				
+				public void SetValues(String ascSec, String descSec, String ascStop, String descStop)
+				{
+					ascS = ascSec; descS = descSec;
+					aStop = ascStop; dStop = descStop;
+				}
+
+				
+				@Override
+				public void run() {
+					Log.e("test", ascS + " ; " + descS + " ; " + aStop + " ; " +dStop);
+					String currentAscText = (String) ((TextView)findViewById(R.id.AscendingBusEndStopInfo)).getText();
+					String currentDescText = (String) ((TextView)findViewById(R.id.DescendingBusEndStopInfo)).getText();
+					if(currentAscText!= aStop || currentAscText != "No bus going this direction")	 
+					{
+						if(aStop.contains("anyType"))
+						{
+							((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("No bus going this direction");
+							UpdateTimeAsc("-1");
+						}
+						else
+						{
+							((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + aStop);
+							UpdateTimeAsc(ascS);
+						} 
+					}
+					if(currentDescText != dStop || currentDescText != "No bus going this direction")	
+					{
+						if(dStop.contains("anyType"))
+						{
+							((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("No bus going this direction");
+							UpdateTimeDesc("-1");
+						
+						}
+						else
+						{
+							((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + dStop);
+							UpdateTimeDesc(descS);
+						}
+					}
+					if(!dStop.contains("anyType"))
+					{
+						
+					}
+				}							
+			}
+			UpdateTimeRunnable r = null;
+			boolean msgShown = false; 
+			while(timeUpdating)
+			{  
+				String stop = ((TextView)findViewById(R.id.StopInfo)).getText().toString();
+				String route=((TextView)findViewById(R.id.RouteInfo)).getText().toString();
+				ArrayList<String> busToStop = soapProvider.GetBusToStopTime(stop,route);
+				
+				if(busToStop.size() != 1)
+				{								
+					String asc = busToStop.get(0);
+					String desc = busToStop.get(1);
+					String ascStop = busToStop.get(2);
+					String descStop = busToStop.get(3);
+					
+					if(msgShown) msgShown=false;
+					
+					if(r == null)
+					{
+						r = new UpdateTimeRunnable(asc,desc,ascStop,descStop);
+					}
+					else
+					{
+						r.SetValues(asc,desc,ascStop,descStop);
+					}
+					handler.post(r);
+				}
+				else if(!msgShown)
+				{
+					msgShown = true;
+					Runnable errRun = new Runnable()
+					{
+						@Override
+						public void run() {
+							
+							Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update time", Toast.LENGTH_SHORT).show();
+						}
+					};
+					handler.post(errRun);
+				}
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	};
+	
+	
+	
 	private void DrawBusStops(final ArrayList<BusStop> stops)
 	{
 		if(stops != null){
@@ -314,7 +438,7 @@ public class BusMapActivity extends Activity {
 		}else{
 			Toast.makeText(getApplicationContext(), "There are no bus stops on chosen route", Toast.LENGTH_LONG).show();
 		}
-		
+
 		map.setOnMarkerClickListener(new OnMarkerClickListener() {
 			
 			@Override
@@ -323,91 +447,13 @@ public class BusMapActivity extends Activity {
 				if(marker.getTitle() == null)
 					return false;
 				InitStopInformation(marker.getTitle());
-			    
-				Runnable ru = new Runnable(){
-					@Override
-					public void run(){
-						
-						class UpdateTimeRunnable implements Runnable{
-							private String ascS;
-							private String descS;
-							private String aStop;
-							private String dStop;
-							public UpdateTimeRunnable(String ascSec, String descSec, String ascStop, String descStop)
-							{
-								ascS = ascSec; descS = descSec;
-								aStop = ascStop; dStop = descStop;
-							}
-							@Override
-							public void run() {
-								String currentAscText = (String) ((TextView)findViewById(R.id.AscendingBusEndStopInfo)).getText();
-								String currentDescText = (String) ((TextView)findViewById(R.id.DescendingBusEndStopInfo)).getText();
-								if(currentAscText!= aStop || currentAscText != "No bus going this direction")	
-								{
-									if(aStop.contains("anyType"))
-									{
-										((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("No bus going this direction");
-										
-									}
-									else
-									{
-										((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + aStop);
-									} 
-								}
-								if(!aStop.contains("anyType"))
-								{
-									UpdateTimeAsc(ascS);
-								}
-								if(currentDescText != dStop || currentDescText != "No bus going this direction")	
-								{
-									if(dStop.contains("anyType"))
-									{
-										((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("No bus going this direction");
-									
-									}
-									else
-									{
-										((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + dStop);
-									}
-								}
-								if(!dStop.contains("anyType"))
-								{
-									UpdateTimeDesc(descS);
-								}
-							}							
-						}
-						
-						while(timeUpdating)
-						{  
-							Log.e("busToStop","Update!");
-							String stop = ((TextView)findViewById(R.id.StopInfo)).getText().toString();
-							String route=((TextView)findViewById(R.id.RouteInfo)).getText().toString();
-							ArrayList<String> busToStop = soapProvider.GetBusToStopTime(stop,route);
-							if(busToStop.size() != 1)
-							{								
-								String asc = busToStop.get(0);
-								String desc = busToStop.get(1);
-								String ascStop = busToStop.get(2);
-								String descStop = busToStop.get(3);
-								Log.e("busToStop", asc);
-								Log.e("busToStop", desc);
-
-								UpdateTimeRunnable r = new UpdateTimeRunnable(asc,desc,ascStop,descStop);
-								handler.post(r);
-							}
-							else
-								Log.e("busToStop",busToStop.get(0) );//Something went wrong in the service
-							
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				};
+	
+				if(!ConnectivityChecker.hasInternet)
+				{
+					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update time", Toast.LENGTH_SHORT).show();
+					return false;
+				}
 				timeUpdating = false;
-				
 				if(updateTimeThread != null)
 				{
 					updateTimeThread.interrupt();//Breaks Thread If Sleeping
@@ -421,9 +467,8 @@ public class BusMapActivity extends Activity {
 						}						
 					}
 				}
-				
 				timeUpdating = true;
-			    updateTimeThread = new Thread(ru);
+			    updateTimeThread = new Thread(new timeUpdater());
 			    updateTimeThread.start();
 				return false;
 			}
@@ -437,7 +482,6 @@ public class BusMapActivity extends Activity {
 			public void run() {
 				final Cursor RouteCursor = getContentResolver().query(UserPrefBusRoute.CONTENT_URI,null, selectedBus, null, null);
 				RouteCursor.moveToFirst();
-				
 				Runnable[] drawingRoute = new Runnable[RouteCursor.getCount()];
 				for(int i = 0; i < drawingRoute.length; i++)
 				{
@@ -463,7 +507,6 @@ public class BusMapActivity extends Activity {
 					drawingRoute[i] = new Runnable(){
 						@Override
 						public void run() {
-
 							DrawRoute(LatRoute, LngRoute);
 							DrawBusStops(stops);
 						}
@@ -483,6 +526,7 @@ public class BusMapActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		Running = false;
+		timeUpdating = false;
 	}
 
 	@Override
@@ -505,6 +549,12 @@ public class BusMapActivity extends Activity {
 	  	   	t = new Thread(new updateMarker());
 	  	   	Running = true;
 	  	   	t.start();
+		}
+		if(updateTimeThread != null && !updateTimeThread.isAlive())
+		{
+			updateTimeThread = new Thread(new timeUpdater());
+			timeUpdating = true;
+			updateTimeThread.start();
 		}		
 	}
 	
@@ -529,14 +579,4 @@ public class BusMapActivity extends Activity {
 			mBound = false;				
 		}
 	};
-	
-    public boolean isOnline() {
-        ConnectivityManager cm =
-            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        }
-        return false;
-    }
 }
