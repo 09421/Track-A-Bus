@@ -241,10 +241,6 @@ namespace MapDrawRouteTool
                     int i = 0;
                     try
                     {
-                        string TimeToStopSecAsc = "";
-                        string TimeToStopSecDesc = "";
-                        string EndStopNameAsc = "";
-                        string EndStopNameDesc = "";
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                         cmd.Parameters.Add("?stopName", MySqlDbType.VarChar);
