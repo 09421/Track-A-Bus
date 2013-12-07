@@ -4,7 +4,7 @@
 \subsubsection{Use Case 1: Vis busruter}
 \textbf{Test Case: Normalforløb A}
 \\\begin{tabular}{l p{11cm}}
-FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal der i databasen være gemt en busrute.
+FORBEREDELSE:	&	TrackABus android mobil-applikationen skal være startet, samt stå ved startskærmen, desuden skal der i databasen være gemt en simpel rute, en kompleks rute, en byrute samt en test rute på ca. 1 KM.
 \\
 BESKRIVELSE:	&	Der testes, at det er muligt at få vist en liste af alle busruter gemt på databasen.  
 \\\\
@@ -13,7 +13,7 @@ BESKRIVELSE:	&	Der testes, at det er muligt at få vist en liste af alle busruter
 \begin{testcase}
 \punkt 1
 \Aktion Brugeren tilkendegiver overfor systemet, at han ønsker at få vist alle gemte busrute, ved at at trykke på knappen 'View busroutes'.
-\Forventet Liste af busruter vises
+\Forventet De fire ruter, beskrevet i forberedelsen, vises.
 \end{testcase}
 \\
 \textbf{Test Case: Undtagelsesforløb A}
@@ -30,7 +30,7 @@ BESKRIVELSE:	&	Der testes, at der bliver vist en fejlmeddelelse hvis der ikke ka
 \\\\
 \textbf{Test Case: Undtagelsesforløb B}
 \\ \begin{tabular}{l p{11cm}}
-FORBEREDELSE:	& 	Indlæsning af busruter er igangsat, samt der er gemt busruter i databasen.  \\
+FORBEREDELSE:	& 	Indlæsning af busruter er igangsat, samt der er gemt en simpel rute, en kompleks rute, en byrute samt en test rute på ca. 1 KM, i databasen.  \\
 BESKRIVELSE:	&	Der testes, at hvis indlæsning af busruter bliver annulleret, ved tryk på telefonens tilbage-knap, returnerers der til applikationens startskærm.  \\
 \end{tabular}
 \\\\
@@ -42,7 +42,7 @@ BESKRIVELSE:	&	Der testes, at hvis indlæsning af busruter bliver annulleret, ved
 \\
 \textbf{Test Case: Undtagelsesforløb C}
 \\ \begin{tabular}{l p{11cm}}
-FORBEREDELSE:	&	Indlæsning af busruter er igangsat, samt der er gemt busruter i databasen. \\
+FORBEREDELSE:	&	Indlæsning af busruter er igangsat, samt der er  gemt en simpel rute, en kompleks rute, en byrute samt en test rute på ca. 1 KM, i databasen. \\
 BESKRIVELSE:	&	Det testes, at hvis systemet går i dvale under indlæsning af busruter, ved tryk på telefonens home-knap, vil systemet indlæse listen af busruter færdig i baggrunden.  \\
 \end{tabular}
 \\\\

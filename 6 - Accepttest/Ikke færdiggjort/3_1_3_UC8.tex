@@ -12,7 +12,7 @@ BESKRIVELSE: & Det testes at det er muligt at tilføje ny stoppested til systemet
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren trykker et sted på kortet, indskriver navnet "teststop" i feltet 'Name of stop', samt trykker på knappen 'Save stops'.
+\Aktion Administratoren trykker et sted på kortet, indskriver navnet "teststop" i feltet 'Stop Name', samt trykker på knappen 'Save stop'.
 \Forventet Stoppestedet bliver persisteret i databasen.
 \end{testcase}
 \textbf{Test Case: Normalforløb B}
@@ -25,7 +25,7 @@ BESKRIVELSE: & Det testes at det er muligt at ændre et stoppested der findes i s
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger stoppestedet "teststop" fra listen af alle stoppesteder i systemet, ændrer navn og placering, samt trykker på knappen 'Save'.
+\Aktion Administratoren vælger stoppestedet "teststop" fra listen af alle stoppesteder i systemet, ændrer navnet til "teststop2" og ændrer placeringen, samt trykker på knappen 'Save changes'.
 \Forventet Ændringer af stoppested bliver persisteret på databasen.
 \end{testcase}
 \\
@@ -40,7 +40,7 @@ BESKRIVELSE: & Det testes at det er muligt at slette et stoppested fra systemet.
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren vælger stoppestedet "teststop" fra listen af alle stoppesteder i systemet, samt trykker på knappen 'Delete stops'
+\Aktion Administratoren vælger stoppestedet "teststop" fra listen af alle stoppesteder i systemet, samt trykker på knappen 'Delete stop'
 \Forventet Det valgte stoppested bliver slettet fra databasen.
 \end{testcase}
 
@@ -54,7 +54,7 @@ BESKRIVELSE: & Det testes at der kommer en fejlmeddelselse om at det ikke er mul
 \\
 \begin{testcase}
 \punkt 1
-\Aktion Administratoren trykker et sted på kortet, indskriver "stopfejl" i feltet 'Name of stop', samt trykker på knappen 'Save'.
+\Aktion Administratoren trykker et sted på kortet, indskriver "stopfejl" i feltet 'Stop name', samt trykker på knappen 'Save stop'.
 \Forventet Administratoren bliver præsenteret for en fejlmeddelelse, der beskriver at det ikke er muligt at persitere ændringer.
 \end{testcase}
 \end{document}
