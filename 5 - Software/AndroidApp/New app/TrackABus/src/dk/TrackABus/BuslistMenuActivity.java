@@ -49,7 +49,7 @@ public class BuslistMenuActivity extends ListActivity {
 	    protected void onStart(){
 	    	super.onStart();
 	    	if(ConnectivityChecker.hasInternet){
-		    	Intent intent = new Intent(getApplicationContext(), TrackABusProvider.class);
+		    	Intent intent = new Intent(BuslistMenuActivity.this, TrackABusProvider.class);
 		    	startService(intent);
 		    	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
 		    	

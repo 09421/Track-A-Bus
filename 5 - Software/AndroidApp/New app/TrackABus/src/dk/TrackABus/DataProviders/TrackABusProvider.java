@@ -3,6 +3,8 @@ package dk.TrackABus.DataProviders;
 
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +26,7 @@ public class TrackABusProvider extends Service{
 		final Messenger mMessenger;
 		SoapProvider soapProvider;
 		Handler ReplyTo;
+		boolean isBound = true;
 		
 	/**
 	 * Constructor for TrackABusProvider
@@ -40,15 +43,21 @@ public class TrackABusProvider extends Service{
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		Log.e("MyLog", "onCreate");		
 	}
 
 	@Override
 	public void onRebind(Intent intent) {
-		super.onRebind(intent);	
+		super.onRebind(intent);
+		Log.e("MyLog", "onRebind");			
+		isBound = true;
 	}	
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
+		super.onUnbind(intent);	
+		Log.e("MyLog", "onUnbind");
+		isBound = false;			
 		return true;
 	}
 
@@ -56,8 +65,7 @@ public class TrackABusProvider extends Service{
 	 * Sends a message back, with an StringArrayList at key "1"
 	 * @param ReplyMessage The what parameter in the message
 	 */
-	public void GetBusNumber(final int ReplyMessage) {
-		
+	public void GetBusNumber(final int ReplyMessage) {		
 		new Thread(new Runnable() {
 	        public void run() {
 	    		ArrayList<String> BusName = new ArrayList<String>();
@@ -101,12 +109,42 @@ public class TrackABusProvider extends Service{
 						Log.e("MyLog", "Failed to send message");
 						e.printStackTrace();						
 					}
-		        }}).start();
-
-			
+		        }}).start();			
 		}catch(Exception e){
 			Log.e("MyLog", e.getMessage());
 		}		
+	}
+	
+	public void GetBusPos(final String busNumber, final int ReplyMessage){
+		try{			
+			new Thread(new Runnable() {
+				public void run() {
+					while(isBound){				
+						Bundle b = new Bundle();
+			        	ArrayList<LatLng> arg0 = soapProvider.GetBusPos(busNumber);
+			        	b.putParcelableArrayList("BusPos", arg0);
+
+						Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
+						bMsg.setData(b);
+						try {							
+							Log.e("MyLog", "Pos send");
+							mMessenger.send(bMsg);							
+						}catch (RemoteException e) {
+							Log.e("MyLog", "Failed to send message");
+							e.printStackTrace();						
+						}
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							Log.e("MyLog", "Failed to sleep");
+							e.printStackTrace();
+						}
+					}
+				}
+			}).start();
+			}catch(Exception e){
+				Log.e("MyLog", e.getMessage());
+			}
 	}
 	
 	/**
@@ -119,14 +157,17 @@ public class TrackABusProvider extends Service{
 	}
 
 	@Override
-	public IBinder onBind(Intent intent) {
+	public IBinder onBind(Intent intent) {		
+		Log.e("MyLog", "onBind");
+		isBound = true;
 		return mBinder;
 	}
+	
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
+		Log.e("MyLog", "onDestroy");
+		isBound = false;
 		stopSelf();
-	}
-	
-	
+		super.onDestroy();		
+	}	
 }

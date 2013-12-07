@@ -53,14 +53,17 @@ public class BusMapActivity extends Activity {
 	String SelectedBus;
 	TrackABusProvider BusProvider;
 	Boolean mBound = false;
+	ArrayList<Marker> marks;
 	final static public int BUS_ROUTE_DONE = 1;
-	final static public int BUS_STOP_DONE = 2;
+	final static public int BUS_POS_DONE = 2;
+//	final static public int BUS_STOP_DONE = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapview);        
         Bundle extra = getIntent().getExtras();
         soapProvider = new SoapProvider(); 
+        marks = new ArrayList<Marker>();
         if(extra != null){        	
         	SelectedBus = extra.getString("SELECTED_BUS");
         	Log.e("MyLog", SelectedBus);
@@ -82,7 +85,7 @@ public class BusMapActivity extends Activity {
 	        	TopBarLayout = (LinearLayout)findViewById(R.id.TopInformationBar);
 	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
 	        	BusRouteView.setText(SelectedBus);
-	        	BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler()); 
+	        	BusProvider = new TrackABusProvider(BusMapActivity.this, new msgHandler()); 
 	        	pBar.setVisibility(View.VISIBLE);
 	        	BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE);
         	}       	
@@ -135,13 +138,30 @@ public class BusMapActivity extends Activity {
 					else
 						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();					
 					break;
+				case BUS_POS_DONE:
+					Log.e("MyLog", "Got the message");
+					
+					for(int j = 0; j<marks.size(); j++){
+					marks.get(j).remove();
+					}
+					ArrayList<LatLng> Pos =  msg.getData().getParcelableArrayList("BusPos");
+					
+    				if(Pos != null){
+    					for(int i = 0; i<Pos.size(); i++){
+    						marks.add(map.addMarker(new MarkerOptions()
+							.position(Pos.get(i))
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
+    					}
+    				}
+    				else
+    					Toast.makeText(BusMapActivity.this, "No bus found on route", Toast.LENGTH_SHORT).show();
+					break;
 				default:
 					super.handleMessage(msg);
 				}
 			}
 		}			
-	}
-    
+	}    
 
 	private static final LatLng AARHUS = new LatLng(56.162939,10.203921);
 
@@ -158,7 +178,7 @@ public class BusMapActivity extends Activity {
 			}
 	}
 
-	Thread t;
+	//Thread t;
 	ArrayList<LatLng> LatLngList;
 	Marker mark;
 	Handler handler = new Handler(Looper.getMainLooper());
@@ -179,9 +199,7 @@ public class BusMapActivity extends Activity {
 		((View)this.findViewById(R.id.DescAscFrame)).setVisibility(View.VISIBLE);
 		((LinearLayout)this.findViewById(R.id.DescendingBusTimeBar)).setVisibility(TextView.VISIBLE);
 		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
-	}
-	
-	
+	}	
 	
 	private void UpdateTimeDesc(String DescSeconds)
 	{
@@ -223,76 +241,76 @@ public class BusMapActivity extends Activity {
 	}
 	
 	private void UpdateBusLocation() {
-		new Thread(new Runnable() {
-	        public void run() { 
+//		new Thread(new Runnable() {
+//	        public void run() { 
 
-	        	final ArrayList<LatLng> SelectedBusPos = soapProvider.GetBusPos(SelectedBus);
+	BusProvider.GetBusPos(SelectedBus, BUS_POS_DONE);
 	
-	    		Runnable setFirstMark = new Runnable(){
-	    			@Override
-	    			public void run() {
-	    				marks = new ArrayList<Marker>();
-	    				if(SelectedBusPos != null)
-	    					for(int i = 0; i<SelectedBusPos.size(); i++)
-	    						marks.add(map.addMarker(new MarkerOptions()
-								    						.position(SelectedBusPos.get(i))
-								    						.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
-	    				else
-	    					Toast.makeText(getApplicationContext(), "No bus found on route", Toast.LENGTH_SHORT).show();
-	    			}			
-	    		};
-	    		handler.post(setFirstMark);
-			
-			t = new Thread(new updateMarker());
-			t.start();
-			}	
-	    }).start();	
+//	    		Runnable setFirstMark = new Runnable(){
+//	    			@Override
+//	    			public void run() {
+//	    				marks = new ArrayList<Marker>();
+//	    				if(SelectedBusPos != null)
+//	    					for(int i = 0; i<SelectedBusPos.size(); i++)
+//	    						marks.add(map.addMarker(new MarkerOptions()
+//								    						.position(SelectedBusPos.get(i))
+//								    						.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
+//	    				else
+//	    					Toast.makeText(getApplicationContext(), "No bus found on route", Toast.LENGTH_SHORT).show();
+//	    			}			
+//	    		};
+//	    		handler.post(setFirstMark);
+//			
+//			t = new Thread(new updateMarker());
+//			t.start();
+//			}	
+//	    }).start();	
 	}	
 
-	ArrayList<Marker> marks;
-	Boolean Running = true;
-	public class updateMarker implements Runnable{
-		
-		@Override
-		public void run() {
-			while(Running){				
-				CurrentLatLng = soapProvider.GetBusPos(SelectedBus);
-				handler.post(setMark);
-				try {
-					Thread.sleep(1000);
-					if(!Running)
-						break;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}				
-			}
-		}
-		ArrayList<LatLng> CurrentLatLng;
-		boolean posMsgShown = false;
-		Runnable setMark = new Runnable(){
-			@Override
-			public void run() {
-				if(CurrentLatLng == null && !posMsgShown)
-				{
-					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_SHORT).show();
-					posMsgShown = true;
-					return;
-				}
-				else if(CurrentLatLng == null && posMsgShown)
-					return;
-				posMsgShown = false;
-				for(int j = 0; j<marks.size(); j++){
-					marks.get(j).remove();
-				}
-				marks = new ArrayList<Marker>();
-				for(int i = 0; i<CurrentLatLng.size(); i++){					
-					marks.add(map.addMarker(new MarkerOptions()
-					.position(CurrentLatLng.get(i))
-					.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
-				}			
-			}			
-		};		
-	}	
+
+//	Boolean Running = true;
+//	public class updateMarker implements Runnable{
+//		
+//		@Override
+//		public void run() {
+//			while(Running){				
+//				CurrentLatLng = soapProvider.GetBusPos(SelectedBus);
+//				handler.post(setMark);
+//				try {
+//					Thread.sleep(1000);
+//					if(!Running)
+//						break;
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}				
+//			}
+//		}
+//		ArrayList<LatLng> CurrentLatLng;
+//		boolean posMsgShown = false;
+//		Runnable setMark = new Runnable(){
+//			@Override
+//			public void run() {
+//				if(CurrentLatLng == null && !posMsgShown)
+//				{
+//					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_SHORT).show();
+//					posMsgShown = true;
+//					return;
+//				}
+//				else if(CurrentLatLng == null && posMsgShown)
+//					return;
+//				posMsgShown = false;
+//				for(int j = 0; j<marks.size(); j++){
+//					marks.get(j).remove();
+//				}
+//				marks = new ArrayList<Marker>();
+//				for(int i = 0; i<CurrentLatLng.size(); i++){					
+//					marks.add(map.addMarker(new MarkerOptions()
+//					.position(CurrentLatLng.get(i))
+//					.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
+//				}			
+//			}			
+//		};		
+//	}	
 	
 	private void DrawRoute(ArrayList<RoutePoint> points) {
 
@@ -421,11 +439,8 @@ public class BusMapActivity extends Activity {
 					e.printStackTrace();
 				}
 			}
-
 		}
-	};
-	
-	
+	};	
 	
 	private void DrawBusStops(final ArrayList<BusStop> stops)
 	{
@@ -475,9 +490,8 @@ public class BusMapActivity extends Activity {
 		});
 	}
 	
-	private void DrawFavoriteRoute(final String selectedBus){
-		
-		Runnable r = new Runnable(){
+	private void DrawFavoriteRoute(final String selectedBus){		
+		Runnable DrawRouter = new Runnable(){
 			@Override
 			public void run() {
 				final Cursor RouteCursor = getContentResolver().query(UserPrefBusRoute.CONTENT_URI,null, selectedBus, null, null);
@@ -518,21 +532,21 @@ public class BusMapActivity extends Activity {
 			}
 		};		
 		
-		Thread t = new Thread(r);
-		t.start();
+		Thread DrawRoutet = new Thread(DrawRouter);
+		DrawRoutet.start();
 	}
 	
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		Running = false;
+	protected void onDestroy() {		
+		//Running = false;
 		timeUpdating = false;
+		super.onDestroy();
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Running = false;
+		//Running = false;
 		timeUpdating = false;
 	}
 	
@@ -544,12 +558,12 @@ public class BusMapActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(t != null && !t.isAlive())
-		{
-	  	   	t = new Thread(new updateMarker());
-	  	   	Running = true;
-	  	   	t.start();
-		}
+//		if(t != null && !t.isAlive())
+//		{
+//	  	   	t = new Thread(new updateMarker());
+//	  	   	Running = true;
+//	  	   	t.start();
+//		}
 		if(updateTimeThread != null && !updateTimeThread.isAlive())
 		{
 			updateTimeThread = new Thread(new timeUpdater());
@@ -559,10 +573,10 @@ public class BusMapActivity extends Activity {
 	}
 	
 	@Override
-	protected void onStop() {
-		super.onStop();
+	protected void onStop() {		
 		mBound = false;
 		unbindService(Connection);
+		super.onStop();
 	}
 	
 	private ServiceConnection Connection = new ServiceConnection(){
