@@ -1,0 +1,12 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\begin{figure}[H]%[htbp]
+\centering
+\includegraphics[scale=1.00]{Diagrammer/MainTrackABusThreadCom.jpg}
+\caption{Sekvensdiagram over - Main og TrackABusProvider på mobil applikationen}
+\label{fig:SekvensdiagramTrackAbusThread}
+\end{figure}
+På figur \ref{fig:SekvensdiagramTrackAbusThread} viser et eksemple på hvordan main tråden i mobil applikationen kommuniker med TrackABusProvideren. Det kan ses at main tråden skaber en ny TrackABusProvider klasse, efter den er oprette er det muligt at kalde ned i den, dette vil skabe en ny tråd der kalder ned i Data access layer for at hente data fra MySQL databasen, alt efter hvilken TrackABusProvider funktion der er blevet kaldet. Det kan ses at main tråden ikke bliver blokeret imens der hentes fra databasen. Når TrackABusProvider er færdig med at hente data fra databasen, bliver der sendt en besked, med det hentet data, til main tråden, der nu vil, ved hjælp af en message handler, præsentere det hentede data til brugeren.\\
+UpdateTimeThread virker på samme måde, ved at main tråden starter UpdateTimeThread når brugeren trykker på et stoppested, tråden vil nu køre indtil at brugeren vælger et nyt stoppsted, hvorved tråden bliver lukket, og en ny UpdateTimeThread vil blive starten som hente tiden til det nye stoppested. tråden vil også blive stoppet ved at brugeren naviger væk fra BusMapActivity'en.\\
+SetFavoriteBusRoute og RemoveFavorite bliver blot startet af main tråden, og sender en besked tilbage når de er færdige med at gemme eller slette fra SQLite databasen. Det vil ikke være muligt at starte en ny SetFavoriteBusRoute eller RemoveFavorite imens 1 af dem køre.
+\end{document}

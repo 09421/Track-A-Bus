@@ -8,4 +8,13 @@ Processen på android mobiltelefonen består af en række forskellige tråde:\\
 \textbf{updateTimeThread -} Tråd der står for at opdatere tiden, til bus ankommer, på skærmen.\\
 \textbf{SetFavoriteBusRoute -} Står for at gemme busrute som favorit i SQLite databasen.\\
 \textbf{RemoveFavorite -} Står for at fjerne en favoriseret busrute fra SQLite databasen. \\
+\\
+Administrations hjemmesiden består af 2 tråde:\\
+\textbf{Main/Client thread-} Dette er hoved tråden, der køre på clienten, for hjemmesiden, den står blandt andet for at modtage indput fra brugeren og opdatere skærmen.\\
+\textbf{Background/Server thread-} Denne tråd, der bliver kørt på serveren, står for at skrive til -og hente fra MySQL databasen.\\
+\\
+Simulatoren består af main tråden, samt 1 tråd for hver bus der bliver simuleret.\\
+\textbf{Main/UI thread -} Denne tråd står for at modtage input fra brugeren, starte de forskellige task, samt opdatere skærmen.\\
+\textbf{Bus threads -} Denne tråd bruges til at simulere en bus der køre på en busrute.\\
+\newpage
 \end{document}
