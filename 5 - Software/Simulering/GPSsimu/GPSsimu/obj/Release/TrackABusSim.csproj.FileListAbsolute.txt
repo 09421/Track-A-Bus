@@ -3,8 +3,6 @@ C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\b
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\bin\Release\GPSsimu.pdb
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\bin\Release\MySql.Data.dll
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\TrackABusSim.csprojResolveAssemblyReference.cache
-C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\MainWindow.baml
-C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\MainWindow.g.cs
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\App.g.cs
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\GPSsimu_MarkupCompile.cache
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\GPSsimu.g.resources
@@ -12,3 +10,5 @@ C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\o
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\TrackABusSim.csproj.GenerateResource.Cache
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\GPSsimu.exe
 C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\GPSsimu.pdb
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\SimulationView.baml
+C:\Users\Chris\Desktop\Bachelorprojekt\5 - Software\Simulering\GPSsimu\GPSsimu\obj\Release\SimulationView.g.cs

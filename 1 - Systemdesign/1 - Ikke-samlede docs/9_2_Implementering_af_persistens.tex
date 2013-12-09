@@ -117,7 +117,7 @@ Til samtlige tabeller i SQLite databasen er der lavet en model klasse. Disse kla
 \noindent
 \subsubsection{Implementering af persistens i simulator}
 Simulatoren implementerer persistens i form af at hente ruter, opdatere hvilken vej en bus kører, samt udregne og persistere ny GPS position for en bus. Samtlige busser kører i deres egen tråd i simulatoren, derfor er det vigtigt at håndtere trådsikkerhed når databasen skal tilgås. DatabaseAccess klassen tager sig af selve databasen tilgangen, og indeholder to funktioner; En til at skrive til databasen, samt en til at læse. Begge funktioner er statiske, og indeholder en binær semafor, således kun en tråd af gangen kan tilgå databasen. Hvis en tråd allerede er igang med en datahentning eller -skrivning, vil den anden tråd tvinges til at vente, til processen er færdig. Begge funktioner modtager en string, som er den kommando der skal udføres på database. Funktionen der læser fra databasen tager yderligere en liste af strings, som indeholder de kolonner der skal læses fra. Efter fuldent tilgang returneres en liste af strings, med de værdier der er blevet hentet. \\Databasen tilgangen bliver håndteret med i librariet MySQL.Data. Da simulatoren er lavet i Visual Studio 2012, og er en WPF-applikation, er der blot gjort brug af NuGet til at hente og tilføje dette library til programmet. Forbindelsesopsætningen ligger i App.config filen, og hentes ud når der skal bruges en ny forbindelse. På kodeudsnit \ref{lst:SimuDatabaseAcces} ses funktionen der læser fra databasen, samt hvordan den tilgås. Kun denne vil vises, da det er den mest interresante. Fuld kode kan findes på bilags CDen under Kode/Simulator. 
-\begin{lstlisting}
+\begin{lstlisting}[caption=Simulator. Select statement., label={lst:SimuDatabaseAcces},language=Java]
 public static bool SelectWait = false;
 public static List<string> Query(string rawQueryText,List<string> columns)
 {
@@ -167,7 +167,7 @@ I slutningen af kodeudsnittet kan det ses, hvordan denne funktion tilgås. Først 
 
 \subsubsection{Implementering af persistens i online værktøjet}
 Online værktøjet er todelt i mobil service og hjemmeside. Begge dele er lavet i ASP.NET, og derfor vil database tilgangs proceduren være ens med simulatoren. Servicen står får at lade mobil applikationen tilgå data på MySQL databasen, hvilket også betyder, at funktionerne kun læser data. Ved et kald til servicen vil læst data pakkes ved hjælp af SOAP, som er beskrevet tidligere i dette afsnit.\\ Servicen står i midlertid også for at kalde tidsudregnings proceduren på databasen, hvilket er et anderledes kald, end en læsning. På kodeudsnit \ref{lst:kaldTilTidsUdregning} ses det, hvordan servicen tilgår denne procedure. Det skal noteres at det ikke er den fulde funktion der vises, men blot et udsnit, og derfor kun viser de vigtigste dele. Herved vises der ikke hvordan forbindelsen og kommandoen laves, da oprettelsen er ens med simulatoren.
-\begin{lstlisting}
+\begin{lstlisting}[caption=Service. Udsnit af kald til tidsudregnings procedure, label={lst:kaldTilTidsUdregning},language=Java]
 ...
 cmd.CommandText = "CalcBusToStopTime";
 cmd.CommandType = System.Data.CommandType.StoredProcedure;

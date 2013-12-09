@@ -75,5 +75,11 @@ namespace TrackABusSim
             }
             InsertWait = false;
         }
+
+        public static void Truncate()
+        {
+            string query = "Truncate GPSPosition";
+            DatabaseAcces.InsertOrUpdate(query);
+        }
     }
 }

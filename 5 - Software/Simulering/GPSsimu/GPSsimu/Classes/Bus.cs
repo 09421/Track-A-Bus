@@ -19,27 +19,27 @@ namespace TrackABusSim
         private int bID;
         private int updateSpeed;
         private int initialPosIndex;
+        private List<BusRoute> routes;
         private int indexCounter = -1;
+        private delegate void invoker(string text);
+
         public int maxSpeed = 50;
         public int minSpeed = 30;
-        public Logger log = new Logger();
+        public SimulationCallbacks log = new SimulationCallbacks();
 
-        private Random R;
+ 
         private BusRoute initialRoute;
         private Tuple<double, double> currentPos = new Tuple<double, double>(0, 0);
-        private List<BusRoute> routes;
         private Thread gpsPosCalcThread;
-       
         private SimulationMath sMath = new SimulationMath();
 
-        public Bus(int busID, List<BusRoute> Routes, Random Rand, int uSpeed, bool startDecending, int startingMinSpeed, int startingMaxSpeed, bool randomize)
+        public Bus(int busID, List<BusRoute> Routes, int uSpeed, bool startDecending, int startingMinSpeed, int startingMaxSpeed, bool randomize)
         {
             
             routes = Routes;
             bID = busID;
-            R = Rand;
             updateSpeed = uSpeed;
-            initialRoute = Routes[Rand.Next(0, routes.Count)];
+            initialRoute = Routes[SimulationConfig.rand.Next(0, routes.Count)];
             shouldRandomize = randomize;
             if (startDecending)
             {
@@ -68,28 +68,25 @@ namespace TrackABusSim
                 Thread.Sleep(10);
         }
 
-        private delegate void invoker(string text);
-        public void gpsCalc()
+        
+        private void gpsCalc()
         {
             
             while (true)
             {
-                double nextSpeed =R.Next(minSpeed, maxSpeed+1) ;
-                double speed = nextSpeed; 
-                double travelLengthMeters = speed * (1000d / 3600d) * updateSpeed;
+                double nextSpeed =SimulationConfig.rand.Next(minSpeed, maxSpeed+1) ;
+                double travelLengthMeters = nextSpeed * (1000d / 3600d) * updateSpeed;
                 double currentLength = 0;
                 double nextLength = 0;
                 double brng;
-                string currPosMsg = "";
                 if(indexCounter == -1)
                     indexCounter = initialPosIndex + 1;
 
                 while (currentLength < travelLengthMeters)
                 {
-
                     if(indexCounter == initialRoute.points.Count - 1)
                     {
-                        currentPos = new Tuple<double,double>(double.Parse(initialRoute.points[indexCounter].Item1),double.Parse(initialRoute.points[indexCounter].Item2)); 
+                        currentPos = new Tuple<double,double>(double.Parse(initialRoute.points[indexCounter].Item1),double.Parse(initialRoute.points[indexCounter].Item2));
                         UpdateBus();
                         break;
                     }
@@ -117,26 +114,27 @@ namespace TrackABusSim
                         //The distance into the linepiece the busshould drive.
                         double missingLength = travelLengthMeters - currentLength;
     
-                        if (currentPos.Item1 != 0 && currentPos.Item2 != 0)
+                        if (currentPos.Item1 != 0 && currentPos.Item2 != 0 && currentLength == 0)
                         {
                             currentPos = sMath.finalGPSPosDeg(currentPos.Item1.ToString(), currentPos.Item2.ToString(),
                                            brng, missingLength);
+                            Console.WriteLine("This is from currentPos");
                         }
                         else
                         {
+                            Console.WriteLine("This is from other point");
                             currentPos = sMath.finalGPSPosDeg(initialRoute.points[indexCounter - 1].Item1, initialRoute.points[indexCounter - 1].Item2,
                                                                    brng, missingLength);
                         }
                         SetCurrentPos();
 
                         break ;
-                        
                     }
                     else
                     {
                         currentLength += nextLength;
                     }
-                    currPosMsg = "Bus " + bID.ToString() + ", new endpoint reached, index: " + (indexCounter + 1).ToString();
+                    string currPosMsg = "Bus " + bID.ToString() + ", new endpoint reached, index: " + (indexCounter + 1).ToString();
                     LogTextWrite(currPosMsg);
                     indexCounter++;
                 }
@@ -157,7 +155,7 @@ namespace TrackABusSim
             {
                 int lengthOfRoute = initialRoute.points.Count;
                 int fourthLength = lengthOfRoute / 4;
-                initialPosIndex = R.Next(0, lengthOfRoute - fourthLength + 1);
+                initialPosIndex = SimulationConfig.rand.Next(0, lengthOfRoute - fourthLength + 1);
                 initialPosLat = initialRoute.points[initialPosIndex].Item1;
                 initialPosLon = initialRoute.points[initialPosIndex].Item2;
 
@@ -211,8 +209,11 @@ namespace TrackABusSim
                 else
                 {
                     possibleRoutes.Remove(initialRoute);
-                    initialRoute = possibleRoutes[R.Next(0, possibleRoutes.Count)];
-                    if (initialRoute.stops[0] != oldRouteStop)
+                    if (possibleRoutes.Count == 1)
+                        initialRoute = possibleRoutes[0];
+                    else
+                        initialRoute = possibleRoutes[SimulationConfig.rand.Next(0, possibleRoutes.Count)];
+                    if (initialRoute.stops[0] != atStop)
                     {
                         initialRoute.TurnAround();
                     }   

@@ -51,12 +51,12 @@ namespace TrackABusSim
             return new Tuple<double, double>(finalLatDeg, finalLonDeg);
         }
 
-        public double deg2rad(double deg)
+        private double deg2rad(double deg)
         {
             return deg * double.Parse((Math.PI / 180).ToString());
         }
 
-        public double rad2deg(double rad)
+        private double rad2deg(double rad)
         {
             return rad * double.Parse((180 / Math.PI).ToString());
         }

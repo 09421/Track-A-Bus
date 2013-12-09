@@ -75,9 +75,10 @@
     <Compile Include="Classes\BusRoute.cs" />
     <Compile Include="Classes\Bus.cs" />
     <Compile Include="Classes\Extensions.cs" />
-    <Compile Include="Classes\Log.cs" />
+    <Compile Include="Classes\SimulationCallbacks.cs" />
+    <Compile Include="Classes\SimulationConfig.cs" />
     <Compile Include="Classes\SimulationMath.cs" />
-    <Page Include="MainWindow.xaml">
+    <Page Include="SimulationView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -86,8 +87,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Classes\DatabaseAcces.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="Classes\SimulationRunner.cs" />
+    <Compile Include="SimulationView.xaml.cs">
+      <DependentUpon>SimulationView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

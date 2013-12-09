@@ -50,7 +50,7 @@ namespace TrackABusSim
             string GetStopsQuery = "Select BusStop.StopName from BusStop " +
                                               "join BusRoute_BusStop on BusStop.ID = BusRoute_BusStop.fk_BusStop " +
                                               "where BusRoute_BusStop.fk_BusRoute = " + id + " order by(BusRoute_BusStop.ID) asc";
-            List<string> stops = DatabaseAcces.Query(GetPointsQuery, new List<string>() { "StopName" });
+            stops = DatabaseAcces.Query(GetStopsQuery, new List<string>() { "StopName" });
         }
 
         public void TurnAround()
