@@ -235,7 +235,6 @@ public class BuslistAdapter extends BaseAdapter{
 						int checkVal = _c.getContentResolver().bulkInsert(Uri.parse(UserPrefBusRoute.CONTENT_URI.toString()+"/"+bRoute.get(i).ID), BusRouteCV);
 						if(checkVal == 0)
 						{
-							Toast.makeText(_c, "This route is already a favorite", Toast.LENGTH_SHORT).show();
 							setSpinnerAndButton();
 							return;
 						}

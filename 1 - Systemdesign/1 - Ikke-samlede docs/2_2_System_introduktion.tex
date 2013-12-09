@@ -2,13 +2,8 @@
 \begin{document}
 
 \subsection{System introduktion}
-
-Systemet hovedfunktion er, at sorterer klodser efter materialetype, samt lade en programmør programmere egne programmer til systemet.
-\\
-Programmøren tilgår systemet vha. en GUI og har herefter mulighed for at starte systemets forskellige programmer. Derudover har han mulighed for at skrive egne programmer, for at tilgå databasen og redigere i materialetyper og klodser samt mulighed for at indstille placeringen af transportbåndet klodserne kommer kørende på.\\
-Hvis den rigtige robot ikke skulle være tilgængelig, er der mulighed for at simulere programmerne, hvorved alle informationer om hvad robotten ville gøre, bliver skrevet ud på skærmen samt lagt i en logfil. Disse logfiler kan naturligvis tilgås. Der bliver også oprettet logfiler, når ens program køres med den rigtige robot. Disse kan naturligvis også tilgås.
+Systemet består af 2 hoved dele, en mobil applikation og en administrations hjemmeside.\\ Mobil applikationens hovedfunktion er at gøre det muligt for brugeren at se en valgt busrute, dens busstoppesteder og alle busser der køre på ruten, indtegnet på et kort, og få vist hvor lang tid der er til den næste bus ankommer til et valgt busstoppested. Det er også mulighed for at favorisere de forskellig busruter, dette vil gemme busruten lokalt på mobil telefonen, og derfor skal der ikke bruges mobil data til at downloade ruten hver gang den skal bruges.\\ Hoved funktionaliteten for administrations hjemmesiden er at gøre det nemt at tilføje en ny busruter med stoppesteder til systemet, samt gøre det muligt at ændre allerede eksisterende busruter. Alt dette sker igennem en GUI beståendene af hjemmesiden \url{www.TrackABus.dk}.
 \\
 \\
-Ligeledes skal systemet kunne betjenes af en operatør, som dog ikke har mulighed for at omprogrammere robotten. Han har kun mulighed for at kører standardprogrammet (der sorterer klodserne efter materialetype), eller kører et af de brugerdefinerede programmer programmøren har lavet. Derudover har operatøren også mulighed for at til logfiler.\\
-Sidst skal det nævnes at både operatør og programmør har mulighed for at printe lister over materialer og klodser.
+Desuden er der også blevet udviklet en simulator der har til formål at simuler en eller flere busser der køre på de forskellig busruter. Simulatoren er ikke en del af hovedsystemet, og derfor ikke beskrevet i Use Cases. Det er muligt at tilgå simulatoren igennem en GUI, hvorfor en udvikler kan starter forskellige simulationer, så som en enkel bus der køre en bestemt vej på ruten, alle busser på en rute, eller alle busser i systemet på deres rute. Det er nødvendig med en simulator da der skal være mulighed for at teste forskellige situationer og algoritmer, hvor man ikke kan være afhængig af en rigtig bus. \textit{Se afsnit 6.2.4 Komponent 4: Simulator} for dybere beskrivelse af simulatoren.
 \end{document}

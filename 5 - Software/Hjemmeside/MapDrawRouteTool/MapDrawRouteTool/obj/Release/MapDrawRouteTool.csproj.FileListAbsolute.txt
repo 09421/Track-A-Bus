@@ -94,3 +94,5 @@ C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Hjemmeside\MapDrawRouteTool\
 C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Hjemmeside\MapDrawRouteTool\MapDrawRouteTool\obj\Release\MapDrawRouteTool.dll
 C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Hjemmeside\MapDrawRouteTool\MapDrawRouteTool\obj\Release\MapDrawRouteTool.pdb
 C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Hjemmeside\MapDrawRouteTool\MapDrawRouteTool\obj\Release\MapDrawRouteTool.csprojResolveAssemblyReference.cache
+C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Hjemmeside\MapDrawRouteTool\MapDrawRouteTool\bin\MapDrawRouteTool.dll.CodeAnalysisLog.xml
+C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\Hjemmeside\MapDrawRouteTool\MapDrawRouteTool\bin\MapDrawRouteTool.dll.lastcodeanalysissucceeded

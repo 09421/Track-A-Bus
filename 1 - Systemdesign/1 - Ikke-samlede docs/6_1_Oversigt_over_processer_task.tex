@@ -2,16 +2,19 @@
 \begin{document}
 
 \subsection{Oversigt over processer/task}
-Processen på PC'en består samlet set af 6 tråde.\\
-\begin{figure}[H]
-\centering
-\includegraphics[scale=1]{Billeder/ProcesTaskView.jpg}
-\caption{Oversigt over tråde}
-\end{figure}
-\textbf{System} - Hovedtråd som starter og initialiserer robotten. Tråden sørger også for brugergrænsefladen.\\ 
-\textbf{MsgQueue} - Opretter en besked kø som bruges til at sende eller modtage beskeder til og fra databasen.\\
-\textbf{Homing} - Tråd som gør at robotten kan home igennem brugergrænsefladen.\\
-\textbf{BrickSort} - Tråd der sørger for at sortere de forskellige klodser.\\
-\textbf{ResetRobot} - Tråd der gør det muligt at stoppe programmet i en given sekvens igennem brugergrænsefladen, hvorefter den returnere til startpositionen.\\
-\textbf{CheckForHoming} - Tråd der tjekker hvornår robotten er homet.\\
+Processen på android mobiltelefonen består af en række forskellige tråde:\\
+\textbf{Main/UI Thread -} Denne tråd er systemets hovedtråd og står for at modtage input fra brugeren, vise ting på skærmen samt initialisere andre komponenter og tråde.\\
+\textbf{TrackABusProvider -} Klasse der står for at lave tråede der bruges til at tilgå SoapProvideren.\\
+\textbf{updateTimeThread -} Tråd der står for at opdatere tiden, til bus ankommer, på skærmen.\\
+\textbf{SetFavoriteBusRoute -} Står for at gemme busrute som favorit i SQLite databasen.\\
+\textbf{RemoveFavorite -} Står for at fjerne en favoriseret busrute fra SQLite databasen. \\
+\\
+Administrations hjemmesiden består af 2 tråde:\\
+\textbf{Main/Client thread-} Dette er hoved tråden, der køre på clienten, for hjemmesiden, den står blandt andet for at modtage indput fra brugeren og opdatere skærmen.\\
+\textbf{Background/Server thread-} Denne tråd, der bliver kørt på serveren, står for at skrive til -og hente fra MySQL databasen.\\
+\\
+Simulatoren består af main tråden, samt 1 tråd for hver bus der bliver simuleret.\\
+\textbf{Main/UI thread -} Denne tråd står for at modtage input fra brugeren, starte de forskellige task, samt opdatere skærmen.\\
+\textbf{Bus threads -} Denne tråd bruges til at simulere en bus der køre på en busrute.\\
+\newpage
 \end{document}

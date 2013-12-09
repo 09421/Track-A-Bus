@@ -1,0 +1,11 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\begin{figure}[H]%[htbp]
+\centering
+\includegraphics[scale=1.00]{Diagrammer/ClientServerAsyncCall.jpg}
+\caption{Sekvensdiagram over - Client/server kommunikation}
+\label{fig:SekvensdiagramTrackAbusThread}
+\end{figure}
+På \ref{fig:SekvensdiagramTrackAbusThread} ses hvordan der bliver lavet et asynkron kald til serveren, der vil tilgå databasen for enten at skrive til den, eller læse fra den. Efter serveren er færdig, vil den retuner et result tilbage til main tråden.
+
+\end{document}

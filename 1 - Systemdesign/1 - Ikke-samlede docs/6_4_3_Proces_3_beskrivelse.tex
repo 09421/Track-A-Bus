@@ -1,0 +1,10 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+\begin{figure}[H]%[htbp]
+\centering
+\includegraphics[scale=1.00]{Diagrammer/MainBusThreadSimulator.jpg}
+\caption{Sekvensdiagram over - simulator tråd kommunikation}
+\label{fig:SekvensdiagramTrackAbusThread}
+\end{figure}
+På figur \ref{fig:SekvensdiagramTrackAbusThread} ses hvordan main tråden opretter en ny bus, hvorefter den starter bus tråden. Det er muligt for main tråden at oprette mere end 1 bus tråd, der alle kan køre på forskelligt busruter.
+\end{document}
