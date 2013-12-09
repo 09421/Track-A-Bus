@@ -160,7 +160,6 @@ public class BuslistMenuActivity extends ListActivity {
 		@Override
 		protected void onPause() {
 			super.onPause();
-
 		}
 		
 		@Override
