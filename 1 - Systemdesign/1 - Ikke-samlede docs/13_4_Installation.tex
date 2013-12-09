@@ -2,6 +2,20 @@
 \begin{document}
 
 \subsection{Installation}
-Den arbejdsgang, der skal følges, for at det oversatte program kan bringes til at køre i de rette omgivelser er at køre programinstallationen. Derefter køres programmet fra skrivebordet, hvor en programgenvej er blevet oprettet.
+Den arbejdsgang, der skal følges, for at det de oversatte programmer kan bringes til at køre i de rette omgivelser er at for følgende skal gøre:
+\\
+mobil applikationen skal være tilsluttet til en computer, hvorpå TrackABus.apk filen ligger. TrackABus.apk overføres nu til mobil telefonen, hvorefter man nu, via et filhåndterings program på mobil telefonen navigere til .apk filen og trykker på den. TrackABus vil nu blive installeret på mobil telefonen.
+\\
+Hjemmesiden skal hjemmesiden skal publishes til serveren, dette gøres fra Visual Studio 2012. Først højreklikkes der på projektet 'MapDrawRouteTool' hvorfra der nu vælges: 'publish...'. Der oprettes en ny publish profil med følgende connection indstillinger:
+\begin{itemize}
+\item \textbf{publish method: } FTP
+\item \textbf{Server: } trackabus.dk
+\item \textbf{Site path: } public\_html
+\item \textbf{User name: } trackabus.dk
+\item \textbf{Password: } 1083209421
+\item \textbf{Destination URL: } trackabus.dk
+Dette vil publish hjemmesiden til \url{www.TrackABus.dk} hvor den nu kan tilgåes og bruges.
+\end{itemize}
+For simulatoren skal programinstallationen blot køres, derefter køres programmet fra skrivebordet, hvor en programgenvej er blevet oprettet.
 
 \end{document}
