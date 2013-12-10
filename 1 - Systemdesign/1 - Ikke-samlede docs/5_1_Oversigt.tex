@@ -2,19 +2,7 @@
 \begin{document}
 
 \subsection{Oversigt}
-Systemet er bygget op efter 3-tier arkitekturen, med de 3 lag: Presentation layer, Business logic layer og Data acces layer, som også ses på figur 3 i afsnit \textit{2.1 Systemkontekst}. Derudover har vi et fjerde lag som er selve hardwarelaget. De følgende afsnit vil beskrive lagene i dybden. Det er også disse fire lag der ligger til grund for systemets pakker.\\
-Herunder ses først systemets klasser opdelt i pakker (se afsnit \textit{5.2 Arkitektursignifikante designpakker for at se hvordan pakkerne spiller sammen i en lag-opdeling. Alle diagrammerne kan ses i stor format i Bilag: Diagrammer}):
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.32]{Diagrammer/Klassediagrammer/Klassediagrammer/JPGFiler/Allpackages.jpg}
-\caption{Hovedklasse med dets afhængigheder}
-\end{figure}
-Ovenstående figur viser hovedklassen (RobotProgramFunctions\footnote{Se afsnit 8.2.1 Komponent 1: Sorteringsprogram - for nærmere information om denne klasse}, i øverste pakke), som indeholder funktioner der udgør vores standardprogram. Nedenunder ses alle dets afhængigheder\footnote{Afhængighederne bliver også brugt af andre klasser end RobotProgramFunctions.}
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.3]{Diagrammer/Klassediagrammer/Klassediagrammer/JPGFiler/Robot.jpg}
-\caption{Resterende klasser}
-\end{figure}
-Ovenstående figur viser først IDE'en\footnote{Se afsnit 8.2.8 Komponent8: IDE - for nærmere information om denne klasse}, der er den anden klasse der kan tilføje funktionalitet til robotten. De to andre pakker, benyttes både af standardprogrammet og IDE'en.
+Hele systemet består reelt set, af tre komponenter der interagerer over den distribuerede database. Hver af disse komponenter er derfor beskrevet detaljeret i \textit{8: Implementerings View}, i deres respektive underafsnit. Da disse tre komponenter er stående systemer i sig selv, vil et klasse diagram for komponenten  vises i starten af hvert afsnit.\\
+Alle tre komponener er opbygget efter tre-lags modellen, og dette reflekteres i den måde klasse diagrammet er opbygget, hvor præsentations-, logik- og data tilgangs laget er pakker for dem selv. Et fjerde lag kan beskrives som værende database-laget, men da dette er relevant for samtlige pakker, er dette lag udeladt. Dette vil betyde, at hver data tilgangs klasse, kalder til databasen, ud af systemet.
 
 \end{document}

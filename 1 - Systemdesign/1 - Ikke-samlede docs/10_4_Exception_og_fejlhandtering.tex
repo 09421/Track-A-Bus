@@ -3,13 +3,13 @@
 
 \subsection{Exception og fejlhåndtering}
 
-\subsubsection{Exception i database tilgangen}
-Fejlhåndtering er meget kritisk i databasetilgangen, da det er plausibelt at tilgangen til internet, og dermed tilgangen til databasen, kan forsvinde i løbet af systemets forløb. Når en besked til databasen skal håndteres sker dette i en try block. Hvis internet er forsvindet vil database tilgangen kaste SqlException. Denne vil blive grebet af en catch blok, som vil lave en besked om at forbindelsen er tabt. Dette sker dog kun hvis det er første gang denne exception bliver kastet, siden forbindelsen er gået tabt. Når forbindelsen reetableres ligges der en besked i køen om at forbindelsen er reetableret. Hvis tråden er gået ind i sin kritiske sektion, det vil sige når der ligger en besked i køen, som vil hente noget fra databasen, så kræves det at der er forbindelse til databasen. Dvs. hvis der kastes en SqlException vil brugeren have mulighed for at forsøge at skabe forbindelse igen, eller lukke programmet ned. Hvis brugeren vælger at lukke programmet ned vil samtlige beskeder til databasen gå tabt. Det antages at brugeren selv kan genoprette forbindelsen til internettet, eller ved hvad der skal gøres i et sådan tilfælde.
+\subsubsection{Fejlhåndtering ved tab af internet forbindelse}
+Da systemet er meget afhængigt af kommunikation med den distribuerede database, håndtere der i samtlige komponenter at forbindelsen til internet kan gå tabt.
+\begin{itemize}
+	\item Mobil applikationen sørger for, at hvis internettet går tabt, bliver brugeren notificeret at der ikke er internet længere, og derfor kan den givne funktion ikke længere udføres. Applikation sørger for, at, hvis forbindelsen genetableres fortsættes den givne funktion. Dette er mest relevant under opdatering af bussers position og/eller tid til valgt stop. En BroadcastReceiver bruges i sammehæng med at undersøge forbindelsen til internettet. Når der sker en ændring i WIFI, eller i det mobile data netværk, vil denne undersøge, om der efter den nye ændring er tilgang til internettet. Et statisk flag sættes i klassen som symboliserer telefones forbindelse til netwærk. Hvis denne er sat til false, vil data ikke hentes, og en fejlbesked vil vises.
+	\item Simulatoren sørger for, at brugeren bliver notificeret hvis der ikke er net, og pauser således systemet, indtil at nettet kan tilgås igen.
+	\item I tilfælde af, at internettet forsvinder i mens en hjemmeside er indlæst, og en database-tilgangs funktion tilgås, er der sat et timeout på database på to sekunder. Hvis dette timeout nås, vil administratoren notificeres at internettet ikke kan tilgås.
+\end{itemize}
 
-\subsubsection{Exception i serial communication}
-Weight kommunikerer med systemet over en seriel forbindelse. Denne forbindelse kan være meget ustabil og det har derfor været nødsaget at håndtere forbindelsen i en try blok. Hvis en exception kastes vil denne gribes og de funktioner der returnerer en bool vil returnere false og den funktion der returnerer en string vil returnere false i en string. Så længe bare en af bool-funktionerne returnerer false vil hele kommunikationen starte forfra. Hvis string-funktionen returnerer false sættes result til 1 og det returneres til vægten. 
-
-\subsubsection{Exception i Robot funktionerne}
-I robot funktionerne sker der en hel del exception handling. RobotProgramFunctions klassen er bygget op af tilgange til mange forskellige eksterne hardware dele. Hvis nogen af dem returnere false vil det altid resultere i,. at klodsen smides ud, og robotten returnerer til startposition. Dette kan f.eks. ske hvis vægten returnerer false. 
 
 \end{document}
