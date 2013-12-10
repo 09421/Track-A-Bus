@@ -1,8 +1,5 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
-
-\newpage
-
 \subsubsection{Komponent 2: Mobile service}
 Denne komponent har til formål at være mellemled mellem mobil applikationen og MySQL databasen. komponenten er blevet lavet, da mobil applikationen ikke må have direkte adgang til en databasen, da dette har store sikkerhedsmessige implikationer. Uden denne service vil det også være muligt for ondsindet brugere at tilgå databasen og manipulere med data på en ikke ønsket måde. Et andet formål med denne web service er at gøre det gøre det nemt at udvikle ny mobil applikation, til et hvilkensomhelst styresystem, uden at skulle tænkte på database tilgang.\\\\
 \textbf{Design:}\\
