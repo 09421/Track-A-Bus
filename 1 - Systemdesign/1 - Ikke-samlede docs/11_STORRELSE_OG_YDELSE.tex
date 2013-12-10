@@ -4,18 +4,14 @@
 \section{STØRRELSE OG YDELSE}
 
 I dette afsnit er der angivet de kritiske størrelser og ydelsesparametre for systemet.
-\noindent
-En begrænsning for det aktuelle system er sorteringen, der maksimum kan håndtere fem klodselementer i hvert materialetyperum. Det er nødvendigt at elementerne bliver placeret på den mest hensigtsmæssige og optimale måde, ellers kan der kun være fire elementer. Dog kan denne begrænsning altid videreudvikles samt håndteres i en fremtidig version af systemet.
-\\
-Før systemet kan udføre en programsekvens i "run-vinduet", skal der kaldes en "home" funktion på robotten der kalibrerer dens akser. Denne funktion er lagt i en baggrundstråd for sig selv, for at så vidt muligt ikke at sløve brugergrænsefladen. Dog 
-trækker funktionen mange ressourcer, så GUI'en bliver en anelse langsom i betrækket.
-Hvis systemet bliver eksekveret på den udstedte computer, kan man forvente at afsætte hele eftermiddagen på at få kørt et program. 
-\\\\
-\textbf{Performance for systemet:} \\
-Lagerforbruget på disken omkring 20 megabyte.
-\\
-Der benyttes 32700 byte kb memory og 50\% cpu ved et stressende while-loop.
-I idlemode er CPU'en 0\%.
-Middelsvartiden for programmet ligger på et acceptabelt og normalt niveau.
-
+\subsection{Dataforbrug for mobil applikation}
+Det er ikke altid der er adgang til Wi-FI netværksforbindelse og det vil derfor være nødvendigt at bruge telefonenes mobil datanetværk, til at hente ruter, stoppesteder og bussernes position fra databasen. Dataforbruget for en time, hvor kortet bliver vist og bussernes position bliver opdateret ligger på ca. 10 megabytes.
+\subsection{Performance for mobil applikation}
+Lagerforbruget på mobiltelefonen ligger omkring 4 megabytes.\\
+Der benyttes i gennemsnit ca. 7\% CPU kraft.
+\subsection{Server}
+Lagerforbruget på serveren, til hjemmesiden, MySQL databasen og servicen ligger på omkring 6 megabytes.\\
+Serveren står for at lave alle udregnigner og dataprocessering som mobil applikationen skal bruge. Da det er et distribuerede systemet, kan det forkomme mange forbindelser til serveren på samme tid. Der har dog ikke været mulighed for at udføre en stres-test af serveren, for at se hvor mange mobil telefoner den kan håndtere på en gang, da der ikke har været ressourcer til mere end to mobil telefoner.
+\subsection{Performance for simulator}
+Lagerforbruget på disken ligger omkring 2 megabytes.\\
 \end{document}

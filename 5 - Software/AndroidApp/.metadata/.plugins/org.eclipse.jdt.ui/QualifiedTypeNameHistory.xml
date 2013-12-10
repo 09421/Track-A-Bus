@@ -10,11 +10,18 @@
 <fullyQualifiedTypeName name="org.ksoap2.serialization.SoapObject"/>
 <fullyQualifiedTypeName name="java.util.List"/>
 <fullyQualifiedTypeName name="android.R"/>
-<fullyQualifiedTypeName name="android.util.Log"/>
 <fullyQualifiedTypeName name="java.lang.Thread"/>
 <fullyQualifiedTypeName name="java.lang.Thread.State"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="com.google.android.gms.maps.model.LatLng"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="dk.TrackABus.BusMapActivity"/>
 <fullyQualifiedTypeName name="dk.TrackABus.BuslistMenuActivity"/>
+<fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="android.app.IntentService"/>
+<fullyQualifiedTypeName name="android.os.Message"/>
+<fullyQualifiedTypeName name="dk.TrackABus.BusMapActivity.msgHandler"/>
+<fullyQualifiedTypeName name="dk.TrackABus.BuslistMenuActivity.msgHandler"/>
+<fullyQualifiedTypeName name="dk.TrackABus.BuslistAdapter.msgHandler"/>
+<fullyQualifiedTypeName name="android.content.Intent"/>
+<fullyQualifiedTypeName name="dk.TrackABus.DataProviders.TrackABusProvider"/>
 </qualifiedTypeNameHistroy>

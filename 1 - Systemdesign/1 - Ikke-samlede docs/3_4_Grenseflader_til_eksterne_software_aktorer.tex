@@ -2,49 +2,25 @@
 \begin{document}
 
 \subsection{Grænseflader til eksternt software}
-Programmet skal kommunikere med en dll-fil (Se \textit{Bilag: DLL filer/UDBC.dll}, for at se nærmere på denne), hvor forskellige funktioner til robotten findes. Denne dll-fil var udleveret sammen med robotten.
-
-\subsubsection{USBC.dll}
-
-I USBC.dll-filen findes alle funktioner der er nødvendige, for at få robotten til at bevæge sig, som der ønskes. Funktionerne i biblioteket er dog skrevet i C++, og som det kan læses i \textit{SBS\_Kravspecifikation}, benyttes C\# som programmeringssprog. Dermed blev kommunikationen med denne en smule mere kompliceret, da C\# er managed code og C++ unmanaged code. C++ laver name mangling på funktionerne, og derfor skulle funktionernes "specielle" navn findes. \\
-Et andet problem var, at når en pointer (delegate) i C\# sættes til at pege på noget data fra C++, kan garbagecollectoren ikke se, at der bliver peget på noget. Dermed vil garbagecollectoren gå ind og deallokere pointeren. For at løse dette problem er funktioner i marshall biblioteket blevet benyttet. Disse benyttes netop til at få managed kode til at kunne kalde unmanaged kode fra en dll-fil. Dermed ignorerer garbagecollectoren pointerfunktionerne.
-\\\\
-De forskellige funktioner til robotten og deres tilhørende beskrivelse er først og fremmest fundet i dokumentet \textit{USBC-documentation}. Der gøres opmærksom på, at ikke alle funktioner er beskrevet fyldestgørende i dette dokument.\\
-Når en funktion skal benyttes, findes den i dll-filen via visual studios kommandoprompt. Her benyttes kommandoens dumpbin på dll-filen, og dermed listes samtlige funktioner med navn, samt hvordan navnet vil se ud i C\#. Disse er blevet gemt i et excel dokument (\textit{se bilag:  DLL filer/USBC excel}). Det underlige navn der ses, er hvordan funktionsnavnet ser ud i C\#.\\
-Fra PInvoke benyttes 'DllImport'. Denne skal kende et EntryPoint, som er navnet på funktionen i dll-filen (navnet som det vil se ud i C\# ). Dermed kan compileren kende navnet, og nu skal funktionen bare kaldes med en identisk prototype.\\
-\begin{lstlisting}[caption=Funktionskald, label={lst:funkKald}]
-[DllImport("USBC.dll", 
-      EntryPoint = "?Initialization@@YAHFFP6AXPAX@Z1@Z",
-        CallingConvention = CallingConvention.Cdecl)]
-public static extern bool Initialization(
-    short initMode,
-    short systemType,
-    CallBackFun.CallBackFunInitEnd fnInitEnd,
-    CallBackFun.CallBackFunError fnErrMessage
-    );
-\end{lstlisting}
-Kodeudsnit \ref{lst:funkKald} viser et eksempel på et funktionskald fra dll'en. CallingConvention specificerer den måde funktioner i unmanaged kode skal kaldes på.\\
-Alle funktionskald til dll-filen er lagt i en fil for sig (USBCDLL.cs). I parameterlisten er der to CallBack funktioner. Disse er pointere til andre funktioner. Alle disse CallBack funktioner, som er defineret som delegates, ligger også i deres egen fil, så der er en overskuelig opdeling (CallBackFun.cs).
-\\\\
-Udover de omtalte filer, skulle der også laves to klasser, hvor der ligger noget information til de forskellige funktioner i dll'en. Den information funktionerne skulle bruge ligger i to headerfiler("USBCDEF", og "ERROR"), der også er skrevet i C++ (se \textit{Bilag : DLL filer/UDBC.dll}). Disse skal naturligvis også være identiske i vores projekt, og skal derfor konverteres til C\#.
-\\
-Før klassen er der en attribut, som vist på kodeudsnit \ref{lst:Attribut}. 
-\begin{lstlisting}[caption=Titel der skal rettes, label={lst:Attribut}]
-[StructLayout(LayoutKind.Sequential, Pack = 0, CharSet = CharSet.Ansi)]
-\end{lstlisting}
-
-Denne søger for at feltet i klassen bliver lagt i hukommelsen sekventielt, hvilket er vigtigt for at klassen kan bruges og forstås. Derudover bruges [MarshalAs(..)] attributten, over array, string og andre typer der er forskel på i C\# og C++. Klassen kan heller ikke bare initieres via new operatoren, da det vil se ud som om de ikke bruges, og dermed vil garbagecollectoren fjerne dem igen. Derfor skal de initieres på en speciel måde, som vist på kodeudsnit \ref{lst:InitConfigData}
-\begin{lstlisting}[caption=Titel der skal rettes, label={lst:InitConfigData}]
-public void InitConfigData(ConfigData configData, IntPtr configDataPtr)
-{
-    configData = new ConfigData();
-
-    configDataPtr = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(ConfigData)));
-
-    Marshal.StructureToPtr(configData, configDataPtr, false);
-
-}
-\end{lstlisting}
-Via Marshal.AllocHGlobal() allokeres instansen, så garbagecollectoren ikke fjerner den. Parameteren er størrelsen af det, der skal allokeres. Derefter Sættes en pointer til at pege på det.
+Her beskrives grænsefladerne for de software delsystemer, der er blevet udviklet som et separat projekt.\\
+Der er blevet udviklet en simulator sideløbende med projektet, da det blev nødvendigt at have mulighed for at simulere en bus der køre på en rute, da der ikke var mulighed for at få positions data for en rigtig bus. Et andet formål med simulatoren er at gøre det muligt at teste forskellige situationer der kan forekomme i systemet. 
+\subsubsection{Simulator}
+Når simulatoren bliver startet vil grænsefladen se ud, som vist på figur \ref{fig:SimulatorViewStart}. Herfra kan der ved 'BusNr:' vælges hvilken busrute, busserne skal køre på. Update speed bestemmer hvor ofte positionen for busserne skal opdateres, her er '1' standardværdien for systemet. I simulation mode, vælges der hvilken form for simulation der skal startes, dette kan være: 'Use single bus on route', 'Use all busses on chosen route' og 'Use all busses in system'.
+'Use single bus on route' vil simulere en enkel bus der køre på den valgte rute, hvor 'Use all busses on chosen route' vil simulere alle de busser der er knyttet til den valgte rute. Ved valg af 'Use all busses in system' vil alle busser i hele systemet blive simuleret på deres tilknyttet rute, og det er derfor ligemeget hvilken busrute der blev valgt i starten. Under 'Bus Direction' kan der vælges om busserne skal køre i en bestemt retning, eller om de alle skal køre i tilfældige retning. sidst kan der vælges hvor hurtig busserne skal køre, her der er mulighed for at sætte hastigheden mellem 30 og 1000 km/t. Simulatoren kan nu startes på to forskellige måder, enten hvor busserne alle starter tilfældige steder på deres rute, eller om alle busserne skal starte fra rutens startpunkt.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{./Diagrammer/Billeder/SimulatorViewStart.png}
+	\caption{Grænseflade for simulator}
+	\label{fig:SimulatorViewStart}
+\end{figure}
+\noindent
+På figur \ref{fig:SimulatorViewStarted} kan ses hvordan det kan se ud efter en simulation er startet. Her kan det ses et log vindue i højre side, der kommer med opdateringer om busserne, og eventuelle fejlbeskeder. De to sidste knapper på simulatoren, 'Refresh' og 'clear log' bruges henholdsvis til at hente de nyeste ruter og busser fra databasen, og til at slette alt hvad der står i log vinduet.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{./Diagrammer/Billeder/SimulatorViewStarted.png}
+	\caption{Grænseflade for simulator efter den er blevet configureret og startet}
+	\label{fig:SimulatorViewStarted}
+\end{figure}
+\noindent
 
 \end{document}
