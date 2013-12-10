@@ -1,7 +1,7 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Pakke 3 - Data access layer}
-Denne pakke fungerer som et slags link mellem business logic layer og hardware layer. Den har til ansvar at hente data fra hardware og videreformidle det til logikken højere oppe i systemet. Derudover har det også ansvar, for at muliggøre skrivning til hardwaren. Pakken indeholder et interface til microcontrolleren, interface til robotten samt interface til databasen.
+\subsubsection{Pakke 3 - Data tilgangs laget}
+Denne pakkes eneste formål er, at tilgå databasen når det bliver nødvendigt i logik laget. Dette lag kan enten læse eller skrive til database, alt efter behov. Hentet data bliver ikke manipuleret, men returneret direkte til præsentations laget. Dette lag kan aldrig tilgås fra, eller returnere til, præsentations laget.
 
 \end{document}

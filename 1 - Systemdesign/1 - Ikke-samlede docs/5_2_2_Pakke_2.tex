@@ -1,8 +1,7 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Pakke 2 - Business logic layer}
-Denne pakke indeholder selve programlogikken, og har til ansvar at håndterer business-logikken. Pakken indeholder kun decideret højniveau software. Modellen ligger i denne pakke. Pakken spiller sammen med Presentation layer og Data access layer.
-Kontakten til Presentation layer sker via modellen til viewmodellen.
+\subsubsection{Pakke 2 - Logik laget}
+Alle funktionaliteter og data manipulationer sker i dette lag. Dette indebærer at sørge for, at Use Cases bliver udviklet korrekt. Denne pakke sørger for at modtage kald fra præsentations laget, håndtere processen, og, hvis nødvendigt, sørge for at tilgå data tilgangs laget for enten at skrive eller læse. Læse data fra data tilgangs laget vil blive manipuleret og vist på viewet.
 
 \end{document}

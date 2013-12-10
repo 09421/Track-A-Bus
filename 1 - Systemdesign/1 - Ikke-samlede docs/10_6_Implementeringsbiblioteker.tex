@@ -2,14 +2,13 @@
 \begin{document}
 
 \subsection{Implementeringsbiblioteker}
-Da systemet er baseret på .NET, og derfor er der selvfølgelig brugt adskellige .NET biblioteker. Det er langt fra alle der vil blive beskrevet i dette afsnit, hvor kun de vigtigste er forklaret.
+Både de systemer i projekter der er baseret på .NET og på Android, gøres der brug af eksterne biblioteker. Disse vil her beskrivesM
 
 \begin{itemize}
-\item System.IO.Ports - Bibliotek, som indeholder funtioner der bruges til kommunikation over den serielle port. Se klassen RobotProjekt.Weights.Weight.
-\item WPF.Themes - Bibliotek der indeholder brugergrænsefladens tema.
-\item Microsoft.Scripting - Er blevet brugt til at lave en scripting-engine til brug i IDEen. Se komponentbeskrivelsen af IDEen under afsnit 8.
-\item Galasoft.Mvvmlight - Bibliotek fra Galasoft, som bruges til MVVM funktiontionalitet. Fx indeholder det en implementering af RelayCommand, og et Message System.
-\item NUnit.Framework - NUnit frameworket, som bruges til automatiserede test.
+\item MySQL.Data - Bibliotek som indeholder alle nødvendige værktøjer til at tilgå en MySQL database. Bruges i simulatoren og i online-værktøjet.
+\item ksoap2 - Bibliotek til at håndtere SOAP-protokollen på android applikationen. Indeholder alle funktionaliteter til dette formål.
+\item Google Play Services v12 - Biblotek til at håndtere oprettelse og vedligeholdelse af kort på android applikationen
+\item Google Maps JavaScript API v3 - Biblotek til at håndtere oprettelse og vedligeholdelse af kortet på administrator hjemmesiden.
 \end{itemize}
 
 

@@ -9,10 +9,9 @@ Kravene til brugergrænsefladen kan deles op i to kategorier:
 \end{itemize}
 Begge er beskrevet herunder
 \subsubsection{Arkitekturspecifikke}
-Brugergrænsefalden er baseret på MVVM designmønsteret, som beskrevet i afsnit \textit{10.2 - Arkitektur mønstre}. Dette er valgt af to grunde; Det betyder lavere kobling mellem model og view, og brugergrænsefalden kan derfor udskriftes uden større problemer. Desuden betyder det, at det er markant nemmere at teste kode der ligger tæt op af brugergrænsefladen. 
-Viewet er lavet udelukkende i XAML, og i viewmodellen ligger en række properties, som omformer data fra modellen til viewet, samt en række commands der kalder ned i modellens logik. Det var ideologen at der absolut ikke måtte placeres kode i den såkaldte "Code-behind" fil. Dette var dog ikke helt muligt når der f.eks. skulle åbnes nye vinduer. Derfor blev det besluttet, at sådanne operation skulle baseres på Mediator Pattern (nærmere beskrevet i afsnit \textit{10.2 - Arkitektur mønstre}. Dette betød at der stadig blev holdt en forholdsvis lav kobling.
+Samtlige brugergrænseflader er bygget op på tre-lags modellen, som beskrvet i afsnit \textit{10.2.1 - Tre-lags model}. Dette er gjort på baggrund af at, brugergrænsefladen nemt kan skiftes ud, hvis det skulle blive nødvendigt, hvilket betyder en lavere kobling mellem data og præsentation. Hjemmesiden er bygget op som på baggrund af MVC, som er en specifik ASP.NET. Dette gør, ligesom tre-lags modellen, at hver komponent er udskiftelig, uden at der er behov for, at ændringer foretages i viewet.
 
 \subsubsection{Udseendesspecifikke}
-For at holde et strengent ens udseende på tværs af hele brugergrænsefladen blev det besluttet at bruge WPF-themes fra codeplex. Dette påvirker at alle kontroller altid har samme udseende.
+Under applikations udvikling, blev det besluttet, at bruge to nuancer af rød, til opbygning af grænsefladen. Disse to er baseret på "midttrafik rød", da det ville være dette firma, applikation skulle udvikles til, hvis et firma skulle kobles på projektet.
 
 \end{document}
