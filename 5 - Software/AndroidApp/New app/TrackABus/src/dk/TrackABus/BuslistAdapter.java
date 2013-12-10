@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import dk.TrackABus.DataProviders.TrackABusProvider;
+import dk.TrackABus.DataProviders.TrackABusProvider.LocalBinder;
 import dk.TrackABus.Models.AdapterRunner;
 import dk.TrackABus.Models.BusRoute;
 import dk.TrackABus.Models.BusStop;
@@ -20,12 +21,15 @@ import dk.TrackABus.Models.UserPrefRoutePoint;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -43,14 +47,18 @@ import android.widget.ToggleButton;
 public class BuslistAdapter extends BaseAdapter{
 	private ArrayList<ListBusData> _data;
     public boolean favoriteRunning = true;
+    TrackABusProvider BusProvider;
     public boolean isHandlingFavoring = false;
     private Handler handler = new Handler(Looper.getMainLooper());
     Context _c;
+    
+    
     
     public BuslistAdapter (ArrayList<ListBusData> data, Context c){
         _data = data;
         _c = c;
         //AdapterRunner.setter();
+        BusProvider = new TrackABusProvider();
     }
    
   
@@ -187,8 +195,7 @@ public class BuslistAdapter extends BaseAdapter{
 
 	private void HandleFavorite(String BusNumber)
 	{
-		TrackABusProvider BusProvider = new TrackABusProvider(_c, new msgHandler());
-		BusProvider.GetBusRoute(BusNumber, BUS_ROUTE_DONE);
+		BusProvider.GetBusRoute(BusNumber, BUS_ROUTE_DONE, new msgHandler());
 	}
 	
 	private void SetFavoriteBusRoute(final ArrayList<BusRoute> bRoute,final ArrayList<BusStop> sRoute){ 

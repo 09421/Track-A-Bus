@@ -23,7 +23,7 @@ import dk.TrackABus.Models.BusStop;
 public class TrackABusProvider extends Service{
 		private final IBinder mBinder = new LocalBinder();
 		static Context Context;
-		final Messenger mMessenger;
+		Messenger mMessenger;
 		SoapProvider soapProvider;
 		Handler ReplyTo;
 		boolean isBound = true;
@@ -33,10 +33,14 @@ public class TrackABusProvider extends Service{
 	 * @param context applicationContext
 	 * @param replyTo The handler that messages will be send to, when async methods are done
 	 */
-	public TrackABusProvider(Context context, Handler replyTo){
-		Context = context;	
-		ReplyTo = replyTo;
-		mMessenger = new Messenger(ReplyTo);
+//	public TrackABusProvider(Context context, Handler replyTo){
+//		Context = context;	
+//		ReplyTo = replyTo;
+//		mMessenger = new Messenger(ReplyTo);
+//		soapProvider = new SoapProvider();
+//	}
+		
+	public TrackABusProvider(){
 		soapProvider = new SoapProvider();
 	}
 	
@@ -54,10 +58,10 @@ public class TrackABusProvider extends Service{
 	}	
 	
 	@Override
-	public boolean onUnbind(Intent intent) {
-		super.onUnbind(intent);	
+	public boolean onUnbind(Intent intent) {			
 		Log.e("MyLog", "onUnbind");
-		isBound = false;			
+		isBound = false;
+		super.onUnbind(intent);
 		return true;
 	}
 
@@ -65,9 +69,10 @@ public class TrackABusProvider extends Service{
 	 * Sends a message back, with an StringArrayList at key "1"
 	 * @param ReplyMessage The what parameter in the message
 	 */
-	public void GetBusNumber(final int ReplyMessage) {		
+	public void GetBusNumber(final int ReplyMessage, final Handler replyTo) {		
 		new Thread(new Runnable() {
 	        public void run() {
+	        	mMessenger = new Messenger(replyTo);
 	    		ArrayList<String> BusName = new ArrayList<String>();
 	    		BusName = soapProvider.GetBusList();
 	    		
@@ -90,11 +95,12 @@ public class TrackABusProvider extends Service{
 	 * @param busNumber The Bus number you want the route for
 	 * @param ReplyMessage the message that should be send back
 	 */
-	public void GetBusRoute(final String busNumber, final int ReplyMessage){
+	public void GetBusRoute(final String busNumber, final int ReplyMessage, final Handler replyTo){
 		try{
 			
 			new Thread(new Runnable() {
 		        public void run() {
+		        	mMessenger = new Messenger(replyTo);
 		        	Bundle b = new Bundle();
 		        	ArrayList<BusRoute> arg0 = soapProvider.GetBusRoute(busNumber);
 		        	ArrayList<BusStop> arg1 = soapProvider.GetBusStops(busNumber);
@@ -115,10 +121,11 @@ public class TrackABusProvider extends Service{
 		}		
 	}
 	
-	public void GetBusPos(final String busNumber, final int ReplyMessage){
+	public void GetBusPos(final String busNumber, final int ReplyMessage, final Handler replyTo){
 		try{			
 			new Thread(new Runnable() {
 				public void run() {
+					mMessenger = new Messenger(replyTo);
 					while(isBound){				
 						Bundle b = new Bundle();
 			        	ArrayList<LatLng> arg0 = soapProvider.GetBusPos(busNumber);
@@ -126,8 +133,8 @@ public class TrackABusProvider extends Service{
 
 						Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
 						bMsg.setData(b);
-						try {							
-							Log.e("MyLog", "Pos send");
+						try {
+							Log.e("MyLog", "Sending POS");
 							mMessenger.send(bMsg);							
 						}catch (RemoteException e) {
 							Log.e("MyLog", "Failed to send message");
@@ -147,6 +154,10 @@ public class TrackABusProvider extends Service{
 			}
 	}
 	
+	public void StopWork(){
+		isBound = false;
+	}
+	
 	/**
 	 * Binder for the bindService
 	 */
@@ -157,7 +168,7 @@ public class TrackABusProvider extends Service{
 	}
 
 	@Override
-	public IBinder onBind(Intent intent) {		
+	public IBinder onBind(Intent intent) {
 		Log.e("MyLog", "onBind");
 		isBound = true;
 		return mBinder;
@@ -167,7 +178,8 @@ public class TrackABusProvider extends Service{
 	public void onDestroy() {
 		Log.e("MyLog", "onDestroy");
 		isBound = false;
-		stopSelf();
-		super.onDestroy();		
+		super.onDestroy();
+		//stopSelf();			
 	}	
+	
 }

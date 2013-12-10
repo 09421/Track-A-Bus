@@ -59,9 +59,11 @@
         
         <uses-library android:required="true" android:name="com.google.android.maps" />
         
-        <service android:name="dk.TrackABus.DataProviders.TrackABusProvider"
-            android:enabled="false"
+        <service 
+            android:name="dk.TrackABus.DataProviders.TrackABusProvider"
+            android:enabled="true"
             android:exported="false">
+            
         </service>
         
         <provider

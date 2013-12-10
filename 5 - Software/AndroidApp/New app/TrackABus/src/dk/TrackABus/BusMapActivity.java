@@ -85,9 +85,9 @@ public class BusMapActivity extends Activity {
 	        	TopBarLayout = (LinearLayout)findViewById(R.id.TopInformationBar);
 	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
 	        	BusRouteView.setText(SelectedBus);
-	        	BusProvider = new TrackABusProvider(BusMapActivity.this, new msgHandler()); 
+	        	//BusProvider = new TrackABusProvider(BusMapActivity.this, new msgHandler()); 
 	        	pBar.setVisibility(View.VISIBLE);
-	        	BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE);
+	        	
         	}       	
         }
         else{            
@@ -99,11 +99,11 @@ public class BusMapActivity extends Activity {
     private ProgressBar pBar;
     private LinearLayout TopBarLayout;
     private TextView BusRouteView;
-
+    Intent intent;
 	@Override
 	protected void onStart() {
 		super.onStart();
-    	Intent intent = new Intent(getApplicationContext(), TrackABusProvider.class);
+    	intent = new Intent(BusMapActivity.this, TrackABusProvider.class);
     	startService(intent);
     	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
  
@@ -139,13 +139,12 @@ public class BusMapActivity extends Activity {
 						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();					
 					break;
 				case BUS_POS_DONE:
-					Log.e("MyLog", "Got the message");
-					
+					Log.e("MyLog", "Got the message");					
 					for(int j = 0; j<marks.size(); j++){
 					marks.get(j).remove();
 					}
+					marks = new ArrayList<Marker>();
 					ArrayList<LatLng> Pos =  msg.getData().getParcelableArrayList("BusPos");
-					
     				if(Pos != null){
     					for(int i = 0; i<Pos.size(); i++){
     						marks.add(map.addMarker(new MarkerOptions()
@@ -243,8 +242,10 @@ public class BusMapActivity extends Activity {
 	private void UpdateBusLocation() {
 //		new Thread(new Runnable() {
 //	        public void run() { 
-
-	BusProvider.GetBusPos(SelectedBus, BUS_POS_DONE);
+		if(ConnectivityChecker.hasInternet)
+			BusProvider.GetBusPos(SelectedBus, BUS_POS_DONE, new msgHandler());
+		else
+			Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_LONG).show();
 	
 //	    		Runnable setFirstMark = new Runnable(){
 //	    			@Override
@@ -540,6 +541,7 @@ public class BusMapActivity extends Activity {
 	protected void onDestroy() {		
 		//Running = false;
 		timeUpdating = false;
+		mBound = false;	
 		super.onDestroy();
 	}
 
@@ -573,10 +575,13 @@ public class BusMapActivity extends Activity {
 	}
 	
 	@Override
-	protected void onStop() {		
-		mBound = false;
+	protected void onStop() {
 		unbindService(Connection);
+		BusProvider.StopWork();
+		Log.e("DEBUG", "Unbound service map");
 		super.onStop();
+		mBound = false;	
+		
 	}
 	
 	private ServiceConnection Connection = new ServiceConnection(){
@@ -586,11 +591,14 @@ public class BusMapActivity extends Activity {
 			LocalBinder  binder = (LocalBinder ) service;
 			BusProvider = binder.getService();
 			mBound = true;
+			Log.e("Debug", "onServiceConnected");
+			BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE, new msgHandler());
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			mBound = false;				
+			mBound = false;
+			Log.e("Debug", "onServiceDisconnected");
 		}
 	};
 }

@@ -49,11 +49,11 @@ public class BuslistMenuActivity extends ListActivity {
 	    protected void onStart(){
 	    	super.onStart();
 	    	if(ConnectivityChecker.hasInternet){
-		    	Intent intent = new Intent(BuslistMenuActivity.this, TrackABusProvider.class);
+	        	Intent intent = new Intent(dk.TrackABus.BuslistMenuActivity.this, dk.TrackABus.DataProviders.TrackABusProvider.class);
 		    	startService(intent);
 		    	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
 		    	
-		    	UpdateArrayOfBusses();	    		
+		    		    		
 	    	}
 	    	else{
 	    		pBar.setVisibility(View.GONE);
@@ -62,8 +62,8 @@ public class BuslistMenuActivity extends ListActivity {
 	    }
 
 		private void UpdateArrayOfBusses() {			
-			TrackABusProvider BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler());
-			BusProvider.GetBusNumber(BUSSES_DONE);
+			//TrackABusProvider BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler());
+			BusProvider.GetBusNumber(BUSSES_DONE, new msgHandler());
 			if(BusList == null){
 				Log.e("MyLog", "NULL");
 			}			
@@ -133,19 +133,23 @@ public class BuslistMenuActivity extends ListActivity {
 			
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
+				Log.e("Debug", "onServiceConnected");
 				LocalBinder  binder = (LocalBinder ) service;
 				BusProvider = binder.getService();
 				mBound = true;
+				UpdateArrayOfBusses();
 			}
 
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
-				mBound = false;				
+				mBound = false;	
+				Log.e("Debug", "onServiceDisconnected");
 			}
 		};
 		
 		@Override
 		protected void onDestroy() {
+			Log.e("MyLog", "onDestroy");
 			try{
 				if(mBound)
 					Log.e("DEBUG", "SERVICE UNBOUND");
@@ -153,19 +157,23 @@ public class BuslistMenuActivity extends ListActivity {
 			}catch(Exception e){
 				Log.e("DEBUG", e.getMessage());				
 			}
-
 			super.onDestroy();
 		}
 
 		@Override
 		protected void onPause() {
+			try{
+				if(mBound)
+					Log.e("DEBUG", "SERVICE UNBOUND");
+					unbindService(Connection);
+			}catch(Exception e){
+				Log.e("DEBUG", e.getMessage());				
+			}
 			super.onPause();
 		}
 		
 		@Override
 		protected void onStop() {
 			super.onStop();
-				
-
 		}
 }
