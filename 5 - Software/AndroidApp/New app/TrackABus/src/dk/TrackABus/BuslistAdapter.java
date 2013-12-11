@@ -109,7 +109,6 @@ public class BuslistAdapter extends BaseAdapter{
 	    {
 		    if(LBD.BusNumber.equals(AdapterRunner.currentData.BusNumber) && AdapterRunner.currentHandling)
 		    {
-		    	Log.e("test", "handling");
 		    	tBtn.setChecked(AdapterRunner.currentData.IsFavorite);
 		    	tBtn.setVisibility(ToggleButton.GONE);
 		    	Fbar.setVisibility(ProgressBar.VISIBLE);

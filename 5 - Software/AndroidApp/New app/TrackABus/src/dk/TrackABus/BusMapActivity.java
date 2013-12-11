@@ -405,12 +405,6 @@ public class BusMapActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-//		if(updateTimeThread != null && !updateTimeThread.isAlive())
-//		{
-//			updateTimeThread = new Thread(new timeUpdater());
-//			timeUpdating = true;
-//			updateTimeThread.start();
-//		}		
 	}
 	
 	@Override
@@ -435,6 +429,13 @@ public class BusMapActivity extends Activity {
 				BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE, new msgHandler());
 			else
 				DrawFavoriteRoute(SelectedBus);
+			
+			if(((TextView)findViewById(R.id.StopInfo)).getVisibility() != TextView.GONE)
+			{
+				String stop = ((TextView)findViewById(R.id.StopInfo)).getText().toString();
+				String route=((TextView)findViewById(R.id.RouteInfo)).getText().toString();
+				BusProvider.GetBusTime(route, stop, BUS_TIME_DONE, new msgHandler());
+			}	
 		}
 
 		@Override
