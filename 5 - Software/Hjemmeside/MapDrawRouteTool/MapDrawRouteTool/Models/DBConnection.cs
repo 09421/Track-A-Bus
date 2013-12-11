@@ -436,19 +436,22 @@ namespace MapDrawRouteTool.Models
                             cmd.ExecuteNonQuery();
                             connection.Close();
                         }
-                        cmd.CommandText = "UPDATE Bus " +
-                                          "SET Bus.fk_BusRoute = null " +
-                                          "WHERE Bus.ID = ";
-
-                        for (var i = 0; i < bussesToRemove.Count(); i++)
+                        if (bussesToRemove != null)
                         {
-                            cmd.CommandText += bussesToRemove[i];
-                            cmd.CommandText += " OR Bus.ID = ";
+                            cmd.CommandText = "UPDATE Bus " +
+                                              "SET Bus.fk_BusRoute = null " +
+                                              "WHERE Bus.ID = ";
+
+                            for (var i = 0; i < bussesToRemove.Count(); i++)
+                            {
+                                cmd.CommandText += bussesToRemove[i];
+                                cmd.CommandText += " OR Bus.ID = ";
+                            }
+                            cmd.CommandText = cmd.CommandText.TrimEnd(" OR Bus.ID = ".ToCharArray());
+                            connection.Open();
+                            cmd.ExecuteNonQuery();
+                            connection.Close();
                         }
-                        cmd.CommandText = cmd.CommandText.TrimEnd(" OR Bus.ID = ".ToCharArray());
-                        connection.Open();
-                        cmd.ExecuteNonQuery();
-                        connection.Close();
                         return 0;
                     }
                     catch (Exception e)

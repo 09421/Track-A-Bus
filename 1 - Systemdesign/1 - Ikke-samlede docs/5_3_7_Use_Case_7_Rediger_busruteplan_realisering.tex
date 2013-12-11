@@ -1,23 +1,7 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 
-\subsubsection{Use Case 5: Test program realisering}
-Test program Use Casen, er blevet udfærdiget således at den fungerer som en simulator. Når en bruger vil starte programmet, skal han først vælge om han vil bruge den rigtige robot, eller en simulering af robotten. Hvis simuleringen vælges, bliver den klasse der har robotkaldene initialiseret med en simuleringsklasse af robotkaldene. På den måde bliver alle kald til robotfunktionerne simuleret, lige gyldigt om det er et brugerdefineret program eller standardprogrammet.\\
-Kaldene til de robotfunktionerne, bliver simuleret således, at der bliver taget stilling til hvilke parametre der medsendes, og ud fra disse kan man se hvad mode robotten sættes til, om den rykker sig osv. Disse informationer logges så til vinduet, samt til en logfil der ligger lokalt.\\
-Når brugeren logger ind med en simuleringsrobot, indlæser systemet alle de programmer der er tilgængelige. Han har da mulighed for at køre dem, og se nøjagtigt hvad der sker. Han kan også pause, genstarte og stoppe en simulering. Derudover loader programmet også alle simuleringslogs ind i en boks, der opdateres hver gang en simulering er kørt, så bruger har mulighed for at nærlæse hvad der er sket.\\
-Se afsnit \textit{8.2.2 Komponent 2: Simulering} for en detaljeret indsigt i simulatoren.
-\\
-Herunder ses en overblik over hvorledes simulatoren er opbygget:
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.6]{Diagrammer/dSSD/Simulering/Simulering-nedarvning.jpg}
-\caption{Nedarvning fra ILOG og IRoboCalls}
-\end{figure}
+\subsubsection{Use Case 7: Rediger busruteplan}
 
-\begin{figure}[H]
-\centering
-\includegraphics[scale=0.6]{Diagrammer/dSSD/Simulering/Simulering-sekvens.jpg}
-\caption{Simulering Detaljeret-sekvensdiagram}
-\end{figure}
 
 \end{document}
