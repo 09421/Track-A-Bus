@@ -523,7 +523,7 @@ namespace MapDrawRouteTool.Models
             }
         }
 
-        public static int DeleteSelectedBusRoute(string RouteName)
+        public static int DeleteSelectedBusRouteFromDB(string RouteName)
         {
             using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {

@@ -149,7 +149,7 @@ namespace MapDrawRouteTool.Controllers
 
         public int DeleteSelectedBusRoute(string RouteName)
         {
-            return DBConnection.DeleteSelectedBusRoute(RouteName);
+            return DBConnection.DeleteSelectedBusRouteFromDB(RouteName);
         }
     }
 }
