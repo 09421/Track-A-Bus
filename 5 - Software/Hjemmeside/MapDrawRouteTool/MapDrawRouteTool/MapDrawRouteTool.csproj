@@ -145,6 +145,7 @@
     <Compile Include="Models\BusStops.cs" />
     <Compile Include="Models\DBConnection.cs" />
     <Compile Include="Models\JConverter.cs" />
+    <Compile Include="Models\RouteMath.cs" />
     <Compile Include="Models\Waypoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
