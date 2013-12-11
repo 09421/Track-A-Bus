@@ -1,0 +1,15 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 1: Vis busruter}
+
+Vis busruter Use Casen, er den første Use Case, brugeren kan starte, i TrackABus mobil applikationen. Hvis brugeren har installeret en hel ny kopi af applikationen, er denne Use Case den eneste han kan starte. Den starter når man trykker på "View busroutes"-knappen fra hovedskærmen. Ved dette tryk startes BusListMenuActivity. I OnCreate sættes der en progressbar, som kører indtil processen er færdig, herefter går kaldes onCreate(), som undersøger om der internettet kan tilgås. Hvis ikke, færdiggøres progressbaren og brugeren notificeres om, at der ikke kunne skabes forbindelse til nettet. Hvis der derimod er net,  tilgås TrackABusProvideren som en BoundService og rutenumrene bliver hentet. Alle funktioner i servicen sker i en seperat tråd, og svarer tilbage til viewet via en MessageHandler. Når rutenumrene er hentet, sender TrackABusProvideren en besked til den medsendte MessageHandler, som er oprettet i BusListMenuActivity. Hvis ingen ruter blev fundet, notificeres brugeren om dette og progresbaren færdiggøres. Ellers oprettes der en ListBusData for hver rute, og hvis nummeret eksisterer i SQLite database sættes denne som en favorite i listen. En BusListAdapter oprettes, og samtlige oprettede ListBusData sættes i den. På det simple sekvens diagram, kan hovedforløbet for denne Use Case følges. Efter denne Use Case er fuldendt, kan Use Case 2 og 4 tilgås. På figur \ref{fig:UC1SSD}\\\\
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.60]{Diagrammer/Sekvensdiagrammer/UC1SSD.jpg}
+\caption{Sekvensdiagram over Use Case 1}
+\label{fig:UC1SSD}
+\end{figure}
+\newpage
+\end{document}
