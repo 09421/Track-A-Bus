@@ -169,9 +169,7 @@ public class TrackABusProvider extends Service{
 							Thread.sleep(2000);
 						}catch (Exception e) {
 							e.printStackTrace();						
-						}
-
-						
+						}						
 					}
 				}
 			});
