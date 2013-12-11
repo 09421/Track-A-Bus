@@ -6,6 +6,122 @@ Denne komponent er hovedformålet med hele systemet, og har til formål at formidl
 \\
 \\
 \textbf{Design:}\\
+Mobil applikationen er blevet udviklet til android mobiltelefoner det køre med OS version 4.3 Jelly Bean og op til 4.4.2 KitKat. Dertil er der blevet udviklet imod android API level 18 og 19.
+\\
+Mobil applikationen er udviklet med fokus på, at der skulle ske så lidt arbejde på telefonen som muligt, det skal i stedet for sker alle tunge udregninger og dataprocessering op en webservice \textit{Se afsnit 8.2.2 Komponent 2: Mobile service}
+\\
+For at kunne vise busruter og stoppesteder, busser og tid til ankomst, skal dette hentes fra en databasen. Til dette er der blevet lavet 2 klasser, TrackABusProvider og SoapProvider. TrackABusProvideren er udviklet som en bound service, som både BuslistMenuActivity og BusMapActivity bruger. For at bind til TrackABusProvider, bliver startSerivce() kaldt, dette vil starte services hvis den ikke allerede køre, efter det vil bindSerivce blive kaldt, dette binder, i dette tilfælde, BuslistMenuActivity til TrackABusProvideren.
+\begin{lstlisting}[caption=Binding til TrackABusProvider, language=JAVA]
+if(ConnectivityChecker.hasInternet){
+	Intent intent = new Intent(BuslistMenuActivity.this, TrackABusProvider.class);
+	startService(intent);
+	bindService(intent, Connection, Context.BIND_AUTO_CREATE);	
+	}
+\end{lstlisting}
+Denne binding vil ske asynkron, og derfor ikke til at sige hvornår den er færdig, for at se hvornår den er færdig, bruges en ServiceConnection. Denne service connection har en callback function, onServiceConnected(), der vil blive kaldt så snart den er færdige med at bind. For at sikre at de kald der kræver at der er blevet bundet til services skal derfor ligges her i. binder.getService() vil initialisere en instance af den service der bliver bundet til, og fra den være muligt at kalde de forskellige service funktioner der er implementeret i TrackABusProvider klassen.
+\begin{lstlisting}[caption=ServiceConnection i BuslistMenuActivity, language=JAVA]
+private ServiceConnection Connection = new ServiceConnection(){			
+	@Override
+	public void onServiceConnected(ComponentName name, IBinder service) {
+		LocalBinder  binder = (LocalBinder ) service;
+		BusProvider = binder.getService();
+		mBound = true;
+		UpdateArrayOfBusses();
+	}
 
+	@Override
+	public void onServiceDisconnected(ComponentName name) {
+		mBound = false;	
+	}
+};
+\end{lstlisting}
+Alle funktionerne i TrackABusprovider klassen bliver afviklet i deres egen tråd for ikke at blokere main/UI tråden. For at TrackABusProvider funktionerne kan sende data rigtig tilbage til den klasse der kalde funktionen, bliver der brugt en Message Handler.
+\\
+På TrackABusProvider siden er dette blevet lavet ved at hver funktion tager imod en \textit{int ReplyMessage} og en \textit{Handler ReplyTo} som parameter. Når funktionen er færdig med at få data fra SoapProvideren, \textit{Se afsnit 9.2.1 Implementering af persistens i mobilapplikationen for information om hvordan MySQL databasen bliver tilgået}, bliver der oprettet en ny Message. ReplyTo handleren bliver brugt så beskeden ved hvor den skal hen, og ReplyMessage er så den kan fortælle den handler den bliver sendt til, hvad den er blevet færdig med. I kodeudsnit \ref{lst:GetBusRouteTrackABus} kan der ses et eksemple på en funktion i TrackABusProvider klassen. GetbusRoute() tilgår soapProvider klassen, der ligger i data tilgangs laget, for at hente en bestemt busrute, og alle de stoppesteder der ligger på ruten. Data hentet fra MySQL databasen bliver derefter lagt i et ParcelableArrayList, dette gør det muligt at sende custom datatyper med i de messages der bliver sendt. Til sidst bliver der oprettet en ny Message, med en ReplyMessage, så den handler der modtager beskeden ved hvad der er blevet modtaget, den nye Message får så sat data på sig, og bliver sendt afsted til replyTo handleren, der er implementeret i en af de klasser der er bundet til TrackABusProvideren.
+\newpage
+\begin{lstlisting}[caption=GetBusRoute() i TrackABusProvdider, language=JAVA, label={lst:GetBusRouteTrackABus}]
+public void GetBusRoute(final String busNumber, final int ReplyMessage, final Handler replyTo){
+try{
+	new Thread(new Runnable() {
+		public void run() {
+			mMessenger = new Messenger(replyTo);
+			Bundle b = new Bundle();
+			ArrayList<BusRoute> arg0 = soapProvider.GetBusRoute(busNumber);
+			ArrayList<BusStop> arg1 = soapProvider.GetBusStops(busNumber);
+			b.putParcelableArrayList("BusRoute", arg0);
+			b.putParcelableArrayList("BusStop", arg1);
 
+			Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
+			bMsg.setData(b);
+			try {
+			mMessenger.send(bMsg);
+			} catch (RemoteException e) {
+			e.printStackTrace();						
+			}
+	}}).start();
+}
+\end{lstlisting}
+De klasser der er bundet til TrackABusProvideren skal implementere en handler, der skal bruges for at kunne kalde funktionerne i TrackABusProvideren, denne handler står for at modtage beskederne, når TrackABusProvider funktionen er færdig. For at kalde en af TrackABusProvider funktionerne skal der, som beskrevet ovenstående, altid sendes en \textit{int ReplyMessage} og en \textit{Handler ReplyTo}. ReplyTo parameteren er den handler der skal modtage beskederne, kodeafsnit \ref{lst:msgHandler} viser message handleren i BusMapActivity. Når den modtager en besked, vil den tjekke på hvilken ReplyMessage der ligger i beskeden, for at håndtere beskeden rigtigt. For at få det data der bliver sendt med i beskedet, bliver der kaldt en simple msg.getData() på beskeden som vist i kodeafsnit \ref{lst:msgHandler}.
+\newpage
+\begin{lstlisting}[caption=msgHandler i BusMapActivity, language=JAVA, label={lst:msgHandler}]
+final static public int BUS_ROUTE_DONE = 1;
+final static public int BUS_POS_DONE = 2;
+...
+class msgHandler extends Handler{			
+@Override
+		public void handleMessage(Message msg) {				
+			if(msg != null){
+				switch(msg.what){
+				case BUS_ROUTE_DONE:
+					...
+					ArrayList<BusRoute> BusRoutes = msg.getData().getParcelableArrayList("BusRoute");
+					ArrayList<BusStop> BusStops = msg.getData().getParcelableArrayList("BusStop");
+					...
+				break;
+				case BUS_POS_DONE:
+					...
+				break;
+\end{lstlisting}
+For at kunne indtegne ruterne, stoppesteder og busserne skal der bruges et kort at tegne på, hertil er der blevet brugt Google maps. For at kunne bruge dette map, kræves en API key fra google, der fås fra googles API console. API key'en skal derefter skrives ind i android manifest filen, dette gør det muligt at bruge et google map i sin applikation.
+\begin{lstlisting}[caption=API key i Manifest, language=XML, label={lst:APIManifest}]
+<meta-data       
+	android:name="com.google.android.maps.v2.API_KEY"
+	android:value="AIzaSyC9qLxvm9yVIBJ5Dp0VqMapFvc4VLUlqu8"/> 
+\end{lstlisting}
+For at vise selve kortet, skal der laves en layout fil, der indeholder et mapFragment, som vist i kodeudsnit \ref{lst:mapFragment}. Det vil nu være muligt at se et kort i applikationen.
+\newpage
+\begin{lstlisting}[caption=mapFragment, language=XML, label={lst:mapFragment}]
+<fragment
+	android:id="@+id/map"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:name="com.google.android.gms.maps.MapFragment"/>
+\end{lstlisting}
+Det er nu muligt at indtegne ruter, stoppesteder og busser på ruten. Det bliver gjort efer at have modtaget ruten fra TrackABusProvider klassen. Ruten bliver tegnet ved brug af en Polyline, der bliver tegnet ved at bruge de GPS-koordinater der er blevet hentet fra MySQL databasen.
+\begin{lstlisting}[caption=hvordan en Polyline bliver indtegnet på kortet, language=JAVA, label={lst:Polyline}]
+PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
+for(int i = 0; i < points.size(); i++){
+	pOption.add(points.get(i).Position);
+}
+map.addPolyline(pOption);
+\end{lstlisting}
+Busstoppestederne bliver tegnet ind ved at bruge de GPS-koordinater der er blevet hentet fra databasen, til at oprette nye markers på kortet. Der vil blive knyttet en ClickListener på alle markerne, der vil begynde at hente tiden, til den næste bus ankommer ved det valgte stoppested og opdatere skærmen så brugeren kan se det.
+\begin{lstlisting}[caption=Hvordan stoppesteder bliver indtegnet på kortet, language=JAVA, label={lst:stoppestederMarkers}]
+for(int i = 0; i<stops.size(); i++){
+	map.addMarker(new MarkerOptions()
+	.position(stops.get(i).Position.Position).title(stops.get(i).Name)
+	.icon(BitmapDescriptorFactory.fromResource(R.drawable.teststop)));
+}
+\end{lstlisting}
+Der er blevet implementeret mulighed for at favorisere busruter, dette gøres fra mainmenu\_layout view'et. for at gøre dette nemt og pænt for brugeren har det været nødvendigt at lave en custom listadapter, dette før det muligt at lave en liste, hvor hver list element både består af navnet på rute en ToggleButton og en ProgressBar
+\\
+Mange steder i applikationen skal der bruges adgang til internet, og der kan derfor forkomme fejl når dette sker. Dette er blevet håndteret ved at implementere en BroadcastReceiver i klassen ConnectivityChecker, der abonnere på, der sker ændringer i netværksforbindelsen for telefonen, som set i kodeafsnid \ref{lst:ConnectivityChecker}. Det vil nu være muligt at tjekke på om der er internet forbindelse før man prøver at kalde funktioner der kræver at der er forbindelse til internettet.
+\begin{lstlisting}[caption=ConnectivityChecker i manifest filen, language=JAVA, label={lst:ConnectivityChecker}]
+        <receiver android:name="ConnectivityChecker">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+               	<action android:name="android.net.conn.WIFI_STATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
+\end{lstlisting}
 \end{document}
