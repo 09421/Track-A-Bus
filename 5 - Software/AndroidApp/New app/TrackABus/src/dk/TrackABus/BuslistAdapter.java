@@ -133,14 +133,7 @@ public class BuslistAdapter extends BaseAdapter{
         	    	isHandlingFavoring = true; 
 	    	        if (isChecked) 
 	    	        {
-	    	        	int test =  ContentProviderAcces.GetBusRoutes(_c,null).size();
-	    	        	if(test >= 6){
-	    	        		tBtn.setChecked(false); 
-	    	        		LBD.IsFavorite = false;
-	    	        		Toast t = Toast.makeText(_c, "Limit of favorite routes reached: (MAX 6)", Toast.LENGTH_SHORT);
-	    	        		t.show();
-	    	        	}
-		    	        else if(ConnectivityChecker.hasInternet) 
+	    	        	if(ConnectivityChecker.hasInternet) 
 		    	        { 
 		    	        	HandleFavorite(LBD.BusNumber);
 				    	    LBD.IsFavorite = true;
@@ -183,13 +176,6 @@ public class BuslistAdapter extends BaseAdapter{
 			@Override
 			public void run() 
 			{
-				if(bRoute.size() == 0 || sRoute.size() == 0)
-				{
-					Toast.makeText(_c, "Cannot favorite this route", Toast.LENGTH_SHORT).show();
-					isHandlingFavoring = false;
-					setSpinnerAndButton();
-					return;
-				}
 				ContentProviderAcces.SetNewFavorite(_c, bRoute, sRoute);
 				setSpinnerAndButton();
 			}
@@ -197,7 +183,7 @@ public class BuslistAdapter extends BaseAdapter{
 		
 
 	}
-	protected void RemoveFavorite(final String busNumber) {
+	private void RemoveFavorite(final String busNumber) {
 	
 		new Thread(new Runnable(){
 			@Override

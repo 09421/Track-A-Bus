@@ -35,7 +35,7 @@ public class BuslistMenuActivity extends ListActivity {
 	    @Override
 	    protected void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.activity_mainmenu); 
+	        setContentView(R.layout.mainmenu_layout); 
 	        pBar = (ProgressBar)findViewById(R.id.PBar);
 	        pBar.setVisibility(View.VISIBLE);
 	        BusList = new ArrayList<String>(); 

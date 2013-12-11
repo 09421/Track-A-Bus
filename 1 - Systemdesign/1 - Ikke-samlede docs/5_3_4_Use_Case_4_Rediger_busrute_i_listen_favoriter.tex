@@ -2,7 +2,27 @@
 \begin{document}
 
 \subsubsection{Use Case 4: Rediger busrute i listen af favoriter}
-Denne Use Case kan startes efter Use Case 1 er gennemført, og der eksisterer to primære mål; At persistere en busrute lokale, og fjerne lokal persistering af busrute. Begge mål startes på samme måde, ved at trykke på stjernen ud for en given busrute. Hvis stjernen er gul, betyder det at ruten er favoriseret, og hvis den er grå betyder det den endnu ikke er favoriseret. Processen er ens, op til det punkt, hvor der undersøges om ruten skal favoriseres eller ikke være favoriseret længere.\\
- 
+Denne Use Case kan startes efter Use Case 1 er gennemført, og der eksisterer to primære mål; At persistere en busrute lokale, og fjerne lokal persistering af busrute. Begge mål startes på samme måde, ved at trykke på stjernen ud for en given busrute. Hvis stjernen er gul, betyder det at ruten er favoriseret, og hvis den er grå betyder det den endnu ikke er favoriseret. Processen er ens, op til det punkt, hvor der undersøges om ruten skal favoriseres eller ikke være favoriseret længere. Da listen af all busruter er baseret på en custom adapter, sker view opdateringerne i BusListAdapter, frem for den egentlige BusListMenuActivity. Dette betyder også, at event handleren for trykket på favoriserings knappen, også sættes i BusListAdapter. Knappen har egentlige to states; En toggled og en untoggled. Hertil er der dog lavet en ekstra state, hvor favoriseringen er igang. Dette er symboliseret med, at knappen fjernes, og en progressbar vises. Kun en favoriserings process kan køres på samme tid, så til dette formål er AdapterRunner klassen lavet. Denne klasse indeholder de view-elementer, som ligger på det list element, favoriseringen er startet ud fra. De er statiske, da der kun kan være en kørende favorisering. Når BusListMenuActivityen startes, sættes dens adapter, og det element på listen, der svarer overens med det i AdapterRunner, får de view-elementer der er sat i klassen. Herved får de samme state, også selvom processen er igang.\\
+Når knappen trykkes undersøges der først, om en process er igang. Dette er en simpel bool, som er sat i AdapterRunneren. Hvis den er sat, notificeres brugeren at processen er igang. Her splittes Use Casen op i de to normalforløb.
+\begin{itemize}
+	\item \textbf{Favoriser}
+	\begin{itemize}
+		\item Der undersøges først om der er internet forbindelse og hvis der ikke er, annuleres processen og brugeren notificeres om manglen på forbindelse. Ellers tilgås TrackABusProvideren, og hele busruten og alle stoppesteder relevant for busnummeret sat i elementet. Dette sker asynkront, så mens ruten hentes fjernes knappen, progressbaren sættes, og hele elementet gemmes i AdapterRunner. Når busruten er hentet, sendes den som en besked, til MessageHandleren i adapteren. Herefter startes der en tråd, til at lave selve persisteringen. Heri tilgås ContentProviderAcces med rutepunkterne og stoppestederne, hvori ruten persisteres på SQLite databasen. Når persisteringen er fuldent, sættes elementerne i AdapterRunner til at være færdige, således at ProgressBaren fjernes og knappen vises igen. 
+	\end{itemize}
+	\item \textbf{Fjern favorisering}
+	\begin{itemize}
+		\item Ligesom i favoriseringen sættes elementeterne ved den trykkede knap i AdapterRunneren, samt ProgressBaren vises og knappen fjernes. ContentProviderAccess tilgås i sin egen tråd, hvori ruten med det givne busnummer fjernes fra persisteringen. Når fjerningen af persisteringen er fuldent, sættes elementerne i AdapterRunner til at være færdige, således at ProgressBaren fjernes og knappen vises igen. Desuden vil stoppestederne ikke slettes, da disse kan være brugt i andre favoriserede ruter.
+	\end{itemize}
+\end{itemize}
+
+På figur \ref{fig:UC4SSD} kan favorisering af busrute processen ses som et simpelt sekvens diagram. Tilgangen til ContentProvideren ses på figuren som et kald, men er faktisk flere kald, et for hver tabel. Fjerning af favorisering vises ikke, da dette kun er et kald til ContentProvideren, hvor alting fjernes, på nær stoppesteder.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.50]{Diagrammer/Sekvensdiagrammer/UC4SSD}
+	\caption{Sekvensdiagram for lokal persistering af busrute.}
+	\label{fig:UC3SSD}
+\end{figure}
+
 
 \end{document}
