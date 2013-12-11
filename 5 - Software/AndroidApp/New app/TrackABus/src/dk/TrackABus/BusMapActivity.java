@@ -371,7 +371,6 @@ public class BusMapActivity extends Activity {
 		}
 		if(currentDescText != "No bus going this direction")	
 		{
-			String dSec;
 			if(dS.contains("anyType"))
 			{
 				((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("No bus going this direction");

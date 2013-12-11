@@ -42,7 +42,7 @@ public class MainScreenActivity extends Activity{
 		});
 	}
 
-	public void SeeAllBusses(View view) {
+	public void ViewAllBusRoutes(View view) {
 		
 		Intent myIntent = new Intent(getApplicationContext(), BuslistMenuActivity.class);
 		startActivityForResult(myIntent, 0);

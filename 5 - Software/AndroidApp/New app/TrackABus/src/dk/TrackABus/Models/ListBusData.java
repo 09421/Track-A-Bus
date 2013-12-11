@@ -9,13 +9,5 @@ public class ListBusData {
 		IsFavorite = favorite;
 		BusNumber = number;
 	}
-	
-	public Boolean getIsFavorite(){
-		return IsFavorite;
-	}
-	
-	public String getBusNumber(){
-		return BusNumber;
-	}
 
 }
