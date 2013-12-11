@@ -27,7 +27,7 @@ namespace MapDrawRouteTool.Controllers
             return DBConnection.DeleteBusstop(stop);
         }
 
-        public int Rename(string oldName, string newName, string NewPos)
+        public int SaveChangeToStop(string oldName, string newName, string NewPos)
         {
             return DBConnection.RenameBusstop(oldName, newName, NewPos);
         }

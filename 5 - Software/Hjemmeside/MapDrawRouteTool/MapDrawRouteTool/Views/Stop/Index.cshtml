@@ -91,11 +91,10 @@
             url: '@Url.Action("GetAllStops", "Stop")',
             dataType: "json",
             success: function (result) {
-                debugger;
                 var select = document.getElementById("StopRoutes");
                 select.options.length = 0;
                 for (var i = 0; i < result.length; i++) {
-                    select.options.add(new Option(result[i].StopName));
+                    select.options.add(new Option(result[i].name));
                 }
             }
         });
@@ -198,7 +197,7 @@
         var oldstop = e.options[e.selectedIndex].text;
         $.ajax({
             type: "POST",
-            url: '@Url.Action("Rename", "Stop")',
+            url: '@Url.Action("SaveChangeToStop", "Stop")',
             data: {
                 oldName: oldstop,
                 newName: document.getElementById("StopName").value,

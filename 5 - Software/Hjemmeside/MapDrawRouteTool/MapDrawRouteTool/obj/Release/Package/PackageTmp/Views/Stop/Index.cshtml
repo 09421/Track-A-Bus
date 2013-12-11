@@ -94,7 +94,7 @@
                 var select = document.getElementById("StopRoutes");
                 select.options.length = 0;
                 for (var i = 0; i < result.length; i++) {
-                    select.options.add(new Option(result[i]));
+                    select.options.add(new Option(result[i].name));
                 }
             }
         });
@@ -190,7 +190,6 @@
                     
             }
         });
-
     }
 
     function RenameStop() {
