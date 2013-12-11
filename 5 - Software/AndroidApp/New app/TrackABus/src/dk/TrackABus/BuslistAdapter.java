@@ -2,34 +2,16 @@ package dk.TrackABus;
 
 import java.util.ArrayList;
 
-import javax.xml.datatype.Duration;
-
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
 import dk.TrackABus.DataProviders.TrackABusProvider;
-import dk.TrackABus.DataProviders.TrackABusProvider.LocalBinder;
 import dk.TrackABus.Models.AdapterRunner;
 import dk.TrackABus.Models.BusRoute;
 import dk.TrackABus.Models.BusStop;
 import dk.TrackABus.Models.ListBusData;
-import dk.TrackABus.Models.UserPrefBusRoute;
-import dk.TrackABus.Models.UserPrefBusRouteBusStop;
-import dk.TrackABus.Models.UserPrefBusRouteRoutePoint;
-import dk.TrackABus.Models.UserPrefBusStop;
-import dk.TrackABus.Models.UserPrefRoutePoint;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
@@ -152,8 +134,8 @@ public class BuslistAdapter extends BaseAdapter{
         	    	isHandlingFavoring = true; 
 	    	        if (isChecked) 
 	    	        {
-	    	        	int test = _c.getContentResolver().query(UserPrefBusRoute.CONTENT_URI, null,null,null, null).getCount();
-	    	        	if(test > 5){
+	    	        	int test =  ContentProviderAcces.GetBusRoutes(_c,null).size();
+	    	        	if(test >= 6){
 	    	        		tBtn.setChecked(false); 
 	    	        		LBD.IsFavorite = false;
 	    	        		Toast t = Toast.makeText(_c, "Limit of favorite routes reached: (MAX 6)", Toast.LENGTH_SHORT);
@@ -191,8 +173,6 @@ public class BuslistAdapter extends BaseAdapter{
         	});
        return v;
 	}
-
-
 	private void HandleFavorite(String BusNumber)
 	{
 		BusProvider.GetBusRoute(BusNumber, BUS_ROUTE_DONE, new msgHandler());
@@ -211,77 +191,7 @@ public class BuslistAdapter extends BaseAdapter{
 					setSpinnerAndButton();
 					return;
 				}
-				ContentValues[] BusRouteCV;
-				ContentValues[] RoutePointCV;
-				ContentValues[] BusRouteRoutePointCV;
-				try
-				{
-					for(int i = 0; i < bRoute.size(); i++)
-					{
-						BusRouteCV = new ContentValues[1];
-						BusRouteCV[0] = new ContentValues();
-						BusRouteCV[0].put(UserPrefBusRoute.BusRouteIdField, bRoute.get(i).ID);
-						BusRouteCV[0].put(UserPrefBusRoute.BusRouteNumberField, bRoute.get(i).RouteNumber);
-						BusRouteCV[0].put(UserPrefBusRoute.BusRouteSubField, bRoute.get(i).SubRoute);
-						RoutePointCV = new ContentValues[bRoute.get(i).points.size()];
-						BusRouteRoutePointCV = new ContentValues[bRoute.get(i).BusRoute_RoutePointIDs.size()];
-						for(int j = 0; j < bRoute.get(i).points.size(); j++)
-						{
-							RoutePointCV[j] = new ContentValues();
-							BusRouteRoutePointCV[j] = new ContentValues();
-							RoutePointCV[j].put(UserPrefRoutePoint.RoutePointIdField, bRoute.get(i).points.get(j).ID);
-							RoutePointCV[j].put(UserPrefRoutePoint.RoutePointLatField, bRoute.get(i).points.get(j).Position.latitude);
-							RoutePointCV[j].put(UserPrefRoutePoint.RoutePointLonField, bRoute.get(i).points.get(j).Position.longitude);
-		
-							BusRouteRoutePointCV[j].put(UserPrefBusRouteRoutePoint.BusRouteRoutePointIDField,
-														bRoute.get(i).BusRoute_RoutePointIDs.get(j));
-							BusRouteRoutePointCV[j].put(UserPrefBusRouteRoutePoint.BusRouteField, bRoute.get(i).ID);
-							BusRouteRoutePointCV[j].put(UserPrefBusRouteRoutePoint.RoutePointField, bRoute.get(i).points.get(j).ID);
-														
-						}
-						int checkVal = _c.getContentResolver().bulkInsert(Uri.parse(UserPrefBusRoute.CONTENT_URI.toString()+"/"+bRoute.get(i).ID), BusRouteCV);
-						if(checkVal == 0)
-						{
-							setSpinnerAndButton();
-							return;
-						}
-						_c.getContentResolver().bulkInsert(UserPrefRoutePoint.CONTENT_URI, RoutePointCV);
-						_c.getContentResolver().bulkInsert(UserPrefBusRouteRoutePoint.CONTENT_URI, BusRouteRoutePointCV);
-					}
-			  		
-					ContentValues[] BusStopPointsCV = new ContentValues[sRoute.size()];
-					ContentValues[] BusStopCV = new ContentValues[sRoute.size()];
-					ContentValues[] BusRouteBusStopCV = new ContentValues[sRoute.size()];
-					for(int i = 0; i < sRoute.size(); i++)
-					{
-						BusRouteBusStopCV[i] = new ContentValues();
-						if(_c.getContentResolver().query(Uri.parse(UserPrefBusStop.CONTENT_URI.toString() + "/"+sRoute.get(i).ID), null, null, null, null).getCount() == 0)
-						{
-							BusStopPointsCV[i] = new ContentValues();
-							BusStopCV[i] = new ContentValues();
-							BusStopPointsCV[i].put(UserPrefRoutePoint.RoutePointIdField, sRoute.get(i).Position.ID);
-							BusStopPointsCV[i].put(UserPrefRoutePoint.RoutePointLatField, sRoute.get(i).Position.Position.latitude);
-							BusStopPointsCV[i].put(UserPrefRoutePoint.RoutePointLonField, sRoute.get(i).Position.Position.longitude);
-							BusStopCV[i].put(UserPrefBusStop.BusStopIdField, sRoute.get(i).ID);
-							BusStopCV[i].put(UserPrefBusStop.BusStopNameField, sRoute.get(i).Name);
-							BusStopCV[i].put(UserPrefBusStop.BusStopForeignRoutePointField,sRoute.get(i).Position.ID);
-						}
-							BusRouteBusStopCV[i].put(UserPrefBusRouteBusStop.BusRouteBusStopIDField, sRoute.get(i).BusRoute_BusStopID);
-							BusRouteBusStopCV[i].put(UserPrefBusRouteBusStop.BusRouteField, sRoute.get(i).RouteID);
-							BusRouteBusStopCV[i].put(UserPrefBusRouteBusStop.BusStopField, sRoute.get(i).ID);
-					} 
-					
-					_c.getContentResolver().bulkInsert(UserPrefRoutePoint.CONTENT_URI, BusStopPointsCV);
-					_c.getContentResolver().bulkInsert(UserPrefBusStop.CONTENT_URI, BusStopCV);
-					_c.getContentResolver().bulkInsert(UserPrefBusRouteBusStop.CONTENT_URI, BusRouteBusStopCV);
-				}
-				
-				catch(Exception e)
-				{
-					String err = (e.getMessage()==null)?"Save failed":e.getMessage();
-					Log.e("DEBUG","FAVORITE ERR: " + err);
-					setSpinnerAndButton();
-				}
+				ContentProviderAcces.SetNewFavorite(_c, bRoute, sRoute);
 				setSpinnerAndButton();
 			}
 		}).start();
@@ -293,7 +203,7 @@ public class BuslistAdapter extends BaseAdapter{
 		new Thread(new Runnable(){
 			@Override
 			public void run() {
-				int d = _c.getContentResolver().delete(UserPrefBusRoute.CONTENT_URI, busNumber, null);
+				ContentProviderAcces.DeleteBusRoute(_c,busNumber);
 				setSpinnerAndButton();
 			}
 		}).start();

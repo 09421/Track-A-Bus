@@ -3,16 +3,11 @@ package dk.TrackABus;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import dk.TrackABus.DataProviders.SoapProvider;
 import dk.TrackABus.DataProviders.TrackABusProvider;
 import dk.TrackABus.DataProviders.TrackABusProvider.LocalBinder;
 import dk.TrackABus.Models.BusRoute;
 import dk.TrackABus.Models.BusStop;
 import dk.TrackABus.Models.RoutePoint;
-import dk.TrackABus.Models.UserPrefBusRoute;
-import dk.TrackABus.Models.UserPrefBusStop;
-import dk.TrackABus.Models.UserPrefRoutePoint;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -30,9 +25,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -49,45 +41,44 @@ public class BusMapActivity extends Activity {
 	
 	private GoogleMap map;
 	private UiSettings mUiSettings;
-	private SoapProvider soapProvider;
+	private boolean isFavorite;
 	String SelectedBus;
 	TrackABusProvider BusProvider;
-	Boolean mBound = false;
+	boolean mBound = false;
+	boolean timeMsgShown = false;
+	boolean posMsgShown = false;
 	ArrayList<Marker> marks;
 	final static public int BUS_ROUTE_DONE = 1;
 	final static public int BUS_POS_DONE = 2;
-//	final static public int BUS_STOP_DONE = 2;
+	final static public int BUS_TIME_DONE = 3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapview);        
         Bundle extra = getIntent().getExtras();
-        soapProvider = new SoapProvider(); 
         marks = new ArrayList<Marker>();
         if(extra != null){        	
         	SelectedBus = extra.getString("SELECTED_BUS");
         	Log.e("MyLog", SelectedBus);
         	if(extra.getBoolean("isFavorite")){
-	        	pBar = (ProgressBar)findViewById(R.id.MapPBar);
 	        	TopBarLayout = (LinearLayout)findViewById(R.id.TopInformationBar);
-	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
 		        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
+	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
+	        	BusRouteView.setText(SelectedBus);
 		        mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
 		        mMapFragment.getView().setVisibility(View.VISIBLE);
-	        	BusRouteView.setText(SelectedBus);
+        		isFavorite = true;
         		SetUpMap();
-        		DrawFavoriteRoute(SelectedBus);
         	}
         	else{
-      	      	mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
-      	      	mMapFragment.getView().setVisibility(View.GONE);
 	        	pBar = (ProgressBar)findViewById(R.id.MapPBar);
+	        	pBar.setVisibility(View.VISIBLE);
 	        	TopBarLayout = (LinearLayout)findViewById(R.id.TopInformationBar);
 	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
 	        	BusRouteView.setText(SelectedBus);
-	        	//BusProvider = new TrackABusProvider(BusMapActivity.this, new msgHandler()); 
-	        	pBar.setVisibility(View.VISIBLE);
-	        	
+      	      	mMapFragment = ((Fragment)getFragmentManager().findFragmentById(R.id.map));
+      	      	mMapFragment.getView().setVisibility(View.GONE);
+	        	isFavorite = false;
         	}       	
         }
         else{            
@@ -124,6 +115,7 @@ public class BusMapActivity extends Activity {
 			        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
 			        mapFragment.setVisibility(View.VISIBLE);
 			        ((View)findViewById(R.id.TopInformationBarFrame)).setVisibility(View.VISIBLE);
+			        
 					ArrayList<BusRoute> BusRoutes = msg.getData().getParcelableArrayList("BusRoute");
 					ArrayList<BusStop> BusStops = msg.getData().getParcelableArrayList("BusStop");
 			        
@@ -139,21 +131,42 @@ public class BusMapActivity extends Activity {
 						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();					
 					break;
 				case BUS_POS_DONE:
-					Log.e("MyLog", "Got the message");					
-					for(int j = 0; j<marks.size(); j++){
-					marks.get(j).remove();
-					}
-					marks = new ArrayList<Marker>();
 					ArrayList<LatLng> Pos =  msg.getData().getParcelableArrayList("BusPos");
     				if(Pos != null){
+    					for(int j = 0; j<marks.size(); j++){
+    						marks.get(j).remove();
+    					}
+    					marks = new ArrayList<Marker>();
     					for(int i = 0; i<Pos.size(); i++){
     						marks.add(map.addMarker(new MarkerOptions()
 							.position(Pos.get(i))
 							.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
     					}
+    					posMsgShown = false;
     				}
-    				else
-    					Toast.makeText(BusMapActivity.this, "No bus found on route", Toast.LENGTH_SHORT).show();
+    				else if(!posMsgShown && !ConnectivityChecker.hasInternet)
+    				{
+    					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_LONG).show();
+    					posMsgShown = true;
+    				}
+					break;
+				case BUS_TIME_DONE:
+					ArrayList<String> busToStop = msg.getData().getStringArrayList("busTime");
+					if(busToStop.size() != 0)
+					{								
+						String asc = busToStop.get(0);
+						String desc = busToStop.get(1);
+						String ascStop = busToStop.get(2);
+						String descStop = busToStop.get(3);
+						
+						timeMsgShown=false;
+						UpdateTime(asc, desc, ascStop,descStop);
+					}
+					else if(!timeMsgShown)
+					{
+						Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update time", Toast.LENGTH_LONG).show();
+						timeMsgShown = true;
+					}
 					break;
 				default:
 					super.handleMessage(msg);
@@ -240,78 +253,11 @@ public class BusMapActivity extends Activity {
 	}
 	
 	private void UpdateBusLocation() {
-//		new Thread(new Runnable() {
-//	        public void run() { 
 		if(ConnectivityChecker.hasInternet)
 			BusProvider.GetBusPos(SelectedBus, BUS_POS_DONE, new msgHandler());
 		else
 			Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_LONG).show();
-	
-//	    		Runnable setFirstMark = new Runnable(){
-//	    			@Override
-//	    			public void run() {
-//	    				marks = new ArrayList<Marker>();
-//	    				if(SelectedBusPos != null)
-//	    					for(int i = 0; i<SelectedBusPos.size(); i++)
-//	    						marks.add(map.addMarker(new MarkerOptions()
-//								    						.position(SelectedBusPos.get(i))
-//								    						.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
-//	    				else
-//	    					Toast.makeText(getApplicationContext(), "No bus found on route", Toast.LENGTH_SHORT).show();
-//	    			}			
-//	    		};
-//	    		handler.post(setFirstMark);
-//			
-//			t = new Thread(new updateMarker());
-//			t.start();
-//			}	
-//	    }).start();	
 	}	
-
-
-//	Boolean Running = true;
-//	public class updateMarker implements Runnable{
-//		
-//		@Override
-//		public void run() {
-//			while(Running){				
-//				CurrentLatLng = soapProvider.GetBusPos(SelectedBus);
-//				handler.post(setMark);
-//				try {
-//					Thread.sleep(1000);
-//					if(!Running)
-//						break;
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}				
-//			}
-//		}
-//		ArrayList<LatLng> CurrentLatLng;
-//		boolean posMsgShown = false;
-//		Runnable setMark = new Runnable(){
-//			@Override
-//			public void run() {
-//				if(CurrentLatLng == null && !posMsgShown)
-//				{
-//					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_SHORT).show();
-//					posMsgShown = true;
-//					return;
-//				}
-//				else if(CurrentLatLng == null && posMsgShown)
-//					return;
-//				posMsgShown = false;
-//				for(int j = 0; j<marks.size(); j++){
-//					marks.get(j).remove();
-//				}
-//				marks = new ArrayList<Marker>();
-//				for(int i = 0; i<CurrentLatLng.size(); i++){					
-//					marks.add(map.addMarker(new MarkerOptions()
-//					.position(CurrentLatLng.get(i))
-//					.icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))));
-//				}			
-//			}			
-//		};		
-//	}	
 	
 	private void DrawRoute(ArrayList<RoutePoint> points) {
 
@@ -330,118 +276,7 @@ public class BusMapActivity extends Activity {
 		 }
 		 map.addPolyline(pOption);
 	}
-	
-	private boolean timeUpdating;
-	private Thread updateTimeThread;
-	
-	private class timeUpdater implements Runnable{
-		@Override
-		public void run(){
-			class UpdateTimeRunnable implements Runnable{
-				public String ascS;
-				public String descS;
-				public String aStop;
-				public String dStop;
-				
-				public UpdateTimeRunnable(String ascSec, String descSec, String ascStop, String descStop)
-				{
-					ascS = ascSec; descS = descSec;
-					aStop = ascStop; dStop = descStop;
-				}
-				
-				public void SetValues(String ascSec, String descSec, String ascStop, String descStop)
-				{
-					ascS = ascSec; descS = descSec;
-					aStop = ascStop; dStop = descStop;
-				}
-				
-				@Override
-				public void run() {
-					Log.e("test", ascS + " ; " + descS + " ; " + aStop + " ; " +dStop);
-					String currentAscText = (String) ((TextView)findViewById(R.id.AscendingBusEndStopInfo)).getText();
-					String currentDescText = (String) ((TextView)findViewById(R.id.DescendingBusEndStopInfo)).getText();
-					if(currentAscText!= aStop || currentAscText != "No bus going this direction")	 
-					{
-						if(aStop.contains("anyType"))
-						{
-							((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("No bus going this direction");
-							UpdateTimeAsc("-1");
-						}
-						else
-						{
-							((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + aStop);
-							UpdateTimeAsc(ascS);
-						} 
-					}
-					if(currentDescText != dStop || currentDescText != "No bus going this direction")	
-					{
-						if(dStop.contains("anyType"))
-						{
-							((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("No bus going this direction");
-							UpdateTimeDesc("-1");
-						
-						}
-						else
-						{
-							((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + dStop);
-							UpdateTimeDesc(descS);
-						}
-					}
-					if(!dStop.contains("anyType"))
-					{
-						
-					}
-				}							
-			}
-			UpdateTimeRunnable r = null;
-			boolean msgShown = false; 
-			while(timeUpdating)
-			{  
-				String stop = ((TextView)findViewById(R.id.StopInfo)).getText().toString();
-				String route=((TextView)findViewById(R.id.RouteInfo)).getText().toString();
-				ArrayList<String> busToStop = soapProvider.GetBusToStopTime(stop,route);
-				
-				if(busToStop.size() != 1)
-				{								
-					String asc = busToStop.get(0);
-					String desc = busToStop.get(1);
-					String ascStop = busToStop.get(2);
-					String descStop = busToStop.get(3);
-					
-					if(msgShown) msgShown=false;
-					
-					if(r == null)
-					{
-						r = new UpdateTimeRunnable(asc,desc,ascStop,descStop);
-					}
-					else
-					{
-						r.SetValues(asc,desc,ascStop,descStop);
-					}
-					handler.post(r);
-				}
-				else if(!msgShown)
-				{
-					msgShown = true;
-					Runnable errRun = new Runnable()
-					{
-						@Override
-						public void run() {
-							
-							Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update time", Toast.LENGTH_SHORT).show();
-						}
-					};
-					handler.post(errRun);
-				}
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	};	
-	
+
 	private void DrawBusStops(final ArrayList<BusStop> stops)
 	{
 		if(stops != null){
@@ -468,24 +303,23 @@ public class BusMapActivity extends Activity {
 					Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update time", Toast.LENGTH_SHORT).show();
 					return false;
 				}
-				timeUpdating = false;
-				if(updateTimeThread != null)
+				if(BusProvider.timeThread != null)
 				{
-					updateTimeThread.interrupt();//Breaks Thread If Sleeping
+					BusProvider.handlingBusTime = false;
+					BusProvider.timeThread.interrupt();
 					
-					while(updateTimeThread.isAlive())
+					while(BusProvider.timeThread.isAlive())
 					{
 						try {
-							Thread.sleep(1);
-							updateTimeThread.interrupt();//Breaks Thread If Sleeping
+							Thread.sleep(10);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}						
 					}
 				}
-				timeUpdating = true;
-			    updateTimeThread = new Thread(new timeUpdater());
-			    updateTimeThread.start();
+				String stop = ((TextView)findViewById(R.id.StopInfo)).getText().toString();
+				String route=((TextView)findViewById(R.id.RouteInfo)).getText().toString();
+				BusProvider.GetBusTime(route, stop, BUS_TIME_DONE, new msgHandler());
 				return false;
 			}
 		});
@@ -495,52 +329,64 @@ public class BusMapActivity extends Activity {
 		Runnable DrawRouter = new Runnable(){
 			@Override
 			public void run() {
-				final Cursor RouteCursor = getContentResolver().query(UserPrefBusRoute.CONTENT_URI,null, selectedBus, null, null);
-				RouteCursor.moveToFirst();
-				Runnable[] drawingRoute = new Runnable[RouteCursor.getCount()];
+				ArrayList<String> Routes = ContentProviderAcces.GetBusRoutes(getApplicationContext(), selectedBus);
+				Runnable[] drawingRoute = new Runnable[Routes.size()];
 				for(int i = 0; i < drawingRoute.length; i++)
 				{
-					Cursor Route = getContentResolver().query(UserPrefRoutePoint.CONTENT_URI, null, RouteCursor.getString(0), null, null);
-					Cursor BusStops = getContentResolver().query(UserPrefBusStop.CONTENT_URI, null, RouteCursor.getString(0), null, null);
-					final float[] LatRoute = new float[Route.getCount()];
-					final float[] LngRoute = new float[Route.getCount()];
-					Route.moveToFirst();
-					BusStops.moveToFirst();
-					final ArrayList<BusStop> stops = new ArrayList<BusStop>();
-					for(int j = 0; j < Route.getCount(); j++)
-					{
-						LatRoute[j] = Route.getFloat(0);
-						LngRoute[j] = Route.getFloat(1);
-						Route.moveToNext();
-					}
-					for(int k = 0; k < BusStops.getCount(); k++)
-					{
-						stops.add(new BusStop(new RoutePoint(new LatLng(BusStops.getFloat(1),BusStops.getFloat(2)),null)
-										, BusStops.getString(0), null, null, null));
-						BusStops.moveToNext();
-					}
+					final ArrayList<float[]> routePoints = ContentProviderAcces.GetBusRoutePoints(getApplicationContext(), Routes.get(i));
+					final ArrayList<BusStop> stops = ContentProviderAcces.GetBusStops(getApplicationContext(), Routes.get(i));
 					drawingRoute[i] = new Runnable(){
 						@Override
-						public void run() {
-							DrawRoute(LatRoute, LngRoute);
-							DrawBusStops(stops);
+						public void run() { 
+							DrawRoute(routePoints.get(0), routePoints.get(1));
+							DrawBusStops(stops);	
 						}
 					};
 					handler.post(drawingRoute[i]);
-					RouteCursor.moveToNext();
-				}				
-				UpdateBusLocation();				
+				}						
 			}
 		};		
 		
+		UpdateBusLocation();
 		Thread DrawRoutet = new Thread(DrawRouter);
 		DrawRoutet.start();
+
+	}
+	private void UpdateTime(String a, String d, String aS, String dS)
+	{
+		String currentAscText = (String) ((TextView)findViewById(R.id.AscendingBusEndStopInfo)).getText();
+		String currentDescText = (String) ((TextView)findViewById(R.id.DescendingBusEndStopInfo)).getText();
+		if(currentAscText != "No bus going this direction")	 
+		{
+			if(aS.contains("anyType"))
+			{
+				((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("No bus going this direction");
+				UpdateTimeAsc("-1");
+			}
+			else
+			{
+				((TextView)findViewById(R.id.AscendingBusEndStopInfo)).setText("Towards " + aS);
+				UpdateTimeAsc(a);
+			} 
+		}
+		if(currentDescText != "No bus going this direction")	
+		{
+			String dSec;
+			if(dS.contains("anyType"))
+			{
+				((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("No bus going this direction");
+				UpdateTimeDesc("-1");
+			}
+			else
+			{
+				((TextView)findViewById(R.id.DescendingBusEndStopInfo)).setText("Towards " + dS);
+				UpdateTimeDesc(d);
+			}
+		}
 	}
 	
 	@Override
 	protected void onDestroy() {		
-		//Running = false;
-		timeUpdating = false;
 		mBound = false;	
 		super.onDestroy();
 	}
@@ -548,8 +394,6 @@ public class BusMapActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		//Running = false;
-		timeUpdating = false;
 	}
 	
 	@Override
@@ -560,18 +404,13 @@ public class BusMapActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-//		if(t != null && !t.isAlive())
+
+//		if(updateTimeThread != null && !updateTimeThread.isAlive())
 //		{
-//	  	   	t = new Thread(new updateMarker());
-//	  	   	Running = true;
-//	  	   	t.start();
-//		}
-		if(updateTimeThread != null && !updateTimeThread.isAlive())
-		{
-			updateTimeThread = new Thread(new timeUpdater());
-			timeUpdating = true;
-			updateTimeThread.start();
-		}		
+//			updateTimeThread = new Thread(new timeUpdater());
+//			timeUpdating = true;
+//			updateTimeThread.start();
+//		}		
 	}
 	
 	@Override
@@ -592,7 +431,10 @@ public class BusMapActivity extends Activity {
 			BusProvider = binder.getService();
 			mBound = true;
 			Log.e("Debug", "onServiceConnected");
-			BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE, new msgHandler());
+			if(!isFavorite)
+				BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE, new msgHandler());
+			else
+				DrawFavoriteRoute(SelectedBus);
 		}
 
 		@Override
@@ -601,4 +443,6 @@ public class BusMapActivity extends Activity {
 			Log.e("Debug", "onServiceDisconnected");
 		}
 	};
+
 }
+

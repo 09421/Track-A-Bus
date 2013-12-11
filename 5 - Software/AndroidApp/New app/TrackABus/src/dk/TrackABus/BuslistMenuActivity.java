@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import dk.TrackABus.DataProviders.TrackABusProvider;
 import dk.TrackABus.DataProviders.TrackABusProvider.LocalBinder;
 import dk.TrackABus.Models.ListBusData;
-import dk.TrackABus.Models.UserPrefBusRoute;
 
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
@@ -12,9 +11,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -70,22 +66,9 @@ public class BuslistMenuActivity extends ListActivity {
 		}
 		
 		ArrayList<ListBusData> AllBusses;
-		private void UpdateBusList(ArrayList<String> busList) {
-			
-			AllBusses = new ArrayList<ListBusData>();	    	
-			Cursor c = getContentResolver().query(UserPrefBusRoute.CONTENT_URI, null,null, null, null);
-			ArrayList<String> FavoriteBusses = new ArrayList<String>();		
-
-			c.moveToFirst();
-			for(int i = 0; i < c.getCount(); i++)
-			{
-				FavoriteBusses.add(c.getString(0));
-				c.moveToNext();
-			}	    	
- 	
-	    	for(int i = 0; i < busList.size(); i++)
-	    		AllBusses.add(i, new ListBusData(FavoriteBusses.contains(busList.get(i)), busList.get(i)));   	
-	    	busListAdapter = new BuslistAdapter(AllBusses, getApplicationContext());
+		private void UpdateBusList(ArrayList<String> busList)
+		{	   	
+	    	busListAdapter = new BuslistAdapter(ContentProviderAcces.ListBusDataCreator(getApplicationContext(),busList), getApplicationContext());
 			setListAdapter(busListAdapter);
 	    	pBar.setVisibility(View.GONE);			
 		}

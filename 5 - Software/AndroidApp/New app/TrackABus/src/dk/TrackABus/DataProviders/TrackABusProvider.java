@@ -16,7 +16,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-
 import dk.TrackABus.Models.BusRoute;
 import dk.TrackABus.Models.BusStop;
 
@@ -26,19 +25,16 @@ public class TrackABusProvider extends Service{
 		Messenger mMessenger;
 		SoapProvider soapProvider;
 		Handler ReplyTo;
-		boolean isBound = true;
+		public boolean handlingBusPos = true;
+		public boolean handlingBusTime = true;
+		public Thread timeThread;
 		
 	/**
 	 * Constructor for TrackABusProvider
 	 * @param context applicationContext
 	 * @param replyTo The handler that messages will be send to, when async methods are done
 	 */
-//	public TrackABusProvider(Context context, Handler replyTo){
-//		Context = context;	
-//		ReplyTo = replyTo;
-//		mMessenger = new Messenger(ReplyTo);
-//		soapProvider = new SoapProvider();
-//	}
+
 		
 	public TrackABusProvider(){
 		soapProvider = new SoapProvider();
@@ -54,13 +50,13 @@ public class TrackABusProvider extends Service{
 	public void onRebind(Intent intent) {
 		super.onRebind(intent);
 		Log.e("MyLog", "onRebind");			
-		isBound = true;
+
 	}	
 	
 	@Override
 	public boolean onUnbind(Intent intent) {			
 		Log.e("MyLog", "onUnbind");
-		isBound = false;
+		StopWork();
 		super.onUnbind(intent);
 		return true;
 	}
@@ -75,7 +71,6 @@ public class TrackABusProvider extends Service{
 	        	mMessenger = new Messenger(replyTo);
 	    		ArrayList<String> BusName = new ArrayList<String>();
 	    		BusName = soapProvider.GetBusList();
-	    		
 	    		Bundle b = new Bundle();
 	    		b.putStringArrayList("1", BusName);
 	    		Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
@@ -97,7 +92,6 @@ public class TrackABusProvider extends Service{
 	 */
 	public void GetBusRoute(final String busNumber, final int ReplyMessage, final Handler replyTo){
 		try{
-			
 			new Thread(new Runnable() {
 		        public void run() {
 		        	mMessenger = new Messenger(replyTo);
@@ -125,8 +119,10 @@ public class TrackABusProvider extends Service{
 		try{			
 			new Thread(new Runnable() {
 				public void run() {
+					Log.e("MyLog", "In GetBusPos");
 					mMessenger = new Messenger(replyTo);
-					while(isBound){				
+					handlingBusPos = true;
+					while(handlingBusPos){				
 						Bundle b = new Bundle();
 			        	ArrayList<LatLng> arg0 = soapProvider.GetBusPos(busNumber);
 			        	b.putParcelableArrayList("BusPos", arg0);
@@ -154,8 +150,43 @@ public class TrackABusProvider extends Service{
 			}
 	}
 	
+	public void GetBusTime(final String busNumber, final String BusStop, final int ReplyMessage, final Handler replyTo)
+	{
+		try{			
+			timeThread = new Thread(new Runnable() {
+				public void run() {
+					mMessenger = new Messenger(replyTo);
+					handlingBusTime = true;
+					while(handlingBusTime){
+						ArrayList<String> busToStop = soapProvider.GetBusToStopTime(BusStop,busNumber);
+						Message timeMessage = Message.obtain(null,ReplyMessage,0,0);
+						Bundle b = new Bundle();
+						b.putStringArrayList("busTime", busToStop);
+						timeMessage.setData(b);
+						
+						try {
+							mMessenger.send(timeMessage);				
+							Thread.sleep(2000);
+						}catch (Exception e) {
+							e.printStackTrace();						
+						}
+
+						
+					}
+				}
+			});
+			}catch(Exception e){
+				Log.e("MyLog", e.getMessage());
+			}
+		if(timeThread != null)
+			timeThread.start();
+	}
+	
+
+	
 	public void StopWork(){
-		isBound = false;
+		handlingBusPos = false;
+		handlingBusTime = false;
 	}
 	
 	/**
@@ -170,16 +201,14 @@ public class TrackABusProvider extends Service{
 	@Override
 	public IBinder onBind(Intent intent) {
 		Log.e("MyLog", "onBind");
-		isBound = true;
 		return mBinder;
 	}
 	
 	@Override
 	public void onDestroy() {
 		Log.e("MyLog", "onDestroy");
-		isBound = false;
-		super.onDestroy();
-		//stopSelf();			
+		StopWork();
+		super.onDestroy();			
 	}	
 	
 }

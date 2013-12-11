@@ -196,7 +196,6 @@ public ArrayList<LatLng> GetBusPos(String BusNumber)
 					Log.e("DEBUG", e.getMessage());
 				  }
 			  }catch(Exception e){
-				  RouteList.add(e.toString());
 			  }
 			  return RouteList;
 		
