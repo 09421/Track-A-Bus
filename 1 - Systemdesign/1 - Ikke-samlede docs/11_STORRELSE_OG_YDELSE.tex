@@ -5,7 +5,7 @@
 
 I dette afsnit er der angivet de kritiske størrelser og ydelsesparametre for systemet.
 \subsection{Dataforbrug for mobil applikation}
-Det er ikke altid der er adgang til Wi-FI netværksforbindelse og det vil derfor være nødvendigt at bruge telefonenes mobil datanetværk, til at hente ruter, stoppesteder og bussernes position fra databasen. Dataforbruget for en time, hvor kortet bliver vist og bussernes position bliver opdateret ligger på ca. 10 megabytes.
+Det er ikke altid der er adgang til Wi-FI netværksforbindelse og det vil derfor være nødvendigt at bruge telefonenes mobil datanetværk, til at hente ruter, stoppesteder og bussernes position fra databasen. Dataforbruget for en time, hvor kortet bliver vist og bussernes position bliver opdateret ligger på ca. 4 megabytes. er et stoppested valgt, vil dataforbruget ligge på ca. 7 megabytes.
 \subsection{Performance for mobil applikation}
 Lagerforbruget på mobiltelefonen ligger omkring 4 megabytes.\\
 Der benyttes i gennemsnit ca. 7\% CPU kraft.
@@ -14,4 +14,5 @@ Lagerforbruget på serveren, til hjemmesiden, MySQL databasen og servicen ligger 
 Serveren står for at lave alle udregnigner og dataprocessering som mobil applikationen skal bruge. Da det er et distribuerede systemet, kan det forkomme mange forbindelser til serveren på samme tid. Der har dog ikke været mulighed for at udføre en stres-test af serveren, for at se hvor mange mobil telefoner den kan håndtere på en gang, da der ikke har været ressourcer til mere end to mobil telefoner.
 \subsection{Performance for simulator}
 Lagerforbruget på disken ligger omkring 2 megabytes.\\
+Der benyttes i ca. 33.4 megabytes memory og gennemsnit mellem ca. 0.16GHz og 0.4Ghz CPU kraft ved normalt brug.
 \end{document}

@@ -342,9 +342,9 @@ public class BusMapActivity extends Activity {
 				public String descS;
 				public String aStop;
 				public String dStop;
+				
 				public UpdateTimeRunnable(String ascSec, String descSec, String ascStop, String descStop)
 				{
-					
 					ascS = ascSec; descS = descSec;
 					aStop = ascStop; dStop = descStop;
 				}
@@ -354,7 +354,6 @@ public class BusMapActivity extends Activity {
 					ascS = ascSec; descS = descSec;
 					aStop = ascStop; dStop = descStop;
 				}
-
 				
 				@Override
 				public void run() {
@@ -478,6 +477,7 @@ public class BusMapActivity extends Activity {
 					{
 						try {
 							Thread.sleep(1);
+							updateTimeThread.interrupt();//Breaks Thread If Sleeping
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}						

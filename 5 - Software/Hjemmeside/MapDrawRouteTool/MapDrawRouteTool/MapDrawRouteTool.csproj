@@ -135,6 +135,9 @@
     <Compile Include="Controllers\BusController.cs" />
     <Compile Include="Controllers\DirController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Interfaces\IDirController.cs" />
+    <Compile Include="Controllers\Interfaces\IBusController.cs" />
+    <Compile Include="Controllers\Interfaces\IStopController.cs" />
     <Compile Include="Controllers\StopController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -222,7 +225,9 @@
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

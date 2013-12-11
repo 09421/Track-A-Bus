@@ -18,12 +18,6 @@ namespace MapDrawRouteTool.Models
         public Decimal Lat { get; set; }
         public Decimal Lng { get; set; }
 
-        //public BusStops(string busStopName)
-        //{
-        //    busStopNames = busStopName;
-            
-        //}
-
         public static List<BusStops> GetAllBusStops()
         {
             string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;

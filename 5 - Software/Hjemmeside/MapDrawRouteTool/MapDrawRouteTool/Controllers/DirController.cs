@@ -11,22 +11,9 @@ using System.Configuration;
 
 namespace MapDrawRouteTool.Controllers
 {
-    public class DirController : Controller
+    public class DirController : Controller, IDirController
     {
-        //
-        // GET: /Dir/
         public ActionResult Index()
-        {
-
-            return View();
-        }
-
-        public ActionResult CreateRoute()
-        {
-            return View();
-        }
-
-        public ActionResult EditRoute()
         {
             return View();
         }
@@ -862,79 +849,44 @@ namespace MapDrawRouteTool.Controllers
 
         public JsonResult GetStops()
         {
-            string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
-            using (var connection = new MySqlConnection(ConnectionString))
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    try
-                    {
-                        var stops = new List<BusStops>();
-                        connection.Open();
-                        cmd.CommandText = "SELECT ID, StopName FROM BusStop;";
-                        var read = cmd.ExecuteReader();
 
-                        while (read.Read())
-                        {
-                            stops.Add(new BusStops() { ID = read.GetInt32(0), name = read.GetString(1) });
-                        }
+            return DBConnection.GetAllStops();
+            //string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
+            //using (var connection = new MySqlConnection(ConnectionString))
+            //{
+            //    using (var cmd = connection.CreateCommand())
+            //    {
+            //        try
+            //        {
+            //            var stops = new List<BusStops>();
+            //            connection.Open();
+            //            cmd.CommandText = "SELECT ID, StopName FROM BusStop;";
+            //            var read = cmd.ExecuteReader();
 
-                        read.Close();
-                        connection.Close();
+            //            while (read.Read())
+            //            {
+            //                stops.Add(new BusStops() { ID = read.GetInt32(0), name = read.GetString(1) });
+            //            }
+
+            //            read.Close();
+            //            connection.Close();
 
 
-                        return JConverter.ConvertToJson(stops);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.WriteLine(e.Message);
-                        connection.Close();
-                        return null;
-                    }
-                }
-            }
+            //            return JConverter.ConvertToJson(stops);
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            Debug.WriteLine(e.Message);
+            //            connection.Close();
+            //            return null;
+            //        }
+            //    }
+            //}
         }
 
         public JsonResult GetLatLng(List<string> StopNames)
         {
-            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
-            {
-                using (var cmd = connection.CreateCommand())
-                {
-                    try
-                    {
-                        connection.Open();
-
-                        cmd.CommandText = "SELECT l.Latitude, l.Longitude FROM RoutePoint AS l " +
-                                          "INNER JOIN BusStop AS s ON l.ID = s.fk_RoutePoint " +
-                                          "WHERE s.StopName = ";
-                        for (var i = 0; i < StopNames.Count(); i++)
-                        {
-                            cmd.CommandText += "'" + StopNames[i] + "' OR s.StopName = ";
-                        }
-                        cmd.CommandText = cmd.CommandText.TrimEnd(" OR s.StopName = ".ToCharArray());
-
-                        var read = cmd.ExecuteReader();
-
-                        List<BusStops> LatLng = new List<BusStops>();
-                        while (read.Read())
-                        {
-                            LatLng.Add(new BusStops() { Lat = read.GetDecimal(0), Lng = read.GetDecimal(1) });
-                        }
-                        read.Close();
-                        connection.Close();
-
-                        return JConverter.ConvertToJson(LatLng);
-
-                    }
-                    catch (Exception e)
-                    {
-                        connection.Close();
-                        Debug.WriteLine(e.Message);
-                        return null;
-                    }
-                }
-            }
+            return DBConnection.GetPosistionForBusstop(StopNames);
         }
     }
 }

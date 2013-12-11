@@ -91,10 +91,11 @@
             url: '@Url.Action("GetAllStops", "Stop")',
             dataType: "json",
             success: function (result) {
+                debugger;
                 var select = document.getElementById("StopRoutes");
                 select.options.length = 0;
                 for (var i = 0; i < result.length; i++) {
-                    select.options.add(new Option(result[i]));
+                    select.options.add(new Option(result[i].StopName));
                 }
             }
         });
@@ -175,10 +176,11 @@
                     markers[0].setMap(null);
                     markers = [];
                 }
+
                 var mark = new google.maps.Marker({
                     map: map,
                     draggable: true,
-                    position: new google.maps.LatLng(result[0], result[1])
+                    position: new google.maps.LatLng(result[0].Lat, result[0].Lng)
                 });
                 markers.push(mark)
                 google.maps.event.addListener(mark, 'click', function () {
@@ -189,7 +191,6 @@
                     
             }
         });
-
     }
 
     function RenameStop() {

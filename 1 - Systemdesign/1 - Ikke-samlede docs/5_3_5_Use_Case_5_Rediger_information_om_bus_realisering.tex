@@ -1,0 +1,8 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\subsubsection{Use Case 5: Rediger information om bus}
+Denne Use Case består af 3 normalforløb, der alle bliver initialiseret fra \url{www.TrackABus.dk/bus}, se figur \ref{fig:BusHjemmeside} for hvordan grænsefladen ser ud. Der vil, når siden er blevet indlæst, vil viewet kalde funktionen ExecuteOnLoad() der laver tre asynkrone kald til dens controller, der henter navne på alle busruterne, alle busserne, og alle busser der ikke er knyttet til nogle rute. Det disse er færdige vil viewet opdatere de relevante lister på skærmen.\\
+\noindent
+Normalforløb 1, hvor en ny bus skal tilføjes til systemet bliver initialiseret, ved at administratoren indskriver ID'et for den nye bus i feltet: 'Bus ID', hvorefter der trykket på knappen 'Add'. Dette vil tilføje busses til listen, men vil endnu ikke gemme det på databasen, dette vil først ske når administratoren trykker på 'Save' knappen.
+\end{document}
