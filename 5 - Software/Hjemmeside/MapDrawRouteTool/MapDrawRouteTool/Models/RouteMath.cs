@@ -92,24 +92,24 @@ namespace MapDrawRouteTool.Models
 
                 for (int k = 0; k < chosenRouteLatLng.Count - 2; k = k + 2)
                 {
-                    if (k == 0)
-                    {
-                        currDistToStartOfRoute = (decimal)RouteMath.Haversine(stop.Lat, decimal.Parse(chosenRouteLatLng[0]), stop.Lng, decimal.Parse(chosenRouteLatLng[1]));
-                        currDistToEndOfRoute = (decimal)RouteMath.Haversine(stop.Lat, decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count - 2]), stop.Lng, decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count - 1]));
-                        if (currDistToStartOfRoute < leastDistToStartOfRoute || leastDistToStartOfRoute == -1)
-                        {
-                            leastStartStopID = stop.ID;
-                            leastStartStopName = s;
-                            leastDistToStartOfRoute = currDistToStartOfRoute;
-                        }
-                        if (currDistToEndOfRoute < leastDistToEndOfRoute || leastDistToEndOfRoute == -1)
-                        {
-                            leastEndStopID = stop.ID;
-                            leastEndStopName = s;
-                            leastDistToEndOfRoute = currDistToEndOfRoute;
-                        }
+                    //if (k == 0)
+                    //{
+                    //    currDistToStartOfRoute = (decimal)RouteMath.Haversine(stop.Lat, decimal.Parse(chosenRouteLatLng[0]), stop.Lng, decimal.Parse(chosenRouteLatLng[1]));
+                    //    currDistToEndOfRoute = (decimal)RouteMath.Haversine(stop.Lat, decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count - 2]), stop.Lng, decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count - 1]));
+                    //    if (currDistToStartOfRoute < leastDistToStartOfRoute || leastDistToStartOfRoute == -1)
+                    //    {
+                    //        leastStartStopID = stop.ID;
+                    //        leastStartStopName = s;
+                    //        leastDistToStartOfRoute = currDistToStartOfRoute;
+                    //    }
+                    //    if (currDistToEndOfRoute < leastDistToEndOfRoute || leastDistToEndOfRoute == -1)
+                    //    {
+                    //        leastEndStopID = stop.ID;
+                    //        leastEndStopName = s;
+                    //        leastDistToEndOfRoute = currDistToEndOfRoute;
+                    //    }
 
-                    }
+                    //}
                     currentDist = RouteMath.CalculateBusStopToRouteDist(stop.Lat, stop.Lng, (decimal.Parse(chosenRouteLatLng[k])), decimal.Parse(chosenRouteLatLng[k + 1]),
                           decimal.Parse(chosenRouteLatLng[k + 2]), decimal.Parse(chosenRouteLatLng[k + 3]));
 
@@ -130,7 +130,7 @@ namespace MapDrawRouteTool.Models
                 else if (stops.IndexOf(s) == stops.Count - 1 && leastDist != -1)
                 {
                     RouteWithStopsID.Add(stop.ID.ToString());
-                    StopOnRoute.Add(s);
+                    StopOnRoute.Add(s); 
                     stopCounter++;
                     continue;
                 }
@@ -141,14 +141,14 @@ namespace MapDrawRouteTool.Models
                     stopCounter++;
                 }
             }
-            RouteWithStopsID.Remove(leastStartStopID.ToString());
-            RouteWithStopsID.Remove(leastEndStopID.ToString());
-            RouteWithStopsID.Insert(0, leastStartStopID.ToString());
-            RouteWithStopsID.Add(leastEndStopID.ToString());
-            StopOnRoute.Remove(leastStartStopName);
-            StopOnRoute.Remove(leastEndStopName);
-            StopOnRoute.Insert(0, leastStartStopName);
-            StopOnRoute.Add(leastEndStopName);
+            //RouteWithStopsID.Remove(leastStartStopID.ToString());
+            //RouteWithStopsID.Remove(leastEndStopID.ToString());
+            //RouteWithStopsID.Insert(0, leastStartStopID.ToString());
+            //RouteWithStopsID.Add(leastEndStopID.ToString());
+            //StopOnRoute.Remove(leastStartStopName);
+            //StopOnRoute.Remove(leastEndStopName);
+            //StopOnRoute.Insert(0, leastStartStopName);
+            //StopOnRoute.Add(leastEndStopName);
 
             RouteAndStops.Add(RouteWithStopsID);
             RouteAndStops.Add(StopOnRoute);

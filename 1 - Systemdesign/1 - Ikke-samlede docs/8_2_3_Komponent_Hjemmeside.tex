@@ -157,7 +157,55 @@ $.ajax({
 }
 \end{lstlisting}
 SaveRouteAndStops() funktionen, står for at samle data der skal gemmes i databasen, og sende det til Save funktionen i Dir controlleren gennem et ajax kald. Først finder den alle de GPS koordinater der bruges til at tegne ruten, hertil bliver funktionen getRoutePath() brugt. her bliver den tidligere defineret temp variable, der holder information om ruten, brugt. For at få GPS-koordinaterne for de punkter der bliver brugt til at tegne ruten, skal hver path, for hver step, for hver leg findes. Når disse er fundet, retuneres en liste af GPS koordinater. For mere information om path, step og legs refereres til Google maps api documentation
-Dernæst bliver der fundet de waypoints og stoppesteder der ligger på ruten. Waypoints skal bruges til at genskabe ruten på hjemmesiden. Til sidste bliver der fundet de ruter der udgøre en kompleks rute, hvis dette er blevet tilføjet. controlleren kalder CalculateBusStopsForRoute() funktionen der laver udregninger på mellem hvilke rute punkter stoppestedet skal ligge, \textit{se afsnit 8.2.5 Anvendt matematik} for dybere beskrivelse af udregningerne der bliver fortaget. Efter alle udregnigner er fortaget, bliver alt data indsat i MySQL databasen \textit{Se afsnit 9.2.3 Implementering af persistens i online værktøjet} for hvordan databasen bliver tilgået.
+Dernæst bliver der fundet de waypoints og stoppesteder der ligger på ruten. Waypoints skal bruges til at genskabe ruten på hjemmesiden. Til sidste bliver der fundet de ruter der udgøre en kompleks rute, hvis dette er blevet tilføjet. controlleren kalder CalculateBusStopsForRoute() funktionen der laver udregninger på mellem hvilke rute punkter stoppestedet skal ligge. Denne funktion undersøger hvert individuelt stop, og udregner, hvorpå ruten dettes stop skal ligge. På kodeudsnit \ref{lst:StopOnRoute1} kan første del af denne udregning ses. Udregningen er den første del af foreach-løkken, som kigger alle stoppesteder på ruten igennem, og efter stoppestedets position hentes. Haversine og CalculateBusStopToRouteDist funktionerne kan der læses mere om i afsnittet \textit{8.2.5: Komponent: Matematik}, under "Haversine" og "Tætteste punkt på en linje".
+\begin{lstlisting}[caption=Udregninger af placering af stoppesteder på rute del 1, label={lst:StopOnRoute1}, language=Java]
+if (k == 0)
+{
+	currDistToStartOfRoute = 
+		(decimal)RouteMath.Haversine(
+			stop.Lat, 
+			decimal.Parse(chosenRouteLatLng[0]), 
+			stop.Lng, 
+			decimal.Parse(chosenRouteLatLng[1]));
+	currDistToEndOfRoute = 
+		(decimal)RouteMath.Haversine(
+		stop.Lat,
+		decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count-2]),
+		stop.Lng, 
+		decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count-1]));
+	if (currDistToStartOfRoute < leastDistToStartOfRoute
+		 || leastDistToStartOfRoute == -1)
+	{
+		leastStartStopID = stop.ID;
+		leastStartStopName = s;
+		leastDistToStartOfRoute = currDistToStartOfRoute;
+	}
+	if (currDistToEndOfRoute < leastDistToEndOfRoute
+		 || leastDistToEndOfRoute == -1)
+	{
+		leastEndStopID = stop.ID;
+		leastEndStopName = s;
+		leastDistToEndOfRoute = currDistToEndOfRoute;
+	}
+currentDist = RouteMath.CalculateBusStopToRouteDist(
+		stop.Lat, stop.Lng
+		decimal.Parse(chosenRouteLatLng[k]),
+		decimal.Parse(chosenRouteLatLng[k + 1]),
+		decimal.Parse(chosenRouteLatLng[k + 2]),
+		decimal.Parse(chosenRouteLatLng[k + 3]));
+
+if ((currentDist < leastDist || leastDist == -1)
+ && currentDist <= 15 && currentDist != -1)
+{
+	leastDist = currentDist;
+	pointBeforeStopIndex = k / 2;
+}
+
+\end{lstlisting}
+SaveRouteAndStops
+
+ \textit{se afsnit 8.2.5 Anvendt matematik}
+Efter alle udregnigner er fortaget, bliver alt data indsat i MySQL databasen \textit{Se afsnit 9.2.3 Implementering af persistens i online værktøjet} for hvordan databasen bliver tilgået.
 \\
 \noindent
 Det sidste view omhandler funktionerne for at tilføje, nye stoppesteder, ændre position og navn for eksiterende stoppesteder, samt slette dem fra databasen. For at kunne oprette nye stoppesteder, bliver der igen brugt Google maps API, dette bliver initialiseret på samme måde som beskrevet tidligere i afsnittet, dog uden Google Direction Services, da det kun er enkelte punkter på kortet der skal gemmes. For at oprette et nyt stoppested, bliver kortets listener event kaldt, ved tryk på kortet, dette event vil sætte en marker på kortet, der hvor der blev trykket, som symbolisere stoppestedets position.
