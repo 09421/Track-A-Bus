@@ -1,0 +1,32 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\section{Resultater}
+%OBJEKTIV vurdering af resultater. Meget gerne i tabelform, grafer og billeder. Der skal ikke være nogen form for diskussion i dette afsnit. Dette kommer i næste afsnit. 
+Nedenfor er de mest væsentlige resultater listet, hvorefter de kort beskrives. Der refereres til accepttestspecifikationen, hvis det ønskes at få et større overblik over de udførte tests.
+\\\
+\textbf{Overordnede resultater}
+\begin{itemize}
+\item Sortering af klodser efter matrialetype via Scorbot-robotarm.
+\item Implementering af IronPython som via scripting kan kontrollere robotarmen.
+\item Interfacing af den udleverede strain gauge således, at signalet på 0-100mV blev forstærket til 0-5V.
+\item Opbygning af en relationel database til persistent lagring af data samt alle informationer fra processen.
+\item Opbygning af en grafisk brugergrænseflade der kan styre systemet. 
+\end{itemize}
+\textbf{Sortering af klodser}\\
+Robotarmen kan samle en klods op fra transportbåndet, måle alle sider, placerer klodsen på vægten, og veje den, udregne densiteten, og slutteligt placerer den i tilsvarende kasse.
+\\\\
+\textbf{IDE} \\
+Det kan lade sig gøre, at skrive simple programmer til robotten ved brug af IronPython, og benytte et IntelliSense-lignende system til at autoudføre kode.
+\\\\
+\textbf{Vægtcellen}\\
+Den udleverede strain gauge gav et for svagt signal, der derfor skulle forstærkes. Der blev designet et simpelt print, som kan forstærke signalet til værdier, som interfacer med mega16 microcontrolleren. Der blev også skrevet et program, som A/D konverterer signalet og sender det til PCen via en RS232-forbindelse.
+\\\\
+\textbf{Grafisk brugergrænseflade}\\
+Den grafiske brugergrænseflade tager udgangspunkt i et login vindue, hvor man kan logge ind som operatør eller programmør. Derefter bliver man præsenteret for en hovedmenu, hvori der kan åbnes forskellige vinduer med forskellige funktionaliteter. Det omhandler blandt andet, at man kan se log beskeder på databasen, se en liste over de forskellig klodsers placering og starte/stoppe samt pause systemet i en given frekvens, fx mens den er i gang med at sortere en klods.
+\\\\
+\textbf{Database}\\
+Den relationelle database er skabt med Microsoft SQL server og består af fem tabeller til at holde data om systemet. I systemet gemmes der en del persistente data, herunder brugere, klodser, positioner i en boks, systemevents og densiteter. Data bliver både gemt og hentet flere steder i systemet, og til det er der blevet implementeret et beskedkø-system som håndterer database tilgangen. Fra systemet side er det muligt at opdatere, hente fra, skrive til, og slette fra databasen. Desuden håndterer databasen selv vedligeholdelse af databasen med diverse triggers og identity kolonner.
+
+
+\end{document}

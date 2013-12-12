@@ -1,0 +1,19 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\section{Projektets fortræffeligheder}
+Nedenfor er en række funktionaliteter og arkitekturer i projektet, som gruppen er specielt stolt af, listet og beskrevet.
+\\\\
+\textbf{IDE - Specielt IntelliSense}\\
+Der var lagt op til at IDE-delen af projektet ville blive meget tidskrævende. Dog blev en løsning fundet ved hjælp af IronPython scriptsproget, som både sparede tid, samt resulterede i en god, funktionel løsning. Den tid der blev sparet blev istedet brugt til at gøre IDE'en bedre, og der blev blandt andet implementeret IntelliSense, der kan foreslå valgmuligheder løbende mens koden skrives. Selvom IDEen ikke altid fungerer helt fejlfrit, gør den det ekstremt simpelt at skrive programmer.
+\\\\
+\textbf{GUI - MVVM} \\
+I første omgang blev brugergrænsefladen udviklet uden nogen egentlig arkitektur, andet end forms and controls. Da gruppen blev introduceret til MVVM, stod det hurtigt klart at denne arkitektur måtte implementeres. Det var ikke nogen nem opgave, da den eksisterende struktur var rodet, men ved hårdt arbejde blev der implementeret MVVM samt et message system til at håndtere beskeder mellem ViewModel og Views.
+\\\\
+\textbf{Databasetilgang} \\
+Det kan vække mange problemer at tilgå en database, og derfor blev der lagt meget arbejde i at udvikle en fornuftig implementering af denne tilgang. Derfor blev der lavet et message system baseret på observer-pattern, der sikre at data gemmes trådsikkert, og uafhængigt af om der er forbindelse til databasen eller ej.
+\\\\
+\textbf{Interfacing til vægtcellen}\\
+Interfacing arbejdet til vægtcellen var relativt hurtigt overstået uden problemer, og igennem hele processen fungerede dette uden modifikationer. Således har en har udviklingen af en virksom vægt ikke kostet meget. Derfor betragtes den som en fortræffelighed, selvom den er simpelt udviklet. Der skal dog knyttes en kommentar til at en brændt IC gjorde vægten upræcis under accepttesten.
+
+\end{document}

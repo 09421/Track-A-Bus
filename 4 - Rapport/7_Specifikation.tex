@@ -1,0 +1,35 @@
+\documentclass[Main.tex]{subfiles} 
+\begin{document}
+
+\section{Specifikations- og analysearbejdet}
+%En uddybning af metodeafsnittet, herunder med henblik på analysearbejdet (Domaine, Use Cases, SSD). Hvad har der været af problemer undervejs, og hvorfor har vi valgt de metoder vi har valgt.
+Ved påbegyndelse af projektet blev der udarbejdet en domænemodel, for at skabe et overblik over systemet. Denne blev dannet ud fra de informationer, der blev givet i produktoplægget og var derfor langt fra komplet (modellen ses på figur \ref{fig:Domain_first}). 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../../04_Systemdesign/Diagrammer/Domain_model/Original_15_02.jpg}
+\caption{Første udkast af domænemodellen}
+\label{fig:Domain_first}
+\end{figure}
+Efter tilegnelse af mere viden blev domænemodellen udvidet og specificeret. Der blev derudover gjort overvejelser om, hvordan de forskellige elementer interagerer med hinanden. Dette ledte til en model med den første anskuelse af det system, der skulle udvikles (modellen ses på figur \ref{fig:Domain_second}) 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../../04_Systemdesign/Diagrammer/Domain_model/Domainmodel_Billede.jpg}
+\caption{Andet udkast af domænemodellen}
+\label{fig:Domain_second}
+\end{figure}
+Ved hjælp af denne domænemodel, blev der udtænkt brugssituationer af systemet samt overvejet, hvilke aktører systemet ville have. Under denne proces blev et Use Case diagram udviklet, hvilket gav et overblik over disse brugssituationer samt hvilke aktører, der interagerer med Use Casene (se figur \ref{fig:UseCase}).
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{../../02_Kravspecifikation/Use_Cases/Diagrammer/Use_Case_Diagram.jpg}
+\caption{Use Case diagram}
+\label{fig:UseCase}
+\end{figure}
+Use Case diagrammet der ses på ovenstående figur, er det endelige diagram. I takt med at systemet er blevet udviklet, er der blevet gjort erfaringer og indsamlet viden. Denne viden har gjort, at diagrammet er blevet forbedret og dermed afspejler det system, der blev udviklet.\\
+Ud fra Use Casene i diagrammet, samt kravene i produktoplægget, blev der udformet en kravspecifikationen. Her blev alle kravene til Use Casene specificeret, og disse indbefatter bl.a. scenarier af, hvorledes Use Casene opfylder de mål, de er sat til. Denne kravspecifikationen er ligesom Use Case diagrammet så vidt muligt blevet holdt opdateret. Dette er naturligvis gjort i samarbejde med kunden.\\
+Til at bekræfte, at kravene der blev stillet er opfyldt, blev der specificeret en accepttestspecifikation, der beskriver hvordan alle kravene skal testes. Denne er ved færdiggørelsen af systemet kørt igennem sammen med kunden.\\\\
+Før udvikling på hver del af systemet blev påbegyndt, er der blev gjort betragtninger over, hvorledes systemet snakker sammen med lag og aktører via simple sekvensdiagrammer. På denne måde er et overblik før udvikling blevet dannet, hvilket har hjulpet til en mere solid og problemfri udvikling. Dette er kun gjort ved de dele af systemet, hvor det er fundet fordelagtigt.
+\\\\  
+Generelt har analyse- og specifikationsarbejdet fungeret rigtig godt. Overblikket over domænet og systemet har været bibeholdt gennem hele projektet. Det skyldtes bl.a., at designkritiske beslutninger løbende er blevet diskuteret af hele gruppen, hvilket medførte at fokus på den rigtige funktionalitet blev bibeholdt. Det skal dog nævnes, at der også er blevet udviklet ekstra funktionaliteter, der ikke direkte er specificeret, da der ikke er fundet tid og overskud hertil.
+Måden hvorpå kravene er delt op i Use Cases, har også gjort det muligt at opdele opgaverne blandt gruppemedlemmerne på en god og effektiv måde.
+
+\end{document}

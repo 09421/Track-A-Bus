@@ -1,0 +1,33 @@
+\documentclass[Main]{subfiles} 
+\begin{document}
+
+\section{Designprocessen}
+\begin{wrapfigure}{r}{0.6\textwidth}
+	\vspace{-20pt}
+	\centering
+	\includegraphics[scale=0.6]{Billeder/3-tier.png}
+    \vspace{-15pt}
+    \caption{3-Tier model}
+  \label{fig:sprint1}
+  \vspace{-10pt}
+\end{wrapfigure}
+
+Da udkastet til en kravspecifikation var færdig, skulle der naturligvis fastsættes nogle rammer for, hvordan systemearkitekturen skulle være. 
+Det overordnede design blev fastlagt som det første. 
+Der var flere overvejelser og diskussioner om dette design, da det danner grundlag for hele systemet.
+3-Tier modellen endte med at blive valgt som model for systemet (se figur \ref{fig:sprint1}).
+\\
+Denne model blev fundet simpel og solid, hvilket er to egenskaber der er blevet prioriteret højt i systemet. Grundidéen i modellen er at opdele systemet i uafhængige moduler, og som følge af det, vil der komme en lav afhængighed samt en høj samhørighed, hvilke er mål, der tilstræbes i ethvert it-system. Dette resulterer også i at et lag, som for eksempel grænsefladen, kan udskriftes, uden at hele systemet skal ændres. Disse elementer samt simpelheden gjorde, at valget af den overordnede model faldt på 3-Tier modellen.\footnote{Se afsnit \textit{5 LOGISK VIEW} i systemarkitekturdokumentet, for en detaljeret model af systemt}
+
+
+Da 3-Tier modellen blev valgt, var der ikke mange overvejelser omkring, hvilken model brugergrænsefladen skulle udvikles efter. MVVM er et meget benyttet mønster inden for WPF, og er også blev benyttet til opbygning af dette systems brugergrænseflade. Opdeling af logikken og det grafiske, samt binding imellem disse, stemmer godt overens med 3-Tier modellen, hvilket også er hovedgrunden til at dette mønster er valgt. Derudover sikres en god opdeling af koden til brugergrænsefladen med dette mønster, og det grafiske kan dermed for eksempel nemt skiftes ud. Det opretholdes ved at GUI elementerne i Viewet's data er bundet til properties i MVVM's viewmodel og ikke hardcodet til modellen. Dermed er der kun afhængigheder nedad i systemet.
+\\\\
+Tilgangen til databasen, blev i første omgang lavet som en ren tilgang. I videreudviklingen af denne tilgang, blev der diskuteret, hvilken metode der vil være bedst. Det endte ud med en beskedkø, hvor databasekaldene blev gemt. Denne kø underetter videre til databasetilgangs koden via \textit{observer}-mønstret. Køen sikrer, at systemet kan køre videre indtil databasen skal kontaktes, selvom forbindelsen til databasen skulle mistes. 
+\\\\
+I hele koden er der generelt gjort stor brug af interfaces. Dette er gjort, da interfaces gør det nemt at teste kode, og da interfaces bruges i forbindelse med mange forskellige designmønstre\footnote{Se afsnit 10.2 Arkitektur mønstre i systemarkitekturen for oversigt over designmønstre.}, samtidig med, at det bliver muligt at skifte objekter ud på run-time f.eks. vha. strategy mønstret. Et andet eksempel på et designmønster, er singleton. Dette designmønster sikrer at en bestemt klasse kun kan oprettes en gang, og dette er b.la. brugt på klassen
+RobotEvent.\footnote{Se afsnit 8.2.2 Komponent 2: Simulering i systemarkitekturen for information om klassen RobotEvent}
+Flere klasser benytter denne, til at fortælle, at der er sket en hændelse med robotten, men da der kun er en robot, skal det naturligvis sikres at samme objekt bliver benyttet.\\
+I det hele taget er forskellige designmønstre blevet benyttet, til at sikre en solid og god kode.
+\\\\
+De forskellige designløsninger der undervejs er blevet overvejet og diskuteret, har gjort at et solidt, fleksibelt og vedligeholdelsesvenligt program så vidt er opnået.
+\end{document}
