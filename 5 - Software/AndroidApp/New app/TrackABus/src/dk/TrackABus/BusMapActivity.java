@@ -131,6 +131,7 @@ public class BusMapActivity extends Activity {
 						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();					
 					break;
 				case BUS_POS_DONE:
+					Log.e("Debug", "Got msg");
 					ArrayList<LatLng> Pos =  msg.getData().getParcelableArrayList("BusPos");
     				if(Pos != null){
     					for(int j = 0; j<marks.size(); j++){
@@ -408,8 +409,8 @@ public class BusMapActivity extends Activity {
 	
 	@Override
 	protected void onStop() {
-		unbindService(Connection);
 		BusProvider.StopWork();
+		unbindService(Connection);		
 		Log.e("DEBUG", "Unbound service map");
 		super.onStop();
 		mBound = false;	

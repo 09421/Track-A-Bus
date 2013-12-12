@@ -1,15 +1,22 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 \subsubsection{Komponent 1: Mobil applikation}
-Denne komponent er hovedformålet med hele systemet, og har til formål at formidle alt bus information til brugerne. Den gør det muligt for brugeren at se busruter indtegnet på et kort, med stoppesteder og positionen for de busser der køre på ruten. Ydermere vil det være muligt at se hvor lang tid der er, til den næsten bus ankommer til et valgt busstoppested. På figur \ref{fig:AppKlasseDiagram} kan de forskellige klasser ses og hvordan de interagere.
+Denne komponent er hovedformålet med hele systemet, og har til formål at formidle alt bus information til brugerne. Den gør det muligt for brugeren at se busruter indtegnet på et kort, med stoppesteder og positionen for de busser der køre på ruten. Ydermere vil det være muligt at se hvor lang tid der er, til den næsten bus ankommer til et valgt busstoppested. På figur \ref{fig:AppKlasseDiagram} kan de forskellige klasser ses, hvilke lag de ligger i og hvordan de interagere.
 \\
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.5]{./Diagrammer/Klassediagrammer/App_klasseDia.png}
+	\includegraphics[scale=0.4]{./Diagrammer/Klassediagrammer/App_klasseDia.jpg}
 	\caption{Klassediagram for mobil applikationen}
 	\label{fig:AppKlasseDiagram}
 \end{figure}
-\\
+\newpage
+På figur \ref{fig:AppKlasseDiagramModel} ses de forskellige model klasser, der hovedsageligt består af custom datatyper.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.4]{./Diagrammer/Klassediagrammer/App_klasseDia_models.jpg}
+	\caption{Klassediagram for model klasser i mobil applikationen}
+	\label{fig:AppKlasseDiagramModel}
+\end{figure}
 \textbf{Design:}\\
 Mobil applikationen er blevet udviklet til android mobiltelefoner det køre med OS version 4.3 Jelly Bean og op til 4.4.2 KitKat. Dertil er der blevet udviklet imod android API level 18 og 19.
 \\

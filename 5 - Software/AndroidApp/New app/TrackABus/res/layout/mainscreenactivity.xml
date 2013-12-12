@@ -21,7 +21,7 @@
 	     android:layout_marginLeft="20dp"
 	     android:layout_marginRight="20dp"
 	     style="@style/ButtonStyle"
-	     android:onClick="SeeAllBusses"/>
+	     android:onClick="ViewAllBusRoutes"/>
 
     <ListView
         android:id="@+id/FavoriteList"

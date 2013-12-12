@@ -123,8 +123,8 @@ public class TrackABusProvider extends Service{
 					mMessenger = new Messenger(replyTo);
 					handlingBusPos = true;
 					while(handlingBusPos){				
-						Bundle b = new Bundle();
-			        	ArrayList<LatLng> arg0 = soapProvider.GetBusPos(busNumber);
+					Bundle b = new Bundle();
+		        	ArrayList<LatLng> arg0 = soapProvider.GetBusPos(busNumber);
 			        	b.putParcelableArrayList("BusPos", arg0);
 
 						Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
@@ -185,6 +185,7 @@ public class TrackABusProvider extends Service{
 	public void StopWork(){
 		handlingBusPos = false;
 		handlingBusTime = false;
+		stopSelf();
 	}
 	
 	/**

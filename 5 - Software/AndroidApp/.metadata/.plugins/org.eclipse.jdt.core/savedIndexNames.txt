@@ -1,11 +1,8 @@
 INDEX VERSION 1.126+C:\Users\lasse\Desktop\Skole\TrackABus\5 - Software\AndroidApp\.metadata\.plugins\org.eclipse.jdt.core
-2847925800.index
 848856923.index
-382381177.index
-371487039.index
-3575339944.index
-4021215958.index
 40469510.index
-1562989498.index
+2847925800.index
+7843715.index
+3575339944.index
 2342654688.index
 1345472101.index
