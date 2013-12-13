@@ -2,139 +2,20 @@
 \begin{document}
 
 \section{Indledning}
-Sortering af elementer kan være en vigtig opgave i industriverdenen, og en automatisering af denne mekanisme kan spare meget arbejdskraft og dermed spare både hænder, penge, fejl, arbejdstimer og arbejdsskader. 
-Dette dokument omhandler udviklingen af et softwareprodukt, der kan kontrollere en robot, samt gøre denne i stand til at sortere en række klodser alt efter deres materialetype. 
-Det er en forholdsvis lille robot, der kun kan sortere små klodser, men det samme software ville kunne modificeres til brug på en større robot, som er i stand til at sortere så store elementer, at de ikke ville kunne flyttes med håndkraft. 
-\\\\
-Program, Silver Bullet Sort, er blevet udviklet til at håndtere ovenstående problemstilling for et firma, der har indkøbt en Scorbot ER-4u\footnote{\url{http://www.intelitek.com/admin/Products/uploads/File/File1_17.pdf}} med tilhørende programmel. Systemet skal fungere således, at en klods registreres på et transportbånd, hvorpå robotten måler og vejer klodsen. Herefter placerer klodsen i et materialespecifikt rum i en boks, der indeholder klodser med den givne materialetype.
-Programmet er lavet på baggrund af en række krav fra et udstedt produktoplæg. Desuden har en række møder med virksomheden også været med til at danne grundlag for fastlæggelse af programmets endelige funktionalitet.
-Programmet skal indeholde en database, som kan persistere diverse data i systemet, herunder data fra de elementer, der er blevet sorteret samt logge informationer om, hvordan processen er forløbet.
-Ligeledes skal programmet indeholde en IDE, som gør det muligt at lave brugerdefinerede programmer til sortering af elementer. Denne kan implementeres på flere måder, men den anbefalede metode indbefatter at omprogrammere robotten ved brug af en række funktioner, som firmaet har udleveret til udviklerne. Dog er disse funktioner meget dårligt dokumenteret, så det har været op til udviklerne at undersøge anvendelsen af dem. 
-%Dette afsnit er en gentagelse af resumet
-Derudover skal det være muligt, at simulere robotten således, at et program kan testes, når robotten ikke er til rådighed. 
-Desuden var det et krav, at der skulle laves en brugergrænseflade, hvorigennem alt kommunikation med robotten kunne kontrolleres. 
-Det eneste hardware-mæssige krav kunden havde var, at få udviklet en vægt på baggrund af en vejecelle, som skulle indgå i processen, når materialetypen skulle findes. 
-\\\\
-Inden selve koden blev påbegyndt udviklet, blev der brugt en del ressourcer på at få tilegnet sig en fundamental viden om det, fra producenten, udleverede hardware og software. En domænemodel blev lavet på baggrund af kravene, hvilket skulle give et overblik over de specifikke dele i projektet. Herefter blev en kravspecifikation udarbejdet. Opbygning med at fastlægge de fundamentale krav før der blev udviklet kode, er primært kendt fra udviklingsmetoden \textit{Unified Process}.\footnote{\url{http://en.wikipedia.org/wiki/Unified_Process}}
-\\\\
-For at det endelige produkt skulle stemme overens med firmaets krav og ønsker, er der gennem hele arbejdsprocessen holdt mange møder med virksomheden samtidig med, at virksomheden undervejs er blevet præsenteret for noget fungerende software, så det fra firmaets side har været muligt, at komme med ønsker til forbedringer og modificeringer af det endelige produkt. 
-Da projektet er udviklet ved hjælp af agile arbejdsmetoder og principper, herunder primært \textit{Scrum}\footnote{\url{http://en.wikipedia.org/wiki/Scrum\_(development)}} og \textit{Extreme programming}\footnote{\url{http://en.wikipedia.org/wiki/Extreme\_programming}}, er det en naturlig process at ændre kravene undervejs og revurdere projektet alt efter kundens behov. 
-\\\\
-\textbf{Begreber og forkortelser}
-\begin{itemize}
-\item UC: Use Case
-\item IDE: Integrated Development Environment 
-\item UP: Unified Process. 
-\item DLL: Dynamic-link library
-\item WPF: Windows Presentation Foundation
-\item MVVM: Model View ViewModel
-\end{itemize}
-\textbf{Læsevejledning}\\
-Nedenfor er listet en kort beskrivelse af hvert afsnit i dette dokument:
-\begin{itemize}
-\item Abstract og Resumé
-\begin{itemize}
-\item Disse afsnit giver en kort beskrivelse af projektet på både dansk og engelsk.
-\end{itemize}
-\end{itemize}
+En bus følger en ruteplan, men det er ikke altid at bussen er ved et givent stoppested, præcis på det tidspunkt det forekommer i ruteplanen. Det vil derfor være gavnligt at kunne vide, præcis hvor en bus er, og hvor lang tid der er, til den nærmeste er ved et givet stoppested. Denne viden vil, for det første, give brugeren en større chance for at nå sin bus og, for det andet, med sikkerhed vide, om en bus er kørt fra et givet stoppested. Dette dokument beskriver udviklingen af en mobilapplikation der kan vise rute, stoppesteder og busser på en rute, samt vise tiden til et stoppested for en bus. Desuden beskriver dokumentet også oprettelsen af et administrator værktøj, hvori busser, ruter og stoppesteder kan vedligeholdes. Mobilapplikationen er designet til android, men kan nemt genskabes på en anden platform, da samtlige funktionaliteter ligger på en server. Serveren er dog ikke klargjort til et distribueret system, men kan nemt skiftes ud med et der er, hvis det skulle være nødvendigt.\\
 
-\begin{itemize}
-\item Indledning
-\begin{itemize}
-\item Dette afsnit fortæller baggrunden for projektet, kravene til projektet, samt hvilke arbejdsmetoder og processer, der er anvendt. Herefter følger begreber og forkortelser samt en læsevejledning.
-\end{itemize}
-\end{itemize}
+\noindent
+Kravene er blevet udarbejdet iterativt, da projeketet ikke har ekstern kunde, og således ikke repræsenterer kundens krav til systemet, men derimod udviklernes. En kunde er blevet simuleret, i form af en vejleder, således at alle krav-ændringer og accepttest udførsel, blev gemmemgået med hjælp fra en ekstern kilde.\\
 
-\begin{itemize}
-\item Projektafgrænsning
-\begin{itemize}
-\item Afsnittet fortæller kort om de begrænsninger, der er blev lavet, da projektet blev fastlagt.
-\end{itemize}
-\end{itemize}
+\noindent
+TrackABus mobilapplikation og administrator hjemmeside, er blevet udhviklet til at håndtere system kravene. Systemet fungerer således, at en bruger kan vælge en rute, sådan samtligt persisteret information omkring ruten kan blive vist. Dette inkluderer busser, stoppesteder og, selvfølgelig ruten. Brugeren kan herefter tilgå tids-funktionalitet ved at trykke på et stoppested, hvorefter tiden til ankomst for den nærmeste bus i begge retninger, vil blive vist. De komponenter brugeren kan tilgå, skal først oprettes igennem administrations hjemmesiden. Denne del af systemet er defor den eneste, der kan ændre distribuerede rute komponenter. I sammenhæng med persitering bruges der to relationelle databaser; En distribueret, og en lokal til hver mobilapplikation. Den distribuerede håndtere samtlige information om de forskellige komponenter, hvor den lokale bruges i sammenhæng med favorisering af ruter. Mobilapplikationen er baseret på et eksamensprojekt i ITSMAP, lavet af gruppens to medlemmer, og betegnes derfor som legacy code. Hele systemet kan derfor ses som en videreudvikling af dette eksamensprojekt. Der eksisterer ingen yderligere krav, en dem projektgruppen selv har fastsat.\\
 
-\begin{itemize}
-\item Projektgennemførelsen
-\begin{itemize}
-\item Her præsenteres de forskellige iterationer, hvorigennem projektet er udviklet, samt erfaringerne med disse.
-\end{itemize}
-\end{itemize}
+\noindent
+Det har ikke været muligt at tilgå reelle data for busser og ruter. Derfor har det været nødvendigt at bruge en del af arbejdsresourcerne på, at designe og implementere et system til at kunne at kunne håndtere  disse data. Dette blev i sidste ende, til administrator hjemmesiden og simulatoren. \\
+\noindent
+I arbejdsprocess øjemed, er der blevet holdt daglige møder i gruppen, hvor dagens arbejde blev diskuteret, samt det ugentlige mål revuderet. Desuden blev der holdt ugentlige møder med ad-hoc kunden, hvori projektes fremskriden blev forklaret og diskuteret.
 
-\begin{itemize}
-\item Metoder
-\begin{itemize}
-\item Dette afsnit beskriver de forskellige arbejdsmetoder, der er anvendt i udarbejdelsen af det endelige produkt. 
-\end{itemize}
-\end{itemize}
 
-\begin{itemize}
-\item Specifikation- og analysearbejdet
-\begin{itemize}
-\item Analysearbejdet, der ligger til grund for opbygningen af projektet, præsenteres i dette afsnit. Til dette hører kravspecifikation, domænemodel osv.
-\end{itemize}
-\end{itemize}
 
-\begin{itemize}
-\item Designprocessen
-\begin{itemize}
-\item Her beskrives selve designprocessen og erfaringerne med denne. Hertil hører lagdeling, klassediagrammer osv.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Udviklingsværktøjer
-\begin{itemize}
-\item Dette afsnit giver en beskrivelse af de mest væsentlige udviklingsværktøjer, der er blevet brugt til udviklingen af projektet.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Resultater
-\begin{itemize}
-\item De mest væsentlige resultater præsenteres objektivt i dette afsnit.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Diskussion af opnåede resultater
-\begin{itemize}
-\item I dette afsnit diskuteres der på baggrund af de opnåede resultater.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Opnåede erfaringer
-\begin{itemize}
-\item Dette afsnit giver en beskrivelse af de opnåede erfaringer gruppen har
-gjort sig, primært på baggrund af selve arbejdsprocessen.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Projektets fortræffeligheder
-\begin{itemize}
-\item Her præsenteres de dele af projektet, som er blevet fundet særdeles velfungerende.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Forslag til forbedringer af projektet eller produktet
-\begin{itemize}
-\item Afsnittet giver en beskrivelse af, hvad der kunne have været forbedret i selve produktet eller produktudviklingen.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Konklusion
-\begin{itemize}
-\item Der laves her en konklusion på baggrund af de opnåede resultater og diskussionen af disse, samt på baggrund af de opnåede erfaringer.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Referencer
-\begin{itemize}
-\item Afsnittet lister de forskellige materialer og værker, der refereres til. 
-\end{itemize}
-\end{itemize}
 
 \end{document}

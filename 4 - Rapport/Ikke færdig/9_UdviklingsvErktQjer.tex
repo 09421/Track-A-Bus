@@ -5,30 +5,27 @@
 %Kort beskrivelse af de anvendte udviklingsværktøjer. 
 %Herunder Scrumwise, SVN, Visual, Jenkins osv. Samt erfaringer der er gjort med disse.
 
-Som nævnt har den primære udviklingsprocess til dette projekt været \textit{Scrum}.
-\\
-Under hele forløbet er værktøjet \textit{Scrum Wise}\footnote{http://www.scrumwise.com/ - for nærmere indblik i Scrum Wise} blevet brugt til at håndtere projektback\-loggen og sprintbackloggen. Værktøjet er online-baseret, og det er meget nemt at gå til. Der er mulighed for at oprette, redigere, afslutte og sætte statussen på de forskellige opgaver, via det indbyggede taskboard. Derudover er der en burndown-chart, der gør det nemt at overskue, hvordan det går med det aktuelle sprint.\\   
-Dette værktøj har gjort det nemt at benytte \textit{Scrum} som udviklingsprocess og virkelig givet den gennemskuelighed i projektetprocessen, hvilket er en af grundpillerne i \textit{Scrum}. Et lille eksempel på \textit{Scrum Wise}, kan ses på nedenstående billede(Ligger i stor størrelse i bilaget under Billeder/Scrum):
+Under udførslen af projektet er der blevet gjort brug af dele af Scrum, men da gruppens medlemsantal kun er to, blev det ikke set som nødvendigt at tage et scrum værktøj i brug. Der har været konstant kommunikation mellem gruppemedlemmerne, da der udelukkende er blevet arbejdet sammen. Under skriveprocessen af kravspecifikationen, accepttesten, system arkitekturen og dette dokument, er samtlige underafsnit blevet skrevet på et scrum-board, hvorpå samtlige gruppemedlemmer kan melde sig på en opgave.\\
+Under udviklingen af systemet, blev der gjort brug af ansvarsområder, hvori der var klare linjer for, hvem der skulle udvikle hvilke dele.\\
+
+\noindent
+Til versionsstyring er GitHub taget i brug, som er en versioncontroller, der implementerer Git. Dette er et standard versionsstyrings system, hvori medlemmer kan tilføje, fjerne eller ændre filer, hvorefter andre medlemmer kan tilgå ændringerne. Når et system af denne størrelse imlementeres, genereres der ofte en del unødvendige filer. Git implementerer muligheden for, at kunne ignorere disse filer igennem en ignore protocol. Dette har specielt været nyttigt under udviklingen af mobilapplikationen, samt ved skrivningen af projektes dokumenter, da begge dele auto-genererer en del unødvendige filer, ved bygning. GitHub, og dermed versionstyrings redskaberne, tilgås igennem et commandline værktøj, kaldet Git Shell, som bygger ovenpå Windows Powershell. Heri kan der navigeres til den mappe, hvor repositoriet er oprettet og herfra addes, commites, deletes og merges, præcis som et normalt versionsstyrings værktøj. Repositoriet kan også tilgås online, hvori versionstyrings historikken kan tilgås. Dette har været nyttigt i den sammenhæng, at et tidligere commit nemt kunne hentes ned, hvis to versioner skulle holdes op mod hinanden. Commit og merge træet kan også følges. På figur \ref{fig:git}, kan en del af dette træ ses. Den sorte linje repræsenterer masteren, eller trunken. De blå og grønne linjer repræsenterer en lokal branch, hvori mere end et commit er blevet tilføjet. Når den sorte linje peger ned på en af de blå eller grønne, betyder det at et merge er blevet udført. Prikkeren på de forskellige linjer repræsenterer et commit.
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.4]{Billeder/ScrumWise.jpg}
-\caption{Scrum Wise Overblik}
+\includegraphics[scale=0.6]{Billeder/GitMergeHistoric.png}
+\caption{Git commit historik}
 \end{figure}
-Til versionsstyring og revisionskontrol er der brugt \textit{SVN}. Programmerne \textit{SmartSVN} / \textit{TortoiseSVN} er benyttet til at styre den overordnede filhåndtering. Derudover er \textit{Ankh\-SVN} ( et plugin til \textit{Microsoft Visual Studio}) blevet benyttet, hvilket sikrer en nem styring af solution-filer. Dette har givet en flydende versionsstyring uden store problemer. 
-\\
-Til test af koden er \textit{NUnit} blevet benyttet, sammen med frameworket \textit{Rhino Mocks}, der var en hjælp til testskrivning. For at overskueliggøre hvor meget af koden der var testet, er \textit{DotCover} blevet brugt sammen med de ovenstående programmer.
-\\
-Derudover har hjælpepluginet \textit{ReSharper} ligeledes hjulpet med syntax, opbygning af programmer og rettelser af navne på attributter, variabler osv.
-\\
-\\
+
 Alt tekstredigering er foregået i \textit{LaTeX}, hvilket har været meget brugbart, da større dokumenter kunne opdeles i forskellige filer, som kunne arbejdes på individuelt.
-Dette har tilladt, at flere gruppemedlemmer kunne redigere samme dokument uden der opstod konflikter. Desuden sikres, at de nyeste billeder og lignende altid er opdateret, da \textit{LaTeX} linker til disse i stedet for at indsætte dem direkte ligesom i fx word.
-\\
-Brugen af \textit{LaTeX} har dog givet en del ekstra arbejde, da det var et nyt program for de fleste gruppemedlemmer. I sidste ende er den tabte tid dog blevet genvundet, da samlingen har fungeret smertefrit, og den grundlæggende opsætning ikke er blevet ødelagt i takt med, at der er tilføjet mere tekst.
-\\
-\\
-Til brug til at lave diagrammer er programmet \textit{Visual Paradigm For UML}, samt \textit{Star UML} blevet benyttet. Disse programmer er fundet rigtig gode og nemme at arbejde med og dermed blevet de primære valg som diagramværktøjer frem for for eksempel \textit{Microsoft Visio}.
-\\
-\textit{Microsoft Visio} er dog blevet benyttet, da det har været glimrende til relationelle skemaer. Derudover er programmet \textit{DIA} blevet brugt til udformning af ER-diagrammer.
+Dette har tilladt, at begge gruppemedlemmer kunne redigere samme dokument uden der opstod konflikter. Desuden sikres, at de nyeste billeder og lignende altid er opdateret, da \textit{LaTeX} linker til disse i stedet for at indsætte dem direkte.\\
+
+\noindent
+Alle diagrammer er blevet udviklet i Microsoft Visio 2013, da dette havde indbygget værktøjer til alle de diagrammer, der blev set som nødvendige. Den eneste undtagelse er Use Case diagrammet, som blev udhviklet på hjemmesiden \url{www.creately.com}. Visio understøtter "stencils", hvori forskellige komponenter relevant for det givne diagram, kan tilføjes. Dette gjorde det yderst nemt at arbejde med. \\
+
+\noindent
+
+
+
 
 \end{document}
