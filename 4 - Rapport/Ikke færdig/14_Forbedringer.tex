@@ -5,16 +5,13 @@
 %Forslag til forbedringer i projektet. Lad være med at være for kritisk over for os selv, og sælge os selv!!!!!! Forklar også gerne hvorfor forbedringerne ikke blev implementeret. 
 Under udarbejdelsen af et softwareprojekt er det næsten altid plads til forbedringer, både mht. til arbejdsprocessen og selve produktet. Det gælder også for dette projekt. Nedenfor er en række elementer i projektet, som kunne have været optimeret, listet og beskrevet. 
 \\\\
-\textbf{Klodser i kassen}\\
-I programmet er det hardkodet hvor klodserne skal placeres. Dette betyder, at det vil være svært at udvide systemet med flere rum, eller for den sags skyld flytte på hvor klodskassen er. Hvis algoritmen ikke havde være hardcodet, havde det også været muligt at angive en boksplacering, til de tilføjede materialetyper. Denne funktionalitet blev ikke prioriteret særligt højt, da kassen er fastmonteret.
-\\\\
-\textbf{Simulering}\\
-Den implementerede simulator er meget simpel. Der udskrives beskeder til en log, og på den måde kan brugeren følge med i programmets forløb. Dette kunne evt. have været forbedret vha. en grafisk simulator. Men da denne funktion ikke var en del af kravspecifikation, blev det vurderet, at den ville være for tidskrævende i forhold til betydningen af denne.
-\\\\
-\textbf{Vinduer i GUIen}\\
-Brugergrænsefladen består af en række vinduer. Disse vinduer er kommet til et af gangen og eksisterer derfor uafhængigt af hinanden. Dog er der elementer som fx en statusbar og en menulinje, der er fælles for alle vinduer. Der kunne være sparet en del arbejde og kode ved at lægge alle views i samme vindue og indsætte indholdet som en UserControl. Dette ville betyde at redundant kode, som er fælles for alle vinduer, kunne placeres i hovedvinduet. Desværre gjorde den iterative udvikling, at dette ikke kunne lade sig gøre.
-\\\\
-\textbf{Opdatering af kravspecifikation}\\
-Et andet forslag til forbedring kunne være at få tilføjet alt funktionaliteten i det endelige program til kravspecifikationen. F.eks. er funktionaliteten med håndtering af klodser i systemet ikke en del af kravspecifikationen. I det endelige program er det også muligt at flytte på transportbåndet og andre dele af systemet, og en Use Case kunne også have været udformet på baggrund af denne funktionalitet. Det skal dog nævnes, at disse Use Case ville være forholdsvis små, så dette er en af grundende til, at de ikke er blevet tilføjet til kravspecifikationen.
+\textbf{GUI - Administrations hjemmeside}\\
+Brugergrænsefladen på administrations hjemmesiden kunne være bedre, vis mindsker vinduet på hjemmesiden vil de forskellige elementer ikke længere passe i deres respektive felter. Det kan nemt blive løst ved at lave et nyt .css stylesheet, der vil gøre hjemmesiden til en mere behagelig brugeroplevelse.\\
+\\
+\textbf{Server}\\
+Serveren der hoster både administrations hjemmeside, webservicen og MySQL databasen, er en billige, ikke særlig kraftig server og kan derfor, sandsynligvis, ikke håndtere en særlig stort antal samtidige brugere af mobil aooliaktionen. Dog er det nemt at flytte det hele over på en ny server, når det bliver nødvendigt\\
+\\
+\textbf{Administrator login}\\
+Det skal være nødvendigt at logge ind på administratorens hjemmesiden før den kan bruges, eller vil det være muligt for hvemsomhelst at tilgå administrations værktøjerne.
 
 \end{document}
