@@ -157,56 +157,52 @@ $.ajax({
 }
 \end{lstlisting}
 SaveRouteAndStops() funktionen, står for at samle data der skal gemmes i databasen, og sende det til Save funktionen i Dir controlleren gennem et ajax kald. Først finder den alle de GPS koordinater der bruges til at tegne ruten, hertil bliver funktionen getRoutePath() brugt. her bliver den tidligere defineret temp variable, der holder information om ruten, brugt. For at få GPS-koordinaterne for de punkter der bliver brugt til at tegne ruten, skal hver path, for hver step, for hver leg findes. Når disse er fundet, retuneres en liste af GPS koordinater. For mere information om path, step og legs refereres til Google maps api documentation
-Dernæst bliver der fundet de waypoints og stoppesteder der ligger på ruten. Waypoints skal bruges til at genskabe ruten på hjemmesiden. Til sidste bliver der fundet de ruter der udgøre en kompleks rute, hvis dette er blevet tilføjet. controlleren kalder CalculateBusStopsForRoute() funktionen der laver udregninger på mellem hvilke rute punkter stoppestedet skal ligge. Denne funktion undersøger hvert individuelt stop, og udregner, hvorpå ruten dettes stop skal ligge. På kodeudsnit \ref{lst:StopOnRoute1} kan første del af denne udregning ses. Udregningen er den første del af foreach-løkken, som kigger alle stoppesteder på ruten igennem, og efter stoppestedets position hentes. Haversine og CalculateBusStopToRouteDist funktionerne kan der læses mere om i afsnittet \textit{8.2.5: Komponent: Matematik}, under "Haversine" og "Tætteste punkt på en linje".
-\begin{lstlisting}[caption=Udregninger af placering af stoppesteder på rute del 1, label={lst:StopOnRoute1}, language=Java]
-if (k == 0)
+Dernæst bliver der fundet de waypoints og stoppesteder der ligger på ruten. Waypoints skal bruges til at genskabe ruten på hjemmesiden. Til sidste bliver der fundet de ruter der udgøre en kompleks rute, hvis dette er blevet tilføjet. controlleren kalder CalculateBusStopsForRoute() funktionen der laver udregninger på mellem hvilke rute punkter stoppestedet skal ligge. Denne funktion undersøger hvert individuelt stop, og udregner, hvorpå ruten dettes stop skal ligge. På kodeudsnit \ref{lst:StopOnRoute1} kan første del af denne udregning ses. Udregningen er den første del af foreach-løkken, som kigger alle stoppesteder på ruten igennem, og efter stoppestedets position hentes. Haversine og CalculateBusStopToRouteDist funktionerne kan der læses mere om i afsnittet \textit{8.2.5: Komponent: Matematik}, under "Haversine"  og "Tætteste punkt på en linje".
+\begin{lstlisting}[caption=Udregninger af placering af stoppesteder på rute, label={lst:StopOnRoute1}, language=Java]
+for (int k = 0; k < chosenRouteLatLng.Count - 2; k = k + 2)
 {
-	currDistToStartOfRoute = 
-		(decimal)RouteMath.Haversine(
-			stop.Lat, 
-			decimal.Parse(chosenRouteLatLng[0]), 
-			stop.Lng, 
-			decimal.Parse(chosenRouteLatLng[1]));
-	currDistToEndOfRoute = 
-		(decimal)RouteMath.Haversine(
-		stop.Lat,
-		decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count-2]),
-		stop.Lng, 
-		decimal.Parse(chosenRouteLatLng[chosenRouteLatLng.Count-1]));
-	if (currDistToStartOfRoute < leastDistToStartOfRoute
-		 || leastDistToStartOfRoute == -1)
-	{
-		leastStartStopID = stop.ID;
-		leastStartStopName = s;
-		leastDistToStartOfRoute = currDistToStartOfRoute;
-	}
-	if (currDistToEndOfRoute < leastDistToEndOfRoute
-		 || leastDistToEndOfRoute == -1)
-	{
-		leastEndStopID = stop.ID;
-		leastEndStopName = s;
-		leastDistToEndOfRoute = currDistToEndOfRoute;
-	}
-currentDist = RouteMath.CalculateBusStopToRouteDist(
-		stop.Lat, stop.Lng
-		decimal.Parse(chosenRouteLatLng[k]),
+	currentDist = 
+		RouteMath.CalculateBusStopToRouteDist(
+		stop.Lat, stop.Lng,
+		decimal.Parse(chosenRouteLatLng[k]), 
 		decimal.Parse(chosenRouteLatLng[k + 1]),
 		decimal.Parse(chosenRouteLatLng[k + 2]),
 		decimal.Parse(chosenRouteLatLng[k + 3]));
-
-if ((currentDist < leastDist || leastDist == -1)
- && currentDist <= 15 && currentDist != -1)
-{
-	leastDist = currentDist;
-	pointBeforeStopIndex = k / 2;
+	if ((currentDist < leastDist || leastDist == -1)
+		 && currentDist <= 15 && currentDist != -1)
+	{
+		leastDist = currentDist;
+		pointBeforeStopIndex = k / 2;
+	}
 }
-
+if (stops.IndexOf(s) == 0 )
+{
+	RouteWithStopsID.Insert(0, stop.ID.ToString());
+	StopOnRoute.Add(s);
+	stopCounter++;
+	continue;
+}
+else if (stops.IndexOf(s) == stops.Count - 1 )
+{
+	RouteWithStopsID.Add(stop.ID.ToString());
+	StopOnRoute.Add(s); 
+	stopCounter++;
+	continue;
+	}
+else if (leastDist != -1)
+{
+	RouteWithStopsID.Insert(
+		pointBeforeStopIndex + stopCounter + 1,
+		 stop.ID.ToString());
+	StopOnRoute.Add(s);
+	stopCounter++;
+}
 \end{lstlisting}
-SaveRouteAndStops
-
- \textit{se afsnit 8.2.5 Anvendt matematik}
+\noindent
+På den dette kodeudsnit, kan processen der udføres for hvert stoppested følges. For-lykken itererer igennem samtlige rutepunkter, og udregner distance til den linje der er spændt mellem det nuværende rutepunkt og det næste. Hvis den udregnede længde er mindre end den tidligere korteste længde, sættes det nuværende rutepunkt, som værende det, før busstoppestedet skal indsættes. Desuden undersøges der også om distancen skal desuden være mindre en 15 meter, da det er muligt at stoppestedet ligger forskudt tilpas nok på ruten, til at et tidligere rutepunkt har en mindre distance, end det der burde være der tætteste. Listen af punkter der udgør ruten, består af både bredde og længdegrader, i den rækkefølge. Derfor er listen dobbelt så lang som den egentlige punkt-liste, der består af IDer, og indexet for det fundne tætteste punkt, skal derfor halveres. Når samtlige punkter er løbet igennem på ruten, undersøges der om stoppestedet er det første eller det sidste på ruten. Dette gøres da det første og sidste stoppested altid skal være endestationer, og derfor ligges først på ruten, uden hensyn til, hvilket punkt der egentligt er tættest på. Hvis stoppestedet ikke er det første eller sidste, indsættes IDet for dette i listen af IDerne for punkternerne. Hver gang et stoppested tilføjes, forøges listen med en, så derfor skal stoppestedet sættes i listen der svarende til det fundne ID plus antal stoppesteder tilføjet plus en, da det skal være punktet efter, det fundne ID. Stoppestedet tilføjes desuden til listen af stoppestedsnavne, og antallet af stoppesteder inkrementeres. Dette gøres for hvert stoppested. Herefter returneres både listen af punkt IDer og listen af stoppestedsnavne. \\
 Efter alle udregnigner er fortaget, bliver alt data indsat i MySQL databasen \textit{Se afsnit 9.2.3 Implementering af persistens i online værktøjet} for hvordan databasen bliver tilgået.
 \\
+
 \noindent
 Det sidste view omhandler funktionerne for at tilføje, nye stoppesteder, ændre position og navn for eksiterende stoppesteder, samt slette dem fra databasen. For at kunne oprette nye stoppesteder, bliver der igen brugt Google maps API, dette bliver initialiseret på samme måde som beskrevet tidligere i afsnittet, dog uden Google Direction Services, da det kun er enkelte punkter på kortet der skal gemmes. For at oprette et nyt stoppested, bliver kortets listener event kaldt, ved tryk på kortet, dette event vil sætte en marker på kortet, der hvor der blev trykket, som symbolisere stoppestedets position.
 \begin{lstlisting}[caption=Stoppested map listener, label={lst:StoppestedMapListener}, language=Java]
