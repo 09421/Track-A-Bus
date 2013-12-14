@@ -1,0 +1,70 @@
+\documentclass[12pt,a4paper]{article}
+%\documentclass[12pt,twoside,a4paper]{article} %Duplex udskrivning
+\usepackage[ansinew]{inputenc}			% Windows
+
+\input{Preamble}	% Alle_indstillinger_for_dokumentet
+\begin{document}
+
+\begin{center}
+ \section*{Simulator manual}
+\end{center}
+
+\noindent
+Dette dokument beskriver hvordan simulatoren bruges. Efter hvert billede, vil funktionaliteten ved nummeret beskrives.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{Simulator/Billeder/SimulatorViewStart.png}
+\caption{Startsiden for administrator hjemmesiden}
+\label{fig:MainScreen}
+\end{figure}
+
+\noindent
+På figur \ref{fig:MainScreen} kan simulator skærmen ses. Denne skærm er den eneste der kan forekomme under simulering.
+\begin{enumerate}
+	\item Log vindue.
+	\begin{itemize}
+		\item Alle nødvendige system beskeder vil vises her, som de forekommer i systemet.
+	\end{itemize}		
+	\item Rutenummer boks.
+	\begin{itemize}
+		\item Her kan en rute vælges, fra en liste af alle ruter som har busser knyttet til sig. En rute skal være valgt før simulering kan påbegyndes, men hvis det vælges at simulere alle ruter har denne værdi ingen effekt.
+	\end{itemize}
+	\item Opdateringshastighed
+	\begin{itemize}
+		\item Tallet beskriver hvor hurtigt de simulerede busser opdaterer. Tallet skal være i hele sekunder, og ikke under 1.
+	\end{itemize}
+		\item Simulerings metoden.
+	\begin{itemize}
+		\item Beskriver måden der simuleres. Der kan vælges at simulere én bus på valgt rute, alle busser på valgt rute og alle busser på alle ruter. 
+	\end{itemize}
+		\item Retningen bussen kører.
+	\begin{itemize}
+		\item Her vælges der hvilken retning de simulerede busser skal køre. Her kan en specifik retning eller en tilfældig retning vælges. Hvis der kun simuleres én bus, er det kun den ene bus det gælder for. Hvis samtlige busser på ruten simuleres er valget gældende for samtlige busser på ruten, og hvis alle busser i systemet simuleres, vil valgtet være gældende for alle busser der kører på den valgte rute, og alle andre busser vil køre i tilfældig retning.
+	\end{itemize}
+	\item Minimums hastigheden.
+	\begin{itemize}
+		\item Definerer minimums hastigheden for de simulerede busser. Denne kan ændres på runtime, men vil altid være mindre end, eller lig med maksimums hastigheden. Ved en ny opdatering, vil de simulerede bussers hastighed randomiseres mellem minimum og maksimums hastigheden.
+	\end{itemize}
+	\item Maksimums hastigheden.
+	\begin{itemize}
+		\item Definerer maksimums hastigheden for de simulerede busser. Denne kan ændres på runtime, men vil altid være større end eller ligmed minimums hastigheden. Ved en ny opdatering, vil de simulerede bussers hastighed randomiseres mellem minimum og maksimums hastigheden.
+	\end{itemize}
+	\item Refresh knap.
+	\begin{itemize}
+		\item I tilfælde af, at nye busser er blevet tilføjet til systemet, mens simulatoren har været kørt, kan denne knap trykkes, hvorefter listen af mulige ruter genskabes
+	\end{itemize}
+	\item Clear log knap.
+	\begin{itemize}
+		\item Fjerner alle indlæg i loggingvinduet.
+	\end{itemize}
+	\item Start randomly knap.
+	\begin{itemize}
+		\item Starter simuleringen. Denne knap vil randomisere de simulerede bussers start position på ruten.
+	\end{itemize}
+	\item Start at beginning knap.
+	\begin{itemize}
+		\item Starter simuleringen. Denne knap vil tvinge alle simulerede busser til at starte ved første endestation, som vælges alt efter hvilken retning, der er blevet defineret.
+	\end{itemize}
+\end{enumerate}
+\end{document}
