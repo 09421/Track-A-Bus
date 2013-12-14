@@ -3,33 +3,39 @@
 
 \section{Specifikations- og analysearbejdet}
 %En uddybning af metodeafsnittet, herunder med henblik på analysearbejdet (Domaine, Use Cases, SSD). Hvad har der været af problemer undervejs, og hvorfor har vi valgt de metoder vi har valgt.
-Ved påbegyndelse af projektet blev der udarbejdet en domænemodel, for at skabe et overblik over systemet. Denne blev dannet ud fra de informationer, der blev givet i produktoplægget og var derfor langt fra komplet (modellen ses på figur \ref{fig:Domain_first}). 
+
+Ved påbegyndelse af projektet blev der undersøgt, hvilke domæner projektet skulle bestå af. Dette var i særdeleshed vigtigt, da sytemet består af undersystemer, som udelukkende interagerer over en distribueret database. På figur \ref{fig:Domain_first}, kan det første udkast til modellen ses. 
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../../04_Systemdesign/Diagrammer/Domain_model/Original_15_02.jpg}
+\includegraphics[scale=0.5]{../Billeder/Domain1.jpg}
 \caption{Første udkast af domænemodellen}
 \label{fig:Domain_first}
 \end{figure}
-Efter tilegnelse af mere viden blev domænemodellen udvidet og specificeret. Der blev derudover gjort overvejelser om, hvordan de forskellige elementer interagerer med hinanden. Dette ledte til en model med den første anskuelse af det system, der skulle udvikles (modellen ses på figur \ref{fig:Domain_second}) 
+\noindent
+Under udviklingen af systemet, udviklede domæne modellen sig til en ny version. De fleste komponenter forblev de samme, men applikationens tilgang til den distribueret database, blev ændret til at være indirekte. Det vil sige den tilgår en online service, som igen tilgår databasen. Dette sikrer en lav kobling mellem databasen og applikationen, samt en høj samhørighed, da database tilgangen bliver samlet i en komponent ikke direkte knyttet til applikationen. På figur \ref{fig:Domain_second} kan den færdige domænemodel ses. 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../../04_Systemdesign/Diagrammer/Domain_model/Domainmodel_Billede.jpg}
-\caption{Andet udkast af domænemodellen}
+\includegraphics[scale=0.5]{../Billeder/Domain2.jpg}
+\caption{Færdig domænemodellen}
 \label{fig:Domain_second}
 \end{figure}
-Ved hjælp af denne domænemodel, blev der udtænkt brugssituationer af systemet samt overvejet, hvilke aktører systemet ville have. Under denne proces blev et Use Case diagram udviklet, hvilket gav et overblik over disse brugssituationer samt hvilke aktører, der interagerer med Use Casene (se figur \ref{fig:UseCase}).
+
+Efter udviklingen af domænemodellen, blev der udtænkt de brugssituationer systemet kunne blive udsat for. Simulatoren blev ikke set som en komponent i denne sammenhæng, da dette blot var et værktøj til udviklingen. Det var udelukkende hjemmesiden og mobilapplikationen, der blev set som komponenter i en brugssituations sammenhæng. På figur \ref{fig:UCD}, kan det Use Case diagram, systemet er bygget op omkring, følges.
+
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.5]{../../02_Kravspecifikation/Use_Cases/Diagrammer/Use_Case_Diagram.jpg}
-\caption{Use Case diagram}
-\label{fig:UseCase}
+\includegraphics[scale=0.3]{../Billeder/Use_Case_Diagram.jpg}
+\caption{Færdig domænemodellen}
+\label{fig:UCD}
 \end{figure}
-Use Case diagrammet der ses på ovenstående figur, er det endelige diagram. I takt med at systemet er blevet udviklet, er der blevet gjort erfaringer og indsamlet viden. Denne viden har gjort, at diagrammet er blevet forbedret og dermed afspejler det system, der blev udviklet.\\
-Ud fra Use Casene i diagrammet, samt kravene i produktoplægget, blev der udformet en kravspecifikationen. Her blev alle kravene til Use Casene specificeret, og disse indbefatter bl.a. scenarier af, hvorledes Use Casene opfylder de mål, de er sat til. Denne kravspecifikationen er ligesom Use Case diagrammet så vidt muligt blevet holdt opdateret. Dette er naturligvis gjort i samarbejde med kunden.\\
-Til at bekræfte, at kravene der blev stillet er opfyldt, blev der specificeret en accepttestspecifikation, der beskriver hvordan alle kravene skal testes. Denne er ved færdiggørelsen af systemet kørt igennem sammen med kunden.\\\\
-Før udvikling på hver del af systemet blev påbegyndt, er der blev gjort betragtninger over, hvorledes systemet snakker sammen med lag og aktører via simple sekvensdiagrammer. På denne måde er et overblik før udvikling blevet dannet, hvilket har hjulpet til en mere solid og problemfri udvikling. Dette er kun gjort ved de dele af systemet, hvor det er fundet fordelagtigt.
-\\\\  
-Generelt har analyse- og specifikationsarbejdet fungeret rigtig godt. Overblikket over domænet og systemet har været bibeholdt gennem hele projektet. Det skyldtes bl.a., at designkritiske beslutninger løbende er blevet diskuteret af hele gruppen, hvilket medførte at fokus på den rigtige funktionalitet blev bibeholdt. Det skal dog nævnes, at der også er blevet udviklet ekstra funktionaliteter, der ikke direkte er specificeret, da der ikke er fundet tid og overskud hertil.
-Måden hvorpå kravene er delt op i Use Cases, har også gjort det muligt at opdele opgaverne blandt gruppemedlemmerne på en god og effektiv måde.
+
+Da Use Case diagrammet udelukkende afspejler mobilapplikationen og hjemmesiden, blev det valgt, at to primære aktører ville være repræsentanter for hele systemet; Brugeren, som tilgår mobilapplikationen, og administratoren, som tilgår hjemmesiden. Databasen og simulatoren kunne ses som sekundære system aktører, men dette er dog blevet fravalgt, da i en brugssituation vil det være brugeren fuldstændigt irrelevant hvorfra dataen kommer.\\
+Ud fra dette diagram blev der udviklet en kravspecifikation, som beskriver de funktionelle krav, systemet skal opfylde. Dette dokument er blevet set som agilt, da der ikke var nogen ekstern kunde, som kunne fastsætte nogen krav, og derved var det op til gruppen, hvordan systemet skulle udhvikles. Dette har haft den betydning for systemet, at det under processen har været nødvendigt, at foretage visse ændringer i dokumentet, dog ikke uden, at det er blevet grundigt diskuteret i gruppen. Disse udviklinger blev samtidigt afspejlet i Use Case diagrammet, som blev ændret i sammenhæng med kravændringer. Dette har medført, at Use Case diagrammet og kravspecifikationen er blevet samlet til et dokument, der følger systemets udvikling meget godt.\\
+Til kravene sat i kravspecifikations dokumenter, er der blevet udviklet en acceptestsspecifikation, som beskriver, hvordan en eventuel kunde kan teste, at de stillede krav er opfyldt. Dette dokument har også været agilt, i og med det har ændret sig sammen med kravspecifikationen. Ved fuldent implementering af systemet, blev testene specificeret i dette dokument fulgt af gruppens ad-hoc kunde.\\
+Under implementeringen blev det fundet meget brugbart at bruge simple sekvensdiagrammer, til at analysere kodens forløb. Disse har dog kun været midlertidige, da de er blevet tegnet på en tavle. Dette har givet det gruppemedlem, som ikke implementerede denne del af systemet, mulighed for at følge det andet gruppemedlems tankeforløb. Til de mere komplekse dele af systemet er der dog blevet udhviklet mere detaljerede sekvensdiagrammer. \footnote{Sekvensdiagrammer kan ses i kontekst i systemarkitektur dokumentet under \textit{5: Logisk view, 6: Process/Task view og 8: Implementerings view}}
+\\\\
+Analyse- og specifikations arbejdet har fungeret rigtigt godt, da den konstante kommunikation mellem gruppens medlemmer har sikret, at der var et bibeholdt overblik over processen. Dette sikrede desuden også, at funktionaliteter aldrig blev overset. \\
+Opdelingen af systemet i domænemodellen, samt underopdelingen i Use Cases, gjorde det nemt for gruppens medlemmer at vælge en opgave og fuldføre den. I denne sammenhæng er der aldrig blevet gjort redudant arbejde, da grænsefladen mellem domænerne var klare.
 
 \end{document}

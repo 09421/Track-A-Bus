@@ -8,26 +8,19 @@
 	\includegraphics[scale=0.6]{Billeder/3-tier.png}
     \vspace{-15pt}
     \caption{3-Tier model}
-  \label{fig:sprint1}
+  \label{fig:3tier}
   \vspace{-10pt}
 \end{wrapfigure}
 
-Da udkastet til en kravspecifikation var færdig, skulle der naturligvis fastsættes nogle rammer for, hvordan systemearkitekturen skulle være. 
-Det overordnede design blev fastlagt som det første. 
-Der var flere overvejelser og diskussioner om dette design, da det danner grundlag for hele systemet.
-3-Tier modellen endte med at blive valgt som model for systemet (se figur \ref{fig:sprint1}).
-\\
-Denne model blev fundet simpel og solid, hvilket er to egenskaber der er blevet prioriteret højt i systemet. Grundidéen i modellen er at opdele systemet i uafhængige moduler, og som følge af det, vil der komme en lav afhængighed samt en høj samhørighed, hvilke er mål, der tilstræbes i ethvert it-system. Dette resulterer også i at et lag, som for eksempel grænsefladen, kan udskriftes, uden at hele systemet skal ændres. Disse elementer samt simpelheden gjorde, at valget af den overordnede model faldt på 3-Tier modellen.\footnote{Se afsnit \textit{5 LOGISK VIEW} i systemarkitekturdokumentet, for en detaljeret model af systemt}
-
-
-Da 3-Tier modellen blev valgt, var der ikke mange overvejelser omkring, hvilken model brugergrænsefladen skulle udvikles efter. MVVM er et meget benyttet mønster inden for WPF, og er også blev benyttet til opbygning af dette systems brugergrænseflade. Opdeling af logikken og det grafiske, samt binding imellem disse, stemmer godt overens med 3-Tier modellen, hvilket også er hovedgrunden til at dette mønster er valgt. Derudover sikres en god opdeling af koden til brugergrænsefladen med dette mønster, og det grafiske kan dermed for eksempel nemt skiftes ud. Det opretholdes ved at GUI elementerne i Viewet's data er bundet til properties i MVVM's viewmodel og ikke hardcodet til modellen. Dermed er der kun afhængigheder nedad i systemet.
+Da først udkast til kravspecifikationen var skrevet, blev der fastslået vise designregler der skulle opretholdes igennem systemet. Den første var vedrørende systemopbygningen af de forskellige komponenter. Det blev hurtigt vedtaget, at for at skabe en god kodestandard og en overskuelige implementering, var tre-lags modellen en den bedste metode. (se figur \ref{fig:3tier}) \\
+Tre-lags modellen er simpel og solid, og kan nemt implementeres, hvis der arbejdes efter det, hvilket er tre punkter, der vægtede tungt i designfasen. Grundidéen i  tre-lags modellen er, at opdele systemet i ufhængige moduler, som ikke har behov for, at kommunikere kompleks mellem sig. Dette vil skabe høj samhørighed, samt lav afhængihed, hvilket er bestræbelser der forekommer i et hvert IT-system.\footnote{En detaljeret model af systemerne kan følges i systemarkitekturen, under \textit{5: Logisk View og 8: Implementerings View}}\\\\
+Også i sammenhæng med høj samhørighed og lav afhængihed, blev det vedtaget, at mobilapplikationen aldrig måtte kommunikere direkte med databasen, samt at alle udregninger skulle ske server-side. Det resulterede i en applikation som ikke udfører noget datamanipulations arbejde, men kun henter, sætter og gemmer data. Desuden kan applikationen nemt skiftes ud, hvis den, for eksempel, skal supporteres på en anden platform, hvilket betyder lav afhængighed mellem system komponenterne.\\
+For sikkerhedsmæssige årsager, blev det også vedtaget, at forbindelsenbeskrivelsen til databasen skulle gemmes væk. \\\\
+I datamæssigt sammenhæng, blev det først undersøgt, hvorvidt det var muligt at tilgå reelle informationer om busser, det blev dog hurtigt etableret, at dette ikke var en mulighed. Dette var grundstenen til, at simulatoren blev udviklet. Simulatoren gav gruppen mulighed for at teste de dele af systemet, hvor informationer om en bus var en nødvendighed, uden en reel bus skulle tilgås. Dette gjorde altså projektet uafhængig af hvilken kilde, informationen kommer fra, og derfor også med til at skabe lav kobling.\\\\ 
+Rutemæssigt blev der gjort en del overvejelser. Projektet blev i først omgang specificeret til, at samtlige stoppesteder på en ruten (dvs. stoppesteder i begge retninger), skulle kunne vælges, således at brugeren kunne tilgå den enkelte retnings stoppested. Dette blev hurtigt genovervejet, da det ville resultere i en uoverskuelig rute, med to gange så mange stoppesteder som der, reelt set, var behov for. Derfor blev det vedtaget, at der kun skulle vælges et stoppested, og tiden for den nærmeste bus, i begge retninger, ville blive vist.\\
+I samme sammenhæng blev det også overvejet, at en rute sagtens kunne have mere end en endestation, og det var derfor nødvendigt også at tage højde for disse typer ruter.\footnote{Se afsnit \textit{9: Data View} i systemarkitekturen, for mere information om dette.}
 \\\\
-Tilgangen til databasen, blev i første omgang lavet som en ren tilgang. I videreudviklingen af denne tilgang, blev der diskuteret, hvilken metode der vil være bedst. Det endte ud med en beskedkø, hvor databasekaldene blev gemt. Denne kø underetter videre til databasetilgangs koden via \textit{observer}-mønstret. Køen sikrer, at systemet kan køre videre indtil databasen skal kontaktes, selvom forbindelsen til databasen skulle mistes. 
-\\\\
-I hele koden er der generelt gjort stor brug af interfaces. Dette er gjort, da interfaces gør det nemt at teste kode, og da interfaces bruges i forbindelse med mange forskellige designmønstre\footnote{Se afsnit 10.2 Arkitektur mønstre i systemarkitekturen for oversigt over designmønstre.}, samtidig med, at det bliver muligt at skifte objekter ud på run-time f.eks. vha. strategy mønstret. Et andet eksempel på et designmønster, er singleton. Dette designmønster sikrer at en bestemt klasse kun kan oprettes en gang, og dette er b.la. brugt på klassen
-RobotEvent.\footnote{Se afsnit 8.2.2 Komponent 2: Simulering i systemarkitekturen for information om klassen RobotEvent}
-Flere klasser benytter denne, til at fortælle, at der er sket en hændelse med robotten, men da der kun er en robot, skal det naturligvis sikres at samme objekt bliver benyttet.\\
-I det hele taget er forskellige designmønstre blevet benyttet, til at sikre en solid og god kode.
-\\\\
-De forskellige designløsninger der undervejs er blevet overvejet og diskuteret, har gjort at et solidt, fleksibelt og vedligeholdelsesvenligt program så vidt er opnået.
+Under hele processen er designløsninger og -beslutninger blevet diskuteret imellem medlemmerne af gruppen, hvilket har resulteret i et yderst fleksibelt produkt.
+%\\\\
+%De forskellige designløsninger der undervejs er blevet overvejet og diskuteret, har gjort at et solidt, fleksibelt og vedligeholdelsesvenligt program så vidt er opnået.
 \end{document}
