@@ -2,15 +2,13 @@
 \begin{document}
 
 \section{Designprocessen}
-\begin{wrapfigure}{r}{0.6\textwidth}
-	\vspace{-20pt}
-	\centering
-	\includegraphics[scale=0.6]{Billeder/3-tier.png}
-    \vspace{-15pt}
-    \caption{3-Tier model}
-  \label{fig:3tier}
-  \vspace{-10pt}
-\end{wrapfigure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{Billeder/3-tier}
+\caption{Første udkast af domænemodellen}
+\label{fig:3tier}
+\end{figure}
 
 Da først udkast til kravspecifikationen var skrevet, blev der fastslået vise designregler der skulle opretholdes igennem systemet. Den første var vedrørende systemopbygningen af de forskellige komponenter. Det blev hurtigt vedtaget, at for at skabe en god kodestandard og en overskuelige implementering, var tre-lags modellen en den bedste metode. (se figur \ref{fig:3tier}) \\
 Tre-lags modellen er simpel og solid, og kan nemt implementeres, hvis der arbejdes efter det, hvilket er tre punkter, der vægtede tungt i designfasen. Grundidéen i  tre-lags modellen er, at opdele systemet i ufhængige moduler, som ikke har behov for, at kommunikere kompleks mellem sig. Dette vil skabe høj samhørighed, samt lav afhængihed, hvilket er bestræbelser der forekommer i et hvert IT-system.\footnote{En detaljeret model af systemerne kan følges i systemarkitekturen, under \textit{5: Logisk View og 8: Implementerings View}}\\\\
