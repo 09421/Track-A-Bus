@@ -2,38 +2,34 @@
 \begin{document}
 
 \section{Metoder}
-Som nævnt i indledningen, er der blevet arbejdet under det agile processframework \textit{Scrum} i dette projekt.  
-Alle i projektgruppen har arbejdet med \textit{Scrum} i tidligere semestre, generelt med meget gode erfaringer. 
-Derfor er \textit{Scrum} blevet valgt som udviklingsprocess-ramme.
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.6]{Billeder/Scrum.png}
-\caption{Scrum model}
-\label{fig:ScrumModel}
-\end{figure}
-\\
-Figur \ref{fig:ScrumModel} er en model af nogle artefakter indenfor \textit{Scrum}. 
-Modellen afspejler også, hvordan der er blevet arbejdet under \textit{Scrum} i projektgruppen. 
-Der er blevet arbejdet i sprints, (se \textit{afsnit 5 Projektgennemførsel}) og i hvert sprint har der været en sprintplanlægning. 
-Her er der blevet udtaget de vigtigste opgaver fra productbackloggen, hvor de overordnede opgaver i projektet er listet, og derudfra dannet en sprintbacklog med opgaver der skal løses i sprintet.
-\\
-For at holde øje med sprintets process, er et burndown-chart blevet benyttet, som giver et overblik over, hvor langt sprintet er i forhold til, hvor langt det burde være. 
-Burndown-chartet er genereret i værktøjet \textit{Scrum Wise} (se afsnit \textit{9 Udviklingsværktøjer}). 
-Det skal nævnes, at Scrum Wise's burndown-chart-værktøj er lavet ud fra et estimat om, hvor lang tid hver opgave tager, men chartet tager ikke højde for, at der er flere udviklere i projektgruppen. 
-Chartet kan dog sagtens bruges til at se om sprintets opgaver overholder den givne deadline.
-\\
-Hver dag har der været et Daily Scrum Meeting, hvor hvert gruppemedlem har præsenteret, hvad der er blevet arbejdet med siden sidst, og hvilke problemer der har været. Dette sikrer en hvis transparens og inspektion, så gruppen kan tilpasse sig mulige udfordringer. Desuden blev der også ved disse møder diskuteret store fælles beslutninger, som var meget afgørende for projektet, det kunne f.eks. være selve opbygningen af lag, og hvordan de forskellige klasser skulle spille sammen. 
-\\
-Efter hvert sprint har der ligeledes været et sprint retrospective møde, hvor det forløbne sprint blev evalueret, både med hensyn til arbejdsprocessen og selve det resulterende produkt fra sprintet. Dette gav feedback, som kunne bruges i planlægningen af det næste sprint.
-\\
-Under selve implementeringen af koden var metoder fra Extreme Programming til stor hjælp - navnlig det at kode i par, blev anvendt. 
-Her skulle den ene kode, mens den anden stillede kritiske spørgsmål til, hvad modparten lavede. 
-På den måde blev koden løbende revideret, og både ansvar og viden blev delt ud. 
-\\
-\\
-Ligeledes blev der nævnt i indledningen, at der i projektet er udviklet efter softwareudviklings frameworket UP. Inception- og Elaborationfasen har primært bestået af, at fastsætte de overordnede krav til projektet, samt at få adgang til robotten og få den til at udføre simple funktioner. Det var nødvendigt at få en forståelse for robotten og dens virkemåde, før det var muligt at fastlægge en række krav til den endelige funktionalitet. Constructionfasen, som har fyldt størstedelen af projektudviklingen, har fungeret således at der er blevet implementeret ny funktionalitet til robotten (fra produktbacklog), mens det sideløbende er blevet dokumenteret og revurderet. Transitionfasen, som er den sidste fase, har primært bestået i at produktet er blevet finpudset og udgivet (afleveret) samtidig med, at det sidste dokumentation er blevet skrevet.
-\\
-\\
-Til at verificerer koden, er der blevet benytte automatiserede tests\footnote{Se \textit{NUnit} under afsnit 9}. Der er lavet tests til de vigtigste dele af projektet, og disse dele omhandler selve kommunikationen til robotten, gennem kald til funktionerne i DLL-filen\footnote{USBC.dll: fil der indeholder de funktioner, der kan udføres på robotten.}. Derudover er der ligeledes lavet test af kommunikationen til vægten. Det havde været optimalt at lave tests af hele systemet, men dette blev nedprioriteret i forhold til at få en funktionelt produkt med mange funktioner og en god opbygning. Desuden blev programmets mere overordnede funktionalitet testet gennem selve accepttesten, og grundet dette og tidspress, blev der ikke afsat tid til integrationstest, selvom det selvfølgelig havde været optimalt.
+Som nævnt i indledningen, er der blevet arbejdet under det agile processframework \textit{Scrum}. Metoden er dog modificeret en smule, da den er designet til en større projektgruppe. De daglige scrum møder, bruges i denne sammenhæng, som en mulighed for at diskutere dagens opgaver. Da gruppemedlemerne konstant har arbejdet sammen, har præsentations fasen af scrum mødet, ikke været essentiel\\ 
+Produktet er opbygget via iterationer, hvori der først og fremmest blev fokuseret på funktionalitet, dog ikke uden at sørge for, at de designmæssige krav blev opfyldt. Hver iteration har haft et mål, som var nødvendigt at nå før næste iteration kunne begyndes. Grunden til dette er, at arbejdsformen har været meget lagdelt, i det en iteration byggede funktionalitet ovenpå den forrige iterations mål. Ved hver fuldendt iteration blev et kort møde afhviklet i gruppen, hvor der blev diskuteret, hvad det næste mål skulle være, og hvorvidt nyt information fundet under denne iteration, skulle implementeres i denne iteration eller, om det krævede en reimplementering af tidligere kode. Dette har medført en yderst agil arbejdsmetode, hvor resultater konstant blev revideret, bygget ovenpå eller fjernet fuldstændigt. Dette resulterede i et produkt, som kun indeholder implementering, der er blevet grundigt undersøgt. \\
+Hver uge er der blevet holdt et møde med ad-hoc kunden, hvor en enten en produkt inkrementering blev præsenteret eller, hvis ingen nævneværdige produktændringer var blevet foretaget, en beskrivelse af, hvad ugens arbejde har gået med, og hvad næste uge stod på. \\\\
+Under projektudførslen er der blevet gjort brug af Unified Process (UP), hvori specielt inception og elaboration faserne har været essentiel. Inception fasen fandt sted før projektet egentligt gik i gang. Dette er blevet udformet som et forberedelses projekt, hvori ideen blev grundlagt, og en udkast til kravene og målene blev givet. Elaboration fasen foregik som udformningen af den først kravspecifikation, hvori projektes grænser blev optegnet. De første construction faser har udelukkende været implementering, samt beskrivelser af det implementerede, hvorefter systemarkitekturen, accepttesten og processrapporten er blevet udformet i Transition fasen. UP har været en ganske brugbar udviklingsprocess, da den supplerer Scrum med et iterativt overblik.\\\\\
+Implementeringen er gjort ved hjælp af elementer fra Extreme Programming (XP). Planlægning og kommunikation og har været arbjedsprocessens grundelementer, hvori arbejdsprocessen ofte blev planlagt mange uger frem, mens fokuset kun var på den givne opgave. Den ubrudte kommunikation i projektgruppen bidrog til denne arbejdsform, da det ene gruppemedlem til hver en tid vidste, hvad det andet gruppemedlem lavede. Hertil blev der ofte arbejdet med komponenter der interagerer direkte, så der konstant blev holdt integrationstests. \\
+Resultatet af denne arbejdsform gør, at ansvarsområder hurtigt bliver dannet, og vedligeholdt. Dette betyder også, at der var klare linjer for, hvem der skulle refaktorere hvilke komponenter, ved overgangen til en ny iteration. Selvom det gruppemedlem der havde ansvar for en given komponent, selvfølgelig også havde det største overblik, betød det ikke, at det andet gruppemedlem ikke vidste hvordan komponenten var udviklet. Den konstante kommunikation i gruppen sikrede, at det andet gruppemedlem altid havde en forståelse for, hvad der blev implementeret, omend ikke lige så detaljeret som udvikleren.  
+%Figur \ref{fig:ScrumModel} er en model af nogle artefakter indenfor \textit{Scrum}. 
+%Modellen afspejler også, hvordan der er blevet arbejdet under \textit{Scrum} i projektgruppen. 
+%Der er blevet arbejdet i sprints, (se \textit{afsnit 5 Projektgennemførsel}) og i hvert sprint har der været en sprintplanlægning. 
+%Her er der blevet udtaget de vigtigste opgaver fra productbackloggen, hvor de overordnede opgaver i projektet er listet, og derudfra dannet en sprintbacklog med opgaver der skal løses i sprintet.
+%\\
+%For at holde øje med sprintets process, er et burndown-chart blevet benyttet, som giver et overblik over, hvor langt sprintet er i forhold til, hvor langt det burde være. 
+%Burndown-chartet er genereret i værktøjet \textit{Scrum Wise} (se afsnit \textit{9 Udviklingsværktøjer}). 
+%Det skal nævnes, at Scrum Wise's burndown-chart-værktøj er lavet ud fra et estimat om, hvor lang tid hver opgave tager, men chartet tager ikke højde for, at der er flere udviklere i projektgruppen. 
+%Chartet kan dog sagtens bruges til at se om sprintets opgaver overholder den givne deadline.
+%\\
+%Hver dag har der været et Daily Scrum Meeting, hvor hvert gruppemedlem har præsenteret, hvad der er blevet arbejdet med siden sidst, og hvilke problemer der har været. Dette sikrer en hvis transparens og inspektion, så gruppen kan tilpasse sig mulige udfordringer. Desuden blev der også ved disse møder diskuteret store fælles beslutninger, som var meget afgørende for projektet, det kunne f.eks. være selve opbygningen af lag, og hvordan de forskellige klasser skulle spille sammen. 
+%\\
+%Efter hvert sprint har der ligeledes været et sprint retrospective møde, hvor det forløbne sprint blev evalueret, både med hensyn til arbejdsprocessen og selve det resulterende produkt fra sprintet. Dette gav feedback, som kunne bruges i planlægningen af det næste sprint.
+%\\
+%Under selve implementeringen af koden var metoder fra Extreme Programming til stor hjælp - navnlig det at kode i par, blev anvendt. 
+%Her skulle den ene kode, mens den anden stillede kritiske spørgsmål til, hvad modparten lavede. 
+%På den måde blev koden løbende revideret, og både ansvar og viden blev delt ud. 
+%\\
+%\\
+%Ligeledes blev der nævnt i indledningen, at der i projektet er udviklet efter softwareudviklings frameworket UP. Inception- og Elaborationfasen har primært bestået af, at fastsætte de overordnede krav til projektet, samt at få adgang til robotten og få den til at udføre simple funktioner. Det var nødvendigt at få en forståelse for robotten og dens virkemåde, før det var muligt at fastlægge en række krav til den endelige funktionalitet. Constructionfasen, som har fyldt størstedelen af projektudviklingen, har fungeret således at der er blevet implementeret ny funktionalitet til robotten (fra produktbacklog), mens det sideløbende er blevet dokumenteret og revurderet. Transitionfasen, som er den sidste fase, har primært bestået i at produktet er blevet finpudset og udgivet (afleveret) samtidig med, at det sidste dokumentation er blevet skrevet.
+%\\
+%\\
+%Til at verificerer koden, er der blevet benytte automatiserede tests\footnote{Se \textit{NUnit} under afsnit 9}. Der er lavet tests til de vigtigste dele af projektet, og disse dele omhandler selve kommunikationen til robotten, gennem kald til funktionerne i DLL-filen\footnote{USBC.dll: fil der indeholder de funktioner, der kan udføres på robotten.}. Derudover er der ligeledes lavet test af kommunikationen til vægten. Det havde været optimalt at lave tests af hele systemet, men dette blev nedprioriteret i forhold til at få en funktionelt produkt med mange funktioner og en god opbygning. Desuden blev programmets mere overordnede funktionalitet testet gennem selve accepttesten, og grundet dette og tidspress, blev der ikke afsat tid til integrationstest, selvom det selvfølgelig havde været optimalt.
 
 \end{document}
