@@ -192,7 +192,7 @@
         });
     }
 
-    function RenameStop() {
+    function SaveChangesToStop() {
         var e = document.getElementById("StopRoutes");
         var oldstop = e.options[e.selectedIndex].text;
         $.ajax({
@@ -238,7 +238,7 @@
             </select>
         </div>
         <input id="DeleteStop" type="button" value="delete stop" onclick="DeleteStopsFromDB();" />
-        <input id="RenameStop" type="button" value="Save changes" onclick="RenameStop();" />
+        <input id="RenameStop" type="button" value="Save changes" onclick="SaveChangesToStop();" />
     </div>
 </section>
 <section style="float: left; width: 50%; height: 70%; text-align: left; border: groove; margin: 10px;">
