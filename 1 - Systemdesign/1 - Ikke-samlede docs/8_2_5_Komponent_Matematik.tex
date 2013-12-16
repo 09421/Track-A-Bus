@@ -4,7 +4,7 @@
 \newpage
 
 \subsubsection{Komponent 5: Anvendt matematik}
-Denne komponent beskriver ikke opbygningen af systemet, men derimod de matematiske formler, der er blevet anvendt for at nå frem til resultaterne. Hver formel vil beskrives og der vil forklares, hvorefter det forklares i hvilken sammenhæng de bruges.\\
+Denne komponent beskriver ikke opbygningen af systemet, men derimod de matematiske formler, der er blevet anvendt for at nå frem til resultaterne. Hver formel defineres og beskrives, samt i hvilken sammenhæng de bruges\\
 
 \noindent
 \textbf{Haversine}\\
@@ -22,12 +22,13 @@ a &= sin^2(\dfrac{\Delta \theta}{2}) + cos(\theta_1) * cos(\theta_2)*sin^2(\dfra
 c &= 2 * atan2(\sqrt{a} , \sqrt{1-a})\\
 d &= R * c * 1000 
 \end{align}
-atan2 returner et grad værdi mellem -180\textdegree til 180\textdegree. Det er dog ikke nødvendigt at tage højde for dette i denne sammenhæng, da det ikke er nødvendigt at se på graderne som en helcirkel fra 0\textdegree til 360\textdegree.\\
-Hjemmesiden, simulatoren og den distribuerede database tager alle brug af Haversine formlen. 
+atan2 returner et grad værdi mellem -180\textdegree til 180\textdegree. Det er dog ikke nødvendigt at tage højde for dette i denne sammenhæng, da graderne ikke skal konvertes til helcirkel fra 0\textdegree til 360\textdegree.\\
+Hjemmesiden, simulatoren og MySQL databasen tager alle brug af Haversine formlen. 
 \begin{itemize}
-	\item I databasen bruges den i udregningen for en bus tid til ankomst ved et stoppested. Et eksempl på  dette kunne være, når afstanden fra bussen til det valgte stoppested skal udregnes. Her vil afstanden mellem hvert rutepunkt udregnes ved hjælp af Haversine formlen, og ligges sammen. Resultatet vil være den søgte afstand.
-	\item I simulatoren bruges den når bussens næste position skal udregnes. Der er fundet, hvor langt bussens skal køre, og der undersøges så mellem hvilke to rutepunkter, bussens skal være. Dette gøres ved at udregne afstanden mellem rutepunkter ved hjælp af Haversine formlen, finde ud af ved hvilket punkt afstanden er større end den bussens skal køre, hvorefter bussens nye position før dette punkt findes.
-	\item På hjemmesiden bruges den når det skal udregnes, hvilke to rutepunkter et stoppested skal ligge mellem. I denne situation skal det undersøges om stoppestedet ligger en hvis afstand væk fra et punkt. Her til bruges Haversine til at udregne distancen.
+	\item På hjemmesiden bruges formlen når det skal udregnes, hvilke to rutepunkter et stoppested skal ligge mellem. I denne situation skal det undersøges om stoppestedet ligger en vis afstand væk fra et punkt. Her til bruges Haversine til at udregne distancen.
+	\item I simulatoren bruges formlen når bussens næste position skal udregnes. I denne situation skal afstanden mellem to rutepunkter udregnes.
+	\item I databasen bruges den i udregningen for ankomsttiden for en bus ved et stoppested. Et eksempl på dette kunne være, når afstanden fra bussen til det valgte stoppested skal udregnes. Her vil afstanden mellem hvert rutepunkt udregnes ved hjælp af denne formel, og ligges sammen. Resultatet vil være den søgte afstand.
+
 \end{itemize}
 Formlen og implementeringen i koden er ikke lavet selv, men derimod hentet fra \url{http://www.movable-type.co.uk/scripts/latlong.html}. Udregninger og implementeringer fra denne side er Open-Source og lavet af Chris Veness. Den eneste modifikation der er blevet implementeret er, at det endelige resultat er konverteret fra kilometer til meter\\
 
@@ -37,7 +38,7 @@ Hvis et objekt bevæger sig mod et punkt, bruges denne formel til at udregne, hvi
 \begin{tabular}{ l p{10cm} }
 \textbf{b}: & Kursen objektet følger på en 360\textdegree-skala.\\
 \textbf{$\theta_o,\theta_p$}: & Længdegrad for objektet og punktet\\
-\textbf{$\lambda_o,\lambda_p$}: & Breddegrad for objekter og punktet\\
+\textbf{$\lambda_o,\lambda_p$}: & Breddegrad for objektet og punktet\\
 \textbf{x, y} & Subresultater
 \end{tabular} \\\\
 Igennem formel (4) til (6) kan det ses, hvordan kursen udregnes.
@@ -46,9 +47,9 @@ x &= cos(\theta_o) * sin(\theta_p) - sin(\theta_o)*cos(\theta_p)*cos(\Delta \lam
 y &= sin(\Delta \lambda) * cos(\theta_p)\\
 b &= atan2(y,x)
 \end{align}
-Da atan2 returner en værdi mellem -180\textdegree til 180\textdegree, er det nødvendigt at konvertere denne værdi til en 360\textdegree. Dette gøres ved hjælp af formel 7, hvor "\%" er modulo. \\
+Da atan2 returner en værdi mellem -180\textdegree til 180\textdegree, er det nødvendigt at konvertere denne værdi til en 360\textdegree. Dette gøres ved hjælp af formel (7), hvor "\%" er modulo. \\
 \begin{align}
-b_{360} &= ((b + 360) % 360)\\ 
+b_{360} &= ((b + 360) \% 360)
 \end{align}
 Kun simulatoren gør brug af kursen. Den tages i brug, når der skal udregnes, hvor bussens nye position skal være. Det er tidligere udregnet, mellem hvilke to punkter bussen skal ligge, og der skal derfor udregnes et ny position mellem disse to punkter. Til denne udregning bruges kursen. \\\\
 \noindent
@@ -56,7 +57,7 @@ Formlen og implementeringen i koden er ikke lavet selv, men derimod hentet fra \
 
 \noindent
 \textbf{Ny position mellem to punkter}\\
-Hvis et objekt skal placeres mellem to punkter, en hvis distance udfra det første punkt, med kurs mod det andet punkt, tages denne formel i brug. Kursen mellem de to punkter er givet på en 360\textdegree skala, hvor nord er sat til 0\textdegree/360\textdegree. Igennem udregnningen er det blevet gjort brug af følgende variabler og konstanter:\\
+Hvis et objekt skal placeres mellem to punkter, en vis distance udfra det første punkt, med en vis kurs mod det andet punkt, tages denne formel i brug. Kursen mellem de to punkter er givet på en 360\textdegree skala, hvor nord er sat til 0\textdegree/360\textdegree. Igennem udregnningen er det blevet gjort brug af følgende variabler og konstanter:\\
 \begin{tabular}{ l p{10cm} }
 \textbf{R}: & Jordens gennemsnits radius. Konstant sat til 6371 kilometer.\\
 \textbf{b}: & Kursen objektet følger fra initial punktet på en 360\textdegree-skala.\\
@@ -72,7 +73,8 @@ x &= sin(b) * sin(\dfrac{d}{R*1000}) * cos(\theta_p) \\
 y &= cos(\dfrac{d}{R*1000}) - sin(\theta_p) * sin(\theta_o) \\
 \lambda_o &= \lambda_p + atan2(x,y)
 \end{align}
-Kun simulatoren tager brug af denne funktion. Den skal bruges i sammenhæng med at udregne, hvor en bus skal placeres på ruten ved en ny opdatering. Distancen bussen skal bevæge sig er tidligere blevet udregnet, samt det punkt på ruten, bussen skal være før. Kursen findes ved hjælp af bussens nuværende position samt det udregnede rutepunkt. Ved hjælp af startpunktet, distancen og kursen, udregnes bussens nye position. Ved udregninger af breddegraden af objektet bruges atan2, og da der skal returneres et antalgrader, skal denne værdi konvertes til en 360\textdegree version. Dette gøres ved hjælp af formel 7\\
+Kun simulatoren tager brug af denne funktion. Den skal bruges i sammenhæng med at udregne, hvor en bus skal placeres på ruten ved en ny opdatering. Distancen bussen skal bevæge sig er tidligere blevet udregnet, samt det punkt på ruten, bussen skal være før. Kursen findes ved hjælp af bussens nuværende position samt det udregnede rutepunkt. Ved hjælp af startpunktet, distancen og kursen, udregnes bussens nye position. 
+\\Ved udregninger af breddegraden af objektet bruges atan2, og da der skal returneres et antal grader, skal denne værdi konvertes til en 360\textdegree skala. Dette gøres ved hjælp af formel (7)\\
 
 \noindent
 Formlen og implementeringen i koden er ikke lavet selv, men derimod hentet fra \url{http://www.movable-type.co.uk/scripts/latlong.html}. Udregninger og implementeringer fra denne side er Open-Source og lavet af Chris Veness.\\
@@ -88,19 +90,19 @@ Et linjestykke er spændt op mellem to punkter. Et tredje punkt kan ligge et vilk
 \end{figure}\\
 Igennem udregningerne gøres der brug af disse variabler:\\
 \begin{tabular}{ l p{10cm} }
-\textbf{A}: & Linjestykket mellem P1 og P2 hældningskoefficient.\\
-\textbf{B}: & Linjestykket mellem P1 og P2 skæring med y-aksen.\\
+\textbf{A}: & hældningskoefficient for Linjestykket mellem P1 og P2 .\\
+\textbf{B}: & Skæring med y-aksen for injestykket mellem P1 og P2 \\
 \textbf{$\theta_1,\theta_2,\theta_4,\theta_4$}: &  Længdegrad for de fire punkter.\\
 \textbf{$\lambda_1,\lambda_2,\lambda_3,\lambda_4 $}: & Breddegrad for de fire punkter.\\
 \end{tabular} \\\\
-Denne formel virker kun for relative tætte punkter, hvor der skal tages hensyn til jordens hældning, og jorden derfor kan ses som et plan. Igennem formel (12) til (15), kan det ses, hvordan punktet findes. 
+Denne formel virker kun for relative tætte punkter, hvor der ikke skal tages hensyn til jordens hældning, og jorden derfor kan ses som et plan. Igennem formel (12) til (15), kan det ses, hvordan punktet findes. 
 \begin{align}
 A &= \dfrac{\theta_2 - \theta_1}{\lambda_2 - \lambda_1}\\
 B &= \theta_1 + A * (-\lambda_1) \\ 
 \theta_4 &= \dfrac{A * \theta_3 + \lambda_3 - A*B}{A^2 + 1}\\
 \lambda_4 &= \dfrac{A^2 * \theta_3  + A * \lambda_3 + B}{A^2 + 1}
 \end{align}\\\\
-I tilfælde af at linjen mellem punkt 1 og punkt 2 er horisontal eller vertikal, er der under implementering skabt special tilfælde. Hvis linjen er horisontal sættes $\theta_4 = \theta_1$ og $\lambda_4 = \lambda 3$. Hvis linjen er vertikal sættes $\theta_4 = \theta_3$ og $\lambda_4 = \lambda_1$. Situation ses på figur \ref{taettestPunkt_special}
+I tilfælde af at linjen mellem punkt 1 og punkt 2 er horisontal eller vertikal, er der under implementering skabt special tilfælde. Hvis linjen er horisontal sættes $\theta_4 = \theta_1$ og $\lambda_4 = \lambda_3$. Hvis linjen er vertikal sættes $\theta_4 = \theta_3$ og $\lambda_4 = \lambda_1$. Situation ses på figur \ref{taettestPunkt_special}
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.85]{Diagrammer/Billeder/Math_TaettestPunktPaaLinjeStykket_speciel.jpg}
@@ -109,12 +111,12 @@ I tilfælde af at linjen mellem punkt 1 og punkt 2 er horisontal eller vertikal, 
 \end{figure}\\\\
 Denne formel tages i brug i databasen og på hjemmesiden.
 \begin{itemize}
-	\item I database tages denne udregning i brug når en bus tid til ankomst ved et stoppested skal udregnes. I denne process skal der på et tidspunkt udregnes, hvilket rutepunkt, bussen er tættest på. Dette gøres ved hjælp af en kombination af denne formel, samt Haversine formlen. Ved hvert linjestykke skabt af punkterne på ruten, udregnes det tætteste punkt for bussen på dette linje stykke. Mellem bussen og dette punkt gøres der brug af Haversine, for at udregne afstanden fra bussen til linjestykket. Endepunktet for det linjestykke, hvor bus til linje afstanden er kortest, må være det rutepunkt bussen er tættest på.
+	\item I databasen tages denne udregning i brug når ankomsttiden for bus  ved et stoppested skal udregnes. I denne process skal der på et tidspunkt udregnes, hvilket rutepunkt, bussen er tættest på. Dette gøres ved hjælp af en kombination af denne formel, samt Haversine formlen. Ved hvert linjestykke skabt af punkterne på ruten, udregnes det tætteste punkt for bussen på dette linje stykke. Mellem bussen og dette punkt gøres der brug af Haversine, for at udregne afstanden fra bussen til linjestykket. Endepunktet for det linjestykke, hvor bus til linje afstanden er kortest, må være det rutepunkt bussen er tættest på.
 	\item På hjemmesiden skal der udregnes, mellem hvilke to punkter et stoppested skal ligge. Udregningen fortages på sammen måde, som i databasen, hvor bussen blot er erstattet med et stoppested. Resultatet er det rutepunkt, stoppested skal ligge før.
 \end{itemize}
 
 \noindent
-Den linære funktion (Ax + B) der skabes til linjestykket vil ikke kun strække sig mellem de to længde- og breddegrader der gives. Der kan derfor opstå en situation, hvor objektet egentlig ligger tættest på ét linjestykke, men den linje der bliver skabt af et andet linjestykke vil have en mindre ortogonal distance hen til objektet. Derfor er det vigtigt, at der ved implementering tages højde for, at det kun er det kun er linjestykket der undersøges og ikke hele linjen. Dette sikres ved, at en eller flere af de følgende fire regler ikke må være gældende for $\theta_4 og \lambda_4$:
+Den linære funktion (Ax + B) der skabes til linjestykket vil ikke kun strække sig mellem de to længde- og breddegrader der gives. Der kan derfor opstå en situation, hvor objektet egentlig ligger tættest på ét linjestykke, men den ortogonale linje der bliver skabt fra objetet til et andet linjestykke vil have en mindre distance. Derfor er det vigtigt, at der ved implementering tages højde for, at det kun er linjestykket der undersøges og ikke hele linjen. Dette sikres ved, at en eller flere af de følgende fire regler ikke må være gældende for $\theta_4 og \lambda_4$:
 
 \begin{itemize}
 	\item $\theta_4 > \theta_1 \quad \& \quad \theta_4 > \theta_2$
@@ -123,14 +125,14 @@ Den linære funktion (Ax + B) der skabes til linjestykket vil ikke kun strække si
 	\item $\lambda_4 < \lambda_1 \quad \& \quad \lambda_4 < \lambda_2$
 \end{itemize}
 \noindent
-Hvis blot en af disse regler passer, er punktet ugyldigt, da det ikke ligger på linjestykket.\\
+Hvis blot en af disse regler passer, er punktet ugyldigt, da det ikke ligger på linjestykket. Under udregningen af stoppestedernes position på ruten, er der dog tilføjet en ekstra undersøgelse. Hvis distancen mellem stoppestedet er mindre en 25 meter, gyldigøres udregninger selvom en eller flere af de overstående punkter er gældende. Dette gøres, da et stoppested kan ligge tilpas forskudt fra ruten til, at den ikke vil passe på noget linjestykke. 
 
 \noindent
-Denne formel er lavet på baggrund af information fundet på to hjemmesider.\\ \url{http://demo.activemath.org/ActiveMath2/search/show.cmd?id=mbase://AC_UK_calculus/functions/ex_linear_equation_two_points} beskriver hvordan en lineær funktion findes ved to punkter. \\\url{http://math.ucsd.edu/~wgarner/math4c/derivations/distance/distptline.htm} beskriver hvordan det ortogonale punkt findes ved hjælp af en lineær funktion.
+Denne formel er lavet på baggrund af information fundet på to hjemmesider.\\ \url{http://demo.activemath.org/ActiveMath2/search/show.cmd?id=mbase://AC_UK_calculus/functions/ex_linear_equation_two_points} beskriver hvordan den lineære funktion findes givet ved to punkter. \\\url{http://math.ucsd.edu/~wgarner/math4c/derivations/distance/distptline.htm} beskriver hvordan det ortogonale punkt findes ved hjælp af en lineær funktion.\\
 
 \noindent
 \textbf{Grader og radianer konvertering}\\
-Nå de forrige fire formler skal implementeres er det ofte nødvendigt at konvertere mellem radianer og grader. På formel (16) kan konverteringen fra grader til radianer ses, og på formel (17) kan konverteringen fra radianer til grader ses.
+Når de forrige fire formler skal implementeres er det ofte nødvendigt at konvertere mellem radianer og grader. På formel (16) kan konverteringen fra grader til radianer ses, og på formel (17) kan konverteringen fra radianer til grader ses.
 \begin{align}
 Radianer = \dfrac{Grader * \pi}{180}\\
 Grader = \dfrac{Radianer * 180}{\pi}

@@ -10,8 +10,14 @@ Denne komponent har til formål at håndtere alle de adminitrative opgaver i syste
 \item Den tredje delkomponent gør det muligt at kunne oprette en ny busrute i systemet, ændrer i en allerede eksiterende busrute, eller slette en fra systemet.
 \item Den fjerde delkomponent består af muligheden for at kunne tilføje, ændre samt fjerne busstoppesteder fra systemet.
 \end{itemize}
-
 \noindent
+På figur \ref{fig:AdmnistratorKlasseDia} kan administrator systemets lagdelte struktur følges, i form af et klassediagram. Herpå kan det ses, hvordan klasserne er bygget op i en tre-lags model, samt hvordan de interagerer. Når der laves en association, betyder det at klasse tilgås statisk.
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.60]{Diagrammer/Klassediagrammer/Hjemmeside_KlasseDia.jpg}
+\caption{Klassediagram for simulator. Opbygget som trelags-model}
+\label{fig:AdmnistratorKlasseDia}
+\end{figure}
 Alle disse delkomponenter udgør tilsammen en vigtig del af systemet, da det ikke vil være muligt at oprette de dataelementer, systemet består af, uden dem.\\\\
 \textbf{Design:}\\
 Hjemmesiden er blevet implementeret ved brug af Microsoft ASP.NET MVC 4 frameworket. Dette gør det nemt og hurtigt at implementere en sofistikeret og moderne hjemmeside, der følger gode design principper. MVC står for Model-View-Controller og følger de samme principper som MVVM angående 'separation of concerns'.\\
