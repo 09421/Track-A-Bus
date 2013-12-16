@@ -2,8 +2,12 @@
 \begin{document}
 
 \subsubsection{Komponent 3: Administrations hjemmeside }
-Denne komponent har til formål at håndtere alle de adminitrative opgaver i systemet. Dette består af 4 delkomponenter:
+Denne komponent har til formål at håndtere alle de adminitrative opgaver i systemet.\\
 
+\noindent
+\textbf{Specifikationer}\\
+\noindent
+Denne komponent består af fire delkomponenter:
 \begin{itemize}
 \item Den første delkomponent gør det muligt at tilføje en bus til systemet, fjerne den, eller rediger i en bus der allerede findes i systemet.
 \item Den anden delkomponent gør det muligt at tilføje eller fjerne en bus fra en rute der findes i systemet.
@@ -11,13 +15,68 @@ Denne komponent har til formål at håndtere alle de adminitrative opgaver i syste
 \item Den fjerde delkomponent består af muligheden for at kunne tilføje, ændre samt fjerne busstoppesteder fra systemet.
 \end{itemize}
 \noindent
-På figur \ref{fig:AdmnistratorKlasseDia} kan administrator systemets lagdelte struktur følges, i form af et klassediagram. Herpå kan det ses, hvordan klasserne er bygget op i en tre-lags model, samt hvordan de interagerer. Når der laves en association, betyder det at klasse tilgås statisk.
+På figur \ref{fig:AdmnistratorKlasseDia} kan administrator systemets lagdelte struktur følges, i form af et klassediagram. Herpå kan det ses, hvordan klasserne er bygget op i en tre-lags model, samt hvordan de interagerer. Når der laves en association, betyder det at klasse tilgås statisk.\\
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.60]{Diagrammer/Klassediagrammer/Hjemmeside_KlasseDia.jpg}
 \caption{Klassediagram for simulator. Opbygget som trelags-model}
 \label{fig:AdmnistratorKlasseDia}
 \end{figure}
+
+\noindent
+Her følger en kort beskrivelse af hver klasse, samt den funktionalitet klassen tilføjer til systemet.
+\begin{itemize}
+	\item Home index
+	\begin{itemize}
+		\item Denne klasse består af viewet for home skærmen. Denne laver ikke andet arbejde, end at lade administratoren vælge, en delkomponent.
+	\end{itemize}
+	\item Dir index
+	\begin{itemize}
+		\item Denne klasse består af viewet for rute redigerings skærmen. Heri ligger alle funktionaliter administratoren kan tilgå, for at oprette, fjerne eller ændre en rute i systemet.
+	\end{itemize}
+	\item Bus index
+	\begin{itemize}
+		\item Denne klasse består af viewet for bus redigerings skærmen. Heri ligger alle funktionaliter administratoren kan tilgå, for at oprette, fjerne eller ændre en bus i systemet. Denne tilbyder yderligere muligheden for, at tilføje eller fjerne en bus på en rute.
+	\end{itemize}
+	\item Stop index
+	\begin{itemize}
+		\item Denne klasse består af viewet for stoppesteds redigerings skærmen. Heri ligger alle funktionaliter administratoren kan tilgå, for at oprette, fjerne eller ændre et stoppested i systemet.
+	\end{itemize}
+	\item HomeController
+	\begin{itemize}
+		\item Denne klasse står for at modtage kaldende fra Home viewet. Denne klasse gør dog intet i denne sammenhæng, da ingen kald skal modtages.
+	\end{itemize}
+	\item DirController
+	\begin{itemize}
+		\item Denne klasse står for at modtage kaldende fra rute viewet. Den sørger for, at kalde til data tilgangs laget, for at tilgå databasen, vedrørende rute relvante oplysninger. Desuden manipulerer den det data, der kan hentes fra viewet, således at data bliver gemt på korrekt form, samtidig med, at data hentet fra databasen bliver manipuleret, så det vises korrekt viewet.
+	\end{itemize}
+	\item BusContoller
+	\begin{itemize}
+		\item Denne klasse står for at modtage kaldende fra bus viewet. Den sørger for, at kalde til data tilgangs laget, for tilgå databasen, vedrørende bus relvante oplysninger. Desuden manipulerer den det data, der kan hentes fra viewet, således at data bliver gemt på korrekt form, samtidig med, at data hentet fra databasen bliver manipuleret, så det vises korrekt på viewet.
+	\end{itemize}
+	\item StopController
+	\begin{itemize}
+		\item Denne klasse står for at modtage kaldende fra stoppesteds viewet. Den sørger for, at kalde til data tilgangs laget, for tilgå databasen, vedrørende stoppesteds relvante oplysninger. Desuden manipulerer den det data, der kan hentes fra viewet, således at data bliver gemt på korrekt form, samtidig med, at data hentet fra databasen bliver manipuleret, så det vises korrekt på viewet.
+	\end{itemize}
+\item Waypoint og BusStops
+	\begin{itemize}
+		\item Disse er model klasser. De anses derfor som datatyper, og har ingen relationer til eller fra sig.
+	\end{itemize}
+\item RouteMath
+	\begin{itemize}
+		\item Denne klasse indeholder alt relevant matematik, som skal bruges under manipulering af data, før det gemmes på databasen. Alle funktioner er statiske, så ingen klasser opretter denne.
+	\end{itemize}
+\item JConverter
+	\begin{itemize}
+		\item Denne klasse sørger udelukkende for at konvertere en vilkårlig liste, til et JSON objekt. Dette bruges i sammenhæng med, at listerne af data returneret fra databasen, skal ændres til et JSON objekt, før dette kan sættes på viewet.
+	\end{itemize}
+\item DBConnection
+	\begin{itemize}
+		\item Denne klasses eneste ansvar er, at tilgå databasen. Derfor er det også den eneste der ligger under data tilgangs laget. Den implementerer specifikke metoder, til brug i de forskellige Controllers. Samtlige funktioner er statiske, så de kan tilgås uden at et objekt af klassen skal oprettes.
+	\end{itemize}		 
+\end{itemize}
+
+\noindent
 Alle disse delkomponenter udgør tilsammen en vigtig del af systemet, da det ikke vil være muligt at oprette de dataelementer, systemet består af, uden dem.\\\\
 \textbf{Design:}\\
 Hjemmesiden er blevet implementeret ved brug af Microsoft ASP.NET MVC 4 frameworket. Dette gør det nemt og hurtigt at implementere en sofistikeret og moderne hjemmeside, der følger gode design principper. MVC står for Model-View-Controller og følger de samme principper som MVVM angående 'separation of concerns'.\\

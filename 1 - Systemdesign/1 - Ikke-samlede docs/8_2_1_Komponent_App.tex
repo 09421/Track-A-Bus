@@ -1,7 +1,11 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 \subsubsection{Komponent 1: Mobil applikation}
-Denne komponent har til formå at formidle alt bus information til brugerne. Den gør det muligt for brugeren at se busruter med stoppesteder indtegnet på et kort samt positionen for de busser der køre på ruten. Herudover vil det være muligt at se hvor lang tid der er til, at den næsten bus ankommer ved et valgt busstoppested. På figur \ref{fig:AppKlasseDiagram} kan de forskellige klasser ses, samt hvilke lag de ligger i og hvordan de interagerer. Model klasser vises ikke som interageringer.
+Denne komponent har til formål at formidle alt bus information til brugeren. Den gør det muligt for brugeren at se busruter med stoppesteder indtegnet på et kort samt positionen for de busser der køre på ruten. Herudover vil det være muligt at se hvor lang tid der er til, at den næsten bus ankommer ved et valgt busstoppested. \\
+
+\noindent
+\textbf{Specifikationer}\\
+På figur \ref{fig:AppKlasseDiagram} kan de forskellige klasser ses, samt hvilke lag de ligger i og hvordan de interagerer. Model klasser vises ikke som interageringer.
 \\
 \begin{figure}[H]
 	\centering
@@ -19,6 +23,58 @@ På figur \ref{fig:AppKlasseDiagramModel} ses de forskellige model klasser, der h
 	\label{fig:AppKlasseDiagramModel}
 \end{figure}
 
+\noindent
+Her følger en kort beskrivelse af hver klasse, samt den funktionalitet klassen tilføjer til systemet.
+\begin{itemize}
+	\item MainScreenActivity
+	\begin{itemize}
+		\item Denne klasse implementerer Activity interfacet, hvilket betyder, at den bruges som et view. Denne agerer som startskærm for applikationen, og lader brugeren vælge en favorit bus. Herfra kan brugeren desuden også vælge at åbne BusListMenuActivity.
+	\end{itemize}
+	\item BusListMenuActivity
+	\begin{itemize}
+		\item Denne klasse implementerer ListActivity interfacet, hvilket betyder, at den bruges som et view, men en list adapter kan sættes hertil. Den har til formål at præsentere brugeren for listen af ruter der eksisterer i MySQL databasen, samt favorisere en given rute. Selve viewet er bygget op med en adapter, hvori favoriserings funktionaliteten ligger, samt click eventet for favoriserings knappen. Selve klikket på et element fra listen, håndteres i BusListMenuActivity klassen. Herigennem har brugeren mulighed for at vælge en busrute, favoriseret såvel som ikke.
+	\end{itemize}
+	\item BusMapActivity
+	\begin{itemize}
+		\item Denne klasse implementerer Activity interfacet, hvilket betyder, at den bruges som et view. Den har til formål at præsentere brugeren for et kort med indtegnet valgt busrute og stoppesteder. Her vil kørende busser på ruten også præsenteres. Den har desuden til formål at starte tidsopdaterings funktionalitet, ved et tryk på et stoppested.
+	\end{itemize}
+	\item BusListAdapter
+	\begin{itemize}
+		\item Denne klasse implementerer Adapter interfacet, hvilket betyder, at den kan bruges til at repræsentere de layout-elementer der skal vises på viewet. I denne sammenhæng er den koblet til BusListMenuActivityet. Den har til formål at håndtere alle favoriserings funktionerne, og click eventet for favoriserings knappen. 
+	\end{itemize}
+	\item ConnectivityChecker
+	\begin{itemize}
+		\item Denne klasse implementerer BroadcastReceiver, hvilket betyder, at den modtager registrede system events. Disse events bliver sat i manifestet. I denne sammenhæng er den koblet til CONNECTIVITY\_CHANGE og\\ WIFI\_STATE\_CHANGED. Disse events omhandler ændringer i netværksforbindelse. Når der sker en ændring, undersøger den hvorvidt nettet kan tilgås, hvorefter den sætter en statisk bool til true hvis det kan tilgås, og false hvis ikke.
+	\end{itemize}
+	\item ContentProviderAcces
+	\begin{itemize}
+		\item Denne klasse er et abstraktions lag mellem præsentations laget og ContentProvideren, som ligger i data tilgangs laget. Dette betyder at det er den eneste klasse, som tilgår ContentProvideren. Funktionerne i denne klasse er statiske, da kun én indskrivnings- eller sletnings process kan udføres af gangen.
+	\end{itemize}
+	\item TrackABusProvider
+	\begin{itemize}
+		\item Denne klasse implementer Service interfacet, hvilket betyder at klassen kan tilgås som en Bound Service. Klassen agerer som et abstraktions lag mellem præsentations laget og SoapProvideren, som ligger i data tilgangs laget. Dette betyder, at den er den eneste klasse, som tilgår SoapProvideren. Funktionerne i denne klasse returnerer aldrig direte til det view som kaldte den, men i stedet over en MessageHandler. Dette gør at service funktionerne kan afvikles asynkront.
+	\end{itemize}
+	\item UserPrefProvider
+	\begin{itemize}
+		\item Denne klasse implementer ContentProvider interfacet, hvilket betyder at klassen kan tilgås igennem "getContentResolver" funktionen, hvis den er koblet til applikationen i manifestet. Denne klasse sørger for at tilgå den lokale SQLite database, for at persistere eller fjerne en favoriseret rute. Denne er således den ene klasse i data tilgangs laget. Der kommunikeres udelukkende med denne klasse igennem ContentProviderAcces klassen. 
+	\end{itemize}
+	\item SoapProvider
+	\begin{itemize}
+		\item Denne klasse har til formål at tilgå de forskellige funktioner i mobil servicen på serveren. Disse kald tilgår MySQL databasen, og er derfor den anden klasse i data tilgangs laget. Der kommunikeres udelukkende med denne klasse igennem TrackABusProvideren.
+	\end{itemize}
+	\item Parcelable modeller
+	\begin{itemize}
+		\item Disse klasser bruges som datatyper TrackABusProvideren. Disse har alle til fælles at de implementerer Parcelable. Dette gør det muligt for disse modeller at pakkes ned i en message, og sendes til en nessage handler.
+	\end{itemize}
+	\item ContentProvider modeller
+	\begin{itemize}
+		\item Disse klasser er modeller for de tabeller, SQLite databasen indeholder. De indeholder herunder navnene på de forskellige kolonner i tabellen, samt hvilken URI, der skal kaldes med, for at tilgå den givne tabel.
+	\end{itemize}
+	\item BusListAdapter modeller
+	\begin{itemize}
+		\item Disse klasser bruges i sammenhæng med at gemme de UI elementer, som bruges i BusListAdapteren, samt det data denne indeholder. 
+	\end{itemize}
+\end{itemize}
 \noindent
 \textbf{Design:}\\
 Applikationen er blevet udviklet til android mobiltelefoner som kører med OS version 4.3 Jelly Bean og op til 4.4 KitKat. Dertil er der blevet udviklet imod android API level 18 og 19.
