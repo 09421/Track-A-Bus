@@ -2,11 +2,11 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier}
-Før denne Use Case kan startes skal \textit{Use Case 1: Vis busruter} være gennemført. Fra listen over alle busruter, tilkendegiver brugeren overfor systemet at han ønsker at favorisere et busrute, eller fjerne en busrute fra favoriter.
-Ved favorisering af busrute, henter systemet den valgte busrute, samt stoppestederne for valgte busrute fra databasen, dernæst persisterer systemet dette på en sqlite database på telefonen. Busruten bliver markeret som favorit på listen over busruter. Brugeren vil nu kunne vælge den favoriseret busrute på startskærmen, i stedet for fra listen over alle busruter. 
-ved fjernelse fra favorisering vil systemet slette ruten, samt dens busstoppesteder fra sqlite databasen, fjerne markeringen fra listen over busruter, samt det ikke længere vil være muligt at vælge ruten fra startskærmen.
+Før denne Use Case kan startes skal \textit{Use Case 1: Vis busruter} være gennemført. Fra listen af alle busruter, tilkendegiver brugeren overfor systemet, at en busrute ønskes favorisert, eller fjernes fra favoriseringen.
+Ved favorisering, henter systemet den valgte busrute, samt stoppestederne, fra databasen. Dernæst persisteres dette på en lokal database på telefonen. Busruten bliver markeret som favorit på listen af busruter. Brugeren vil nu kunne vælge den favoriserede busrute fra startskærmen, frem for listen over alle busruter. \\
+Ved fjernelse af favorisering vil systemet slette ruten, samt dens stoppesteder fra den lokale database. Markeringen vil fjernes fra ruten i listen af busruter, og det vil ikke længere være muligt at vælge ruten fra startskærmen.
 
 \subsubsection{Use Case Undtagelser}
-Da busruten samt busstoppestederne hentes fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen.
+Da ruten og stoppestederne hentes fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteret for en besked om, at det ikke er muligt at etablere forbindelse til databasen.
 
 \end{document}

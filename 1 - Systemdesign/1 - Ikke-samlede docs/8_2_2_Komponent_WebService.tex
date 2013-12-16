@@ -1,12 +1,12 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 \subsubsection{Komponent 2: Mobile service}
-Denne komponent har til formål at være mellemled mellem mobil applikationen og MySQL databasen. komponenten er blevet lavet, da mobil applikationen ikke må have direkte adgang til en databasen, da dette har store sikkerhedsmessige implikationer. Uden denne service vil det også være muligt for ondsindet brugere at tilgå databasen og manipulere med data på en ikke ønsket måde. Et andet formål med denne web service er at gøre det gøre det nemt at udvikle ny mobil applikation, til et hvilkensomhelst styresystem, uden at skulle tænkte på database tilgang.\\\\
+Denne komponent har til formål at være mellemled mellem mobil applikationen og MySQL databasen. komponenten er blevet lavet, da mobil applikationen ikke må have direkte tilgang til MySQL databasen, da dette har store sikkerhedsmæssige implikationer. Et andet formål med denne web service er at gøre det gøre det nemt at udvikle til en anden mobil platform, da der ikke skal tænkes på database tilgang, men blot kaldes til servicen. Herudover abstraheres samtlige processeringstunge udregninger væk fra applikationen.\\\\
 \textbf{Design:}\\
-Mobil servicen bliver brugt til at hente data fra MySQL databasen som mobil applikationen skal bruge. Dette indebære at hente en liste af busruter, hente en bestemt rute, hente stoppestederne for en rute, hente positionen for alle busser på ruten og kalde den Stored procedure der udregner tiden før der er en bus ved et valgt stoppested. Web servicen er tilgængelig for alle, da de eneste funktionaliteter den udbyder er at hente data fra databasen. Med en åben web service er det muligt for alle at bruge data til at udvikle nye applikationer. på \url{http://trackabus.dk/AndroidToMySQLWebService.asmx} er det muligt at se tilgængelige funktioner.\\
-Her kan ses et eksempel på hvad det kræver at kalde funkionen GetBusPos fra web servicen, ved brug af SOAP. Det kan ses at den kræver et 'busNumber' i form af en string, som input parameter.
+Mobil servicen bliver brugt til at hente data fra MySQL databasen som mobil applikationen skal bruge. Dette indebære at hente en liste af busruter, hente en bestemt rute, hente stoppestederne for en rute, hente positionen for alle busser på ruten og kalde den proceduren på databasen som udregner tiden til ankomst for den nærmeste bus ved et valgt stoppested. Tidsudregningen kan der læses mere om i afsnit \ref{9.1.3: Stored Procedures}. Web servicen er tilgængelig for alle, da de eneste funktionaliteter den udbyder er at hente data fra databasen. Med en åben web service er det muligt for alle at bruge data til at udvikle nye applikationer. \footnote{For en liste af funktioner i servicen, se \url{http://trackabus.dk/AndroidToMySQLWebService.asmx} }
+På kodeudsnit \ref{lst:SoapStuff} kan der følges et eksempel på, hvad det kræver at kalde funkionen GetBusPos fra web servicen, ved brug af SOAP version 1.1.\footnote{For mere information om SOAP, se \url{http://www.w3.org/TR/2000/NOTE-SOAP-20000508/} } Det kan ses at funktionen kræver en "busNumber" input parameter i form af en string. Implementeringen af SOAP på mobil applikations siden kan findes under afsnit \textit{9.2.1: Implementering af persistens i mobil applikationen}. 
 
-\begin{lstlisting}[caption=request til service function GetBusPos, language=XML]
+\begin{lstlisting}[caption=request til service function GetBusPos, language=XML, label={lst:SoapStuff}]
 POST /AndroidToMySQLWebService.asmx HTTP/1.1
 Host: trackabus.dk
 Content-Type: application/soap+xml; charset=utf-8
@@ -20,9 +20,10 @@ Content-Length: length
   </soap12:Body>
 </soap12:Envelope>}
 \end{lstlisting}
-Herunder ses det SOAP response man får tilbage efter at have lavet det overstående kald til servicen. Det kan ses at man får en liste af points tilbage, hvor hver point indeholder en Lat, en Lng og et ID som alle er af datatypen string.
 
-\begin{lstlisting}[caption=response fra service function GetBusPos, language=XML]
+På kodeudsnit \ref{lst:SoapResponse}, kan det SOAP response, servicen returner ved fuldent kald til GetBusPos. Svaret kan ses som et XML. SOAP implementeringen på applikations siden, står for at håndtere læsningen at dette træ.  Det kan ses at der retuneres en liste af Points, hvor hver Point indeholder en Lat, en Lng og et ID som alle er af datatypen string.
+
+\begin{lstlisting}[caption=response fra service function GetBusPos, language=XML, label={lst:SoapResponse}]
 HTTP/1.1 200 OK
 Content-Type: application/soap+xml; charset=utf-8
 Content-Length: length

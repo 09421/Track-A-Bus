@@ -2,11 +2,11 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier}
-Denne Use Case viser en liste over busruter, der er gemt i databasen, til brugeren. Det kræver at brugeren står ved startskærmen, dernæst tilkendegiver brugeren overfor systemet at han ønsker at se listen over gemte busruter. Herefter hentes busruterne fra databasen, hvorefter brugeren bliver præsenteret for en liste af busruter.
+Denne Use Case viser en liste over busruter, der er gemt i databasen, til brugeren. Det kræver at brugeren står ved startskærmen, hvorefter brugeren tilkendegiver overfor systemet, at der ønskes at ses listen over gemte busruter. Herefter hentes busruterne fra databasen og brugeren bliver præsenteret for disse.
 
 \subsubsection{Use Case undtagelser}
-Da busruterne bliver hentet fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen, hvorpå han kan vende tilbage til startskærmen og prøve igen.
-Der er mulighed for at brugeren kan annullere indlæsningen fra databasen. Hvis dette sker vil systemet stoppe indlæsningen fra databasen, samt returnerer til startskærmen.
-Der er mulighed for at systemet går i dvale, imens der indlæses fra databasen. Hvis dette sker vil systemet hente busruterne færdig i baggrunden.
+Da busruterne bliver hentet fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om, at det ikke er muligt at etablere forbindelse til databasen, hvorpå han kan vende tilbage til startskærmen og prøve igen.
+Der er mulighed for at annullere indlæsningen. Hvis dette sker vil systemet stoppe indlæsningen fra databasen, samt returnere til startskærmen.
+systemet kan gå i dvale, imens der bliver indlæst fra databasen. Hvis dette sker vil systemet hente busruterne færdig i baggrunden.
 
 \end{document}
