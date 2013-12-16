@@ -3,105 +3,101 @@
 
 \subsection{Fejludskrifter}
 Fejlbeskeder for mobil applikationen består af små beskeder der vises på skærmen i et kort stykke tid, uden at forstyre brugeren.
-For administrations hjemmesiden, vil administratoren blive præsenteret for en fejlbesked på skærmen der beskriver kort hvad der kan have været gået galt.\\
+For administrations hjemmesiden, vil administratoren blive præsenteret for en fejlbesked på skærmen, der beskriver kort, hvad der er gået galt.\\
 De følgende fejlbeskeder, beskriver de fejl der kan forkomme på mobil applikationen.
 \begin{itemize}
-\item \textbf{"Please check internet connection, and try Again"}
+\item \textbf{"Please check internet connection, and try again"}
 \begin{itemize}
-\item Fejlen kan forekomme flere steder i systemet, hver gang der skal skabes forbindelse til internettet. Beskeden forkommer når der ikke kan skabes 				  forbindelse til internetet.
+\item Fejlen kan forekomme flere steder i systemet, hver gang der skal skabes forbindelse til internettet. Beskeden forkommer når der ikke kan skabes forbindelse til internetet.
 \end{itemize}
 	
 \item \textbf{"No connection to internet. Can only show route for favorite bus "}
 \begin{itemize}
-\item Denne besked kommer hvis man trykker på en busrute der ikke er favoriseret, i listen af alle busruter, og der ikke er forbindelse til 	                             internettet. beskedet fortæller det kun er muligt at vise de ruter, der er blevet favoriseret, når der ikke er forbindelse til internettet. 	 
+\item Denne besked forekommer, hvis brugeren trykker på en busrute der ikke er favoriseret, i listen af alle busruter, og der ikke er forbindelse til internettet. Beskeden beskriver, at det kun er muligt at vise de ruter, der er blevet favoriseret, når der ikke er forbindelse til internettet. 	 
 \end{itemize}
 
 \item \textbf{"Please wait until other route is favorited/unfavorited"}
 \begin{itemize}
-\item Denne besked kommer hvis brugeren prøver at favorisere eller fjerne en rute fra favorisering, imens en anden rute er i gang med at blive favoriseret.
+\item Denne besked forekommer, hvis brugeren prøver at favorisere eller fjerne en rute fra favoriseringen, imens en anden rute er i gang med at blive favoriseret/ufavoriseret.
 \end{itemize}
 
-\item \textbf{"Limit of favorite routes reached: (MAX 6)"}
+\item \textbf{"No connection to internet. Cannot set route to favorite."}
 \begin{itemize}
-\item Denne besked kommer hvis brugeren prøver at favorisere mere end 6 busruter.
-\end{itemize}
-
-\item \textbf{"No connection to internet. Cannont set route to favorite."}
-\begin{itemize}
-\item Denne besked kommer hvis brugeren prøver at favorisere en busrute, imens der ikke er forbindelse til internettet.
+\item Denne besked forekommer, hvis brugeren prøver at favorisere en busrute, imens der ikke er forbindelse til internettet.
 \end{itemize}
 
 \item \textbf{"Cannot favorite this route"}
 \begin{itemize}
-\item Denne besked kommer hvis den rute brugeren ønsker at favorisere enten ikke har nogle rute punkter, eller ikke har nogle stoppesteder på sig. kan også forkomme hvis forbindelse til internettet tabes imens en rute er igang med at blive favoriseret.
+\item Denne besked forekommer, hvis den rute brugeren ønsker at favorisere enten ikke har nogle rute punkter, eller ikke har nogle stoppesteder på sig. Den kan også forkomme, hvis forbindelse til internettet tabes imens en rute er igang med at blive favoriseret.
 \end{itemize}
 
 \item \textbf{"Not connected to internet, can only show route"}
 \begin{itemize}
-\item Denne besked kommer når en favoriseret rute bliver valgt, og der ikke er forbindelse til internettet. Der menes med beskeden at kun ruten og stoppesteder kan indtegnes på kortet. der vil ikke blive vist nogle busser, da de ikke kan hentes fra MySQL databasen.
+\item Denne besked forekommer når en favoriseret rute bliver valgt, og der ikke er forbindelse til internettet. Beskeden beskriver, at kun ruten og stoppesteder kan indtegnes på kortet. Der vil ikke blive vist nogle busser, da de ikke kan hentes fra MySQL databasen.
 \end{itemize}
 
 \item \textbf{"No bus found on route"}
 \begin{itemize}
-\item Denne besked kommer når der bliver valgt en rute, og der ikke findes nogle busser i systemet der køre på den valgte busrute.
+\item Denne besked forekommer når der bliver valgt en rute, og der ikke findes nogle busser i databasen, der køre på den valgte busrute.
 \end{itemize}
 
 \item \textbf{"There are no bus stops on chosen route"}
 \begin{itemize}
-\item Denne besked kommer når der bliver valgt en rute, og der ikke findes nogle busstoppesteder på den valgte busrute.
+\item Denne besked forekommer når der bliver valgt en rute, og der ikke findes nogle busstoppesteder på den valgte busrute.
 \end{itemize}
 
 \item \textbf{"No connection to internet. Cannot update position"}
 \begin{itemize}
-\item Denne besked kommer hvis forbindelsen til internettet mistes, imens kortet, med indtegnet rute, stoppesteder og bus, bliver vist. kortet med rute og stoppesteder vil stadigvæk blive vist, dog vil bussens position ikke længere opdateres, så længe der ikke er forbindelse til internettet.
+\item Denne besked forekommer, hvis forbindelsen til internettet mistes, imens kortet, med indtegnet rute, stoppesteder og bus, bliver vist. Kortet med rute og stoppesteder vil stadigvæk blive vist, dog vil bussens position ikke længere opdateres, så længe der ikke er forbindelse til internettet.
 \end{itemize}
 \item \textbf{"No connection to internet. Cannot update time"}
 \begin{itemize}
-\item Denne besked kommer hvis et stoppested bliver valgt og der ikke er forbindelse til internettet, og tiden til et stoppested derfor ikke kan udregnes.
+\item Denne besked forekommer, hvis et stoppested bliver valgt og der ikke er forbindelse til internettet, og tiden til et stoppestedet derfor ikke kan udregnes.
 \end{itemize}	
 \end{itemize}
 \newpage
+
 De følgende fejlbeskeder, beskriver de fejl der kan forkomme på administrations hjemmesiden.
 \begin{itemize}
 
 \item \textbf{"No Internet connection"}
 \begin{itemize}
-\item Fejlen kan forekomme flere steder i systemet, hver gang der skal skabes forbindelse til internettet. Beskeden forkommer når der ikke kan skabes 				  forbindelse til internetet.
+\item Fejlen kan forekomme flere steder i systemet, hver gang der skal skabes forbindelse til internettet. Beskeden forkommer når der ikke kan skabes forbindelse til internetet.
 \end{itemize}
 
 \item \textbf{"Can't remove bus. Remove it from its route first"}
 \begin{itemize}
-\item Dette besked kommer hvis en bus bliver forsøgt slettet fra systemet, og den stadigvæk er knyttet til en busrute. administratoren kan fjern bussen fra busruten og prøve igen.
+\item Denne besked forekommer hvis en bus bliver forsøgt slettet fra systemet, og den stadigvæk er knyttet til en busrute. administratoren kan fjerne bussen fra busruten og prøve igen.
 \end{itemize}
 
 \item \textbf{"Bus already exist"}
 \begin{itemize}
-\item Dette besked kommer hvis administratoren prøver at tilføje en bus til systemet med et ID, imens der allerede findes en bus i systemet med samme ID. 
+\item Dette besked forekommer, hvis administratoren prøver at tilføje en bus til systemet med et ID, imens der allerede findes en bus i systemet med samme ID. 
 \end{itemize}
 
 \item \textbf{"Failed to save, please try again"}
 \begin{itemize}
-\item Dette besked kommer hvis der sker en fejl imens der bliver gemt på databasen. Dette kan forkomme hvis nettet forsvinder kort, eller der sker en anden fejl på serveren. Administratoren bør prøve igen, hvis dette ikke virker forslåes det at hjemmesiden bliver genindlæst.
+\item Denne besked forekommer, hvis der sker en fejl imens der bliver gemt på databasen. Dette kan forkomme hvis nettet forsvinder kort, eller der sker en anden serverfejl. Administratoren bør prøve igen. Hvis dette ikke virker foreslåes det at hjemmesiden bliver genindlæst.
 \end{itemize}
 
 \item \textbf{"Please name the stop"}
 \begin{itemize}
-\item Dette besked kommer hvis administratoren prøver at gemme et stoppested, uden at have navngivet det først.
+\item Dette besked forekommer, hvis administratoren prøver at gemme et stoppested, uden at have navngivet det først.
 \end{itemize}
 
 \item \textbf{"There are busses on the chosen route, please delete them first"}
 \begin{itemize}
-\item Dette besked kommer hvis administratoren prøver at slette en busrute fra systemet, men der stadigvæk er busser der er knyttet til den valgte rute. Administratoren kan fjerne busserne fra ruten og prøve igen.
+\item Denne besked forekommer, hvis administratoren prøver at slette en busrute fra systemet, men der stadigvæk er busser der er knyttet til den valgte rute. Administratoren kan fjerne busserne fra ruten og prøve igen.
 \end{itemize}
 \newpage
 \item \textbf{"The route does not have any busstops"}
 \begin{itemize}
-\item Dette besked kommer hvis administratoren prøver at gemme en busrute, dog uden at have tilføjet nogle stoppesteder til ruten først. Administratoren skal kan tilføje nogle stoppesteder og prøve igen.
+\item Denne besked forekommer, hvis administratoren prøver at gemme en busrute, uden at have tilføjet nogle stoppesteder til ruten først. Administratoren skal tilføje stoppesteder og prøve igen.
 \end{itemize}
 
 \item \textbf{"Please Type in a route number"}
 \begin{itemize}
-\item Dette besked kommer hvis administratoren prøver at gemme et busrute, uden at have navngivet det først.
+\item Denne besked forekommer, hvis administratoren prøver at gemme en busrute, uden at have navngivet det først.
 \end{itemize}
 
 

@@ -4,11 +4,10 @@
 \subsection{Exception og fejlhåndtering}
 
 \subsubsection{Fejlhåndtering ved tab af internet forbindelse}
-Da systemet er meget afhængigt af kommunikation med den distribuerede database, håndtere der i samtlige komponenter at forbindelsen til internet kan gå tabt.
+Da systemet er meget afhængigt af kommunikation med den distribuerede database, håndteres der i samtlige komponenter at forbindelsen til internettet kan gå tabt.
 \begin{itemize}
-	\item Mobil applikationen sørger for, at hvis internettet går tabt, bliver brugeren notificeret at der ikke er internet længere, og derfor kan den givne funktion ikke længere udføres. Applikation sørger for, at, hvis forbindelsen genetableres fortsættes den givne funktion. Dette er mest relevant under opdatering af bussers position og/eller tid til valgt stop. En BroadcastReceiver bruges i sammehæng med at undersøge forbindelsen til internettet. Når der sker en ændring i WIFI, eller i det mobile data netværk, vil denne undersøge, om der efter den nye ændring er tilgang til internettet. Et statisk flag sættes i klassen som symboliserer telefones forbindelse til netwærk. Hvis denne er sat til false, vil data ikke hentes, og en fejlbesked vil vises.
-	\item Simulatoren sørger for, at brugeren bliver notificeret hvis der ikke er net, og pauser således systemet, indtil at nettet kan tilgås igen.
-	\item I tilfælde af, at internettet forsvinder i mens en hjemmeside er indlæst, og en database-tilgangs funktion tilgås, er der sat et timeout på database på to sekunder. Hvis dette timeout nås, vil administratoren notificeres at internettet ikke kan tilgås.
+	\item Mobil applikationen sørger for, at hvis internettet går tabt, bliver brugeren notificeret om, at der ikke er internet længere, og derfor kan den givne funktion ikke længere udføres. Applikation sørger for, at hvis forbindelsen genetableres fortsættes den givne funktion. Dette er mest relevant under opdatering af bussernes position og/eller tid til valgt stop. En BroadcastReceiver bruges i sammehæng med at undersøge forbindelsen til internettet. Når der sker en ændring i wifi, eller i det mobile data netværk, vil denne undersøge, om der efter den nye ændring er tilgang til internettet. Et statisk flag sættes i klassen som symboliserer telefones forbindelse til netværk. Hvis denne er sat til false, vil data ikke hentes, og en fejlbesked vil vises.
+	\item I tilfælde af, at internettet forsvinder imens en hjemmeside er indlæst, og en database tilgangs funktion tilgås, er der sat et timeout på tilgangen på to sekunder. Hvis dette timeout nås, vil administratoren notificeres om, at internettet ikke kan tilgås.
 \end{itemize}
 
 

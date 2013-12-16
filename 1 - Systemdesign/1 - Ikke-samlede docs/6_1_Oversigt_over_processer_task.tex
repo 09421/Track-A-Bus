@@ -2,19 +2,18 @@
 \begin{document}
 
 \subsection{Oversigt over processer/task}
-Processen på android mobiltelefonen består af en række forskellige tråde:\\
+Processen på mobil applikationen består af følgende tråde:\\
 \textbf{Main/UI Thread -} Denne tråd er systemets hovedtråd og står for at modtage input fra brugeren, vise ting på skærmen samt initialisere andre komponenter og tråde.\\
-\textbf{TrackABusProvider -} Klasse der står for at lave tråede der bruges til at tilgå SoapProvideren.\\
-\textbf{updateTimeThread -} Tråd der står for at opdatere tiden, til bus ankommer, på skærmen.\\
+\textbf{TrackABusProvider -} Klasse der står for at lave trådene der bruges til at tilgå SoapProvideren.\\
 \textbf{SetFavoriteBusRoute -} Står for at gemme busrute som favorit i SQLite databasen.\\
 \textbf{RemoveFavorite -} Står for at fjerne en favoriseret busrute fra SQLite databasen. \\
 \\
-Administrations hjemmesiden består af 2 tråde:\\
-\textbf{Main/Client thread-} Dette er hoved tråden, der køre på clienten, for hjemmesiden, den står blandt andet for at modtage indput fra brugeren og opdatere skærmen.\\
-\textbf{Background/Server thread-} Denne tråd, der bliver kørt på serveren, står for at skrive til -og hente fra MySQL databasen.\\
+Administrations hjemmesiden består af to tråde:\\
+\textbf{Main/Client thread-} Dette er hoved tråden, der køre på clienten, for hjemmesiden. Den står blandt andet for at modtage input fra administratioren og opdatere skærmen.\\
+\textbf{Background/Server thread-} Denne tråd, der bliver kørt på serveren, står for at skrive til- og hente fra MySQL databasen.\\
 \\
-Simulatoren består af main tråden, samt 1 tråd for hver bus der bliver simuleret.\\
-\textbf{Main/UI thread -} Denne tråd står for at modtage input fra brugeren, starte de forskellige task, samt opdatere skærmen.\\
-\textbf{Bus threads -} Denne tråd bruges til at simulere en bus der køre på en busrute.\\
+Simulatoren består af main tråden, samt en tråd for hver bus der bliver simuleret.\\
+\textbf{Main/UI thread -} Denne tråd står for at modtage input fra brugeren, starte de forskellige tasks, samt opdatere skærmen.\\
+\textbf{Bus threads -} Disse tråde bruges til at simulere en bus der kører på en busrute.\\
 \newpage
 \end{document}

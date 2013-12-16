@@ -2,11 +2,10 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier} 
-Før denne Use Case kan startes, skal \textit{Use Case 2: Vis placering af alle busser og stoppesteder på valgte rute} være gennemført. Brugeren vælger en af busstoppestederne der er indtegnet på kortet. Systemet udregner nu den tid det vil tage, før den nærmestebus ankommer til det valgte stoppested, samt henter information om det valgte busstoppested fra databasen. Herefter bliver brugeren præsenteret for ankomstiden, samt information om valgt busstoppested.
+Før denne Use Case kan startes, skal \textit{Use Case 2: Vis placering af alle busser og stoppesteder på valgte rute} være gennemført. Brugeren vælger et stoppesteder, der er indtegnet på kortet. Systemet udregner nu den tid det vil tage, før den nærmeste bus ankommer til det valgte stoppested i begge retninger. Der hentes desuden information om det valgte stoppested fra databasen. Herefter bliver brugeren præsenteret for ankomstiden, samt information om valgt stoppested.
 
 
 \subsubsection{Use Case Undtagelser} 
-Da gps-koordinaterne, information om busstoppestedet samt udregningen for ankomsttiden til valgt busstoppested bliver hentet fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen. Hvis gps-koordinaterne ikke kan hentes, vil bussens position blot ikke længere opdateres.
-
+Da gps-koordinaterne, information om stoppesteder samt udregningen for ankomsttiden til valgt stoppested, bliver hentet fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren præsenteres for en besked om, at det ikke er muligt at etablere forbindelse til databasen. Herefter vil tiden til ankomst ved valgt stoppested ikke længere holdes opdaret, men vil genstartes ved reetablering af forbindelsen.
 
 \end{document}

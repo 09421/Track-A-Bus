@@ -3,16 +3,16 @@
 
 \section{STØRRELSE OG YDELSE}
 
-I dette afsnit er der angivet de kritiske størrelser og ydelsesparametre for systemet.
+I dette afsnit er der angivet de kritiske størrelse og ydelsesparametre for systemet.
 \subsection{Dataforbrug for mobil applikation}
-Det er ikke altid der er adgang til Wi-FI netværksforbindelse og det vil derfor være nødvendigt at bruge telefonenes mobil datanetværk, til at hente ruter, stoppesteder og bussernes position fra databasen. Dataforbruget for en time, hvor kortet bliver vist og bussernes position bliver opdateret ligger på ca. 4 megabytes. er et stoppested valgt, vil dataforbruget ligge på ca. 7 megabytes.
+Det er ikke altid der er adgang til wifi netværksforbindelse og det vil derfor være nødvendigt at bruge telefonenes mobile data netværk, til at hente ruter, stoppesteder og bussernes position fra databasen. Dataforbruget på en time, hvor kortet bliver vist og bussernes position bliver opdateret ligger på ca. 4 megabytes. Er et stoppested valgt, og tidsopdateringer foregår, vil dataforbruget ligge på ca. 7 megabytes på en time.
 \subsection{Performance for mobil applikation}
-Lagerforbruget på mobiltelefonen ligger omkring 4 megabytes.\\
+Lagerforbruget på mobiltelefonen er omkring 4 megabytes.\\
 Der benyttes i gennemsnit ca. 7\% CPU kraft.
 \subsection{Server}
 Lagerforbruget på serveren, til hjemmesiden, MySQL databasen og servicen ligger på omkring 6 megabytes.\\
-Serveren står for at lave alle udregnigner og dataprocessering som mobil applikationen skal bruge. Da det er et distribuerede systemet, kan det forkomme mange forbindelser til serveren på samme tid. Der har dog ikke været mulighed for at udføre en stres-test af serveren, for at se hvor mange mobil telefoner den kan håndtere på en gang, da der ikke har været ressourcer til mere end to mobil telefoner.
+Serveren står for at lave alle udregnigner og dataprocessering som mobil applikationen skal bruge. Da det er tænkt som et distribueret system, kan der forkomme mange forbindelser til serveren på samme tid. Der har dog ikke været mulighed for at udføre en stres-test af serveren, i sammenhæng med en undersøgelse af, hvor mange forbindelser den kan håndteres på en gang, da der ikke har været ressourcer til mere end to mobil telefoner.
 \subsection{Performance for simulator}
 Lagerforbruget på disken ligger omkring 2 megabytes.\\
-Der benyttes i ca. 33.4 megabytes memory og gennemsnit mellem ca. 0.16GHz og 0.4Ghz CPU kraft ved normalt brug.
+Der benyttes ca. 33.4 megabytes memory og gennemsnit mellem ca. 0.16GHz og 0.4Ghz CPU kraft ved normalt brug.
 \end{document}

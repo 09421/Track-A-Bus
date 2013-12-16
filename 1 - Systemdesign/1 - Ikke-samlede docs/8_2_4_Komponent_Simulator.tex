@@ -2,14 +2,11 @@
 \begin{document}
 
 \subsubsection{Komponent 4: Simulator}
-Da det ikke var muligt at kunne tilgå reel positions data for en bus, og implementerings processen ville komplikeres uden, blev det set som gavnligt at bygge en simulator som kunne simulere opførselen af en til flere busser. Denne komponent har til formål at beskrive denne simulator og dens funktioner.\\
+Denne komponent har til formål at beskrive bus simulatoren og dennes funktioner.\\
 
 \noindent
 \textbf{Specifikationer}\\
-Simulatoren er bygget som en WPF applikation, hvor .NET framework version 4.5 er blevet brugt. Den er opbygget efter 3-lags modellen. Hertil er der designet en række klasser til at håndtere logik-laget, samt en til at håndtere data-tilgangs laget. Præsententationslaget består udelukkende af ét view. Heri sørges der for, at events bliver håndteret samt påhængtet og afhængtet, hvis det er nødvendigt. På figur \ref{fig:SimulatorKlasseDia} ses et klasse diagram, hvorpå det kan ses hvordan simulatoren er bygget op. Klasse diagrammet viser ingen attributer, da de væsentligste kan ses som værende relationerne. De steder hvor der er en association relation, betyder det, at klassen enten tilgår en statisk funktion eller statisk attribut i den associerede klasse.\\
-
-\newpage
-\noindent
+Simulatoren er bygget som en WPF applikation, hvor .NET framework version 4.5 er blevet brugt. Den er opbygget efter tre-lags modellen. Hertil er der designet en række klasser til at håndtere logik-laget, samt en til at håndtere data-tilgangs laget. Præsententationslaget består udelukkende af ét view. Heri sørges der for, at events bliver håndteret samt påhægtet og afhægtet, når det er nødvendigt. På figur \ref{fig:SimulatorKlasseDia} ses et klasse diagram, hvorpå det vises, hvordan simulatoren er bygget op. Heri kan klassernes funktioner, samt deres relationer til andre klasser, ses. De steder hvor der er en association relation, betyder det, at klassen enten tilgår en statisk funktion eller statisk attribut i den associerede klasse.\\
 \begin{figure}[hbtp]
 \centering
 \includegraphics[scale=0.40]{Diagrammer/Klassediagrammer/Simulator_klasseDia.png}
@@ -26,31 +23,31 @@ Her følger en kort beskrivelse af hver klasse:
 	\end{itemize}
 	\item SimulationRunner
 	\begin{itemize}
-		\item Denne klasse sørger for at starte og stoppe simulatoren. Når simulatoren startes sørger klassen for at simulatoren opsættes. Der undersøges om opsætningen er valid, og annulerer opstarten på simulatoren, hvis de ikke er. Denne klasse er den eneste i systemet der instantiere SimulationConfig, da det er muligt at hente ruter og busser statisk, men ikke oprette dem. SimulationRunner sørger derfor også for ruter og busser bliver oprettet.
+		\item Denne klasse sørger for at starte og stoppe simulatoren. Når simulatoren startes sørger klassen for at simulatoren opsættes. Der undersøges om opsætningen er valid, og opstarts processen annuleres, hvis den ikke er. Denne klasse er den eneste i systemet der instantiere SimulationConfig, da det er muligt at hente ruter og busser statisk, men ikke oprette dem. SimulationRunner sørger derfor også for ruter og busser bliver oprettet.
 	\end{itemize}
 	\item SimulationConfig
 	\begin{itemize}
-		\item Denne klasse er bindeledet mellem simulations enhederne, altså alt information om busser og ruter. Hvis klassen er instantieret, kan busruter og busser oprettes, men hvis ikke, kan de stadig tilgås statisk. Der eksisterer to lister af busruter; En der kun indeholder den valgte busrute, og en anden der indeholder alle busruter i systemet, der har busser koblet på sig. 
+		\item Denne klasse er bindeledet mellem simulations enhederne, altså alt information om busser og ruter. Hvis klassen er instantieret kan relevanter busruter og busser hentes, og sættes i der respektive lister. Listen af kørende busser, og listen af samtlige busruter, som har en bus koblet på sig, kan tilgås statisk.
 	\end{itemize}
 	\item SimulationMath
 	\begin{itemize}
-		\item Klassen bruges i sammenhæng med udregning af ny position for en simuleret bus. Hver Bus instantiere denne klasse ved oprettelse.
+		\item Klassen bruges i sammenhæng med udregning af ny position for en simuleret bus. Hver Bus klasse instantierer SimulationMath ved oprettelse.
 	\end{itemize}
 	\item SimulationCallbacks
 	\begin{itemize}
-		\item Klassen indeholder events til at håndtere viewændringer fra buisness logic. Dette gøres igennem custom events som hægtes på viewet ved oprettelse. Der er kun to klasser der bruger callbacks; SimulationRunner og Bus.
+		\item Klassen indeholder events til at håndtere viewændringer fra logik laget. Dette gøres igennem custom events som hægtes på viewet ved oprettelse. Der er kun to klasser der bruger SimulationCallbacks; SimulationRunner og Bus.
 	\end{itemize}
 	\item BusRoute
 	\begin{itemize}
-		\item Denne klasse er repræsentationen af en busrute, i simulatoren. Ved oprettelse sørges der for at rutens punkter hentes fra databasen. I denne sammenhæng hentes punkterne for stoppestederne ikke, da disse ikke relevante for simulatoren. Navnene på rutens stoppesteder hentes dog ud. Navnene tages kun i brug når ruten skal vende. Dette er kun relevant når ruten er kompleks, og det skal undersøges hvilken subrute bussen nu skal køres på. Når bussen vender, vendes hele ruten. Dette betyder også at hver bus skal have sin egen instans af ruten den kører på, og til det formål implementerer BusRoute IClonable, og derfor indeholder den funktionen Clone(). Denne returner en ny instans, men en kopi af den givne rute. Dette bruges i sammenhæng med Extensions klassen.
+		\item Denne klasse er repræsentationen af en busrute, i simulatoren. Ved oprettelse sørges der for at rutens punkter hentes fra databasen. I denne sammenhæng hentes punkterne for stoppestederne ikke, da disse ikke relevante for simulatoren. Navnene på rutens stoppesteder hentes dog ud, da de skal tages i brug når ruten skal vende. Dette er kun relevant når ruten er kompleks, og det skal undersøges hvilken subrute bussen nu skal køres på. Når bussen vender, vendes hele ruten. Dette betyder også at hver bus skal have sin egen instans af ruten den kører på, og til det formål implementerer BusRoute IClonable, og indeholder derfor funktionen "Clone". Denne returner en ny instans, men en kopi af den givne rute. Hvis dette ikke gøres, vil det være den samme busrute reference, samtlige busser kører på, hvilket vil betyder, at når én bus vender, vil alle andre busser på samme rute også vende. "Clone" funktionen bruges i sammenhæng med Extensions klassen.
 	\end{itemize}
-	\item Extension
+	\item Extensions
 	\begin{itemize}
-		\item Når en busrute skal kopieres, bruges metoden Clone(), men hvis det er en række af busruter der skal kopieres, blev det set som nyttigt at oprette en extension metode til en liste, med formål at returner en ny liste, som er en klonet kopi af den gamle. Denne funktion kan dog kun bruges, hvis elementerne i listen implementerer IClonable, som i dette tilfælde er BusRoute objekter.
+		\item Når et BusRoute objekt skal kopieres, bruges metoden "Clone", men hvis det er en liste af BusRoute objekter der skal kopieres, er det nødvendigt at oprette en extension metode til en liste. Denne metode har til formål at returne en ny liste, som er en klonet kopi af den gamle. Denne funktion kan dog kun bruges, hvis elementerne i listen implementerer IClonable, som i dette tilfælde er BusRoute objekter.
 	\end{itemize}
 	\item Bus
 	\begin{itemize}
-		\item Klassen er den simulerede version af en fysisk bus, og indeholder derfor alle funktionaliteter en bus har, for at kunne køre på en rute. Det er også i denne klasse den væsentligste simulering finder sted, i det denne klasse indeholder funktionen til at bestemme nye koordinater for bussen. Når en bus bliver oprettet, oprettes der samtidig en tråd til denne. Det vil sige, at hver bus har sin egen tråd, og kører derfor uafhængigt af resten af systemet, med den undtagelser af, at den kaster et event til at logge en besked på viewet. Selvom flere busser kan kører på samme rute, har bussen kun en kopi af ruten, hvilket betyder, at nå en bus vender, vendes hele kopi-ruten. Den tager desuden også beslutningen, om hvilken rute der skal køres på, hvis ruten er kompleks.
+		\item Klassen er den simulerede version af en fysisk bus, og indeholder derfor alle funktionaliteter en bus har, for at kunne køre på en rute. Det er også i denne klasse den væsentligste simulering finder sted, idet denne klasse indeholder funktionen til at bestemme nye koordinater for bussen. Når et Bus objekt bliver instantieret, oprettes der samtidig en tråd til denne. Det vil sige, at hver bus har sin egen tråd, og kører derfor uafhængigt af resten af systemet, med den undtagelser af, at den kaster et logging event igennem SimulationCallbacks klassen. Selvom flere busser kan kører på samme rute, har bussen kun en kopi af ruten, hvilket betyder, at nå én bus vender, vendes hele kopi-ruten. Den tager desuden også beslutningen, om hvilken rute der skal køres på, hvis ruten er kompleks.
 	\end{itemize}
 	\item DatabaseAcces
 	\begin{itemize}
@@ -59,22 +56,22 @@ Her følger en kort beskrivelse af hver klasse:
 \end{itemize}
 
 \noindent
-\textbf{Processer}\\
-Der eksisterer to komplekse processer i simulatoren, som udgør hovedfunktionaliteten; Start af simulering, samt udregning af ny position til bus. Disse vil nu beskrives \\
+\textbf{Design}\\
+Der eksisterer to vigtige implementeringer i simulatoren, som udgør hovedfunktionaliteten; Start af simulering, samt udregning af ny position til en bus.\\
 
 \noindent
-På figur \ref{fig:SimuStart} kan et sekvensdiagram, der beskrives handlingsforløbet ved start af simulering, ses. Handlings forløbet starter når en af de to start-knapper trykkes, og fuldføres når hver oprettet bustråd er startet. Sekvensdiagrammet repræsenterer solskinsscenariet, hvori samtlige konfigurationer er korrekte og der er internettet kan tilgås.\
-Først sættes simulationsværdierne i SimulatorRunner. Disse består alle de brugerdefinerede værdier, der kan sættes på GUIen. Herefter igangsættes startningsproceduren, ved et kald til StartStop(). De brugerdefinerede værdier undersøges for validitet (eg. om der er nogen der ikke er sat, valgt eller skrevet korrekt), og simulatoren sættes til at være kørende. Samtlige busruter, der har en bus bliver oprettet, først i gennem SimulatorConfig, hvor rutenumre, IDer hentes, og BusRoute objektet oprettes. Constructoren for BusRoute, sørger for at hente stoppesteder og punkter relevant for den givne busrute hentes, og sættes i objektet. Samtlige busruter gemmes statisk i SimulationConfig. Herefter oprettes alle busser, på baggrund af hvilken måde der simuleres samt, hvilken retning busserne skal køres. Mere information omkring simulerings muligheder kan findes under "CLW: SIMULERINGS MULIGHEDER AFSNIT". Ved oprettelse bestemmes der, hvilken underrute bussen skal køre på, i tilfælde af, at ruten er kompleks. Dette sker tilfældigt, uden hensyn til, hvilken simulerings mulighed er valgt. Herefter sættes rute og retning bussen kører, i databasen. Til sidst findes den første position bussen skal køre på. Hvis bussen skal starte først på ruten, vælges det første punkt fra listen. Hvis ikke, vælges der et tilfældigt punkt på de første tre fjerdedele af ruten. Bussen gemmes herefter i listen af alle busser, og udregningstråden for hver bus startes.\\
+På figur \ref{fig:SimuStart} ses der et sekvensdiagram, der beskrives handlingsforløbet ved start af simulering. Handlings forløbet starter når en af de to start-knapper trykkes, og fuldføres når hver oprettet bustråd er startet. Sekvensdiagrammet repræsenterer solskinsscenariet, hvori samtlige konfigurationer er korrekte og internettet kan tilgås.\
+Først sættes simulationsværdierne i SimulatorRunner. Disse består af de brugerdefinerede værdier, der kan sættes på GUIen. Herefter igangsættes startningsproceduren, ved et kald til "StartStop". De brugerdefinerede værdier undersøges for validitet (eg. om der er nogen der ikke er sat, valgt eller skrevet korrekt), og simulatoren sættes til at være kørende. Samtlige busruter, som har minimum én bus knyttet til sig oprettes. Dette gøres igennem SimulatorConfig, hvor rutenumre og ID'er hentes, og BusRoute objekterne oprettes. Constructoren for BusRoute, sørger for at hente stoppesteder og punkter relevant for den givne busrute og sættes i objektet. Samtlige BusRoute objekter gemmes statisk i SimulationConfig. Herefter oprettes alle busser, på baggrund af hvilken måde der simuleres samt, hvilken retning busserne skal køres. Mere information omkring simulerings muligheder kan findes under afsnit \textit{3.2: Grænseflader til eksterne system aktører, under afsnittest "Simulator"}. Ved oprettelse bestemmes der, hvilken subrute af den givne busrute, bussen skal køre på. Dette gøres i tilfælde af, at busruten er kompleks. Dette sker tilfældigt, uden hensyn til, hvilken simulerings mulighed er valgt. Herefter sættes ruten og den retning bussen kører, i databasen. Til sidst findes den bussens startposition. Hvis bussen skal starte først på ruten, vælges det første punkt fra listen af punkter i bussens tilknytede BusRoute objekt. Hvis ikke, vælges der et tilfældigt punkt på den første tre fjerdedel af ruten. Dette gøres, så der ikke ved et tilfælde vælges et punkt, der er helt i slutningen af ruten. Bussen gemmes herefter i listen af alle busser, og udregningstråden for hver bus startes.\\
 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.50]{Diagrammer/SekvensDiagrammer/SimuStartSSD.jpg}
-\caption{Opdeling af klasse i trelags-model}
+\caption{Sekvensdiagram over start af simuelering}
 \label{fig:SimuStart}
 \end{figure}
 
 \noindent
-Formålet med simulatoren er, at en bus kan køre på en rute, uden behov for, at en fysisk bus, skal køre på ruten. På kodeudnit \ref{lst:GPSPosCalc1}, \ref{lst:GPSPosCalc2} og \ref{lst:GPSPosCalc3} kan processen, der står for udregning af ny position ses. Selve udregnings processen er delt op i to kodeudsnit, hvor det første kodeafsnit omhandler initialisering af udregning samt udregninger på rutepunkter, og andet kodeudsnit omhandler bestemmelse af nyt rutepunkt. Kodeudsnit \ref{GPSPosCalc3} omhandler busvending samt eventuelt ruteskift. 
+Formålet med simulatoren er, at en bus kan køre på en rute, uden behov en fysisk bus. På kodeudnit \ref{lst:GPSPosCalc1}, \ref{lst:GPSPosCalc2} og \ref{lst:GPSPosCalc3} kan processen, der står for udregning af ny position ses. Selve udregnings processen er delt op i to kodeudsnit, hvor det første kodeudsnit omhandler initialisering af udregning samt udregninger på rutepunkter, og andet kodeudsnit omhandler bestemmelse af nyt rutepunkt. Kodeudsnit \ref{lst:GPSPosCalc3} omhandler busvending samt eventuelt ruteskift. 
 
 \begin{lstlisting}[caption=Udregning af ny position del 1., label={lst:GPSPosCalc1},language=Java]
 while (true)
@@ -124,7 +121,7 @@ while (true)
 	 	}
 ...
 \end{lstlisting}
-Det første der sker under udregningen er, at det bestemmes hvor hurtigt bussen skal køre ved denne opdatering. Dette er en tilfældig værdi mellem den satte minimum og maximum hastighed. Denne hastighed bruges til at udregne hvor langt bussen skal køre. Da hastighed er udtrykt ved kilometer i timen, konverteres den til meter i sekundet. Opdaterings hastighedne ganges på, da denne er et udtryk for, hvor lang tid bussen har kørt på den givne hastighed. Hvis dette er første gang opdateringen foregår, sættes indexCounter til det valgte start index plus 1, da dette symbolere det næste rutepunkt som bussen ikke er kørt forbi. Herefter startes udregninger for nyt rutepunkt. While-løkken symboliserer et inkrementerende rutestyke, hvor currentLength er det stykke, der er blevet udregnet og travelLengthMeters er det stykke der skal rejses. Der undersøges om sidste rutepunkt er nået, og hvis det er, sættes bussens position til dette punkt, og ruten vendes. Dette beskrives efter kodeudsnit \ref{GPSPosCalc3}. Herefter udregnes det næste rutestykke, og hvilken kurs dette rutestykke følger. Udregningen af længden af rutestykket og kursen kan findes i afsnittet \textit{8.2.5: Anvendt matematik}. Hvis der endnu ikke er udregnet et linjestykke, og hvis bussens nuværende position er sat, udregnes næste linjestykke og kurs udfra bussens position, og næste rutepunkt. Hvis ikke udregnes der mellem forrige og næste rutepunkt. Udregningen fortsætter på kodeudsnit \ref{lst:GPSPosCalc2}.\\\\
+Det første der sker under udregningen er, at det bestemmes, hvor hurtigt bussen skal køre ved denne opdatering. Dette er en tilfældig værdi mellem den satte minimums og maksimums hastighed. Denne hastighed bruges til at udregne hvor langt bussen skal køre. Da hastigheden er udtrykt ved kilometer i timen, konverteres den til meter i sekundet, da meter og sekunder er de enheder der arbejdes med. Tiden mellem hver opdatering ganges på, da dette er et udtryk for, hvor lang tid bussen har kørt med den givne hastighed. Hvis dette er første gang opdateringen foregår, sættes indexCounter til det valgte start index plus 1, da dette symboliserer det næste rutepunkt som bussen ikke er kørt forbi. Herefter startes udregninger for nyt rutepunkt. While-løkken symboliserer et inkrementerende rutestyke, hvor currentLength er det stykke, der er blevet udregnet og travelLengthMeters er det stykke der skal rejses. Der undersøges om sidste rutepunkt er nået, og hvis det er, sættes bussens position til dette punkt, og ruten vendes. Dette beskrives efter kodeudsnit \ref{lst:GPSPosCalc3}. Herefter udregnes det næste rutestykke, og hvilken kurs dette rutestykke følger. Udregningen af længden af rutestykket og kursen kan findes i afsnittet \textit{8.2.5: Komponent 5: Anvendt matematik} under "Haversine" og "Bearing". Hvis der endnu ikke er udregnet et linjestykke, og hvis bussens nuværende position er sat, udregnes næste linjestykke og kurs udfra bussens position, og næste rutepunkt. Hvis ikke, udregnes der mellem det nuværende og næste rutepunkt. Udregningen fortsætter på kodeudsnit \ref{lst:GPSPosCalc2}.\\\\
 
 \begin{lstlisting}[caption=Udregning af ny position del 2., label={lst:GPSPosCalc2},language=Java]
 ...
@@ -164,8 +161,8 @@ Det første der sker under udregningen er, at det bestemmes hvor hurtigt bussen s
 	}        
 }
 \end{lstlisting}
-Næste del af udregningen starter med, at der undersøges om den nyudregnedelængde sammenlagt den totale udregnede længde, er længere end det stykke, bussen skal køre. Hvis det ikke er, inkrementeres den total udregnede længde med den nye. Hvis det derimod er, skal bussens position være mellem det forrige rutepunkt og det næste. Variablen missingLength indeholder den længde bussen skal køre fra det rutepunkt, med den udregnede kurs. Denne variabel er udregnet som længden bussen skal køre, minus det stykke der allerede er udregnet. Herefter undersøges der, hvilket punkt der skal bruges, som værende det punkt, finalGPSPosDeg skal udregne fra (for mere information, se afsnit \textit{8.2.5 - Anvendt matematik}). Hvis den nuværende position ikke er sat endnu, og bussens næste position er på samme linjestykke som forrige (currentLength == 0), så sættes næste position udfra bussens nuværende. Hvis ikke, udregnes der udfra det forrige rutepunkt.\\
-Når et nyt rutepunkt nås, startes et logging-event, som sender GUIen en ny loggingbesked. Desuden inkrementeres indexCounteren, så det næste rutepunkt er det gældende. Når en opdatering er fuldført, sover tråden i det antal sekunder der er sat i opdaterings hastigheden.
+Næste del af udregningen starter med, at der undersøges om den nyudregnede længde sammenlagt den totale udregnede længde, er længere end det stykke, bussen skal køre. Hvis det ikke er, inkrementeres den total udregnede længde med den nyudregnede. Hvis det derimod er, skal bussens nye position være mellem det nuværende rutepunkt og det næste. Variablen missingLength indeholder afstanden fra det nuværende punkt til bussens nye position og er findes som længden bussen skal køre, minus det stykke der allerede er udregnet. Herefter undersøges der, hvilket punkt der skal bruges som initial punktet for udregningen af ny position. Denne udregning kan der læses mere om i afsnittet \textit{8.2.5 - Anvendt matematik}) under "Ny position mellem to punkter" Hvis bussens position tidligere har været sat, og hvis bussens nye position er efter det næste rutepunkt, udregnes bussens nye position udfra bussens forrige. Hvis ikke udregnes den nye position udfra det forrige rutepunkt, relativt til bussens position.
+Når et nyt rutepunkt nås, startes et logging-event, som sender en ny loggingbesked til GUI'en . Desuden inkrementeres indexCounteren, så det næste rutepunkt er det gældende. Når en opdatering er fuldført, sover tråden i det antal sekunder der er sat i opdaterings hastigheden.
 
 \begin{lstlisting}[caption=Valg af ny rute ved endestation., label={lst:GPSPosCalc3},language=Java]
 if (routes.Count == 1)
@@ -203,12 +200,8 @@ else
 }
 UpdateBusDB();
 \end{lstlisting}
-Når en bus vender, vil der ske en ruteændring. Hvis bussen kører på en simpel rute, (rute med to endestationer) , vil der ikke ske andet, end at listen af punkter i ruten vil blive vendt, således at det punkt bussen holder ved, vil være det første punkt på ruten. \\
-Hvis ruten derimod er kompleks (ruter med mere end to endestationer) skal det undersøges, hvilken subrute, bussen nu skal køre på. Dette gøres ved første at udtage alle subruter på ruten, hvis første eller sidste stoppested, er svarende til det sidste stoppested på den nuværende rute. Hvis der kun kan findes en rute, må denne være den originale, og denne rute vendes bare. Hvis ikke, fjernes den originale rute fra listen af mulige ruter. Der undsøges om der nu kun er en rute, eller om der stadig er flere. Hvis der stadig er flere, vælges en rute på tilfældigt, men hvis ikke, vælges den rute der er tilbage. Herefter undersøges der, om den valgte rutes første stoppested er det samme som det sidste stoppested på den tidligere rute. Hvis ikke vendes den nye rute. Til sidst resettes counteren, og bussen bliver opdateret på databasen, med en retning og ny rute. \\
-<
+Når en bus vender, vil der ske en ruteændring. Hvis bussen kører på en simpel rute, vil der ikke ske andet, end at listen af punkter i ruten vil blive vendt, således at det punkt bussen holder ved, vil være det første punkt på ruten. \\
+Hvis ruten derimod er kompleks, skal det undersøges, hvilken subrute, bussen nu skal køre på. Dette gøres ved først at udtage alle subruter på ruten, hvis første eller sidste stoppested, er svarende til den endestation bussen er ved. Hvis der kun kan findes én rute, må denne være den nuværende, og ruten vendes bare. Hvis ikke, fjernes den nuværende rute fra listen af mulige ruter og der undsøges om der nu kun er en rute listen, eller om der stadig er flere. Hvis der stadig er flere, vælges en rute tilfældigt, men hvis ikke, vælges den rute der er tilbage. Herefter undersøges der, om den valgte rutes første stoppested er det samme som den endestation som bussen er ved. Hvis ikke vendes den nye rute. Til sidst sætter indexCounteren til nul, og bussen bliver opdateret på databasen, med en ny retning og rute. Dette sker igennem DatabaseAcces klassen.\\
 
-
-\noindent
-Diagrammer i fuld størrelse og fuld kode med kommentarer kan findes på bilags CDen under Diagrammer/System Sekvens Diagrammer, samt Kode/Simulator. Muligheder for simulering beskrives under "CLW: reference til noget"
 
 \end{document}

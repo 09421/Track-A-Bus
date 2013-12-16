@@ -1,44 +1,44 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 \subsection{Grænseflader til person aktører}
-Systemet har to forskellige personaktører, der begge virker som primæraktører \textit{Use Case diagram kan findes i afsnit 4: Use Case View figur \ref{fig:UseCaseDia}}. Disse to tilgår forskellige dele af systemet, og derfor benytter de hver især forskellige brugergrænseflader. Bruger aktørern tilgår mobil applikationen, og administrator aktøren tilgår administrations hjemmesiden.
+Systemet har to forskellige personaktører, der begge virker som primæraktører.\footnote{Aktører kan findes i afsnit \textit{4: Use Case View}, på figur \ref{UseCaseDia}} Disse to tilgår forskellige dele af systemet, og derfor benytter de hver især forskellige brugergrænseflader. Bruger aktørern tilgår mobil applikationen, og administrator aktøren tilgår administrations hjemmesiden.
 \subsubsection{Bruger}
-Når mobil applikationen startes bliver brugeren præsenteret brugerfladen der ses på nedenfor på figur \ref{fig:MainScreen}. Herfra kan brugeren trykke på knappen 'View busroutes' hvis han ønsker at få vist en liste af busruter der findes i systemet.
+Når mobil applikationen startes bliver brugeren præsenteret for brugerfladen, der ses på figur \ref{fig:MainScreen}. Herfra kan brugeren trykke på knappen 'View busroutes' hvis han ønsker at få vist en liste af busruter der findes i systemet.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.2]{./Diagrammer/Billeder/MainScreen.png}
-	\caption{Mobil applikation start skærm}
+	\caption{Mobil applikationens start skærm}
 	\label{fig:MainScreen}
 \end{figure}
 \noindent
-Trykker brugeren på knappen 'View Busroutes' vil han blive præsenteret for en liste af de forskellige busruter der er gemt i databasen, skærmen set nedenfor på det første billede i figur \ref{fig:Buslist}. Herfra er der enten mulighed for at vælge en af de viste busruter, eller trykker på den grå stjerne for at favorisere en busrute. Bliver der trykket på stjernen, vil systemet favorisere den valgte rute, og stjernen vil blive gul, som vist på figur på det andet billede i \ref{fig:Buslist}
+Trykker brugeren på knappen 'View busroutes' vil der blive præsenteret en liste af de forskellige busruter der er gemt i den distribuerede database. Denne skærm kan ses på figur \ref{fig:Buslist} til venstre. Herfra er der enten mulighed for at vælge en af de viste busruter, eller trykke på en grå stjerne for at favorisere en busrute. Bliver der trykket på stjernen, vil systemet favorisere den valgte rute, gemme den i den lokale database og stjernen vil blive gul, som vist på figur \ref{fig:Buslist} til højre. Trykkes der på en gul stjerne, ufavoriseres den valgte rute. Den bliver slettet fra den lokale database og stjernen bliver grå.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.2]{./Diagrammer/Billeder/Buslist.png}
 	\includegraphics[scale=0.2]{./Diagrammer/Billeder/BusListFavorit.png}
-	\caption{listen af alle busruter, der findes på databasen, hvor der på det andet billede er en busrute der er blevet favoriseret}
+	\caption{Listen af alle busruter, der findes i den distribuerede databasen, hvor der på det billedet til højre er en busrute som er blevet favoriseret}
 	\label{fig:Buslist}
 \end{figure}
 \noindent
-Busruten er nu favoriseret, dette gør det muligt at vælge den fra startskærmen så den er hurtigere at tilgå, hvis brugeren skal bruge den valgte rute ofte. På figur \ref{fig:MainScreenFavorit} kan det ses hvordan startskærmen kommer til at se ud, efter en busrute er blevet favoriseret
+Hvis en busrute er favoriseret er den tilgængelig fra startskærmen. Dette medfører, at den er hurtigere at tilg. På figur \ref{fig:MainScreenFavorit} kan det ses hvordan startskærmen ser ud, efter en busrute er blevet favoriseret
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.2]{./Diagrammer/Billeder/MainScreenFavorit.png}
-	\caption{startskærmen, der nu viser den busrute der er blevet favoriseret}
+	\caption{Startskærmen, der nu viser den busrute, der er blevet favoriseret}
 	\label{fig:MainScreenFavorit}
 \end{figure}
 \noindent
-Hvis brugeren vælger en busrute, fra listen over busruter på skærmen vist på figur \ref{fig:Buslist} eller fra favorit listen vist på figur \ref{fig:MainScreenFavorit} vil brugeren nu få vist et kort som vist på det første billede i figur \ref{fig:MapView}, hvorpå der er indtegnet den valgte busrute, dens stoppesteder og de busser der køre på ruten. Stoppestederne er indtegnet med et tydeligt 'S' og busserne er indtegnet med et bus icon. Brugeren kan herfra vælge et af stoppestederne, skærmen vil nu blive opdateret til at vise information om det valgte stoppested samt hvor lang tid der er til den næste bus ankommer til det valgte stoppested. Hvis der ikke er nogle busser på vej imod det valgte stoppested vil teksten: 'No bus going this direction' blive vist, ellers vil der blive vist navnet på den endestation bussen køre imod. Dette kan ses på det andet billede i figur \ref{fig:MapView}.
+Hvis brugeren vælger en busrute, fra listen af alle busruter på skærmen vist på figur \ref{fig:Buslist}, eller fra favorit listen vist på figur \ref{fig:MainScreenFavorit}, vil brugeren nu få vist et kort. Dette se på figur \ref{fig:MapView} til venstre. Herpå er der indtegnet den valgte busrute, dens stoppesteder og de busser der kører på ruten. Stoppestederne er indtegnet med et tydeligt 'S' og busserne er indtegnet med et busikon. Brugeren kan nu vælge et af stoppestederne. Ved valgt stoppested, vil kærmen blive opdateret til at vise information om det valgte stoppested, samt hvor lang tid der er til den næste bus ankommer ved det valgte stoppested. Hvis der ikke er nogen busser på vej imod det valgte stoppested vil teksten: 'No bus going this direction' blive vist, ellers vil der blive vist navnet på den endestation bussen køre imod. Dette kan ses på figur \ref{fig:MapView} til højre.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.2]{./Diagrammer/Billeder/MapView.png}
 	\includegraphics[scale=0.2]{./Diagrammer/Billeder/mapViewSelected.png}
-	\caption{kort med indtegnet busrute, stoppesteder og en bus}
+	\caption{Kort med indtegnet busrute, stoppesteder og en bus. Til højre er stoppestedet "Trøjborg Centret" valgt}
 	\label{fig:MapView}
 \end{figure}
 
 \subsubsection{Administrator}
-Når administratoren er gået ind på \url{www.TrackABus.dk} vil han få vist siden, som set på figur \ref{fig:HjemmesideMainScreen}. Dette er startskærmen for administrations hjemmesiden, herfra er det muligt at navigere til de forskellige dele af systemet.
+Når administratoren er gået ind på administrations hjemmesiden\footnote{Hjemmeside : \url{www.trackabus.dk}} vil han få vist siden, som ses på figur \ref{fig:HjemmesideMainScreen}. Dette er startskærmen for administrations hjemmesiden. Herfra er det muligt at navigere til de forskellige dele af systemet.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{./Diagrammer/Billeder/HjemmesideMainScreen.png}
@@ -46,31 +46,32 @@ Når administratoren er gået ind på \url{www.TrackABus.dk} vil han få vist siden,
 	\label{fig:HjemmesideMainScreen}
 \end{figure}
 \noindent
-Vælger administratoren at trykke på knappen 'Bus' vil han blive navigeret til bus redigereings siden som ses på figur \ref{fig:BusHjemmeside}.
-herfra er det muligt at vælge en busrute i den øverste listen i venstre side, dette vil gøre det muligt at tilføje busser til eller fjerne busser fra den valgte rute. Dette bliver gjort ved at, efter der er blevet valgt en rute, bliver valgt en bus, hvorefter der bliver trykket på '<-'. Dette vil tilføje en bus til den valgte rute.\\
-I den højre del af skærmen kan der ses en liste af alle de busser der findes i systemet. Herfra vil det være muligt for administratoren at tilføje, fjerne og ændre busser. Administratoren skriver ID'et for en bus, trykker på knappen 'Add', hvorefter bussen bliver tilføjet til listen. Ved tryk på knappen 'Save' vil bussen blive gemt i databasen.
+\newpage
+Vælger administratoren at trykke på knappen 'Bus' vil der blive navigeret til bus redigerings siden som ses på figur \ref{fig:BusHjemmeside}.
+Herfra er det muligt at vælge en busrute i den øverste liste på venstre side af skærmen. Dette vil gøre det muligt at tilføje busser til, eller fjerne busser fra, den valgte rute. For at tilføje en bus til ruten, vælges en bus, fra listen "Available busses" og der trykkes på knappen "<-". Dette vil tilføje en bus til den valgte rute.\\ For at fjerne en bus på den valgte rute, vælges der en fra listen "Busses on route", hvorefter der trykkes på knappen "->" Dette vil fjerne bussen fra den valgte rute. For at gemme ændringerne trykkes der på knappen save.\\
+Den højre side af skærmen omhandler redigering af bus information. Herfra vil det være muligt for administratoren at tilføje, fjerne og ændre information om busser. For at tilføje en bus skrives dennes ID i feltet "Bus ID". Herefter trykkes der på knappen "Add", hvorefter bussen tilføjes til listen. For at fjerne en bus, vælges der en fra listen, og der trykkes remove, hvorefter dette ID vil fjernes fra listen. For at redigere IDet for en bus, vælges der igen en fra listen, hvorefter der skrives et nyt ID og "Rename" knappen trykkes. Når ændringer er foretaget, trykkes "Save knappen" for at gemme disse på den distribuerede database.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{./Diagrammer/Billeder/BusHjemmeside.png}
-	\caption{Skærmen for bus redigereings siden}
+	\caption{Skærmen for bus redigerings siden}
 	\label{fig:BusHjemmeside}
 \end{figure}
 \noindent
-Vælger administratoren at trykke på knappen 'Route' vil han blive navigeret til rute redigereings siden som ses på figur \ref{fig:RouteViewHjemmeside}.
-Her har administratoren mulighed for at oprette en ny busrute, med stoppesteder. Detter bliver gjort ved at han vælger et start og et slut sted for ruten på kortet. På figur \ref{fig:RouteViewHjemmeside} kan der ses en rute indtegnet på kortet, hvor start punktet er punk 'A' og slut punktet er punk 'B'. For at sætte stoppesteder på ruten, vælges de fra listen til venstre i højre side og tilføjes til listen i højre side. Når den ønskes rute et indtegnet kan der trykkes på 'Save' knappen, der vil gemme ruten på databasen. Administratoren har også mulighed for at rediger i en rute, ved at vælge en rute fra den nederste liste, som når den bliver valgt, vil blive indtegnet på kortet. Administratoren kan nu rediger i den, tilføje og fjerne bustoppesteder og til sidste gemme ændringerne på databasen.
+Vælger administratoren at trykke på knappen 'Route' vil der blive navigeret til rute redigerings siden, som ses på figur \ref{fig:RouteViewHjemmeside}.
+Her er der mulighed for at tilføje, fjerne eller redigere en busrute, samt tilføje og fjerne stoppesteder til denne. Dette bliver gjort ved, at der vælges et start og slut punkt for ruten på kortet. På figur \ref{fig:RouteViewHjemmeside} kan en rute ses indtegnet på kortet, hvor start punktet er punkt 'A' og slut punktet er punkt 'B'. For at sætte stoppesteder på ruten, vælges de fra den øverste liste til venstre, hvorefter der trykkes på knappen "->". Dette vil tilføje stoppestederne til ruten. Hvis stoppesteder vælges fra den øverste liste til højre, hvorefter der trykkes på knappen "<-", vil de valgte stoppesteder fjernes fra ruten. Når et antal stoppesteder er tilføjet til ruten, kan der trykkes på knappen "Set bus stops", hvorefter stoppestederne vises på kortet. Når ruten er færdig kan der trykkes på knappen "Save route", hvorefter ruten bliver gemt i den distribuerede database. Administratoren har også mulighed for at redigere i en rute. Dette gøres ved at vælge en fra den nederste liste, som når den bliver valgt, vil blive indtegnet på kortet. Administratoren kan nu redigere rutens forløb, tilføje og fjerne bustoppesteder og til sidste gemme ændringerne på databasen, ved at trykke på "Save Changes" knappen. Hvis en valgt rute ønskes slette, trykkes der på "Delete route" knappen.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{./Diagrammer/Billeder/RouteViewHjemmeside.png}
-	\caption{Skærmen for rute redigereings siden, her med indtegnet busrute 5A, med stoppesteder}
+	\caption{Skærmen for rute redigerings siden, her med indtegnet busrute 5A, med stoppesteder}
 	\label{fig:RouteViewHjemmeside}
 \end{figure}
 \noindent
-Vælger administratoren at trykke på knappen 'Stops' vil han blive navigeret til busstop redigereings siden som ses på figur \ref{fig:StopViewHjemmeside}.
-Administratoren har her mulighed for at oprette et helt nyt stoppested i systemet, fjerne et stoppested, eller ændre navn og position for et der allerede findes. For at tilføje et nyt stoppested, trykkes der det sted på kortet hvor stoppestedet er, hvor efter navnet blivet indtastet i feltet Stop name. For at gemme stoppestedet på databasen trykket der på knappen 'Save'. Efter der er fortaget ændriger af et stoppested, trykkes der i stedet på knappen 'Save changes' 
+Vælger administratoren at trykke på knappen 'Stops' vil der blive navigeret til busstop redigerings siden som ses på figur \ref{fig:StopViewHjemmeside}.
+Herfra er det muligt at oprette nye stoppested i systemet, fjerne stoppesteder, eller ændre navn og position for allerede eksisterende stoppesteder. For at tilføje et nyt stoppested, trykkes der et sted på kortet hvor et stoppested ønskes tilføjet, hvorefter navnet blivet indtastet i feltet "Stop Name". For at gemme stoppestedet på den distribuerede database, trykkes der på knappen "Save stop". Når et stoppested vælges fra listen, indtegnes dennes position på kortet. Herefter er det muligt at ændre positionen og navn på stoppestedet. Når ændringer er foretaget, trykkes der på knappen "Save changes", hvorefter disse gemmes i den distribuerede database. Hvis der efter stoppestedsvalg, trykkes på knappen "Delete stop", vil stoppestedet slettes.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{./Diagrammer/Billeder/StopViewHjemmeside.png}
-	\caption{Skærmen for busstoppested redigereings siden, her med indtegnet stoppested}
+	\caption{Skærmen for busstoppested redigerings siden, her med indtegnet stoppested "Nørrebrogade"}
 	\label{fig:StopViewHjemmeside}
 \end{figure}
 \end{document}

@@ -1,17 +1,17 @@
 \documentclass[main]{subfiles}
 \begin{document}
 \subsubsection{Use Case scenarier}
-Denne Use Case har 3 normalforløb, idet det både er muligt at tilføje ny busrute til systemet, fjerne en busrute fra systemet, samt ændre i en busrute der findes i systemet. Det er kun en administrator der kan initialisere denne Use Case.
-Normalforløb 1 beskriver hvorledes der kan tilføjes en ny busrute til systemet. Dette forgår ved at administratoren tilkendegiver overfor systemet at han ønsker at oprette en ny busrute. Systemet præsentere nu administratoren for et kort. Administratoren kan nu indtegne en busrute på dette kort. Når den ønskede busrute er indtegnet på kortet, kan busruten gemmes på databasen, ved at brugeren tilkendegiver overfor systemet at busruten ønskes gemmes.
+Denne Use Case har tre normalforløb, idet det både er muligt at tilføje en busrute, fjerne en busrute, samt ændre i en busrute. Det er kun en administrator der kan initialisere denne Use Case.
+Normalforløb 1 beskriver hvordan en ny busrute kan tilføjes. Dette foregår ved, at administratoren tilkendegiver overfor systemet at en ny busrute ønskes oprettet. Administratoren præsenteres for et kort hvorpå det er muligt at indtegne en busrute. Når den ønskede busrute er indtegnet på kortet, kan den gemmes på den distribuerede database ved, at administratoren tilkendegiver overfor systemet, at ruten ønskes gemt. \\
 
-Normalforløb 2 beskriver hvordan administratoren kan ændre i en allerede eksiterende busrute.
-Dette forgår ved at administratoren vælger en busrute, fra listen over busruter der findes i systemet. Administratoren tilkendegiver nu overfor systemet at han ønsker at ændre i den valgte busrute. Systemet præsentere nu brugeren for et kort, med indtegnet busrute. Administratoren kan nu ændre busrute som ønskes. Ønskes ændringerne at gemmes, kan administratoren tilkendegive overfor systemetat dette ønskes, hvorpå systemet vil gemme ændringerne i databasen.
+Normalforløb 2 beskriver hvordan en allerede eksiterende busrute kan ændres.
+Dette foregår ved, at administratoren vælger en busrute, fra listen af busruter der findes i systemet. Administratoren præsenteres nu for et kort, hvorpå den valgte busrute er indtegnet. Nu kan den valgte busrute ændres som det ønskes, hvorefter det kan tilkendegives, at ændringerne ønskes gemmet. Systemet vil herefter gemme ændringerne i den distribuerede database.\\
 
-Normalforløb 3 beskriver hvordan administratoren kan fjerne en allerede eksiterende busrute fra systemet.
-Dette forgår ved at administratoren vælger en busrute, fra listen over busruter der findes i systemet. Administratoren tilkendegiver nu overfor systemet at den valgte busrute ønskes slettes fra systemet. Systemet sletter busruten fra databasen.
+Normalforløb 3 beskriver hvordan en allerede eksisterende busrute kan fjernes.
+Dette forgår ved at administratoren vælger en busrute, fra listen af busruter der findes i systemet. Der tilkendegives nu overfor systemet, at den valgte rute ønskes slettet, hvorefter busruten slettes fra den distribuerede database.\\
 
 \subsubsection{Use Case undtagelser}
-Da ruten både skal gemmes på en database, samt hentes fra en database, er der risiko for at forbindelsen til databasen mistes. Hvis dette sker, vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelset til databasen.
-Hvis administratoren ønsker at annullere processen efter at have fortaget ændringer vil administratoren blive præsenteret for en besked, der spørger om der ønskes at stoppe uden at gemme. hvis administratoren vælger at stoppe uden at gemme, retuneres til startskærmen. 
+Da informationen om ruten både skal hentes fra og gemmes på en den distribuerede database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, vil administratoren blive præsenteret for en besked om, at det ikke er muligt at etablere forbindelse til databasen.
+
 
 \end{document}

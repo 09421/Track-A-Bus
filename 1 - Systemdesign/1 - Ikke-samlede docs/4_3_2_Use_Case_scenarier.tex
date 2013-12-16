@@ -2,13 +2,13 @@
 \begin{document}
 
 \subsubsection{Use Case scenarier}
-Denne Use Case viser et kort til burgeren, med indtegnet busrute, alle busser der køre på ruten, samt alle stoppesteder på valgt rute. Det kræver at brugeren står ved listen over busruter, dernæst tilkendegiver brugeren overfor systemet hvilken busrute han ønsker vist. Derefter henter systemet busruten, samt stoppestederne på ruten fra databasen.
-Herefter bliver brugeren præsenteret for et kort, med indteget busrute samt stoppesteder. Systemet henter nu gps-koordinaterne for busserne på ruten samt indtegner dem på kortet. Efter 2 sekunder vil systemet igen hente gps-koordinaterne, og opdatere bussernes position på kortet. Systemet vil forsætte med at opdatere bussernes position indtil brugeren tilkendegiver overfor systemet at dette ikke længere ønskes. 
+Denne Use Case viser et kort til brugeren, med indtegnet busrute, stoppesteder samt busser der kører på valgt rute. Det kræver at brugeren står ved listen over busruter, eller startskærmen, hvsi en rute er favoriseret. Dernæst tilkendegives der overfor systemet, hvilken busrute der ønskes vist. Systemet henter busruten, samt stoppestederne fra databasen.
+Herefter bliver brugeren præsenteret for et kort, med indteget busrute og stoppesteder. Systemet henter nu gps-koordinaterne for busserne på ruten, samt indtegner dem på kortet. Efter to sekunder vil systemet igen hente gps-koordinaterne, og opdatere bussernes position. Systemet vil forsætte med at opdatere positionerne indtil brugeren tilkendegiver overfor systemet, at dette ikke længere ønskes. 
 
 
 \subsubsection{Use Case Undtagelser}
-Da busruten, stoppestederne samt bussernes gps-koordinater bliver hentet fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, når systemet henter busruten og stoppestederne vil brugeren blive præsenteres for en besked om at det ikke er muligt at etablere forbindelse til databasen, hvorpå han kan vende tilbage til startskærmen og prøve igen. Hvis det sker når systemet henter gps-koordinaterne vil brugeren blive præsenteret for en besked om at det ikke er muligt at opdatere bussernes position. Der vil stadigvæk være muligt at se kortet, med indtegnet rute, samt stoppesteder, bussernes position vil blot ikke opdateres.
-Det er mulighed for at systemet genetabler forbindelse til databasen, Hvis dette sker vil brugeren blive præsenteret for en besked om at det igen er muligt at opdatere bussernes position. Systemet vil forsætte med at opdatere bussernes position.
+Da busruten, stoppestederne samt bussernes gps-koordinater bliver hentet fra en database, er der risiko for, at forbindelsen til databasen mistes. Hvis dette sker, når systemet henter busruten og stoppestederne, vil brugeren præsenteres for en besked om, at det ikke er muligt at etablere forbindelse til databasen. Hvis dette sker når systemet henter gps-koordinaterne vil brugeren præsenteres for en besked om, at det ikke er muligt at opdatere bussernes position. Det vil dog stadigvæk være muligt at se kortet, med indtegnet rute og stoppesteder, men bussernes position vil ikke længere opdateres.
+Der er mulighed for, at systemet genetabler forbindelse til databasen. Hvis dette sker, vil systemet igen opdatere bussernes position.
 
 
 \end{document}

@@ -1,7 +1,7 @@
 \documentclass[Main.tex]{subfiles} 
 \begin{document}
 \subsubsection{Komponent 1: Mobil applikation}
-Denne komponent er hovedformålet med hele systemet, og har til formål at formidle alt bus information til brugerne. Den gør det muligt for brugeren at se busruter indtegnet på et kort, med stoppesteder og positionen for de busser der køre på ruten. Ydermere vil det være muligt at se hvor lang tid der er, til den næsten bus ankommer til et valgt busstoppested. På figur \ref{fig:AppKlasseDiagram} kan de forskellige klasser ses, hvilke lag de ligger i og hvordan de interagere.
+Denne komponent har til formå at formidle alt bus information til brugerne. Den gør det muligt for brugeren at se busruter med stoppesteder indtegnet på et kort samt positionen for de busser der køre på ruten. Herudover vil det være muligt at se hvor lang tid der er til, at den næsten bus ankommer ved et valgt busstoppested. På figur \ref{fig:AppKlasseDiagram} kan de forskellige klasser ses, samt hvilke lag de ligger i og hvordan de interagerer. Model klasser vises ikke som interageringer.
 \\
 \begin{figure}[H]
 	\centering
@@ -10,6 +10,7 @@ Denne komponent er hovedformålet med hele systemet, og har til formål at formidl
 	\label{fig:AppKlasseDiagram}
 \end{figure}
 \newpage
+\noindent
 På figur \ref{fig:AppKlasseDiagramModel} ses de forskellige model klasser, der hovedsageligt består af custom datatyper.
 \begin{figure}[H]
 	\centering
@@ -17,12 +18,14 @@ På figur \ref{fig:AppKlasseDiagramModel} ses de forskellige model klasser, der h
 	\caption{Klassediagram for model klasser i mobil applikationen}
 	\label{fig:AppKlasseDiagramModel}
 \end{figure}
+
+\noindent
 \textbf{Design:}\\
-Mobil applikationen er blevet udviklet til android mobiltelefoner det køre med OS version 4.3 Jelly Bean og op til 4.4.2 KitKat. Dertil er der blevet udviklet imod android API level 18 og 19.
+Applikationen er blevet udviklet til android mobiltelefoner som kører med OS version 4.3 Jelly Bean og op til 4.4 KitKat. Dertil er der blevet udviklet imod android API level 18 og 19.
 \\
-Mobil applikationen er udviklet med fokus på, at der skulle ske så lidt arbejde på telefonen som muligt, det skal i stedet for sker alle tunge udregninger og dataprocessering op en webservice \textit{Se afsnit 8.2.2 Komponent 2: Mobile service}
+Mobil applikationen er udviklet med fokus på, at der skulle ske så lidt arbejde på telefonen som muligt. Alle tunge udregninger og processeringer sker på en webservice, \textit{Se afsnit 8.2.2 Komponent 2: Mobile service}
 \\
-For at kunne vise busruter og stoppesteder, busser og tid til ankomst, skal dette hentes fra en databasen. Til dette er der blevet lavet 2 klasser, TrackABusProvider og SoapProvider. TrackABusProvideren er udviklet som en bound service, som både BuslistMenuActivity og BusMapActivity bruger. For at bind til TrackABusProvider, bliver startSerivce() kaldt, dette vil starte services hvis den ikke allerede køre, efter det vil bindSerivce blive kaldt, dette binder, i dette tilfælde, BuslistMenuActivity til TrackABusProvideren.
+For at kunne vise busruter, stoppesteder, busser og tid til ankomst, skal dette hentes fra en databasen. Til dette formål er der blevet lavet to klasser, TrackABusProvider og SoapProvider. TrackABusProvideren er udviklet som en BoundService, som både BuslistMenuActivity og BusMapActivity bruger. For at binde til TrackABusProvideren, bliver "startService" kaldt, som starter servicen, hvis den ikke allerede kører. Herefter vil funktionen "bindService" blive kaldt, som i dette tilfælde binder BuslistMenuActivity til TrackABusProvideren.
 \begin{lstlisting}[caption=Binding til TrackABusProvider, language=JAVA]
 if(ConnectivityChecker.hasInternet){
 	Intent intent = new Intent(BuslistMenuActivity.this, TrackABusProvider.class);
@@ -30,7 +33,7 @@ if(ConnectivityChecker.hasInternet){
 	bindService(intent, Connection, Context.BIND_AUTO_CREATE);	
 	}
 \end{lstlisting}
-Denne binding vil ske asynkron, og derfor ikke til at sige hvornår den er færdig, for at se hvornår den er færdig, bruges en ServiceConnection. Denne service connection har en callback function, onServiceConnected(), der vil blive kaldt så snart den er færdige med at bind. For at sikre at de kald der kræver at der er blevet bundet til services skal derfor ligges her i. binder.getService() vil initialisere en instance af den service der bliver bundet til, og fra den være muligt at kalde de forskellige service funktioner der er implementeret i TrackABusProvider klassen.
+Denne binding vil ske asynkront, og det er derfor ikke muligt at vide, hvornår den er færdig. Til dette formål bruges en ServiceConnection. Denne har en callback function, "onServiceConnected", der vil blive kaldt så snart der er blevet bundet til servicen. For at sikre at de funktioner, som kræver en bundet service, først bliver kaldt når dette er opfyldt, bliver kaldt i onServiceConnected. "getService" vil initialisere en instans af den service der er bliver bundet til, og herfra vil det være muligt at kalde de forskellige service funktioner, der er implementeret i TrackABusProvider klassen.
 \begin{lstlisting}[caption=ServiceConnection i BuslistMenuActivity, language=JAVA]
 private ServiceConnection Connection = new ServiceConnection(){			
 	@Override
@@ -47,9 +50,9 @@ private ServiceConnection Connection = new ServiceConnection(){
 	}
 };
 \end{lstlisting}
-Alle funktionerne i TrackABusprovider klassen bliver afviklet i deres egen tråd for ikke at blokere main/UI tråden. For at TrackABusProvider funktionerne kan sende data rigtig tilbage til den klasse der kalde funktionen, bliver der brugt en Message Handler.
+Alle funktionerne i TrackABusProvider klassen bliver afviklet i deres egen tråd for ikke at blokere main/UI tråden. For at TrackABusProvider funktionerne kan sende data rigtigt tilbage til den klasse der kaldte funktionen, bliver der brugt en Message Handler.
 \\
-På TrackABusProvider siden er dette blevet lavet ved at hver funktion tager imod en \textit{int ReplyMessage} og en \textit{Handler ReplyTo} som parameter. Når funktionen er færdig med at få data fra SoapProvideren, \textit{Se afsnit 9.2.1 Implementering af persistens i mobilapplikationen for information om hvordan MySQL databasen bliver tilgået}, bliver der oprettet en ny Message. ReplyTo handleren bliver brugt så beskeden ved hvor den skal hen, og ReplyMessage er så den kan fortælle den handler den bliver sendt til, hvad den er blevet færdig med. I kodeudsnit \ref{lst:GetBusRouteTrackABus} kan der ses et eksemple på en funktion i TrackABusProvider klassen. GetbusRoute() tilgår soapProvider klassen, der ligger i data tilgangs laget, for at hente en bestemt busrute, og alle de stoppesteder der ligger på ruten. Data hentet fra MySQL databasen bliver derefter lagt i et ParcelableArrayList, dette gør det muligt at sende custom datatyper med i de messages der bliver sendt. Til sidst bliver der oprettet en ny Message, med en ReplyMessage, så den handler der modtager beskeden ved hvad der er blevet modtaget, den nye Message får så sat data på sig, og bliver sendt afsted til replyTo handleren, der er implementeret i en af de klasser der er bundet til TrackABusProvideren.
+På TrackABusProvider siden er dette blevet implementeret ved, at hver funktion tager imod en ReplyMessage og Handler som parameter. Når funktionen er færdig med at hente data fra SoapProvideren, bliver der oprettet en ny Message. Se \textit{afsnit 9.2.1 Implementering af persistens i mobilapplikationen} for information om, hvordan MySQL databasen bliver tilgået. Messagen sendes over den medfølgende Handler, som er implementeret i den klasse, der kaldte servicen. ReplyMessage beskriver overfor Handleren, hvad den er blevet færdig med, så Handleren kan udføre det korrekte arbejde med dataen. På kodeudsnit \ref{lst:GetBusRouteTrackABus} kan der ses et eksempel på en funktion i TrackABusProvider klassen. "GetbusRoute" tilgår SoapProvider klassen, for at hente en bestemt busrute, og alle de stoppesteder der hører til denne fra MySQL databasen. Data hentet herfra, bliver lagt i en ParcelableArrayList. Dette gør det muligt at sende custom datatyper med i de messages, der bliver sendt. Disse custom datatyper skal dog implementere Parcelable interfacet. Disse klasser kan ses på \ref{fig:AppKlasseDiagramModel}, under "Parcelable Modeller". Til sidst bliver der oprettet en ny Message, med den ReplyMessage der fulgte med som parameter, så Handleren ved hvilket arbejde den skal udføre. Denne message sendes til Handler parameteren.
 \newpage
 \begin{lstlisting}[caption=GetBusRoute() i TrackABusProvdider, language=JAVA, label={lst:GetBusRouteTrackABus}]
 public void GetBusRoute(final String busNumber, final int ReplyMessage, final Handler replyTo){
@@ -73,7 +76,7 @@ try{
 	}}).start();
 }
 \end{lstlisting}
-De klasser der er bundet til TrackABusProvideren skal implementere en handler, der skal bruges for at kunne kalde funktionerne i TrackABusProvideren, denne handler står for at modtage beskederne, når TrackABusProvider funktionen er færdig. For at kalde en af TrackABusProvider funktionerne skal der, som beskrevet ovenstående, altid sendes en \textit{int ReplyMessage} og en \textit{Handler ReplyTo}. ReplyTo parameteren er den handler der skal modtage beskederne, kodeafsnit \ref{lst:msgHandler} viser message handleren i BusMapActivity. Når den modtager en besked, vil den tjekke på hvilken ReplyMessage der ligger i beskeden, for at håndtere beskeden rigtigt. For at få det data der bliver sendt med i beskedet, bliver der kaldt en simple msg.getData() på beskeden som vist i kodeafsnit \ref{lst:msgHandler}.
+De klasser der er bundet til TrackABusProvideren skal implementere en Message Handler, der skal bruges i sammenhæng med kald til funktionerne i TrackABusProvideren. Denne Handler står for at modtage beskederne, når den kaldte TrackABusProvider funktion er færdig. For at kalde en af TrackABusProvider funktionerne skal der, som beskrevet ovenstående, altid medsendes en ReplyMessage og en Message Handler. Handler parameteren er den Message Handler der er oprettet i den klasse som kalder servicen. På kodeudsnit \ref{lst:msgHandler} vises Message Handleren i BusMapActivity. Når den modtager en besked, vil den undersøge hvilken ReplyMessage der ligger i beskeden. Dette gøres for at være sikker på, at data håndteret korrekt. For at få det data der bliver sendt med i beskeden, bliver "getData" kaldt på beskeden.
 \newpage
 \begin{lstlisting}[caption=msgHandler i BusMapActivity, language=JAVA, label={lst:msgHandler}]
 final static public int BUS_ROUTE_DONE = 1;
@@ -94,13 +97,13 @@ class msgHandler extends Handler{
 					...
 				break;
 \end{lstlisting}
-For at kunne indtegne ruterne, stoppesteder og busserne skal der bruges et kort at tegne på, hertil er der blevet brugt Google maps. For at kunne bruge dette map, kræves en API key fra google, der fås fra googles API console. API key'en skal derefter skrives ind i android manifest filen, dette gør det muligt at bruge et google map i sin applikation.
-\begin{lstlisting}[caption=API key i Manifest, language=XML, label={lst:APIManifest}]
+For at kunne indtegne ruterne, stoppestederne og busserne skal det være muligt at have et kort at tegne på. Hertil er der blevet brugt Google Maps.\footnote{Dette kan der læses mere om på \url{https://developers.google.com/maps/documentation/android/}} For at kunne bruge dette kort, kræves det at en API nøgle fra Google bliver tilføjet til manifestet. Denne kan anskaffes fra Googles API konsol\footnote{Denne tilgås igennem \url{https://code.google.com/apis/console}}.
+\begin{lstlisting}[caption=API nøgle i manifest, language=XML, label={lst:APIManifest}]
 <meta-data       
 	android:name="com.google.android.maps.v2.API_KEY"
 	android:value="AIzaSyC9qLxvm9yVIBJ5Dp0VqMapFvc4VLUlqu8"/> 
 \end{lstlisting}
-For at vise selve kortet, skal der laves en layout fil, der indeholder et mapFragment, som vist i kodeudsnit \ref{lst:mapFragment}. Det vil nu være muligt at se et kort i applikationen.
+For at vise selve kortet, skal der laves en layout fil, som indeholder et mapFragment, som vist i kodeudsnit \ref{lst:mapFragment}. Det vil nu være muligt at se et kort i applikationen.
 \newpage
 \begin{lstlisting}[caption=mapFragment, language=XML, label={lst:mapFragment}]
 <fragment
@@ -109,7 +112,7 @@ For at vise selve kortet, skal der laves en layout fil, der indeholder et mapFra
 	android:layout_height="wrap_content"
 	android:name="com.google.android.gms.maps.MapFragment"/>
 \end{lstlisting}
-Det er nu muligt at indtegne ruter, stoppesteder og busser på ruten. Det bliver gjort efer at have modtaget ruten fra TrackABusProvider klassen. Ruten bliver tegnet ved brug af en Polyline, der bliver tegnet ved at bruge de GPS-koordinater der er blevet hentet fra MySQL databasen.
+Det er nu muligt at indtegne ruter, stoppesteder og busser på ruten, på dette fragment. Rute og bus relvant information hentes igennen TrackBusProvideren, og på kodeudsnit \ref{lst:Polyline} kan det ses, hvordan en rute tegnes. Ruten bliver tegnet ved brug af en Polyline, som opbygges af de koordinater der hentes fra MySQL databasen.
 \begin{lstlisting}[caption=hvordan en Polyline bliver indtegnet på kortet, language=JAVA, label={lst:Polyline}]
 PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
 for(int i = 0; i < points.size(); i++){
@@ -117,7 +120,7 @@ for(int i = 0; i < points.size(); i++){
 }
 map.addPolyline(pOption);
 \end{lstlisting}
-Busstoppestederne bliver tegnet ind ved at bruge de GPS-koordinater der er blevet hentet fra databasen, til at oprette nye markers på kortet. Der vil blive knyttet en ClickListener på alle markerne, der vil begynde at hente tiden, til den næste bus ankommer ved det valgte stoppested og opdatere skærmen så brugeren kan se det.
+Busstoppestederne bliver ligeså tegnet ind ved at bruge de GPS-koordinater, der er blevet hentet fra MySQL databasen. Disse koordinater bruges til at tegne markører på kortet. Der vil blive knyttet en ClickListener på alle markerne, som kaldes når et stoppested trykkes. Denne sørger for at starte tidsopdaterings funktionerne. På kodeudsnit \ref{lst:stoppestederMarkers} kan det ses, hvordan et stoppested tilføjes til kortet.
 \begin{lstlisting}[caption=Hvordan stoppesteder bliver indtegnet på kortet, language=JAVA, label={lst:stoppestederMarkers}]
 for(int i = 0; i<stops.size(); i++){
 	map.addMarker(new MarkerOptions()
@@ -125,9 +128,9 @@ for(int i = 0; i<stops.size(); i++){
 	.icon(BitmapDescriptorFactory.fromResource(R.drawable.teststop)));
 }
 \end{lstlisting}
-Der er blevet implementeret mulighed for at favorisere busruter, dette gøres fra mainmenu\_layout view'et. for at gøre dette nemt og pænt for brugeren har det været nødvendigt at lave en custom listadapter, dette før det muligt at lave en liste, hvor hver list element både består af navnet på rute en ToggleButton og en ProgressBar
+BusListAdapteren er lavet til det formål, således at hvert list element i BusListMenuActivity, kan indeholde en togglebutton, en progressbar, foruden tekst. Dette gøres da favoriserings metoder også startes fra en af disse elementer.
 \\
-Mange steder i applikationen skal der bruges adgang til internet, og der kan derfor forkomme fejl når dette sker. Dette er blevet håndteret ved at implementere en BroadcastReceiver i klassen ConnectivityChecker, der abonnere på, der sker ændringer i netværksforbindelsen for telefonen, som set i kodeafsnid \ref{lst:ConnectivityChecker}. Det vil nu være muligt at tjekke på om der er internet forbindelse før man prøver at kalde funktioner der kræver at der er forbindelse til internettet.
+Mange steder i applikationen skal der bruges adgang til internettet, og der kan derfor forkomme fejl, hvis der ikke er tilgang hertil. Dette er blevet håndteret ved at implementere en BroadcastReceiver i klassen ConnectivityChecker, der abonnerer på,  ændringer i netværksforbindelsen for både wifi og mobilt data netværk. På kodeudsnit \ref{lst:ConnectivityChecker}, kan manifest filen ses, hvori det vises hvordan BroadcastReceiveren kobles til de nødvendige events. Når der sker et event undersøges der, om der er internet, og en statisk bool sættes til true hvis der er forbindelse, og false hvis der ikke er. Hertil er det muligt for applikationen til hver en tid at vide, om der er adgang til internettet.
 \begin{lstlisting}[caption=ConnectivityChecker i manifest filen, language=JAVA, label={lst:ConnectivityChecker}]
         <receiver android:name="ConnectivityChecker">
             <intent-filter>

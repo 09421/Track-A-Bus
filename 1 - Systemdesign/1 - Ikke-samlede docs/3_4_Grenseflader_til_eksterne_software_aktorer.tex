@@ -2,11 +2,11 @@
 \begin{document}
 
 \subsection{Grænseflader til eksternt software}
-Her beskrives grænsefladerne for de software delsystemer, der er blevet udviklet som et separat projekt.\\
-Der er blevet udviklet en simulator sideløbende med projektet, da det blev nødvendigt at have mulighed for at simulere en bus der køre på en rute, da der ikke var mulighed for at få positions data for en rigtig bus. Et andet formål med simulatoren er at gøre det muligt at teste forskellige situationer der kan forekomme i systemet. 
+Her beskrives grænsefladerne for de software delsystemer, der er blevet udviklet som separate projekter.\\
+Der er blevet udviklet en simulator sideløbende med projektet, da det blev nødvendigt at have mulighed for at simulere en bus der kører på en rute. Et andet formål med simulatoren er at gøre det muligt at teste forskellige situationer, der kan forekomme i systemet. 
 \subsubsection{Simulator}
-Når simulatoren bliver startet vil grænsefladen se ud, som vist på figur \ref{fig:SimulatorViewStart}. Herfra kan der ved 'BusNr:' vælges hvilken busrute, busserne skal køre på. Update speed bestemmer hvor ofte positionen for busserne skal opdateres, her er '1' standardværdien for systemet. I simulation mode, vælges der hvilken form for simulation der skal startes, dette kan være: 'Use single bus on route', 'Use all busses on chosen route' og 'Use all busses in system'.
-'Use single bus on route' vil simulere en enkel bus der køre på den valgte rute, hvor 'Use all busses on chosen route' vil simulere alle de busser der er knyttet til den valgte rute. Ved valg af 'Use all busses in system' vil alle busser i hele systemet blive simuleret på deres tilknyttet rute, og det er derfor ligemeget hvilken busrute der blev valgt i starten. Under 'Bus Direction' kan der vælges om busserne skal køre i en bestemt retning, eller om de alle skal køre i tilfældige retning. sidst kan der vælges hvor hurtig busserne skal køre, her der er mulighed for at sætte hastigheden mellem 30 og 1000 km/t. Simulatoren kan nu startes på to forskellige måder, enten hvor busserne alle starter tilfældige steder på deres rute, eller om alle busserne skal starte fra rutens startpunkt.
+Når simulatoren bliver åbnet vil grænsefladen se ud, som vist på figur \ref{fig:SimulatorViewStart}. Herfra kan der ved "BusNr:" vælges hvilken busrute, busserne skal køre på. Kun ruter med tilknyttede busser vises. "Update speed" bestemmer hvor ofte positionen for busserne skal opdateres i sekunder, hvor '1' er minimumsværdien. I "Simulation mode", vælges der hvilken form for simulation der skal startes, dette kan være "Use single bus on route", "Use all busses on chosen route" eller "Use all busses in system".
+"Use single bus on route" vil simulere en enkelt bus der kører på den valgte rute, 'Use all busses on chosen route' vil simulere alle de busser der er knyttet til den valgte rute og 'Use all busses in system' vil simulere alle busser i hele systemet på deres tilknyttede rute. Ved valg af sidste simulerings måde, er ligemeget hvilken busrute der blev valgt i "BusNr". Under "Bus direction" kan der vælges om busserne skal køre i en bestemt eller tilfældig retning. Til sidst kan der vælges hvor hurtig busserne skal køre. Her er der mulighed for at sætte hastigheden på busserne imellem 30 og 1000 km/t. Simulatoren kan nu startes på to forskellige måder; Enten hvor busserne alle starter tilfældige steder på deres rute, eller om alle busserne skal starte fra rutens startpunkt.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{./Diagrammer/Billeder/SimulatorViewStart.png}
@@ -14,13 +14,13 @@ Når simulatoren bliver startet vil grænsefladen se ud, som vist på figur \ref{fi
 	\label{fig:SimulatorViewStart}
 \end{figure}
 \noindent
-På figur \ref{fig:SimulatorViewStarted} kan ses hvordan det kan se ud efter en simulation er startet. Her kan det ses et log vindue i højre side, der kommer med opdateringer om busserne, og eventuelle fejlbeskeder. De to sidste knapper på simulatoren, 'Refresh' og 'clear log' bruges henholdsvis til at hente de nyeste ruter og busser fra databasen, og til at slette alt hvad der står i log vinduet.
+På figur \ref{fig:SimulatorViewStarted} kan det ses, hvordan grænseflade kan se ud efter simulerings start. I højre side ses et logvinde, hvor der forekommer opdateringer fra busserne, samt eventuelle fejlbeskeder. De to sidste knapper på simulatoren, "Refresh" og "Clear Log" bruges henholdsvist til at hente de nyeste ruter fra den distribuerede database, og til at slette alt hvad der står i log vinduet.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{./Diagrammer/Billeder/SimulatorViewStarted.png}
 	\caption{Grænseflade for simulator efter den er blevet configureret og startet}
 	\label{fig:SimulatorViewStarted}
 \end{figure}
-\noindent
+\noindent1
 
 \end{document}

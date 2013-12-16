@@ -4,7 +4,7 @@
 \centering
 \includegraphics[scale=1.00]{Diagrammer/MainBusThreadSimulator.jpg}
 \caption{Sekvensdiagram over - simulator tråd kommunikation}
-\label{fig:SekvensdiagramTrackAbusThread}
+\label{fig:MainBusThreadSimulator}
 \end{figure}
-På figur \ref{fig:SekvensdiagramTrackAbusThread} ses hvordan main tråden opretter en ny bus, hvorefter den starter bus tråden. Det er muligt for main tråden at oprette mere end 1 bus tråd, der alle kan køre på forskelligt busruter.
+På figur \ref{fig:MainBusThreadSimulator} ses det, hvordan main tråden opretter en ny bus, hvorefter den starter bus tråden. Main tråden opretter en tråd for hver bus, da disse skal køre asynkront.
 \end{document}
