@@ -40,7 +40,8 @@ public class SoapProvider {
 			  	}	  
 			  }		  
 		  catch (Exception e) {
-			  resultlist.add(e.getMessage());
+			  e.printStackTrace();
+			  return null;
 		  }		  
 		 return resultlist;
 	  }

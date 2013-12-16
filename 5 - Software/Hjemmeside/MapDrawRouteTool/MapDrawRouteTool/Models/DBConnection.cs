@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace MapDrawRouteTool.Models
 {
@@ -984,7 +986,5 @@ namespace MapDrawRouteTool.Models
 
             return LatLng;
         }
-
-
     }
 }

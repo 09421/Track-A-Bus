@@ -20,8 +20,7 @@ namespace MapDrawRouteTool.Models
 
         public static List<BusStops> GetAllBusStops()
         {
-            string ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;
-            using (var connection = new MySqlConnection(ConnectionString))
+            using (var connection = new MySqlConnection(DBConnection.getConnectionString()))
             {
                 using (var cmd = connection.CreateCommand())
                 {
