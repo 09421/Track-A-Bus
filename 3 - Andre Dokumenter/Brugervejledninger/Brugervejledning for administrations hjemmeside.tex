@@ -1,0 +1,223 @@
+\documentclass[12pt,a4paper]{article}
+%\documentclass[12pt,twoside,a4paper]{article} %Duplex udskrivning
+\usepackage[ansinew]{inputenc}			% Windows
+
+\input{Preamble}	% Alle_indstillinger_for_dokumentet
+\begin{document}
+
+\begin{center}
+ \section*{Brugervejledning for administrations hjemmeside}
+\end{center}
+
+\noindent
+Dette dokument beskriver hvordan systemet administreres. Dette gøres igennem en hjemmeside, hvorigennem administratoren værktøjerne kan tilgås igennem fire forskellige sider. Hver billede repræsenterer en side, hvor de forskellige funktionaliter er numererede. Efter hvert billede, vil funktionaliteten ved nummeret beskrives.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{Hjemmeside/Billeder/HjemmesideMainScreen.png}
+\caption{Startsiden for administrator hjemmesiden}
+\label{fig:MainScreen}
+\end{figure}
+
+\noindent
+På figur \ref{fig:MainScreen}, kan hovedskærmen ses. Herunder følger en beskrivelse af administratorens muligheder.
+\begin{enumerate}
+	\item Home knap.
+	\begin{itemize}
+		\item Returnerer administratoren til hovedskærmen, som er den der her beskrives.
+	\end{itemize}		
+	\item Bus knap
+	\begin{itemize}
+		\item Sender administratoren til bus redigerings siden, som ses på figur \ref{fig:Bus}
+	\end{itemize}
+		\item Route knap
+	\begin{itemize}
+		\item Sender administratoren til rute redigerings siden, som ses på figur \ref{fig:Route}
+	\end{itemize}
+		\item Stop knap
+		\begin{itemize}
+		\item Sender administratoren til stoppesteds redigerings siden, som ses på figur \ref{fig:Stop}
+	\end{itemize}
+\end{enumerate}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{Hjemmeside/Billeder/BusHjemmeside.png}
+\caption{Bus redigerings siden for administrator hjemmesiden}
+\label{fig:Bus}
+\end{figure}
+
+\noindent
+På figur \ref{fig:Bus}, kan busredigerings siden ses. På denne side tilføjes eller fjernes der busser, samt listen af busser der kører på en rute kan redigeres. Herunder følger en beskrivelse af administratorens muligheder.
+\begin{enumerate}
+	\item Side knapper.
+	\begin{itemize}
+		\item Disse knapper er beskrevet under figur \ref{fig:MainScreen}.
+	\end{itemize}		
+	\item Liste af alle busser i systemet.
+	\begin{itemize}
+		\item Viser alle oprettede busser. Hvis en bus vælges og Remove eller Rename trykkes, er det denne bus der ændres.
+	\end{itemize}
+		\item Bus identifikation.
+	\begin{itemize}
+		\item Bussens unikke identifikations nøgle. Bruges til at identificerer busser i resten af systemet. Hvis en bus er valgt og der trykkes "Rename", bliver det indskrevne den nye nøgle til bussen. Hvis der trykkes "Add" tilføjes en ny bus med den indskrevne nøgle. 
+	\end{itemize}
+	\item Add knap
+	\begin{itemize}
+		\item Tilføjer ny bus, med ID skrevet i feltet "Bus ID"
+	\end{itemize}
+	\item Remove knap
+	\begin{itemize}
+		\item Sletter valgt bus fra systemet.
+	\end{itemize}
+		\item Rename knap
+	\begin{itemize}
+		\item Giver valgt bus det ID som er skrevet i feltet "Bus ID"
+	\end{itemize}
+		\item Save knap 1
+	\begin{itemize}
+		\item Gemmer de ændringer/tilføjelser/fjernelser der har været forekommet på buslisten.
+	\end{itemize}
+		\item Liste af busruter
+	\begin{itemize}
+		\item Viser alle oprettede busruter. Hvis en busrute vælges, er det denne busrute man tilføjer busser til eller fjerner busser fra.
+	\end{itemize}
+	\item Liste af busser uden rute.
+	\begin{itemize}
+		\item Liste af de busser der endnu ikke kører på en rute. Hvis en bus vælges, er det denne bus, man tilføjer til ruten.
+	\end{itemize}
+	\item Tilføj til rute knap.
+	\begin{itemize}
+		\item Tilføjer den valgte bus, til den valgte rute.
+	\end{itemize}
+	\item Fjern fra rute knap
+	\begin{itemize}
+		\item Fjerner den valgte bus, fra den valgte rute.
+	\end{itemize}
+	\item Liste af busser på valgt rute.
+	\begin{itemize}
+		\item Når en rute vælges fra listen af alle gemte busruter, vil denne liste vise alle de busser, der i øjeblikket kører på den valgte rute.
+	\end{itemize}
+	\item Save knap 2
+	\begin{itemize}
+		\item Gemmer de tilføjelser/fjernelser af busser, der har været på en rute. 
+	\end{itemize}
+\end{enumerate}
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{Hjemmeside/Billeder/RouteViewHjemmeside.png}
+\caption{Ruteredigerings siden for administrator hjemmesiden}
+\label{fig:Route}
+\end{figure}
+\noindent
+På figur \ref{fig:Route} kan ruteredigerings siden ses. Her har administratoren mulighed for at oprette, redigere eller fjerne ruter. Herunder følger en beskrivelse af administratorens muligheder.
+\begin{enumerate}
+	\item Side knapper.
+	\begin{itemize}
+		\item Disse knapper er beskrevet under figur \ref{fig:MainScreen}.
+	\end{itemize}	
+	\item Rute navnet.
+	\begin{itemize}
+		\item Denne værdi indeholder det nummer eller navn, som vil stå på en bus der kører på en rute. Ligesom i dette tilfølde kunne det være 5A.
+	\end{itemize}
+	\item Mulige stopesteder.
+	\begin{itemize}
+		\item Her kan listen af alle mulige stoppesteder, som er oprettet i systemet, ses. Når et stoppested tilføjes til en rute fjernes de fra denne liste.
+	\end{itemize}
+	\item Tilføjede stoppesteder.
+	\begin{itemize}
+		\item Alle stoppesteder der er tilføjet til ruten. NB: Det er yderst vigtigt, at første stoppested i listen er den endestation, som er først på ruteplanen, og det sidste skal være endestationen som er sidst i ruteplanen.
+	\end{itemize}
+	\item Tilføj stoppesteder til rute knap.
+	\begin{itemize}
+		\item Tilføjer samtlige valgte stoppesteder, fra listen af mulige stoppesteder, til listen af tilføjede stoppesteder.
+	\end{itemize}
+	\item Fjern stoppesteder fra rute knap.
+	\begin{itemize}
+		\item Fjerner samtlige valgte stoppesteder, fra listen af tilføjede estoppesteder.
+	\end{itemize}
+	\item Set busstops knap.
+	\begin{itemize}
+		\item Indsætter busstoppestederne på ruten. Er ikke nødvendig for at gemme ruten, men giver et visuelt overblik.
+	\end{itemize}
+		\item Save knap.
+	\begin{itemize}
+		\item Gemmer ruten med det valgte navn og de valgte stoppesteder.
+	\end{itemize}
+	\item Liste af ruter.
+	\begin{itemize}
+		\item Her ses samtlige gemte ruter i systemet. Hvis en vælges, vil denne indtegnes på kortet og alle ikke-gemte ændringer vil gå tabt. Hvis ændringer foretages og gemmes, vil det være denne rute, ændringerne gemmes på.
+	\end{itemize}
+	\item Save changes knap.
+	\begin{itemize}
+		\item Når denne knap trykkes, vil de ændringer der er foretaget på den valgte rute, gemmes.
+	\end{itemize}
+	\item Delete route knap.
+	\begin{itemize}
+		\item Når denne knap trykkes, vil den valgte rute slettes.
+	\end{itemize}
+	\item Første punkt på ruten.
+	\begin{itemize}
+		\item Dette punkt er det første punkt på ruten. For den optimale ruteskabning, skal dette punkt være så tæt på rutens første stoppested som muligt. Hvis der trykkes på dette punkt, og et andet sted på ruten, oprettes en ny subrute til ruten. Dette bruges i sammehæng med komplekse ruter.
+	\end{itemize}
+	\item Sidste punkt på ruten.
+	\begin{itemize}
+		\item Dette punkt er det sidste punkt på ruten. For den optimale ruteskabning, skal dette punkt være så tæt på rutens sidste stoppested som muligt. Hvis der trykkes på dette punkt, og et andet sted på ruten, oprettes en ny subrute til ruten. Dette bruges i sammehæng med komplekse ruter.
+	\end{itemize}	
+	\item Stoppested.
+	\begin{itemize}
+		\item Denne markør symboliserer rutens stoppesteder.
+	\end{itemize}
+	\item Waypoint.
+	\begin{itemize}
+		\item Når en rute skabes mellem to punkter, er det ikke altid den rigtige rute fra start. Det er derfor muligt at trække i ruten, og de steder hvor ruten slippes, skabes der et waypoint, som er et konstant punkt på ruten.
+	\end{itemize}
+	\item Ruten.
+	\begin{itemize}
+		\item Den blå linje symboliserer rute.
+	\end{itemize}	
+\end{enumerate}
+
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.40]{Hjemmeside/Billeder/StopViewHjemmeside.png}
+\caption{Stoppestedredigerings siden for administrator hjemmesiden}
+\label{fig:Stop}
+\end{figure}
+\noindent
+På figur \ref{fig:Stop} kan stoppestedredigerings siden ses. Her har administratoren mulighed for at oprette, redigere eller fjerne stoppesteder. Herunder følger en beskrivelse af administratorens muligheder.
+\begin{enumerate}
+	\item Side knapper.
+	\begin{itemize}
+		\item Disse knapper er beskrevet under figur \ref{fig:MainScreen}.
+	\end{itemize}		
+	\item Stoppesteds navn.
+	\begin{itemize}
+		\item Navnet det indtegnede stoppested skal gemmes med. Ved valgt stoppested fra listen, kan et nyt navn også gives til dette stoppested. 
+	\end{itemize}
+	\item Save knap
+	\begin{itemize}
+		\item Når et stoppested er oprettet på kortet, og et navn er tilgivet til dette stoppested kan der trykkes på denne knap, og stoppestedet med den givne position og det indskrevne navn, vil blive gemt.
+	\end{itemize}
+	\item Oprettede stoppesteder
+	\begin{itemize}
+		\item Denne liste indeholder alle oprettede stoppesteder. Et stoppested kan vælges herigennem, hvorefter postionen for det valgte stoppested indtegnes på kortet, og navnet på stoppestedet indskrives i navne feltet.
+	\end{itemize}
+	\item Delete knap.
+	\begin{itemize}
+		\item Når et stoppested er valgt fra listen, kan denne knap trykkes og det valgte stoppested vil slettes.
+	\end{itemize}
+	\item Save changes knap.
+	\begin{itemize}
+		\item Når et stoppested er valgt og der er foretaget ændringer på det, kan denne knap trykkes, hvorefter ændringerne gemmes. Hvis et nyt stoppested tegnes ind før denne knap er trykket, vil ændringerne ikke gemmes.
+	\end{itemize}
+	\item Stoppested.
+	\begin{itemize}
+		\item Kortet kan trykkes, hvorefter en markør vises. Dette vil være positionen for et nyt stoppested. Samtidig kan et valgt stoppested også få ændret sin position her.
+	\end{itemize}
+\end{enumerate}
+\end{document}

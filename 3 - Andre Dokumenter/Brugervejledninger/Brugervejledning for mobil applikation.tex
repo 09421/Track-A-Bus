@@ -1,0 +1,122 @@
+\documentclass[12pt,a4paper]{article}
+%\documentclass[12pt,twoside,a4paper]{article} %Duplex udskrivning
+\usepackage[ansinew]{inputenc}			% Windows
+
+\input{Preamble}	% Alle_indstillinger_for_dokumentet
+\begin{document}
+
+\begin{center}
+ \section*{Brugervejledning for mobil applikation}
+\end{center}
+
+\noindent
+Dette dokument beskriver hvordan en bruger kan arbejde med applikationen. Hver billede repræsenterer en vindue, hvor de forskellige funktionaliter er numererede. Efter hvert billede, vil funktionaliteten ved nummeret beskrives.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{App/Billeder/MainScreenFavorit.png}
+\caption{Skærm 1 for applikationen}
+\label{fig:MainScreen}
+\end{figure}
+
+\noindent
+På figur \ref{fig:MainScreen}, kan hovedskærmen ses. Herunder følger en beskrivelse af brugerens muligheder.
+\begin{enumerate}
+	\item View busroutes knap.
+	\begin{itemize}
+		\item Viser listen af alle busruter. Åbner et nyt vindue, som kan ses på figur \ref{fig:ListOfRoutes}
+	\end{itemize}		
+	\item Favorit bus
+	\begin{itemize}
+		\item Hvis en rute er favoriseret, vil den vises herunder. I dette tilfælde er ruten "SimpleRout" favoriseret. Ved tryk vises kortet, som ses på figur \ref{fig:Map1}, med den favoriserede busrute indtegnet.
+	\end{itemize}
+\end{enumerate}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{App/Billeder/BusListFavorit.png}
+\caption{Skærm 2 for applikationen}
+\label{fig:ListOfRoutes}
+\end{figure}
+
+\noindent
+På figur \ref{fig:ListOfRoutes}, kan listen af alle ruter ses. Herunder følger en beskrivelse af brugerens muligheder.
+\begin{enumerate}
+	\item Rute
+	\begin{itemize}
+		\item Ved tryk vises kortet, som ses på figur \ref{fig:Map1}, med den valgte busrute indtegnet
+	\end{itemize}		
+	\item Ufavoriseret busrute.
+	\begin{itemize}
+		\item Hvis en rute har en grå stjerne betyder det, at denne rute endnu ikke er favoriseret. Ved tryk favoriseres ruten.
+	\end{itemize}
+		\item Favoriseret busrute.
+	\begin{itemize}
+		\item Hvis en rute har en gul stjerne betyder det, at denne rute endnu er favoriseret. Ved tryk ufavoriseres ruten.
+	\end{itemize}
+\end{enumerate}
+
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{App/Billeder/MapView.png}
+\caption{Skærm 3 for applikationen}
+\label{fig:Map1}
+\end{figure}
+\noindent
+På figur \ref{fig:Map1}, kan kortet med den valgte rute ses indtegnet. Busserne på ruten, hvis nogen, kan ses kørende på ruten. Herunder følger en beskrivelse af brugerens muligheder.
+\begin{enumerate}
+	\item Bus
+	\begin{itemize}
+		\item Positionen for busserne på rute kan ses ved disse markører. 
+	\end{itemize}		
+	\item Stoppested.
+	\begin{itemize}
+		\item Stoppesteder på ruten kan ses ved disse markører. Ved tryk på en af disse, vises tiden til, at næste bus er ved det valgte stoppested, i begge retninger. Dette ses på figur \ref{fig:Map2}.
+	\end{itemize}
+	\item Rute.
+	\begin{itemize}
+		\item Busruten ses indtegnet som en linje. I tilfælde af ruter med mere end en endestation, vil ruten indtegnes som flere linjer.
+	\end{itemize}
+	\item Rutenavn.
+	\begin{itemize}
+		\item Navnet på den valgte rute.
+	\end{itemize}
+\end{enumerate}
+\newpage
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{App/Billeder/mapViewSelected.png}
+\caption{Skærm 4 for applikationen}
+\label{fig:Map2}
+\end{figure}
+\noindent
+På figur \ref{fig:Map2}, kan der ligesom på figur \ref{fig:Map1} ses en rute indtegnet på et kort. Bussernes positioner opdateres. Desuden kan tiden til det valgte stoppested for den nærmeste bus ses, i begge retninger. 
+\begin{enumerate}
+	\item Rutenavn
+	\begin{itemize}
+		\item Navnet på valgt rute. 
+	\end{itemize}		
+	\item Stoppestedsnavn.
+	\begin{itemize}
+		\item Navnet på valgt stoppested
+	\end{itemize}
+	\item Første endestation.
+	\begin{itemize}
+		\item Navnet på endestationen den nærmeste bus, gående i retningen sidste til første stoppested i ruteplanen, kører imod.I tilfældet af ruter med mere end en endestation, vil kan denne endestation skifte, baseret på den nærmeste bus.
+	\end{itemize}
+	\item Anden endestation.
+	\begin{itemize}
+		\item  Navnet på endestation den nærmeste bus, gående i retningen første til sidste stoppested i ruteplanen, kører imod. I tilfældet af ruter med mere end en endestation, vil kan denne endestation skifte, baseret på den nærmeste bus.
+	\end{itemize}
+	\item Tiden for nærmeste bus til først endestation.
+	\begin{itemize}
+		\item Tiden for den nærmeste bus til valgt stoppested, for busser gående fra sidste til første stoppested i ruteplanen.
+	\end{itemize}
+	\item Tiden for nærmeste bus til anden endestation.
+	\begin{itemize}
+		\item Tiden for den nærmeste bus til valgt stoppested, for busser gående fra første til sidste stoppested i ruteplanen.
+	\end{itemize}
+\end{enumerate}
+\end{document}
