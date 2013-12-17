@@ -5,8 +5,10 @@
 Rediger bus på rute Use Casen består af to normalforløb, hvor det første omhandler tilføjelse af bus til en busrute, og normalforløb 2 omhandler fjernelse af bus fra en busrute. Begge normalforløb bliver startet fra administrations hjemmesiden under busredigering.\footnote{Administrations hjemmeside, bus redigering: \url{www.TrackABus.dk/bus}}.\\
 Viewet vil, når siden er blevet indlæst, kalde funktionen "ExecuteOnLoad" der laver tre asynkrone kald til BusControlleren, der henter navne på alle busruterne, alle busserne, og alle busser der ikke er knyttet til nogle rute. Når disse er færdige vil viewet opdatere de relevante lister på skærmen.
 
+\noindent
 Administratoren kan initialisere normalforløb 1, ved at vælge en busrute, fra listen af alle busruter. Ved tryk på en af disse, vil et "onchange" event blive kaldt. Dette starter et asynkront kald til BusController funktionen "GetBussesOnRoute", som tilgår data tilgangs laget for at hente alle de busser, der er knyttet til den valgte rute, i MySQL databasen. Busserne vil blive retuneret til BusControlleren, som igen returner tilbage til viewet, sim opdaterer listen "Busses on route" med de hentede busser.\\
 Adminsitratoren kan nu tilføje busser fra listen "Avaliable busses" til listen 'Busses on route', og trykke på knappen 'Save'. Dette vil starte et asynkront kald til BusController funktionen "SaveChanges", der tilgår funktionen i data tilgangs laget "SaveChangesToBus" bliver kaldt. Denne funktion knytter bussen til den valgte rute.\\
 
+\noindent
 Normalforløb 2, forgår på samme måde som i normalforløb 1, med den undtagelse, at der bliver taget busser fra listen "Busses on route" og tilføjet til listen "Avaliable busses". Efter der bliver trykket på knappen "Save' vil der ske det samme som i normalforløb 1, nu bare hvor busserne får fjernet deres knyttede ruter.
 \end{document}

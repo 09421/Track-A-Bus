@@ -4,9 +4,12 @@
 \subsubsection{Use Case 5: Rediger information om bus}
 Denne Use Case består af tre normalforløb, der alle bliver initialiseret fra administrations hjemmesiden under busredigering.\footnote{Administrations hjemmeside, bus redigering: \url{www.TrackABus.dk/bus}}. Viewet vil, når siden er blevet indlæst, kalde funktionen "ExecuteOnLoad" der laver tre asynkrone kald til BusControlleren, der henter navne på alle busruterne, alle busserne, og alle busser der ikke er knyttet til nogle rute. Når disse er færdige vil viewet opdatere de relevante lister på skærmen.
 
+\noindent
 Normalforløb 1, hvor en ny bus skal tilføjes til systemet bliver initialiseret, ved at administratoren indskriver ID'et for den nye bus i feltet: "Bus ID", hvorefter der trykkes på knappen "Add". Dette vil tilføje bussen til listen, men vil endnu ikke gemme det på databasen. Dette vil først ske når administratoren trykker på "Save" knappen. Et tryk på save knappen, vil kalde BusController funktionen "SaveBusChanges", der vil finde de busser, der er blevet tilføjet eller fjernet i listen. "SaveBusChanges" vil nu kalde funktionerne "removeBusses" for at fjerne de busser fra databasen, der blev fjernet fra listen, og "addBusses" for at tilføje til databasen, de busser administratoren tilføjede til listen. Disse to funktioner kalder ned i DBConnection klassen, der ligger i data tilgangs laget, hvilket er en statisk klasse. Denne bliver udelukkende brugt som tilgang klasse til MySQL databasen. Til sidst vil der blive retuneret til viewet, der nu vil informere administratoren om at der er blevet gemt.
 
+\noindent
 Normalforløb 2, hvor der skal slettes en bus fra MySQL databasen, bliver initialiseret ved at administratoren vælger en bus, fra listen af alle busser gemt i databasen. Herefter bliver der trykket på knappen "Remove" og bussen vil nu blive fjernet fra listen. Først ved tryk på "Save" knappen vil funktionen "SaveBusChanges" blive kaldt som i normalforløb 1.
 
+\noindent
 Normalforløb 3, hvor det skal være muligt at ændre informationen om en bus, bliver initialiseret ved, at administratoren vælger en af busserne fra listen. Herefter indskrives nyt ID i feltet "Bus ID", hvorefter der bliver trykket på knappen "Rename". Bussen vil nu skifte navn i listen, men igen først ved tryk på knappen "Save", vil funktionen "SaveBusChanges" blive kaldt, som i normalforløb 1.
 \end{document}
