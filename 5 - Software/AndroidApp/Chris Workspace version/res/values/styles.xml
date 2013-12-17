@@ -1,0 +1,41 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <style name="ButtonStyle" parent="@android:style/Widget.Button">
+		<item name="android:textSize">18sp</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textColor">#FFFFFF</item>
+		<item name="android:background">@drawable/custom_button</item>
+    </style>
+    <style name="TextViewStyle" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">24sp</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:gravity">center</item>
+		<item name="android:textColor">#FFFFFF</item>
+    </style>
+    <style name="ListViewStyle" parent="@android:style/Widget.ListView">
+        <item name="android:textAlignment">center</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/custom_listview</item>
+        <item name="android:divider">#FFFFFF</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:listSelector">#FFFFFF</item>
+    </style>
+</resources>
