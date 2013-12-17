@@ -11,9 +11,9 @@ Diagrammer kan findes i fuld størrelse i bilag under Diagrammer/Database Diagram
 Den distribuerede database gemmer alt information vedrørende busserne og deres ruter. Opbygningen af databasen kan ses som tre komponenter der interagerer; Busser, busruter og stoppesteder.\\ 
 Samtlige komponenter er defineret ved positions data i form af punkter. Disse punkter er længde- og breddegrader og kan ses som den fysiske position af den komponent, de relaterer til. Disse falder derfor i tre katagorier; Busposition, rutepunkter med stoppesteder og waypoints. 
 \begin{itemize}
-	\item Busposition er defineret som den fysiske placering af en given bus. Da der under systemets udvikling ikke var adgang til nogen fysiske busser, blev denne katagori af positions simuleret. Simulatoren kan dog skiftes ud med en virkelig bus, hvis positioner for denne kan stilles til rådighed. 
+	\item Busposition er defineret som den fysiske placering af en given bus. Da der under systemets udvikling ikke var adgang til nogen fysiske busser, blev denne katagori af positions data simuleret. Simulatoren kan dog skiftes ud med en virkelig bus, hvis positioner for denne kan stilles til rådighed. 
 	\item Rutepunter og stoppesteder indeholder positionsdata, som bruges til at tegne- eller laver udregninger på ruten. Disse udregninger er defineret senere under afsnittene \textit{9.1.3: Stored Procedures og 9.1.4: Functions}
-	\item Waypoints bruges som genskabelses-punkter til en given rute. Disse punkter bliver udelukkende brugt af administrationsværktøjet, til at genskabe den rute de beskriver.\\
+	\item Waypoints bruges som genskabelses-punkter til en given rute. Disse punkter bliver udelukkende brugt af administrationsværktøjet\\
 \end{itemize}
 
 \noindent
@@ -110,6 +110,8 @@ Der eksisterer kun Stored Procedures på MySQL database siden, og derfor vil dett
 Der er blevet lavet tre Stored Procedures i sammenhæng med tidsudregning for tætteste bus til valgt stoppested. Disse tre vil blive beskrevet herunder, udfra kodeudsnit. I kodeudsnittet vil ingen kommentarer være tilstede.\\
 I kodeudsnittene fremkommer forkortelserne "Asc" og "Desc. Dette står for Ascending og Descending og er en beskrivelse af, hvordan ruten indlæses. Ascending betyder at busruten indlæses fra første til sidste punkt i BusRoute\_RoutePoint og BusRoute\_BusStop tabellerne og Descending betyder at den indlæses fra sidste til første punkt.\\
 Temporary tabeller bliver brugt meget i funktionerne og procedurene. De beskriver en fuldt funktionel tabel, med den forskel, at de kun er synlige fra den givne forbindelse. Når der i proceduren kun laves indskrivninger i temporary tabeller, gør det tilgangen trådsikker. Dette betyder at proceduren godt kan tilgås fra flere enheder på samme tid. Når forbindelsen lukkes, vil de oprettede temporary tabeller slettes. \\\\
+
+\newpage
 \noindent
 \textbf{CalcBusToStopTime}\\
 Denne Stored Procedure er kernen i tidsudregningen. Den samler alle værdierne og sender dem videre i de forskellige funktioner. På kodeudsnit \ref{lst:CalcBustoStopTime} ses et udsnit af proceduren. I den fulde procedure, vil udregningerne for begge retninger mod stoppestedet foregå, men da dette blot er en duplikering af samme kode, med forskellige variabler og funktionsnavne, vises dette ikke. Alle deklareringer af variabler er også fjernet.
@@ -225,13 +227,14 @@ where Bus.IsDescending=true;
 \end{lstlisting}
 
 \noindent
-På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff2}, kan den anden forskel ses. Hvis en bus kører fra første til sidste stoppested, vil det nærmeste rutepunkt til bussen, have et større ID end stoppestedets, hvis bussen endnu ikke er kørt forbi. Derfor undersøges der her om rutepunktets ID er større eller ligmed stoppestedets ID, hvor der i "GetClosestBusAscProc" undersøges om det er mindre eller ligmed. \\
+På kodeudsnit \ref{lst:GetClosestBusDescProc_Diff2}, kan den anden forskel ses. Hvis en bus kører fra første til sidste stoppested, vil det nærmeste rutepunkt til bussen, have et større ID end stoppestedets, hvis bussen endnu ikke er kørt forbi. Derfor undersøges der her om rutepunktets ID er større eller ligmed stoppestedets ID, hvor der i "GetClosestBusAscProc" undersøges om det er mindre eller ligmed.
 \begin{lstlisting}[caption=GetClosestBusDescProc forskel 2, label={lst:GetClosestBusDescProc_Diff2},language=SQL]
 ...
 if(closestEndPoint >= currentStopId) then
 ...
 \end{lstlisting}
 
+\newpage
 \noindent
 \subsubsection{Functions:} 
 Igennem forløbet af "CalcBusToStopTime" proceduren, tages en del funktioner i brug. Disse bruges når kun en enkelt værdi behøves returneres. Funktionerne er delt om i to typer; Funktioner til udregning af relevant information til procedurene, samt matematik-funktioner. Der vil ikke vises kodeeksempler for matematik funktionerne i dette afsnit, men der henvises til afsnit \textit{8.2.5: Komponent 5: Anvendt Matematik}, for beskrivelser af disse. \\

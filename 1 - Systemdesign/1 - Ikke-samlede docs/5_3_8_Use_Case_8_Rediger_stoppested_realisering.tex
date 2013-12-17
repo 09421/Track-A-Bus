@@ -10,6 +10,7 @@ Normalforløb 1 initialiseres ved, at administratoren trykker et sted på det vist
 \noindent
 Normalforløb 2 bliver initialiseret ved at administratoren vælger et stoppested fra listen af alle stoppesteder, og trykker på knappen "Delete". Dette vil lave et asynkront kald til StopController funktionen "Delete", der kalder ned til data tilgangs laget, hvor sørges for, at det valgte stoppested fjernes fra databasen.\\
 
+\noindent
 Normalforløb 3 omhandler at kunne ændre position og navn for et givet stoppested. Denne bliver initialiseret ved, at administratoren vælger et stoppested fra listen af alle stoppesteder. Dette vil starte et onchange event, der laver et asynkront kald til StopController funktionen "GetPosistion". Denne kalder videre ned i data tilgangs laget, for at hente gps-koordinaterne for det valgte stoppested fra databasen. Koordinaterne vil blive sendt tilbage til viewet, der nu vil oprette en ny marker på kortet, med position tilsvarende det modtagede koordinat-sæt. Administratoren har nu mulighed for at trække i markeren for at ændre stoppestedets position, samt ændre dennes navn i feltet "Stop Name". Når de ønskede ændringer er foretaget, trykkes der på knappen "Save changes". Dette starter et asynkront kald til StopController funktionen "SaveChangeToStop, som kalder videre ned i data tilgangs laget. Her sørges der for at stoppestedets navn og position bliver opdateret i databasen.
 
 \end{document}
