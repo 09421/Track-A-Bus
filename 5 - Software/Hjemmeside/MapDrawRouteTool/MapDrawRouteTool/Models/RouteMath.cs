@@ -6,18 +6,22 @@ using System.Diagnostics;
 
 namespace MapDrawRouteTool.Models
 {
+    //Contains all the math
     public static class RouteMath
     {
+        //Convert degrees to radians
         public static double deg2Rad(decimal angle)
         {
             return (double)(((decimal)Math.PI) * angle / 180);
         }
 
+        //Convert radians to degrees
         public static double Rad2Deg(decimal angle)
         {
             return (double)angle * (180 / Math.PI);
         }
 
+        //Calulate Haversine
         public static double Haversine(decimal Lat1, decimal Lat2, decimal Lon1, decimal Lon2)
         {
             int EarthRadiusKM = 6371;
@@ -31,6 +35,7 @@ namespace MapDrawRouteTool.Models
             return EarthRadiusKM * c * 1000;
         }
 
+        //Calulate how far there is from a bus stop to a route
         public static decimal CalculateBusStopToRouteDist(decimal stopPosLat, decimal stopPosLon, decimal EP1Lat, decimal EP1Lon, decimal EP2Lat, decimal EP2Lon)
         {
             decimal scLat;
@@ -63,6 +68,7 @@ namespace MapDrawRouteTool.Models
 
         }
 
+        //Calulate where on a route, a busstop should be placed
         public static List<List<string>> CalculateBusStopsForRoute(List<string> stops, List<string> chosenRouteID, string routeNumber, int subRoute)
         {
             List<List<string>> RouteAndStops = new List<List<string>>();

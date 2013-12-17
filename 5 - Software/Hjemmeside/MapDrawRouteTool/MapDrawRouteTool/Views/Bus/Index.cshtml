@@ -11,6 +11,7 @@
     var BussesNotOnRoute = new Array();
     var BussesOnRoute = new Array();
     function ExecuteOnLoad() {
+        //call to controller, to get a list of all the names of all routes
         $.ajax({
             type: "POST",
             url: "Bus/GetRouteNames",
@@ -23,6 +24,7 @@
                 }
             }
         });
+        //call to controller to get a list of all busses
         $.ajax({
             type: "POST",
             url: "Bus/GetAllBusses",
@@ -36,7 +38,7 @@
                 }
             }
         });
-
+        //call to controller to get a list of all busses, not on any route
         $.ajax({
             type: "POST",
             url: "Bus/GetBussesNotOnRoute",
@@ -55,6 +57,7 @@
     }
 
     var selectedRoute;
+    //onchange event when route is selected
     function Change(value) {
         selectedRoute = value;
         $.ajax({
@@ -75,6 +78,7 @@
         });
     }
 
+    //Save the changes, for what busses is on what route
     function SaveChanges() {
         var allAdd = new Array();
         var allRemove = new Array();
@@ -107,6 +111,7 @@
         });
     }
 
+    //remove a bus from list
     function RemoveBus() {
         var e = document.getElementById("Busname").value;
 
@@ -123,6 +128,7 @@
         }
     }
 
+    //Used to check, of array contrains the given object
     Array.prototype.contains = function (obj) {
         var i = this.length;
         while (i--) {
@@ -133,6 +139,7 @@
         return false;
     }
 
+    //Add a new bus to the list
     function AddNewBus() {
         var busname = document.getElementById("Busname").value;
 
@@ -150,12 +157,14 @@
         }
     }
 
+    //Changes the names of a chosen bus
     function RenameBus() {
 
         var e = document.getElementById("busses");
         var sbus = e.options[e.selectedIndex].text = document.getElementById("Busname").value;
     }
 
+    //Save changes to the list of busses, this include delete and add
     function SaveBusses() {
 
         var BussesInList = new Array();
@@ -204,6 +213,7 @@
     var arrFrom = new Array();
     var arrTo = new Array();
     var arrLU = new Array();
+    //used to move items between to selectors
     function move(tbFrom, tbTo) {
         arrFrom = new Array();
         arrTo = new Array();

@@ -7,7 +7,10 @@ import java.util.Arrays;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-//Model class for a busroute
+/**
+ * Model class for a bus route
+ * Implements Parcelable
+ */
 public class BusRoute implements Parcelable {
 	
 	public ArrayList<RoutePoint> points;

@@ -14,6 +14,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 
+/*
+ * Class used to set up, and access the SQLite database
+ * */
 public class UserPrefProvider extends ContentProvider {
 
 	public static final String AUTHORITY = "dk.TrackABus.DataProviders.UserPrefProvider";
@@ -112,6 +115,9 @@ public class UserPrefProvider extends ContentProvider {
 
 	private UserPrefDB dbHelper;
 
+	/**
+	 * Delete from the SQLite database
+	 */
 	@Override
 	public int delete(Uri uri, String BusNumber, String[] nulled) {
 
@@ -173,6 +179,9 @@ public class UserPrefProvider extends ContentProvider {
 		return null;
 	}
 
+	/**
+	 * insert large amount of data to SQLite database
+	 */
 	@Override
 	public int bulkInsert(Uri uri, ContentValues[] values) {
 		
@@ -235,6 +244,9 @@ public class UserPrefProvider extends ContentProvider {
 		}
 	}
 
+	/**
+	 * insert single value to SQLite database
+	 */
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		// ONLY USES BulkInsert;
@@ -247,6 +259,9 @@ public class UserPrefProvider extends ContentProvider {
 		return true;
 	}
 
+	/**
+	 * query SQLite database, to retrieve data
+	 */
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
@@ -300,6 +315,9 @@ public class UserPrefProvider extends ContentProvider {
 		return returningCursor;
 	}
 
+	/**
+	 * Update a value in the SQLite database
+	 */
 	@Override
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs) {

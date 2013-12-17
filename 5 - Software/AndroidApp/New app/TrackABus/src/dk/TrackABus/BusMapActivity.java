@@ -48,9 +48,11 @@ public class BusMapActivity extends Activity {
 	boolean timeMsgShown = false;
 	boolean posMsgShown = false;
 	ArrayList<Marker> marks;
+
 	final static public int BUS_ROUTE_DONE = 1;
 	final static public int BUS_POS_DONE = 2;
 	final static public int BUS_TIME_DONE = 3;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,9 +60,9 @@ public class BusMapActivity extends Activity {
         Bundle extra = getIntent().getExtras();
         marks = new ArrayList<Marker>();
         if(extra != null){        	
-        	SelectedBus = extra.getString("SELECTED_BUS");
+        	SelectedBus = extra.getString("SELECTED_BUS"); /*Get name for selected route*/
         	Log.e("MyLog", SelectedBus);
-        	if(extra.getBoolean("isFavorite")){
+        	if(extra.getBoolean("isFavorite")){/*If selected route is favorite*/
 	        	TopBarLayout = (LinearLayout)findViewById(R.id.TopInformationBar);
 		        TopBarLayout.setVisibility(LinearLayout.VISIBLE);
 	        	BusRouteView = (TextView)findViewById(R.id.RouteInfo);
@@ -94,12 +96,14 @@ public class BusMapActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+		/*Set up binding to TrackABusProvider*/
     	intent = new Intent(BusMapActivity.this, TrackABusProvider.class);
     	startService(intent);
     	bindService(intent, Connection, Context.BIND_AUTO_CREATE);
  
 	}
     public String[] StopNames; 
+    /*Message handler used to retrive messages from TrackABusProvider*/
 	@SuppressLint("HandlerLeak")
 	class msgHandler extends Handler{
 		@Override
@@ -119,6 +123,10 @@ public class BusMapActivity extends Activity {
 					ArrayList<BusRoute> BusRoutes = msg.getData().getParcelableArrayList("BusRoute");
 					ArrayList<BusStop> BusStops = msg.getData().getParcelableArrayList("BusStop");
 			        
+					if(BusRoutes == null || BusStops == null){
+						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();
+						return;
+					}
 					SetUpMap();
 					for(int i = 0; i<BusRoutes.size();i++){
 						DrawRoute(BusRoutes.get(i).points);
@@ -131,7 +139,6 @@ public class BusMapActivity extends Activity {
 						Toast.makeText(getApplicationContext(), "Not connected to internet, can only show route", Toast.LENGTH_LONG).show();					
 					break;
 				case BUS_POS_DONE:
-					Log.e("Debug", "Got msg");
 					ArrayList<LatLng> Pos =  msg.getData().getParcelableArrayList("BusPos");
     				if(Pos != null){
     					for(int j = 0; j<marks.size(); j++){
@@ -175,7 +182,8 @@ public class BusMapActivity extends Activity {
 			}
 		}			
 	}    
-
+	
+	/*GPS coordinates used to center map on Aarhus*/
 	private static final LatLng AARHUS = new LatLng(56.162939,10.203921);
 
 	private void SetUpMap() {
@@ -184,20 +192,23 @@ public class BusMapActivity extends Activity {
 		}
 		if(map != null){
 				mUiSettings = map.getUiSettings();
+				/*Disables unwanted map features*/
 				mUiSettings.setZoomControlsEnabled(false);
 				mUiSettings.setCompassEnabled(false);
 				mUiSettings.setRotateGesturesEnabled(false);
+				/*Zoom the map to Aarhus*/
 				map.moveCamera(CameraUpdateFactory.newLatLngZoom(AARHUS, 13));
 			}
 	}
 
-	//Thread t;
+	
 	ArrayList<LatLng> LatLngList;
 	Marker mark;
 	Handler handler = new Handler(Looper.getMainLooper());
 	float fLat;
 	float fLng;
 	
+	/*Set up all information for a chosen bus stop*/
 	private void InitStopInformation(String BusStop)
 	{
 		((TextView)this.findViewById(R.id.StopInfo)).setText(BusStop);
@@ -214,6 +225,7 @@ public class BusMapActivity extends Activity {
 		((LinearLayout)this.findViewById(R.id.AscendingBusTimeBar)).setVisibility(TextView.VISIBLE);
 	}	
 	
+	/*updates the time, in descending order*/
 	private void UpdateTimeDesc(String DescSeconds)
 	{
 		if(Integer.parseInt(DescSeconds) != -1)
@@ -233,6 +245,7 @@ public class BusMapActivity extends Activity {
 			((TextView)this.findViewById(R.id.DescendingBusTime)).setText("nn:nn:nn");
 		}
 	}
+	/*updates the time, in ascending order*/
 	private void UpdateTimeAsc(String AscSeconds)
 	{
 		if(Integer.parseInt(AscSeconds) != -1)
@@ -253,6 +266,7 @@ public class BusMapActivity extends Activity {
 		}		
 	}
 	
+	/*Callto the TrackABusProvider to retive current position for all busses on a chosen route*/
 	private void UpdateBusLocation() {
 		if(ConnectivityChecker.hasInternet)
 			BusProvider.GetBusPos(SelectedBus, BUS_POS_DONE, new msgHandler());
@@ -260,6 +274,7 @@ public class BusMapActivity extends Activity {
 			Toast.makeText(BusMapActivity.this, "No connection to internet. Cannot update position", Toast.LENGTH_LONG).show();
 	}	
 	
+	/*Uses a Polyline to draw a bus route on the map using points*/
 	private void DrawRoute(ArrayList<RoutePoint> points) {
 
 		 PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
@@ -269,6 +284,7 @@ public class BusMapActivity extends Activity {
 		 map.addPolyline(pOption);
 	}
 	
+	/*Uses a Polyline to draw a bus route on the map using floats of Lat and Lng*/
 	private void DrawRoute(float[] Lat, float[] Lng)
 	{
 		 PolylineOptions pOption = new PolylineOptions().width(10).color(0x66ff0000);
@@ -278,6 +294,7 @@ public class BusMapActivity extends Activity {
 		 map.addPolyline(pOption);
 	}
 
+	/*Uses to draw markers, representing bus stops, on the map*/
 	private void DrawBusStops(final ArrayList<BusStop> stops)
 	{
 		if(stops != null){
@@ -292,6 +309,7 @@ public class BusMapActivity extends Activity {
 
 		map.setOnMarkerClickListener(new OnMarkerClickListener() {
 			
+			/*Click event for all markers, drawn on the map*/
 			@Override
 			public boolean onMarkerClick(Marker marker) {
 				
@@ -326,6 +344,7 @@ public class BusMapActivity extends Activity {
 		});
 	}
 	
+	/*If chosen route is favorit, get in from SQLite database, and draw it*/
 	private void DrawFavoriteRoute(final String selectedBus){		
 		Runnable DrawRouter = new Runnable(){
 			@Override
@@ -353,6 +372,7 @@ public class BusMapActivity extends Activity {
 		DrawRoutet.start();
 
 	}
+	/*Update the time on the map*/
 	private void UpdateTime(String a, String d, String aS, String dS)
 	{
 		String currentAscText = (String) ((TextView)findViewById(R.id.AscendingBusEndStopInfo)).getText();
@@ -410,21 +430,21 @@ public class BusMapActivity extends Activity {
 	@Override
 	protected void onStop() {
 		BusProvider.StopWork();
-		unbindService(Connection);		
-		Log.e("DEBUG", "Unbound service map");
+		unbindService(Connection);/*unbind service, TrackABusProvider*/
 		super.onStop();
 		mBound = false;	
 		
 	}
 	
+	/*Connection used to bind to TrackABusProvider*/
 	private ServiceConnection Connection = new ServiceConnection(){
 		
+		/*When async bind is done*/
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			LocalBinder  binder = (LocalBinder ) service;
 			BusProvider = binder.getService();
 			mBound = true;
-			Log.e("Debug", "onServiceConnected");
 			if(!isFavorite)
 				BusProvider.GetBusRoute(SelectedBus, BUS_ROUTE_DONE, new msgHandler());
 			else
@@ -441,7 +461,6 @@ public class BusMapActivity extends Activity {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			mBound = false;
-			Log.e("Debug", "onServiceDisconnected");
 		}
 	};
 

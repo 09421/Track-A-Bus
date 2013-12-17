@@ -10,6 +10,7 @@ namespace MapDrawRouteTool.Models
 {
     public static class JConverter
     {
+        //Convert any given string, to a Json result object
         public static JsonResult ConvertToJson<T>(List<T> list)
         {
             JsonResult jr = new JsonResult();

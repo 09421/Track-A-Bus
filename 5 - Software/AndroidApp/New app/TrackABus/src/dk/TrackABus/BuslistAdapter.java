@@ -26,6 +26,10 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 
+/**
+ * Class used to describe a custom list item
+ *
+ */
 public class BuslistAdapter extends BaseAdapter{
 	private ArrayList<ListBusData> _data;
     public boolean favoriteRunning = true;
@@ -36,15 +40,22 @@ public class BuslistAdapter extends BaseAdapter{
     
     
     
+    /**
+     * @param data: data to show on list
+     * @param c: application context
+     */
     public BuslistAdapter (ArrayList<ListBusData> data, Context c){
         _data = data;
         _c = c;
-        //AdapterRunner.setter();
         BusProvider = new TrackABusProvider();
     }
    
   
 	final static public int BUS_ROUTE_DONE = 1;
+	/**
+	 * Retrieves return messages from the TrackABusProvider class
+	 *
+	 */
 	@SuppressLint("HandlerLeak")
 	class msgHandler extends Handler{
 		@Override
@@ -95,9 +106,8 @@ public class BuslistAdapter extends BaseAdapter{
 		View v = convertView;
         if (v == null)
         {
-           LayoutInflater vi = (LayoutInflater)_c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-           v = vi.inflate(R.layout.listview_layout, null);
-           
+        	LayoutInflater vi = (LayoutInflater)_c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        	v = vi.inflate(R.layout.listview_layout, null);           
         }
 
         final ToggleButton tBtn = (ToggleButton) v.findViewById(R.id.FavoriteToggle);; 
@@ -125,7 +135,7 @@ public class BuslistAdapter extends BaseAdapter{
         	    {	
         	    	isHandlingFavoring = AdapterRunner.currentHandling;
         	    	if(isHandlingFavoring)
-        	    	{
+        	    	{/* If already in progress of marking another route as favorite */
         	    		tBtn.setChecked(!isChecked); 
         	    		Toast.makeText(_c, "Please wait until other route is favorited/unfavorited", Toast.LENGTH_SHORT).show();
         	    		return;
@@ -205,7 +215,6 @@ public class BuslistAdapter extends BaseAdapter{
 				AdapterRunner.currentButton.setChecked(AdapterRunner.currentData.IsFavorite);
 				AdapterRunner.currentHandling = false;
 				isHandlingFavoring = false;
-				Log.e("test", "SetChecked = " + String.valueOf(AdapterRunner.currentData.IsFavorite));
 			}
 		};
 		handler.post(Runn);

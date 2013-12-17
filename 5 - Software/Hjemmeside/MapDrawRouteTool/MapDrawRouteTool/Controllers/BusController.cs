@@ -9,6 +9,7 @@ using MapDrawRouteTool.Models;
 
 namespace MapDrawRouteTool.Controllers
 {
+    //Controller class for the bus view
     public class BusController : Controller, IBusController
     {
         //
@@ -19,31 +20,37 @@ namespace MapDrawRouteTool.Controllers
             return View();
         }
 
+        //Get the name for all routes
         public JsonResult GetRouteNames()
         {
             return DBConnection.GetAllRouteNames();
         }
 
+        //Get ID for all busses on a given route
         public JsonResult GetBussesOnRoute(string route)
         {
             return DBConnection.GetBussesOnRoute(route);
         }
 
+        //Get ID for all busses not on any routes
         public JsonResult GetBussesNotOnRoute()
         {
             return DBConnection.GetBussesNotOnRoute();
         }
 
+        //Get ID for all busses
         public JsonResult GetAllBusses()
         {
             return DBConnection.GetAllBusses();
         }
 
+        //Save changes to busses
         public int SaveChanges(List<string> bussesToAdd, string route, List<string> bussesToRemove)
         {
             return DBConnection.SaveChangesToBus(bussesToAdd, route, bussesToRemove);
-        }       
-
+        }
+        
+        //Finds what busses to delete, and what busses to save
         public int SaveBusChanges(List<string> NewBusList, List<string> AllBusses)
         {
             List<string> BussesToAdd = new List<string>();
@@ -65,11 +72,13 @@ namespace MapDrawRouteTool.Controllers
             return addBusses(BussesToAdd);
         }
 
+        //Delete busses from database
         private void removeBusses(List<string> bussesToRemove)
         {
             DBConnection.removeBussesFromDB(bussesToRemove);
         }
 
+        //Save busses to database
         private int addBusses(List<string> bussesToAdd)
         {
             return DBConnection.addBussesToDB(bussesToAdd);

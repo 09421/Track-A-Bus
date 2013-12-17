@@ -3,6 +3,9 @@ package dk.TrackABus.Models;
 import dk.TrackABus.DataProviders.UserPrefProvider;
 import android.net.Uri;
 
+/**
+ * Model class for busRoute_RoutePoint table in SQLite
+ */
 public class UserPrefBusRouteRoutePoint {
 
 	public static final String BusRouteRoutePointIDField = "BRRPID";

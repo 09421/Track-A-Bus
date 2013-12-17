@@ -22,6 +22,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+/**
+ * Activity class for the activity_mainmenu view
+ */
 public class BuslistMenuActivity extends ListActivity {
 		ArrayList<String> BusList;
 		ArrayAdapter<String> adapter;
@@ -37,7 +40,7 @@ public class BuslistMenuActivity extends ListActivity {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.mainmenu_layout); 
 	        pBar = (ProgressBar)findViewById(R.id.PBar);
-	        pBar.setVisibility(View.VISIBLE);
+	        pBar.setVisibility(View.VISIBLE);/*Set the progress bar*/
 	        BusList = new ArrayList<String>(); 
 	    }
 	    
@@ -56,8 +59,10 @@ public class BuslistMenuActivity extends ListActivity {
 	    	}
 	    }
 
-		private void UpdateArrayOfBusses() {			
-			//TrackABusProvider BusProvider = new TrackABusProvider(getApplicationContext(), new msgHandler());
+		/**
+		 * Calls TrackABusProvider to get a list of all bus routes stored in the database
+		 */
+		private void UpdateArrayOfBusses() {
 			BusProvider.GetBusNumber(BUSSES_DONE, new msgHandler());
 			if(BusList == null){
 				Log.e("MyLog", "NULL");
@@ -65,6 +70,7 @@ public class BuslistMenuActivity extends ListActivity {
 		}
 		
 		ArrayList<ListBusData> AllBusses;
+		/*Sets the bus routes to the listAdapter */
 		private void UpdateBusList(ArrayList<String> busList)
 		{	   	
 	    	busListAdapter = new BuslistAdapter(ContentProviderAcces.ListBusDataCreator(getApplicationContext(),busList), getApplicationContext());
@@ -72,6 +78,7 @@ public class BuslistMenuActivity extends ListActivity {
 	    	pBar.setVisibility(View.GONE);			
 		}
 
+		
 		@Override
 		protected void onListItemClick(ListView l, View v, int position, long id) {
 			super.onListItemClick(l, v, position, id);	
@@ -90,6 +97,7 @@ public class BuslistMenuActivity extends ListActivity {
 			startActivityForResult(myIntent, 0);
 		}
 		
+		/*Message Handler to retrive messages from TrackABusProvider*/
 		@SuppressLint("HandlerLeak")
 		class msgHandler extends Handler{			
 			@Override
@@ -100,7 +108,9 @@ public class BuslistMenuActivity extends ListActivity {
 						if(msg.getData().getStringArrayList("1") != null)
 							UpdateBusList(msg.getData().getStringArrayList("1"));
 						else{
-							Toast.makeText(getApplicationContext(), "No bus routes found", Toast.LENGTH_SHORT).show();
+							if(msg.getData() == null)
+								Toast.makeText(getApplicationContext(), "No bus routes found", Toast.LENGTH_SHORT).show();
+					
 							pBar.setVisibility(View.GONE);
 						}
 						break;
@@ -111,11 +121,11 @@ public class BuslistMenuActivity extends ListActivity {
 			}			
 		}
 		
+		/*The bound connection to the TrackABusProvider*/
 		private ServiceConnection Connection = new ServiceConnection(){
 			
-			@Override
+			@Override /*Called when the async binding is done*/
 			public void onServiceConnected(ComponentName name, IBinder service) {
-				Log.e("Debug", "onServiceConnected");
 				LocalBinder  binder = (LocalBinder ) service;
 				BusProvider = binder.getService();
 				mBound = true;
@@ -125,17 +135,14 @@ public class BuslistMenuActivity extends ListActivity {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
 				mBound = false;	
-				Log.e("Debug", "onServiceDisconnected");
 			}
 		};
 		
 		@Override
 		protected void onDestroy() {
-			Log.e("MyLog", "onDestroy");
 			try{
 				if(mBound)
-					Log.e("DEBUG", "SERVICE UNBOUND");
-					unbindService(Connection);
+					unbindService(Connection);/*Unbind TrackABusProvider service*/
 			}catch(Exception e){
 				Log.e("DEBUG", e.getMessage());				
 			}
@@ -146,8 +153,7 @@ public class BuslistMenuActivity extends ListActivity {
 		protected void onPause() {
 			try{
 				if(mBound)
-					Log.e("DEBUG", "SERVICE UNBOUND");
-					unbindService(Connection);
+					unbindService(Connection);/*Unbind TrackABusProvider service*/
 			}catch(Exception e){
 				Log.e("DEBUG", e.getMessage());				
 			}

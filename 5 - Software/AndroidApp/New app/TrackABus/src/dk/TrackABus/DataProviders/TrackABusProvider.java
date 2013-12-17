@@ -33,29 +33,23 @@ public class TrackABusProvider extends Service{
 	 * Constructor for TrackABusProvider
 	 * @param context applicationContext
 	 * @param replyTo The handler that messages will be send to, when async methods are done
-	 */
-
-		
+	 */		
 	public TrackABusProvider(){
 		soapProvider = new SoapProvider();
 	}
 	
 	@Override
 	public void onCreate() {
-		super.onCreate();
-		Log.e("MyLog", "onCreate");		
+		super.onCreate();	
 	}
 
 	@Override
 	public void onRebind(Intent intent) {
 		super.onRebind(intent);
-		Log.e("MyLog", "onRebind");			
-
 	}	
 	
 	@Override
 	public boolean onUnbind(Intent intent) {			
-		Log.e("MyLog", "onUnbind");
 		StopWork();
 		super.onUnbind(intent);
 		return true;
@@ -72,7 +66,10 @@ public class TrackABusProvider extends Service{
 	    		ArrayList<String> BusName = new ArrayList<String>();
 	    		BusName = soapProvider.GetBusList();
 	    		Bundle b = new Bundle();
-	    		b.putStringArrayList("1", BusName);
+	    		if(BusName != null)
+	    			b.putStringArrayList("1", BusName);
+	    		else
+	    			b.putString("Error", "Error");
 	    		Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
 	    		bMsg.setData(b);
 	    		try {
@@ -119,7 +116,6 @@ public class TrackABusProvider extends Service{
 		try{			
 			new Thread(new Runnable() {
 				public void run() {
-					Log.e("MyLog", "In GetBusPos");
 					mMessenger = new Messenger(replyTo);
 					handlingBusPos = true;
 					while(handlingBusPos){				
@@ -130,7 +126,6 @@ public class TrackABusProvider extends Service{
 						Message bMsg = Message.obtain(null, ReplyMessage, 0, 0);
 						bMsg.setData(b);
 						try {
-							Log.e("MyLog", "Sending POS");
 							mMessenger.send(bMsg);							
 						}catch (RemoteException e) {
 							Log.e("MyLog", "Failed to send message");
@@ -182,6 +177,9 @@ public class TrackABusProvider extends Service{
 	
 
 	
+	/**
+	 * Used to force stop any while loops there might be running
+	 */
 	public void StopWork(){
 		handlingBusPos = false;
 		handlingBusTime = false;
@@ -199,13 +197,11 @@ public class TrackABusProvider extends Service{
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.e("MyLog", "onBind");
 		return mBinder;
 	}
 	
 	@Override
 	public void onDestroy() {
-		Log.e("MyLog", "onDestroy");
 		StopWork();
 		super.onDestroy();			
 	}	
