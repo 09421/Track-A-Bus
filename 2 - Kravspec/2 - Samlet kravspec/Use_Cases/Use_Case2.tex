@@ -49,7 +49,7 @@ Brugeren får vist kortet med indteget busrute.
 \\
 \textbf{Normalforløb A:}
 
-\begin{enumerate}[1.]
+\begin{enumerate}
 \item Systemet åbner og vister Kortet.
 \item Systemet henter busruten og stoppestederne fra det distribuerede persisteret data.
 \item Systemet indtegner busruten og stoppestederne på kortet.
@@ -63,21 +63,21 @@ Brugeren får vist kortet med indteget busrute.
 \textbf{Undtagelser:}
 \begin{enumerate}[\text{Undtagelse} A:] 
 \item Hentningen af data annulleres. 
-	\begin{enumerate}[1.]
+	\begin{enumerate}
 	\item Systemet stopper med at hente bussernes positions data.
 	\item Sysemet returner til listen over busruter.
 	\end{enumerate}
 \end{enumerate}
 \begin{enumerate}[\text{Undtagelse} B:] 
 \item Systemet går i dvale, under hentning af data. 
-	\begin{enumerate}[1.]
+	\begin{enumerate}
 	\item Hentningen gøres færdige, og værdier opdateres.
 	\item Systemet går i dvale. Bussernes position vil ikke længere holdes opdateret.
 	\end{enumerate}
 \end{enumerate}
 \begin{enumerate}[\text{Undtagelse} C:] 
 \item Positions data for busserne kan ikke tilgås. 
-	\begin{enumerate}[1.]
+	\begin{enumerate}
 	\item Systemet viser en fejlmeddelelse til brugeren, der beskriver, at det ikke er muligt at indlæse bussernes position.
 	\item Kortet vil blive vist, hvor busserne er på deres senest hentede position.
 	\item Brugeren får vist en meddelse om at bussernes position ikke længere bliver opdateret.
@@ -85,7 +85,7 @@ Brugeren får vist kortet med indteget busrute.
 \end{enumerate}
 \begin{enumerate}[\text{Undtagelse} D:] 
 \item Positions data for busserne kan igen tilgås. 
-	\begin{enumerate}[1.]
+	\begin{enumerate}
 	\item Systemet fortsætter i normalforløbet fra punkt 6. Bussernes position holdes igen opdateret.
 	\end{enumerate}
 \end{enumerate}
