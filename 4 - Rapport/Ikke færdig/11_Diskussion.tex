@@ -12,7 +12,6 @@ Før det var muligt at få indtegnet ruter, stoppesteder og busser på mobil applik
 Den distribuerede database indeholder alt persisteret data systemet skal bruge. Samtidig bliver den brugt i sammenhæng med tidsudregnigerne, som udføres direkte på databasen i form af Stored Procedures og Functions. Dette er blevet gjort, da den igennem udregningen skal bruge det data, der allerede er persisteret. Hvis dette skulle gøres i web servicen, ville det betyder flere kald til databasen, hvilket vil resultere i en lavere responstid.\\
 
 Mobil applikationen gør også brug af lokal persistering, også i form af en database. Den bliver brugt til at gemme og hente ruter, som bruges ofte, da der således spares på dataforbruget og indlæsningen af ruter foregår hurtigere. Struktureringen af tabellerne er blot et udsnit af den distribuerede database, hvilket betyder, at data skal indskrives på samme måde, og læst data kan bruges direkte.
-
 \\
 Web servicen er blevet lavet for at abstrahere arbejde væk fra telefonen, og over på en hurtigere server. Desuden er den blevet udviklet for at telefonen ikke tilgår databasen direkte, da dette ville skabe et stort sikkerhedsproblem. \\
 Da meget arbejde foregår på serveren og mobil applikationen blot formidler data, og indtegner dette på et kort, skal der ikke meget arbejde til at udvikle applikationen til en ny platform. \\
