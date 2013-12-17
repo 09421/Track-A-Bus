@@ -5,6 +5,7 @@ using System.Web;
 
 namespace MapDrawRouteTool.Models
 {
+    //Model class for route way points
     public class Waypoint
     {
         public int ID;

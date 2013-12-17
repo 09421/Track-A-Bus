@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-
+/*BroadcastReceiver used to get event when internet status changes*/
 public  class ConnectivityChecker extends BroadcastReceiver{
 
-	
+	/*Static variable, used to check if there is connected to the internet*/
 	public static boolean hasInternet;
 	@Override
 	public void onReceive(Context context, Intent intent) {

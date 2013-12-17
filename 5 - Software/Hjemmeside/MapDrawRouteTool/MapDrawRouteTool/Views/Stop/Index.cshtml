@@ -5,6 +5,7 @@
 
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 
+@*Style used to show the map*@
 <style type="text/css">
     html {
         height: 100%;
@@ -85,6 +86,7 @@
         GetBusStops();
     }
 
+    //Get all busstops from database, and show them in list
     function GetBusStops() {
         $.ajax({
             type: "GET",
@@ -101,6 +103,7 @@
 
     }
 
+    //Save the new stop to the database, with coordinate and name
     function SaveStopsToDB() {
         if (markers != null) {
 
@@ -124,13 +127,13 @@
                         alert("Please name the stop");
                 }
             });
-
+            //remove the marker from the map, and ready to create new bus stop
             markers[0].setMap(null);
             markers = [];
         }
     }
 
-
+    //Deletes the selected bus stop from the database
     function DeleteStopsFromDB() {
 
         var e = document.getElementById("StopRoutes");
@@ -158,6 +161,7 @@
         });
     }
 
+    //Get the coordinates for selected bus stop from database, and draw marker with coordinates
     function SetSelectedOnMap(selected) {
         var e = document.getElementById("StopRoutes");
         document.getElementById("StopName").value = e.options[e.selectedIndex].text;
@@ -182,7 +186,7 @@
                     position: new google.maps.LatLng(result[0].Lat, result[0].Lng)
                 });
                 markers.push(mark)
-                google.maps.event.addListener(mark, 'click', function () {
+                google.maps.event.addListener(mark, 'click', function () {//remove marker on click
                     markers[markers.indexOf(mark)].setMap(null);
                     markers = [];
                     document.getElementById("StopName").value = null;
@@ -192,6 +196,7 @@
         });
     }
 
+    //Save changes, when changes have been made to a bus stop
     function SaveChangesToStop() {
         var e = document.getElementById("StopRoutes");
         var oldstop = e.options[e.selectedIndex].text;

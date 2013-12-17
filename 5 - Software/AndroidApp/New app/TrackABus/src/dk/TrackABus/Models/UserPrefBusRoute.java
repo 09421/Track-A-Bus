@@ -3,6 +3,9 @@ package dk.TrackABus.Models;
 import dk.TrackABus.DataProviders.UserPrefProvider;
 import android.net.Uri;
 
+/**
+ * Model class for BusRoute table in SQLite
+ */
 public class UserPrefBusRoute {
 
 	public static final String BusRouteIdField = "BRID";

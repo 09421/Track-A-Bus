@@ -10,8 +10,10 @@ using System.Threading;
 
 namespace MapDrawRouteTool.Models
 {
+    //Contains all functions that connect to the database
     public static class DBConnection
     {
+        //Get the connection string from Web.Config
         public static string getConnectionString()
         {
             return System.Configuration.ConfigurationManager.ConnectionStrings["TrackABus"].ConnectionString;

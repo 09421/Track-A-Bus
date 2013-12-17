@@ -9,6 +9,7 @@ using System.Configuration;
 
 namespace MapDrawRouteTool.Models
 {
+    //Model class for bus stops
     public class BusStops
     {
         public string busStopNames { get; set; }

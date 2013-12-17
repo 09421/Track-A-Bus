@@ -8,12 +8,14 @@ using MapDrawRouteTool.Models;
 
 namespace MapDrawRouteTool
 {
+    
+    //Web service used to access the MySQL datbase
     [WebService(Namespace = "http://TrackABus.dk/Webservice/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
-
     public class AndroidToMySQLWebService : System.Web.Services.WebService
     {
+        //retrieves a list of all routes stored in the database
         [WebMethod]
         public List<string> GetBusRouteList()
         {
@@ -47,6 +49,7 @@ namespace MapDrawRouteTool
             return Buslist;
         }
 
+        //retrieves a list of all the points making used to draw a bus route
         [WebMethod]
         public List<Route> GetBusRoute(string busNumber)
         {
@@ -115,6 +118,7 @@ namespace MapDrawRouteTool
             return totalRoute;
         }
 
+        //retrieves a list of all bus stops on a given route
         [WebMethod]
         public List<BusStop> GetBusStops(string busNumber)
         {
@@ -168,6 +172,7 @@ namespace MapDrawRouteTool
             return totalBusStops;
         }
 
+        //retrieves a list containing the position of all busses
         [WebMethod]
         public List<Point> GetbusPos(string busNumber)
         {
@@ -230,6 +235,7 @@ namespace MapDrawRouteTool
             return totalRoute;
         }
 
+        //retrieves the time, for a bus to arrive, to a given bus stop
         [WebMethod]
         public List<string> GetBusTime(string StopName, string RouteNumber)
         {

@@ -2,7 +2,10 @@ package dk.TrackABus.Models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
+/**
+ * Model class for a Bus stop
+ * Implements Parcelable
+ */
 public class BusStop implements Parcelable {
 	
 	public RoutePoint Position;

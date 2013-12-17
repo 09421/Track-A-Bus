@@ -4,7 +4,7 @@
 }
 
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-
+@*Style used to show the map*@
 <style type="text/css">
     html {
         height: 100%;
@@ -95,7 +95,7 @@
 
                 for (var i = 0; i < StartEndMarkers.length; i++)
 
-                    google.maps.event.addListener(StartEndMarkers[i], 'click', function (event) {
+                    google.maps.event.addListener(StartEndMarkers[i], 'click', function (event) {//click event listener, add marker to map
 
                         SubRuteMarkers.push(new google.maps.Marker({
                             map: map,
@@ -157,6 +157,7 @@
     var SubRouteWaypoints = new Array();
     var SubRouteArray = new Array();
 
+    //calulate the route, when making subroutes for compleks routes
     function calcSubRoute(markers) {
         dd = new google.maps.DirectionsRenderer(rendererOptions);
         directionsDisplayArray.push(dd);
@@ -234,6 +235,7 @@
         return DirectionsArray;
     }
 
+    //Get a chosen route from database, and recreate it on the map, using waypoints
     function SetRouteOnMap(route) {
         startPoint = new google.maps.LatLng(route[0].Lat, route[0].Lng, false);
         endPoint = new google.maps.LatLng(route[route.length - 1].Lat, route[route.length - 1].Lng, false);
@@ -322,6 +324,7 @@
         });
     }
 
+    //Get selected route waypoints and all the routes bus stops from database and draw on map
     function GetRoute(name) {
         document.getElementById("RouteNumber").value = name.options[name.selectedIndex].value;
         $.ajax({

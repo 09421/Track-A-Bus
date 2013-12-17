@@ -18,6 +18,7 @@ namespace MapDrawRouteTool.Controllers
             return View();
         }
 
+        //Save a route to the database
         public int Save(List<string> route, List<string> routeWayPoints, List<string> stops, List<string> SubRoutes, List<string> SubrouteWaypoint, string RouteNumber)
         {
             System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
@@ -90,6 +91,7 @@ namespace MapDrawRouteTool.Controllers
             return 0;
         }
 
+        //Format a list of coordinates, to a list of decimal in string form
         private List<string> ConvertLatLng(List<string> latLng)
         {
             List<string> LatLng = new List<string>();
@@ -104,6 +106,7 @@ namespace MapDrawRouteTool.Controllers
             return LatLng;
         }
 
+        //converts the coordinates of a subroute
         private List<List<string>> ConvertSubRoute(List<string> subRoutes)
         {
             List<List<string>> result = new List<List<string>>();
@@ -122,31 +125,37 @@ namespace MapDrawRouteTool.Controllers
             return result;
         }
 
+        //Get a chosen busroute from database
         public JsonResult GetSelectedBusRoute(string RouteName)
         {
             return DBConnection.GetSelectedBusRoute(RouteName);
         }
 
+        //Get name of all bus routes from database
         public JsonResult GetBusRoutesNames()
         {
             return DBConnection.GetAllRouteNames();
-        }        
+        }
 
+        //gGet all stops on a given route
         public JsonResult GetStopsOnRoute(string RouteName)
         {
             return DBConnection.GetStopsOnRoute(RouteName);
         }
 
+        //Get name for all bus stops
         public JsonResult GetStops()
         {
             return DBConnection.GetAllStops();
         }
 
+        //Get coordinates for a chosen stop
         public JsonResult GetLatLng(List<string> StopNames)
         {
             return DBConnection.GetPosistionForBusstop(StopNames);
         }
 
+        //Delete a given bus route
         public int DeleteSelectedBusRoute(string RouteName)
         {
             return DBConnection.DeleteSelectedBusRouteFromDB(RouteName);

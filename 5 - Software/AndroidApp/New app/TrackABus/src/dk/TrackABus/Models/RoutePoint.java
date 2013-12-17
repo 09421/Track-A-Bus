@@ -4,7 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
-
+/**
+ * Model class for a route point
+ * implements Parcelable
+ */
 public class RoutePoint implements Parcelable{
 
 	public LatLng Position;
