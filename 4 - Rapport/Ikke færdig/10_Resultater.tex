@@ -3,28 +3,29 @@
 
 \section{Resultater}
 %OBJEKTIV vurdering af resultater. Meget gerne i tabelform, grafer og billeder. Der skal ikke være nogen form for diskussion i dette afsnit. Dette kommer i næste afsnit. 
-Nedenfor er de mest væsentlige resultater listet, hvorefter de kort beskrives. Der refereres til accepttestspecifikationen, hvis det ønskes at få et større overblik over de udførte tests.
+Nedenfor er de væsentligste resultater beskrevet. Der refereres til accepttestspecifikationen, hvis det ønskes at få et større overblik over de udførte tests.
 \\\
 \textbf{Overordnede resultater}
 \begin{itemize}
-\item Få en præcis tid til bus ankommer til stoppested.
+\item Få en præcis tid til ankomsten for en bus ved et stoppested.
 \item En måde at administrere busruter.
-\item relationel database, til persistering af data.
-\item Web service. til database adgang for mobil applikationen.
-\item Simulator af bus.
+\item Relationelle databaser til persistering af data.
+\item Web service til database adgang fra mobil applikationen.
+\item Simulering af busser.
 \end{itemize}
 \textbf{Mobil applikation}\\
-Mobil applikationen kan vise busruter, med sens stoppesteder og busser der er på ruten. samt det er muligt at få vist tiden til den næste bus ankommer ved et valgt stoppested.\\
+Mobil applikationen kan vise busruter, med dennes stoppesteder og kørende busser. Det er samtidigt muligt at få vist tiden til ankomst for en bus ved et valgt stoppested. Ruter kan desuden favoriseres, såldes de gemmes lokalt.\\
 \\
 \textbf{Administrations værktøj}\\
-Det kan lade sig gøre, at administrer busruter, dette indebærer at lave, slette og ændre i ruter, stoppesteder og busser, samt ændre hvilken rute de forskellige busser køre op.\\
+Det kan lade sig gøre, at administrere busruter. Dette indebærer at oprette, slette og ændre ruter, stoppesteder og busser, samt  hvilken rute de forskellige busser er tilknyttet.\\
 \\
-\textbf{Database}\\
-Databasen er skabt med MySQL og består af 8 tabeller til at holde alt data for systemet. Systemet gemmer en del data, herunder busruter, stoppesteder, busser og GPS-koordinater for de forskellige busser.\\
+\textbf{Databaser}\\
+Den distribuerede database er skabt med MySQL og består af otte tabeller. Disse indholder informationer vedørende busruter, stoppesteder samt busser og deres GPS-koordinater.\\
+Den lokale database er skabkt med SQLite og består af fem tabelle. Disse indeholder informationer om busruter og stoppesteder og er således et udsnit af den distribuerede database. Denne database oprettes sammen med mobil applikationen, på de telefoner denne installeres på. 
 \\
 \textbf{Web service}\\
-Web servicen bruges som mellemled mellem mobil applikationen og MySQL databasen, samt fjerner meget af det tunge arbejde fra mobil applikationen og flytter det over på en server.\\
+Web servicen fungerer som et mellemled mellem mobil applikationen og MySQL databasen. Den står desuden også for at fjerne meget arbejde fra mobil applikationen og lade dette udføres på serveren.\\
 \\
 \textbf{Simulator}\\
-Det er muligt at simulere en eller flere busser der køre på sin busrute.\\
+Det er muligt at simulere en eller flere busser der køre på deres tilknyttede busrute.\\
 \end{document}

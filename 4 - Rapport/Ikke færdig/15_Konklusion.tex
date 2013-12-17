@@ -4,11 +4,18 @@
 \section{Konklusion}
 %Konklusion på alle de andre afsnit, dog primært indledning, resultater og  diskussion af opnåede. Derfor skal personerne der laver dette afsnit have læst de andre afsnit grundigt, da den skal konkludere både på processen og på selve produktet. Negative sider må også gerne fremhæves, men igen: Lad være med at sælge os selv! Det er de store linjer der konkluderes på, da resultaterne og processen allerede er diskuteret i tidligere afsnit.
 
-TrackABus systemet er produktet af en idé, der blev realiseret, igennem en velfungerende arbejdsprocess og godt brug af udviklingsmetoder, dette bliver tydeligt afspejlet i det endelige produkt. De arbejdsprocesser der er blevet brugt, har været stor hjælp til at gøre, et ellers kompleks systemet, overskueligt. I starten blev der brug meget tid, på at udforme krav, funktionaliteter og muligheder for hvordan opgaverne bedst kunne blive løst. Dette skabte et solidt fundament til at opbygge hele systemet fra. Alle delene af systemet er fra starten blevet opbygget efter en lagdeling, for at gøre koden overskuelig og nem at udskifte dele, da dette har været en iterativ udviklingsprocess, har det ofte været nødvendig at udskifte store dele af systemet, efter ny viden blev opnåede.\\
-\\
-Det kan konkluderes at, det endelige systemet lever op til alle forventninger, og opfylder alle de krav og ønsker der i starten blev omstillet, som systemet skulle kunne udføre. Systemet er brugervendligt, og det er yderst simple at få vist sin ønskede busrute, og finde tiden til den næste bus ankommer til et stoppested på mobil applikationen. Desuden er det simplet for administratoren at tilføje nye busruter, stoppesteder og busser til systemet, og flytter busser mellem de forskellige busruter.\\
-\\
-Simulatoren der blev udviklet, da data fra virkelige busser ikke var tilgængelige, har været til yderst stor hjælp når forskellige dele af systemet skulle testes og fremvises. Gjorde det simple og nemt at teste forskellige dele af systemet, så som algoritmen der udregner tid, og om information blev opdateret korrekt på skærmen når bussen passerede det valgte stoppested. Uden at skulle være afhængig af, hvordan og hvor en virkelig bus befandt sig.\\
-\\
-Hvorom alting er, kan det konkluderes at en god ide, sat sammen med en velfungerende arbejdsprocess, gode udviklingsmetoder og fantastisk arbejdsmorale har medført, at der er endt op med et særdeles velfungerende system. 
+TrackABus systemet er produktet af en idé, der blev realiseret, igennem velfungerende arbejdsprocesser og metoder. Dette bliver tydeligt afspejlet i det endelige produkt.\\
+Ved projektstart blev der brugt meget tid, på at udforme krav, samt at diskutere designvalg. Dette resulterede i, at der var en klar, rød tråd igennem hele projekt, som også sørgende for at gruppen kunne arbejde relativt autonomt. Disse krav og designvalg skabte et solidt fundament for opbyggelsen af systemet. Et eksempel på dette kunne være den tidlige beslutning, at systemet skulle opbygges efter tre-lags modellen. Dette gjorde opbygningen af komponenter overskuelige, og nemme at udskifte. Dette har i særdeleshed kommet til udtryk i form af, at en iterativ arbejdsmetode blev taget i brug, så store dele af systemet måtte refaktoreres efter ny viden blev opnået.\\
+
+\noindent
+Det kan konkluderes at, det endelige systemet opfylder alle de krav der blev sat i kravspecifikationen. Mobil applikationen kan nemt tilgås og bruges af en vilkårlig bruger, som vil kunne notificeres om tiden til ankomst for en bus ved et valgt stoppested  meget præcist. Administratoren kan på en særdeles simpel måde, tilføje busser og ruter til systemet. \\
+
+\noindent
+Måden hvorpå udregninger bliver abstraheret væk fra mobil applikationen gør, at der skabes en meget lav kobling mellem mobilen og resten af systemet. Dette vil desuden også give en høj samhørighed, da applikationen kun udfører det arbejde der er nødvendigt. 
+
+\noindent
+Simulatoren er blevet udviklet, da der ikke var tilgængelighed til data fra fysiske busser. Denne komponent har således ikke kun gjort det muligt at simulere en bus i bevægelse, men også gjort det synligt for udviklerne, at udregninger fungerede korrekt. Ved brug af denne gøres det altså væsentligt nemmere at teste systemet.\\
+
+\noindent
+Hvorom alting er, kan det konkluderes at dette system ville være særdeles brugbart for enhver person, som ofte kører med en bus. Systemet vil, til hver tid, give brugeren mulighed for at undersøge, hvor en bus er, samt hvornår den ankommer til det stoppested, hvor brugeren ønsker at påstige bussen.
 \end{document}

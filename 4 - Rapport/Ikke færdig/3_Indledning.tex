@@ -2,18 +2,18 @@
 \begin{document}
 
 \section{Indledning}
-En bus følger en ruteplan, men det er ikke altid at bussen er ved et givent stoppested, præcis på det tidspunkt det forekommer i ruteplanen. Det vil derfor være gavnligt at kunne vide, præcis hvor en bus er, og hvor lang tid der er, til den nærmeste er ved et givet stoppested. Denne viden vil, for det første, give brugeren en større chance for at nå sin bus og, for det andet, med sikkerhed vide, om en bus er kørt fra et givet stoppested. Dette dokument beskriver udviklingen af en mobilapplikation der kan vise rute, stoppesteder og busser på en rute, samt vise tiden til et stoppested for en bus. Desuden beskriver dokumentet også oprettelsen af et administrator værktøj, hvori busser, ruter og stoppesteder kan vedligeholdes. Mobilapplikationen er designet til android, men kan nemt genskabes på en anden platform, da samtlige funktionaliteter ligger på en server. Serveren er dog ikke klargjort til et distribueret system, men kan nemt skiftes ud med et der er, hvis det skulle være nødvendigt.\\
+En bus følger en ruteplan, men det er ikke altid, at bussen er ved et givent stoppested, præcis på det tidspunkt det forekommer i ruteplanen. Det vil derfor være gavnligt at kunne vide, præcis hvor en bus er, og hvor lang tid der er, til den nærmeste er ved et givet stoppested. Denne viden vil, for det første, give brugeren en større chance for at nå sin bus og for det andet, med sikkerhed vide, om en bus er kørt fra et givet stoppested. Dette dokument beskriver udviklingen af en mobilapplikation der kan vise rute, stoppesteder og busser på en rute, samt vise tiden til et stoppested for en bus. Desuden beskriver dokumentet også oprettelsen af et administrator værktøj, hvori busser, ruter og stoppesteder kan vedligeholdes. Mobilapplikationen er designet til android, men kan nemt genskabes på en anden platform, da samtlige funktionaliteter ligger på en server. Serveren er dog ikke klargjort til et distribueret system, men kan nemt skiftes ud med et der er, hvis det skulle være nødvendigt.\\
 
 \noindent
-Kravene er blevet udarbejdet iterativt, da projeketet ikke har ekstern kunde, og således ikke repræsenterer kundens krav til systemet, men derimod udviklernes. En kunde er blevet simuleret, i form af en vejleder, således at alle krav-ændringer og accepttest udførsel, blev gemmemgået med hjælp fra en ekstern kilde.\\
+Kravene er blevet udarbejdet iterativt, da projeketet ikke har ekstern kunde og således ikke repræsenterer kundens krav til systemet, men derimod udviklernes. En kunde er blevet simuleret, i form af en vejleder, således at alle krav-ændringer og accepttest udførsel, blev gemmemgået med hjælp fra en ekstern kilde.\\
 
 \noindent
-TrackABus mobilapplikation og administrator hjemmeside, er blevet udhviklet til at håndtere system kravene. Systemet fungerer således, at en bruger kan vælge en rute, sådan samtligt persisteret information omkring ruten kan blive vist. Dette inkluderer busser, stoppesteder og, selvfølgelig ruten. Brugeren kan herefter tilgå tids-funktionalitet ved at trykke på et stoppested, hvorefter tiden til ankomst for den nærmeste bus i begge retninger, vil blive vist. De komponenter brugeren kan tilgå, skal først oprettes igennem administrations hjemmesiden. Denne del af systemet er defor den eneste, der kan ændre distribuerede rute komponenter. I sammenhæng med persitering bruges der to relationelle databaser; En distribueret, og en lokal til hver mobilapplikation. Den distribuerede håndtere samtlige information om de forskellige komponenter, hvor den lokale bruges i sammenhæng med favorisering af ruter. Mobilapplikationen er baseret på et eksamensprojekt i ITSMAP, lavet af gruppens to medlemmer, og betegnes derfor som legacy code. Hele systemet kan derfor ses som en videreudvikling af dette eksamensprojekt. Der eksisterer ingen yderligere krav, en dem projektgruppen selv har fastsat.\\
+TrackABus mobilapplikation og administrator hjemmeside, er blevet udviklet til at håndtere systemkravene. Systemet fungerer således, at en bruger kan vælge en rute, sådan samtligte persisterede informationer omkring ruten kan blive vist. Dette inkluderer busser, stoppesteder og selvfølgelig ruten. Brugeren kan herefter tilgå tids-funktionalitet ved at trykke på et stoppested, hvorefter tiden til ankomst for den nærmeste bus i begge retninger, vil blive vist. De komponenter brugeren kan tilgå, skal først oprettes igennem administrations hjemmesiden. Denne del af systemet er derfor den eneste, der kan ændre distribuerede rute-komponenter. I sammenhæng med persitering bruges der to relationelle databaser; En distribueret, og en lokal til hver mobilapplikation. Den distribuerede håndterer samtlige informationer om de forskellige komponenter, hvor den lokale bruges i sammenhæng med favorisering af ruter. Mobilapplikationen er baseret på et eksamensprojekt i ITSMAP, lavet af gruppens to medlemmer, og betegnes derfor som legacy code. Hele systemet kan derfor ses som en videreudvikling af dette eksamensprojekt. Der eksisterer ingen yderligere krav, end dem projektgruppen selv har fastsat.\\
 
 \noindent
-Det har ikke været muligt at tilgå reelle data for busser og ruter. Derfor har det været nødvendigt at bruge en del af arbejdsresourcerne på, at designe og implementere et system til at kunne at kunne håndtere  disse data. Dette blev i sidste ende, til administrator hjemmesiden og simulatoren. \\
+Det har ikke været muligt at tilgå reelle data for busser og ruter. Derfor har det været nødvendigt at bruge en del af arbejdsresourcerne på, at designe og implementere et system til at kunne håndtere disse data. Dette blev i sidste ende, til administrator hjemmesiden og simulatoren. \\
 \noindent
-I arbejdsprocess øjemed, er der blevet holdt daglige møder i gruppen, hvor dagens arbejde blev diskuteret, samt det ugentlige mål revuderet. Desuden blev der holdt ugentlige møder med ad-hoc kunden, hvori projektes fremskriden blev forklaret og diskuteret.\\
+I arbejdsprocess øjemed, er der blevet holdt daglige møder i gruppen, hvor dagens arbejde blev diskuteret, samt det ugentlige mål revideret. Desuden blev der holdt ugentlige møder med ad-hoc kunden, hvori projektes fremskriden blev forklaret og diskuteret.\\
 
 \noindent
 \textbf{Begreber og forkortelser}
@@ -32,14 +32,14 @@ Nedenfor er listet en kort beskrivelse af hvert afsnit i dette dokument:
 \begin{itemize}
 \item Indledning
 \begin{itemize}
-\item Dette afsnit fortæller baggrunden for projektet, kravene til projektet, samt hvilke arbejdsmetoder og processer, der er anvendt. Herefter følger begreber og forkortelser samt en læsevejledning.
+\item Dette afsnit beskriver baggrunden for projektet, kravene til projektet, samt hvilke arbejdsmetoder og processer, der er anvendt. Herefter følger begreber og forkortelser samt en læsevejledning.
 \end{itemize}
 \end{itemize}
 
 \begin{itemize}
 \item Projektafgrænsning
 \begin{itemize}
-\item Afsnittet fortæller kort om de begrænsninger, der er blev lavet, da projektet blev fastlagt.
+\item Afsnittet beskriver kort om de begrænsninger, der blev sat, da projektet blev fastlagt.
 \end{itemize}
 \end{itemize}
 
@@ -60,14 +60,14 @@ Nedenfor er listet en kort beskrivelse af hvert afsnit i dette dokument:
 \begin{itemize}
 \item Specifikation- og analysearbejdet
 \begin{itemize}
-\item Analysearbejdet, der ligger til grund for opbygningen af projektet, præsenteres i dette afsnit. Til dette hører kravspecifikation, domænemodel osv.
+\item Analysearbejdet, der ligger til grund for opbygningen af projektet, præsenteres i dette afsnit. Dette indebærer, hvordan der er kommet fra en idé til et færdigt system.
 \end{itemize}
 \end{itemize}
 
 \begin{itemize}
 \item Designprocessen
 \begin{itemize}
-\item Her beskrives selve designprocessen og erfaringerne med denne. Hertil hører lagdeling, klassediagrammer osv.
+\item Her beskrives selve designprocessen, hvori beslutninger vedrørende design forklares.
 \end{itemize}
 \end{itemize}
 
