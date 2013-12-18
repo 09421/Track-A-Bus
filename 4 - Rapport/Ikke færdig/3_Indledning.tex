@@ -2,122 +2,43 @@
 \begin{document}
 
 \section{Indledning}
-En bus følger en ruteplan, men det er ikke altid, at bussen er ved et givent stoppested, præcis på det tidspunkt det forekommer i ruteplanen. Det vil derfor være gavnligt at kunne vide, præcis hvor en bus er, og hvor lang tid der er, til den nærmeste er ved et givet stoppested. Denne viden vil, for det første, give brugeren en større chance for at nå sin bus og for det andet, med sikkerhed vide, om en bus er kørt fra et givet stoppested. Dette dokument beskriver udviklingen af en mobilapplikation der kan vise rute, stoppesteder og busser på en rute, samt vise tiden til et stoppested for en bus. Desuden beskriver dokumentet også oprettelsen af et administrator værktøj, hvori busser, ruter og stoppesteder kan vedligeholdes. Mobilapplikationen er designet til android, men kan nemt genskabes på en anden platform, da samtlige funktionaliteter ligger på en server. Serveren er dog ikke klargjort til et distribueret system, men kan nemt skiftes ud med et der er, hvis det skulle være nødvendigt.\\
+En bus følger en ruteplan, men det er ikke altid, at bussen er ved et givent stoppested, præcis på det tidspunkt det forekommer i ruteplanen. Det vil derfor være gavnligt at kunne vide, præcis hvor en bus er, og hvor lang tid der er, til den nærmeste er ved et givet stoppested. Denne viden vil, for det første, give brugeren en større chance for at nå sin bus og for det andet, med sikkerhed vide, om en bus er kørt fra et givet stoppested. Dette dokument beskriver udviklingen af en mobil applikation der kan vise rute, stoppesteder og busser på en rute, samt vise tiden til ankomst for en bus til et stoppested. Desuden beskriver dokumentet også oprettelsen af et administrator værktøj, hvori busser, ruter og stoppesteder kan vedligeholdes. Mobilapplikationen er designet til Android, men kan nemt genskabes på en anden platform, da en stor del af funktionaliteterne ligger på en server. Serveren er dog ikke klargjort til et distribueret system, men kan nemt skiftes ud med en der er, hvis det skulle være nødvendigt.\\
 
 \noindent
-Kravene er blevet udarbejdet iterativt, da projeketet ikke har ekstern kunde og således ikke repræsenterer kundens krav til systemet, men derimod udviklernes. En kunde er blevet simuleret, i form af en vejleder, således at alle krav-ændringer og accepttest udførsel, blev gemmemgået med hjælp fra en ekstern kilde.\\
+Kravene er blevet udarbejdet agilt, da projeketet ikke har en ekstern kunde og således ikke repræsenterer kundens krav til systemet, men derimod udviklernes. En kunde er blevet simuleret, i form af en vejleder, således at alle krav-ændringer og accepttest udførsel, blev gemmemgået med hjælp fra en ekstern kilde.\\
 
 \noindent
-TrackABus mobilapplikation og administrator hjemmeside, er blevet udviklet til at håndtere systemkravene. Systemet fungerer således, at en bruger kan vælge en rute, sådan samtligte persisterede informationer omkring ruten kan blive vist. Dette inkluderer busser, stoppesteder og selvfølgelig ruten. Brugeren kan herefter tilgå tids-funktionalitet ved at trykke på et stoppested, hvorefter tiden til ankomst for den nærmeste bus i begge retninger, vil blive vist. De komponenter brugeren kan tilgå, skal først oprettes igennem administrations hjemmesiden. Denne del af systemet er derfor den eneste, der kan ændre distribuerede rute-komponenter. I sammenhæng med persitering bruges der to relationelle databaser; En distribueret, og en lokal til hver mobilapplikation. Den distribuerede håndterer samtlige informationer om de forskellige komponenter, hvor den lokale bruges i sammenhæng med favorisering af ruter. Mobilapplikationen er baseret på et eksamensprojekt i ITSMAP, lavet af gruppens to medlemmer, og betegnes derfor som legacy code. Hele systemet kan derfor ses som en videreudvikling af dette eksamensprojekt. Der eksisterer ingen yderligere krav, end dem projektgruppen selv har fastsat.\\
+TrackABus mobil applikationen og administrator hjemmesiden, er blevet udviklet til at håndtere systemkravene. Systemet fungerer således, at en bruger kan vælge en rute, sådan samtlige persisterede informationer omkring denne vil blive vist. Dette inkluderer busser, stoppesteder og selvfølgelig ruten. Brugeren kan herefter tilgå tidsudrenings funktionaliteten ved at trykke på et stoppested, hvorefter tiden til ankomst for den nærmeste bus i begge retninger, vil blive vist. De ruter brugeren kan tilgå, skal først oprettes igennem administrations hjemmesiden. Denne del af systemet er derfor den eneste, der kan ændre ruter og stoppesteder. I sammenhæng med persitering bruges der to relationelle databaser; En distribueret, og en lokal til hver mobilapplikation. Den distribuerede håndterer samtlige informationer om ruter, stoppesteder og busser, hvor den lokale bruges i sammenhæng med favorisering af ruter. Mobilapplikationen er baseret på et eksamensprojekt i ITSMAP, lavet af gruppens to medlemmer, og betegnes derfor som legacy code. Hele systemet kan derfor ses som en videreudvikling af dette eksamensprojekt.\footnote{Se bilags CDen under Projekt Dokumenter, for en beskrivelse af dette}Der eksisterer ingen yderligere krav, end dem projektgruppen selv har fastsat.\\
 
 \noindent
 Det har ikke været muligt at tilgå reelle data for busser og ruter. Derfor har det været nødvendigt at bruge en del af arbejdsresourcerne på, at designe og implementere et system til at kunne håndtere disse data. Dette blev i sidste ende, til administrator hjemmesiden og simulatoren. \\
 \noindent
-I arbejdsprocess øjemed, er der blevet holdt daglige møder i gruppen, hvor dagens arbejde blev diskuteret, samt det ugentlige mål revideret. Desuden blev der holdt ugentlige møder med ad-hoc kunden, hvori projektes fremskriden blev forklaret og diskuteret.\\
+I arbejdsproces øjemed, er der blevet holdt daglige møder i gruppen, hvor dagens arbejde blev diskuteret, samt det ugentlige mål revideret. Desuden blev der holdt ugentlige møder med ad-hoc kunden, hvori projektes fremskreden blev forklaret og diskuteret.\\
 
 \noindent
 \textbf{Begreber og forkortelser}
 \begin{itemize}
-\item BESKRIV VED RETNING!
+\item Scrum: Agil projektstyrings metode.
+\item UP: Unified Process.
+\item XP: Extreme Programming.
 \end{itemize}
 \textbf{Læsevejledning}\\
 Nedenfor er listet en kort beskrivelse af hvert afsnit i dette dokument:
 \begin{itemize}
-\item Abstract og Resumé
-\begin{itemize}
-\item Disse afsnit giver en kort beskrivelse af projektet på både dansk og engelsk.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Indledning
-\begin{itemize}
-\item Dette afsnit beskriver baggrunden for projektet, kravene til projektet, samt hvilke arbejdsmetoder og processer, der er anvendt. Herefter følger begreber og forkortelser samt en læsevejledning.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Projektafgrænsning
-\begin{itemize}
-\item Afsnittet beskriver kort om de begrænsninger, der blev sat, da projektet blev fastlagt.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Projektgennemførelsen
-\begin{itemize}
-\item Her præsenteres de forskellige iterationer, hvorigennem projektet er udviklet, samt erfaringerne med disse.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Metoder
-\begin{itemize}
-\item Dette afsnit beskriver de forskellige arbejdsmetoder, der er anvendt i udarbejdelsen af det endelige produkt. 
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Specifikation- og analysearbejdet
-\begin{itemize}
-\item Analysearbejdet, der ligger til grund for opbygningen af projektet, præsenteres i dette afsnit. Dette indebærer, hvordan der er kommet fra en idé til et færdigt system.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Designprocessen
-\begin{itemize}
-\item Her beskrives selve designprocessen, hvori beslutninger vedrørende design forklares.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Udviklingsværktøjer
-\begin{itemize}
-\item Dette afsnit giver en beskrivelse af de mest væsentlige udviklingsværktøjer, der er blevet brugt til udviklingen af projektet.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Resultater
-\begin{itemize}
-\item De mest væsentlige resultater præsenteres objektivt i dette afsnit.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Diskussion af opnåede resultater
-\begin{itemize}
-\item I dette afsnit diskuteres der på baggrund af de opnåede resultater.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Projektets fortræffeligheder
-\begin{itemize}
-\item Her præsenteres de dele af projektet, som er blevet fundet særdeles velfungerende.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Forslag til forbedringer af projektet eller produktet
-\begin{itemize}
-\item Afsnittet giver en beskrivelse af, hvad der kunne have været forbedret i selve produktet eller produktudviklingen.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Konklusion
-\begin{itemize}
-\item Der laves her en konklusion på baggrund af de opnåede resultater og diskussionen af disse, samt på baggrund af de opnåede erfaringer.
-\end{itemize}
-\end{itemize}
-
-\begin{itemize}
-\item Referencer
-\begin{itemize}
-\item Afsnittet lister de forskellige materialer og værker, der refereres til. 
-\end{itemize}
+\item[] \textbf{Afsnit 1 - Abstract og Resumé}: Disse afsnit giver en kort beskrivelse af projektet på både dansk og engelsk.
+\item[] \textbf{Afsnit 2 - Indledning}:  Dette afsnit beskriver baggrunden for projektet, kravene til projektet, samt hvilke arbejdsmetoder og processer, der er anvendt. Herefter følger begreber og forkortelser samt en læsevejledning.
+\item[] \textbf{Afsnit 3 - Projektafgrænsning}:  Afsnittet beskriver kort om de begrænsninger, der blev sat, da projektet blev fastlagt.
+\item[] \textbf{Afsnit 4 - Projektgennemførelsen}:  Her præsenteres de forskellige iterationer, hvorigennem projektet er udviklet, samt erfaringerne med disse.
+\item[] \textbf{Afsnit 5 - Metoder}: Dette afsnit beskriver de forskellige arbejdsmetoder, der er anvendt i udarbejdelsen af det endelige produkt. 
+\item[] \textbf{Afsnit 6 - Specifikation- og analysearbejdet}:  Analysearbejdet, der ligger til grund for opbygningen af projektet, præsenteres i dette afsnit. Dette indebærer, hvordan der er kommet fra en idé til et færdigt system.
+\item[] \textbf{Afsnit 7 - Designprocessen}:  Her beskrives selve designprocessen, hvori beslutninger vedrørende design forklares.
+\item[] \textbf{Afsnit 8 - Udviklingsværktøjer}:  Dette afsnit giver en beskrivelse af de mest væsentlige udviklingsværktøjer, der er blevet brugt til udviklingen af projektet.
+\item[] \textbf{Afsnit 9 - Resultater}:  De mest væsentlige resultater præsenteres objektivt i dette afsnit.
+\item[] \textbf{Afsnit 10 - Diskussion af opnåede resultater}:  I dette afsnit diskuteres der på baggrund af de opnåede resultater.
+\item[] \textbf{Afsnit 11 - Projektets fortræffeligheder}:  Her præsenteres de dele af projektet, som er blevet fundet særdeles velfungerende.
+\item[] \textbf{Afsnit 12 - Forslag til forbedringer af projektet eller produktet}:  Afsnittet giver en beskrivelse af, hvad der kunne have været forbedret i selve produktet eller produktudviklingen.
+\item[] \textbf{Afsnit 13 - Konklusion}:  Der laves her en konklusion på baggrund af de opnåede resultater og diskussionen af disse, samt på baggrund af de opnåede erfaringer.
+\item[] \textbf{Afsnit 14 - Referencer}:  Afsnittet lister de forskellige materialer og værker, der refereres til. 
 \end{itemize}
 
 

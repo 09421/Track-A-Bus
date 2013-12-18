@@ -14,17 +14,17 @@ Nedenfor er de væsentligste resultater beskrevet. Der refereres til accepttestsp
 \item Simulering af busser.
 \end{itemize}
 \textbf{Mobil applikation}\\
-Mobil applikationen kan vise busruter, med dennes stoppesteder og kørende busser. Det er samtidigt muligt at få vist tiden til ankomst for en bus ved et valgt stoppested. Ruter kan desuden favoriseres, såldes de gemmes lokalt.\\
+Mobil applikationen kan præsentere brugeren for busruter, med dennes stoppesteder og kørende busser. Det er samtidigt muligt at få vist tiden til ankomst for en bus ved et valgt stoppested. Ruter kan desuden favoriseres, hvilket medfører at de gemmes lokalt.\\
 \\
 \textbf{Administrations værktøj}\\
-Det kan lade sig gøre, at administrere busruter. Dette indebærer at oprette, slette og ændre ruter, stoppesteder og busser, samt  hvilken rute de forskellige busser er tilknyttet.\\
+Det kan lade sig gøre, at administrere busruter. Dette indebærer at oprette, slette og ændre ruter, stoppesteder og busser, samt hvilken rute de forskellige busser er tilknyttet.\\
 \\
 \textbf{Databaser}\\
 Den distribuerede database er skabt med MySQL og består af otte tabeller. Disse indholder informationer vedørende busruter, stoppesteder samt busser og deres GPS-koordinater.\\
-Den lokale database er skabkt med SQLite og består af fem tabelle. Disse indeholder informationer om busruter og stoppesteder og er således et udsnit af den distribuerede database. Denne database oprettes sammen med mobil applikationen, på de telefoner denne installeres på. 
+Den lokale database er skabt med SQLite og består af fem tabeller. Disse indeholder informationer om busruter og stoppesteder og er således et udsnit af den distribuerede database. Denne oprettes sammen med mobil applikationen.
 \\
 \textbf{Web service}\\
-Web servicen fungerer som et mellemled mellem mobil applikationen og MySQL databasen. Den står desuden også for at fjerne meget arbejde fra mobil applikationen og lade dette udføres på serveren.\\
+Web servicen fungerer som et mellemled mellem mobil applikationen og MySQL databasen.
 \\
 \textbf{Simulator}\\
 Det er muligt at simulere en eller flere busser der køre på deres tilknyttede busrute.\\

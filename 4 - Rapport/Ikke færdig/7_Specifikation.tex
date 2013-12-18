@@ -13,7 +13,7 @@ Ved påbegyndelse af projektet blev der undersøgt, hvilke domæner projektet skull
 \label{fig:Domain_first}
 \end{figure}
 \noindent
-Under udviklingen af systemet, blev der foretaget ændringer i domænemodellen. De fleste komponenter forblev de samme, men mobil applikationens tilgang til den distribuerede database, blev ændret til at være indirekte. Det vil sige den tilgår en web service, som igen tilgår databasen. Dette sikrer en lav kobling mellem databasen og applikationen, samt en høj samhørighed, da database tilgangen bliver samlet i en komponent, der ikke direkte er knyttet til applikationen. På figur \ref{fig:Domain_second} kan den færdige domænemodel ses. 
+Under udviklingen af systemet, blev der foretaget ændringer i domænemodellen. De fleste komponenter forblev de samme, men mobil applikationens tilgang til den distribuerede database, blev ændret til at være indirekte. Dette vil sige, at den tilgår en web service, som herefter tilgår databasen. Dette sikrer en lav kobling mellem databasen og applikationen, samt en høj samhørighed, da database tilgangen bliver samlet i en komponent, der ikke direkte er knyttet til applikationen. På figur \ref{fig:Domain_second} kan den færdige domænemodel ses. 
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{../Billeder/Domain2.jpg}
@@ -22,7 +22,7 @@ Under udviklingen af systemet, blev der foretaget ændringer i domænemodellen. De
 \end{figure}
 
 \noindent
-Efter oprettelse af den første domænemodel, blev der udtænkt de brugssituationer, som et færdigt system skal kunne håndtere. Simulatoren blev ikke set som en komponent i denne sammenhæng, da dette blot var et værktøj til udviklingen. Det var udelukkende hjemmesiden og mobilapplikationen, der blev set som komponenter i en brugssituations sammenhæng. På figur \ref{fig:UCD}, kan det Use Case diagram, systemet er bygget op omkring, ses.
+Efter oprettelse af den første domænemodel, blev der udtænkt de brugssituationer, som et færdigt system skulle kunne håndtere. Simulatoren blev ikke set som en komponent i denne sammenhæng, da dette blot var et værktøj til udviklingen. Det var udelukkende hjemmesiden og mobilapplikationen, der blev set som komponenter i en brugssituations sammenhæng. På figur \ref{fig:UCD}, kan det Use Case diagram, systemet er bygget op omkring, ses.
 
 \begin{figure}[H]
 \centering
@@ -32,9 +32,9 @@ Efter oprettelse af den første domænemodel, blev der udtænkt de brugssituationer
 \end{figure}
 
 \noindent
-Da Use Case diagrammet udelukkende afspejler mobilapplikationen og hjemmesiden, blev det valgt, at to primære aktører ville være repræsentanter for hele systemet; Brugeren, som tilgår mobilapplikationen og Administratoren, som tilgår hjemmesiden. Databasen og simulatoren kunne ses som sekundære system aktører, men dette er dog blevet fravalgt, da det i en brugssituation vil være brugeren fuldstændigt irrelevant, hvorfra dataen kommer.\\
+Da Use Case diagrammet udelukkende afspejler mobil applikationen og hjemmesiden, blev det valgt, at to primære aktører ville være repræsentanter for hele systemet; Brugeren, som tilgår mobilapplikationen og Administratoren, som tilgår hjemmesiden. Databasen og simulatoren kunne ses som sekundære system aktører, men dette er dog blevet fravalgt, da det i en brugssituation vil være brugeren fuldstændigt irrelevant, hvorfra dataen kommer.\\
 Ud fra dette diagram blev der udviklet en kravspecifikation, som beskriver de funktionelle krav, systemet skal opfylde. Dette dokument er blevet set som agilt, da der ikke var nogen ekstern kunde, som kunne fastsætte krav og derved var det op til gruppen, hvordan systemet skulle udvikles. Dette har haft den betydning for systemet, at det under processen har været nødvendigt, at foretage visse ændringer i dokumentet, dog ikke uden, at det er blevet grundigt diskuteret i gruppen. Disse udviklinger blev samtidigt afspejlet i Use Case diagrammet, som blev ændret i sammenhæng med kravændringer. Dette har medført, at Use Case diagrammet og kravspecifikationen er blevet samlet til et dokument, der følger systemets udvikling.\\
-Til kravene sat i kravspecifikationen, er der blevet udviklet en acceptestsspecifikation, som beskriver, hvordan en eventuel kunde kan teste, at de stillede krav er opfyldt. Dette dokument har også været agilt, i og med det har ændret sig sammen med kravspecifikationen. Ved fuldent implementering af systemet, blev testene, specificeret i dette dokument, fulgt af gruppens ad-hoc kunde.\\
+Til kravene sat i kravspecifikationen, er der blevet udviklet en acceptestsspecifikation, som beskriver, hvordan en eventuel kunde kan teste, at de stillede krav er opfyldt. Dette dokument har også været agilt, i og med det har ændret sig sammen med kravspecifikationen. Ved fuldent implementering af systemet, blev testene i accepttestspecifikationen, fulgt af gruppens ad-hoc kunde.\\
 Under implementeringen blev det fundet meget brugbart at bruge simple sekvensdiagrammer, til at analysere kodens forløb. Disse har dog kun været midlertidige, da de er blevet tegnet på en tavle. Dette har givet det gruppemedlem, som ikke implementerede denne del af systemet, mulighed for at følge det andet gruppemedlems tankeforløb. Til de mere komplekse dele af systemet er der dog blevet udviklet mere detaljerede sekvensdiagrammer. \footnote{Sekvensdiagrammer kan ses i kontekst i systemarkitektur dokumentet under \textit{5: Logisk view, 6: Process/Task view og 8: Implementerings view}}
 \\\\
 Analyse- og specifikations arbejdet forløb efter hensigten, da den konstante kommunikation mellem gruppens medlemmer har sikret, at der var et bibeholdt overblik over processen. Dette sikrede desuden også, at funktionaliteter aldrig blev overset. \\
